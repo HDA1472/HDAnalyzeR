@@ -6,10 +6,13 @@
 #' @param date Logical. If TRUE, the current date and time will be appended to the directory name
 #'
 #' @return NULL
+#' @export
 #'
 #' @examples
 #' create_directory("my_directory", date = FALSE)
 #' create_directory("my_directory/inner_dir", date = TRUE)
+#' # Clean up the created directory
+#' unlink("my_directory", recursive = TRUE)
 create_directory <- function(dir_name, date = FALSE) {
 
   if (date) {

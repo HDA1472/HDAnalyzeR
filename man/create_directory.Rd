@@ -17,4 +17,6 @@ The function creates a directory with the specified name. If the directory alrea
 \examples{
 create_directory("my_directory", date = FALSE)
 create_directory("my_directory/inner_dir", date = TRUE)
+# Clean up the created directory
+unlink("my_directory", recursive = TRUE)
 }
