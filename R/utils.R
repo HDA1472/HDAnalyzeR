@@ -1,3 +1,15 @@
+#' Create directory w/o system date
+#'
+#' The function creates a directory with the specified name. If the directory already exists, a message is printed.
+#'
+#' @param dir_name The name of the directory to create
+#' @param date Logical. If TRUE, the current date and time will be appended to the directory name
+#'
+#' @return NULL
+#'
+#' @examples
+#' create_directory("my_directory", date = FALSE)
+#' create_directory("my_directory/inner_dir", date = TRUE)
 create_directory <- function(dir_name, date = FALSE) {
 
   if (date) {
