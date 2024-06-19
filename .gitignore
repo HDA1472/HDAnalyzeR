@@ -1,8 +1,7 @@
+# Folders
+data/
+
 # Files
-*.code-workspace
-*.Rproj
-*.Rproj.user
-*.Rhistory
-*.RData
-*.Ruserdata
+.RData
 .Rproj.user
+.Rhistory
