@@ -20,19 +20,14 @@ example_data$Assay_Warning[indices_assay] <- "WARN"
 indices_qc <- sample(num_rows, num_change)
 example_data$QC_Warning[indices_qc] <- sample(c("WARN", "MANUAL_WARN"), num_change, replace = TRUE)
 
-# Add DAid, LOD and PlateID columns
+# Add DAid and PlateID columns
 unique_samples_df <- example_data |>
   dplyr::distinct(Sample) |>
   dplyr::mutate(DAid = sprintf("DA%05d", dplyr::row_number()))
 
 example_data <- example_data |>
   dplyr::left_join(unique_samples_df, by = "Sample") |>
-  dplyr::select(DAid, everything())
-
-# example_data <- example_data %>%
-#   dplyr::mutate(LOD = seq(-11.0, 5.0, length.out = dplyr::n()))
-
-example_data <- example_data |>
+  dplyr::select(DAid, everything()) |>
   dplyr::mutate(
     PlateID = dplyr::case_when(
       grepl("_1$", Sample) | grepl("_2$", Sample) | grepl("_3$", Sample) |
@@ -57,3 +52,6 @@ example_data <- example_data |>
         grepl("_49$", Sample) | grepl("_50$", Sample) ~ "Run005"
     )
   )
+
+# example_data <- example_data %>%
+#   dplyr::mutate(LOD = seq(-11.0, 5.0, length.out = dplyr::n()))
