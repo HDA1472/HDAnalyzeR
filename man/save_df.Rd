@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{save_df}
 \alias{save_df}
-\title{Save dataframe in CSV, TSV, or RDA format}
+\title{Save dataframe}
 \usage{
 save_df(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
 }
