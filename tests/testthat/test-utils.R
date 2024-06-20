@@ -34,6 +34,7 @@ test_that("Warning on failed directory creation", {
 
 # Test save_df -----------------------------------------------------------------
 test_that("save_df creates directory and saves CSV", {
+  df <- data.frame(x = 1:10, y = rnorm(10))
   dir_name <- "test_csv_dir"
   file_name <- "test_csv_file"
 
@@ -49,6 +50,7 @@ test_that("save_df creates directory and saves CSV", {
 
 
 test_that("save_df saves TSV", {
+  df <- data.frame(x = 1:10, y = rnorm(10))
   dir_name <- "test_tsv_dir"
   file_name <- "test_tsv_file"
 
@@ -63,6 +65,7 @@ test_that("save_df saves TSV", {
 })
 
 test_that("save_df saves RDA", {
+  df <- data.frame(x = 1:10, y = rnorm(10))
   dir_name <- "test_rda_dir"
   file_name <- "test_rda_file"
 
@@ -76,7 +79,8 @@ test_that("save_df saves RDA", {
   unlink(dir_name, recursive = TRUE)
 })
 
-test_that("save_dataframe works with existing directory", {
+test_that("save_df works with existing directory", {
+  df <- data.frame(x = 1:10, y = rnorm(10))
   dir_name <- "existing_dir"
   file_name <- "test_existing_file"
 
@@ -89,7 +93,8 @@ test_that("save_dataframe works with existing directory", {
   unlink(dir_name, recursive = TRUE)
 })
 
-test_that("save_dataframe handles invalid file type", {
+test_that("save_df handles invalid file type", {
+  df <- data.frame(x = 1:10, y = rnorm(10))
   dir_name <- "test_invalid_dir"
   file_name <- "test_invalid_file"
   invalid_file_type <- "invalid"
