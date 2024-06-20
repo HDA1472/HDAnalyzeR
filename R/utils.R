@@ -57,7 +57,10 @@ create_dir <- function(dir_name, date = FALSE) {
 #' # Clean up the created directory
 #' unlink("my_data", recursive = TRUE)
 save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda")) {
-  file_type <- match.arg(file_type)
+  valid_file_types <- c("csv", "tsv", "rda")
+  if (!file_type %in% valid_file_types) {
+    stop("Unsupported file type: ", file_type)
+  }
 
   # Create the directory if it doesn't exist, else store the file in the existing directory
   create_dir(dir_name)
@@ -70,8 +73,6 @@ save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
     utils::write.table(df, file_path, sep = "\t", row.names = FALSE, col.names = TRUE)
   } else if (file_type == "rda") {
     save(df, file = file_path)
-  } else {
-    stop("Unsupported file type: ", file_type)
   }
 
   invisible(NULL)
