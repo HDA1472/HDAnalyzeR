@@ -107,3 +107,105 @@ test_that("save_df handles invalid file type", {
   expect_error(save_df(df, dir_name, file_name, invalid_file_type), expected_error_message)
   expect_false(dir.exists(dir_name))
 })
+
+# Test import_df ---------------------------------------------------------------
+test_that("import_df handles CSV files", {
+  df_out <- data.frame(x = 1:10, y = rnorm(10))
+  file_name <- "test_file.csv"
+  utils::write.csv(df_out, file_name, row.names = FALSE)
+  expect_true(file.exists(file_name))
+
+  if (file.exists(file_name)) {
+    df_in <- import_df(file_name)
+    expect_true(is.data.frame(df_in))
+  } else {
+    skip("Test skipped: File not found.")
+  }
+
+  unlink(file_name, recursive = TRUE)
+})
+
+
+test_that("import_df handles TSV files", {
+  df_out <- data.frame(x = 1:10, y = rnorm(10))
+  file_name <- "test_file.tsv"
+  utils::write.table(df_out, file_name, sep='\t', row.names = FALSE, col.names = TRUE)
+  expect_true(file.exists(file_name))
+
+  if (file.exists(file_name)) {
+    df_in <- import_df(file_name)
+    expect_true(is.data.frame(df_in))
+  } else {
+    skip("Test skipped: File not found.")
+  }
+
+  unlink(file_name, recursive = TRUE)
+})
+
+
+test_that("import_df handles TXT files", {
+  df_out <- data.frame(x = 1:10, y = rnorm(10))
+  file_name <- "test_file.txt"
+  utils::write.table(df_out, file_name, row.names = FALSE, col.names = TRUE)
+  expect_true(file.exists(file_name))
+
+  if (file.exists(file_name)) {
+    df_in <- import_df(file_name)
+    expect_true(is.data.frame(df_in))
+  } else {
+    skip("Test skipped: File not found.")
+  }
+
+  unlink(file_name, recursive = TRUE)
+})
+
+
+test_that("import_df handles RDS files", {
+  df_out <- data.frame(x = 1:10, y = rnorm(10))
+  file_name <- "test_file.rds"
+  saveRDS(df_out, file = file_name)
+  expect_true(file.exists(file_name))
+
+  if (file.exists(file_name)) {
+    df_in <- import_df(file_name)
+    expect_true(is.data.frame(df_in))
+  } else {
+    skip("Test skipped: File not found.")
+  }
+
+  unlink(file_name, recursive = TRUE)
+})
+
+
+test_that("import_df handles RDA files", {
+  df_out <- data.frame(x = 1:10, y = rnorm(10))
+  file_name <- "test_file.rda"
+  save(df_out, file = file_name)
+  expect_true(file.exists(file_name))
+
+  if (file.exists(file_name)) {
+    df_in <- import_df(file_name)
+    expect_true(is.data.frame(df_in))
+  } else {
+    skip("Test skipped: File not found.")
+  }
+
+  unlink(file_name, recursive = TRUE)
+})
+
+
+test_that("import_df handles XLSX files", {
+  df_out <- data.frame(x = 1:10, y = rnorm(10))
+  file_name <- "test_file.xlsx"
+  writexl::write_xlsx(df_out, file_name)
+  expect_true(file.exists(file_name))
+
+  if (file.exists(file_name)) {
+    df_in <- import_df(file_name)
+    expect_true(is.data.frame(df_in))
+  } else {
+    skip("Test skipped: File not found.")
+  }
+
+  unlink(file_name, recursive = TRUE)
+})

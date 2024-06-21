@@ -58,6 +58,7 @@ create_dir <- function(dir_name, date = FALSE) {
 #' unlink("my_data", recursive = TRUE)
 save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda")) {
   valid_file_types <- c("csv", "tsv", "rda")
+
   if (!file_type %in% valid_file_types) {
     stop("Unsupported file type: ", file_type)
   }
@@ -82,7 +83,7 @@ save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
 
 #' Import dataframe
 #'
-#' The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, XLS or TXT format.
+#' The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, or TXT format.
 #'
 #' @param file_path The path to the file to import
 #'
@@ -90,24 +91,23 @@ save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
 #' @export
 #'
 #' @examples
-#' # df <- import_df("data/example_data.csv")
+#' df_out <- example_data
+#' save_df(df_out, "my_data", "sample_data", "rda")
+#' df_in <- load("my_data/sample_data.rda")
+#' # Clean up the created directory
+#' unlink("my_data", recursive = TRUE)
 import_df <- function(file_path) {
   # Determine file extension from file path
   file_extension <- tools::file_ext(file_path)
 
-  if (file_extension == "csv") {
-    df <- utils::read.csv(file_path, stringsAsFactors = FALSE)
-  } else if (file_extension == "tsv") {
-    df <- utils::read.delim(file_path, stringsAsFactors = FALSE)
-  } else if (file_extension == "rda" || tolower(file_extension) == "rds") {
-    df <- readRDS(file_path)
-  } else if (file_extension == "xlsx" || file_extension == "xls") {
-    df <- readxl::read_xlsx(file_path)
-  } else if (file_extension == "txt") {
-    df <- utils::read.table(file_path, header = TRUE, stringsAsFactors = FALSE)
-  } else {
-    stop("Unsupported file format: ", file_extension)
-  }
+  data <- switch(tolower(file_extension),
+                 csv = utils::read.csv(file_path, stringsAsFactors = FALSE),
+                 tsv = utils::read.delim(file_path, stringsAsFactors = FALSE),
+                 txt = utils::read.table(file_path, header = TRUE, stringsAsFactors = FALSE),
+                 rda = { load(file_path); get(ls()[1]) },
+                 rds = readRDS(file_path),
+                 xlsx = readxl::read_excel(file_path),
+                 stop("Unsupported file type: ", file_extension))
 
-  return(df)
+  return(data)
 }

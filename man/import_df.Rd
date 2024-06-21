@@ -13,8 +13,12 @@ import_df(file_path)
 df The imported dataframe
 }
 \description{
-The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, XLS or TXT format.
+The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, or TXT format.
 }
 \examples{
-# df <- import_df("data/example_data.csv")
+df_out <- example_data
+save_df(df_out, "my_data", "sample_data", "rda")
+df_in <- load("my_data/sample_data.rda")
+# Clean up the created directory
+unlink("my_data", recursive = TRUE)
 }
