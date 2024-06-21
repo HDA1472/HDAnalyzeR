@@ -39,7 +39,7 @@ create_dir <- function(dir_name, date = FALSE) {
 }
 
 
-#' Save dataframe in CSV, TSV, or RDA format
+#' Save dataframe
 #'
 #' The function saves a dataframe in the specified format (CSV, TSV, or RDA) in the specified directory.
 #'
@@ -77,4 +77,37 @@ save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
 
   invisible(NULL)
 
+}
+
+
+#' Import dataframe
+#'
+#' The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, XLS or TXT format.
+#'
+#' @param file_path The path to the file to import
+#'
+#' @return df The imported dataframe
+#' @export
+#'
+#' @examples
+#' # df <- import_df("data/example_data.csv")
+import_df <- function(file_path) {
+  # Determine file extension from file path
+  file_extension <- tools::file_ext(file_path)
+
+  if (file_extension == "csv") {
+    df <- utils::read.csv(file_path, stringsAsFactors = FALSE)
+  } else if (file_extension == "tsv") {
+    df <- utils::read.delim(file_path, stringsAsFactors = FALSE)
+  } else if (file_extension == "rda" || tolower(file_extension) == "rds") {
+    df <- readRDS(file_path)
+  } else if (file_extension == "xlsx" || file_extension == "xls") {
+    df <- readxl::read_xlsx(file_path)
+  } else if (file_extension == "txt") {
+    df <- utils::read.table(file_path, header = TRUE, stringsAsFactors = FALSE)
+  } else {
+    stop("Unsupported file format: ", file_extension)
+  }
+
+  return(df)
 }
