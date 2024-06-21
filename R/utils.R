@@ -100,14 +100,14 @@ import_df <- function(file_path) {
   # Determine file extension from file path
   file_extension <- tools::file_ext(file_path)
 
-  data <- switch(tolower(file_extension),
-                 csv = utils::read.csv(file_path, stringsAsFactors = FALSE),
-                 tsv = utils::read.delim(file_path, stringsAsFactors = FALSE),
-                 txt = utils::read.table(file_path, header = TRUE, stringsAsFactors = FALSE),
-                 rda = { load(file_path); get(ls()[1]) },
-                 rds = readRDS(file_path),
-                 xlsx = readxl::read_excel(file_path),
-                 stop("Unsupported file type: ", file_extension))
+  df <- switch(tolower(file_extension),
+               csv = utils::read.csv(file_path, stringsAsFactors = FALSE),
+               tsv = utils::read.delim(file_path, stringsAsFactors = FALSE),
+               txt = utils::read.table(file_path, header = TRUE, stringsAsFactors = FALSE),
+               rda = { load(file_path); get(ls()[1]) },
+               rds = readRDS(file_path),
+               xlsx = readxl::read_excel(file_path),
+               stop("Unsupported file type: ", file_extension))
 
-  return(data)
+  return(df)
 }

@@ -16,10 +16,10 @@ Imports:
     readr,
     readxl,
     tidyr,
-    utils,
-    writexl
+    utils
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    writexl
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
