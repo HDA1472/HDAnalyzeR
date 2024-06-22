@@ -214,3 +214,34 @@ test_that("import_df handles XLSX files", {
 
 
 # Test remove_na ---------------------------------------------------------------
+test_that("remove_na removes NA column", {
+  set.seed(123)
+  test_df <- data.frame(
+    Column1 = sample(c(1:15, rep(NA, 10)), 20, replace = TRUE),
+    Column2 = sample(c(16:30, rep(NA, 10)), 20, replace = TRUE),
+    Column3 = sample(31:50, 20, replace = TRUE)
+  )
+  suppressWarnings({
+    result <- remove_na(test_df, "Column1")
+  })
+  expected <- test_df |>
+    dplyr::filter(!is.na(Column1)) |>
+    dplyr::slice(seq_len(dplyr::n()))
+  expect_equal(result, expected)
+})
+
+
+test_that("remove_na removes NA columns", {
+  set.seed(123)
+  test_df <- data.frame(
+    Column1 = sample(c(1:15, rep(NA, 10)), 20, replace = TRUE),
+    Column2 = sample(c(16:30, rep(NA, 10)), 20, replace = TRUE),
+    Column3 = sample(31:50, 20, replace = TRUE)
+  )
+  suppressWarnings({
+    result <- remove_na(test_df, c("Column1", "Column2"))
+  })
+  expected <- test_df |>
+    dplyr::filter(!is.na(Column1) & !is.na(Column2))
+  expect_equal(result, expected)
+})

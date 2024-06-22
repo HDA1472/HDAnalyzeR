@@ -159,5 +159,7 @@ remove_na <- function(df_in, cols) {
     df_out <- df_in
   }
 
+  rownames(df_out) <- NULL  # Re index the rows
+
   return(df_out)
 }

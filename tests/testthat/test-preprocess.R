@@ -94,7 +94,7 @@ test_that("clean_metadata selects specified columns", {
 
 
 test_that("clean_metadata excludes specified samples", {
-  seed = 543
+  set.seed(123)
   test_metadata <- example_metadata |>
     dplyr::mutate(`Exclude Sample` = ifelse(runif(dplyr::n()) <= 0.05, "yes", "no"))
   result <- clean_metadata(test_metadata, keep_cols = c("DAid", "Age"), exclude_sample = "yes")
