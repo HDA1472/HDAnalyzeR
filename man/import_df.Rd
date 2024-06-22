@@ -7,10 +7,10 @@
 import_df(file_path)
 }
 \arguments{
-\item{file_path}{The path to the file to import}
+\item{file_path}{(string). The path to the file to import}
 }
 \value{
-df The imported dataframe
+df (tibble). The imported dataframe
 }
 \description{
 The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, or TXT format.

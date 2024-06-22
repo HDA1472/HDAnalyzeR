@@ -119,12 +119,14 @@ import_df <- function(file_path) {
 #' It returns a warning message if any rows are removed stating the number and the indexes of removed rows.
 #'
 #' @param df_in (tibble). The input dataframe
-#' @param col (string). The column to check for NAs
+#' @param cols (string or vector of strings). The column to check for NAs
 #'
 #' @return df_out (tibble). The dataframe with NAs removed
 #' @export
 #'
 #' @examples
+#' df <- data.frame(x = c(1, 2, NA, 4), y = c(NA, 2, 3, 4))
+#' df_out <- remove_na(df, "x")
 remove_na <- function(df_in, cols) {
 
   rows_to_omit <- integer(0)  # Keeps track of rows to omit
@@ -149,10 +151,12 @@ remove_na <- function(df_in, cols) {
 
   # Omit the rows with NAs from the dataframe and show warning messages
   rows_to_omit <- unique(rows_to_omit)
-  df_out <- df_in[-rows_to_omit, ]
 
   if (length(warning_messages) > 0) {
+    df_out <- df_in[-rows_to_omit, ]
     warning(paste(warning_messages, collapse = "\n"))
+  } else {
+    df_out <- df_in
   }
 
   return(df_out)

@@ -7,13 +7,13 @@
 save_df(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
 }
 \arguments{
-\item{df}{The dataframe to save}
+\item{df}{(tibble). The dataframe to save}
 
-\item{dir_name}{The directory where the file will be saved}
+\item{dir_name}{(string). The directory where the file will be saved}
 
-\item{file_name}{The name of the file to save}
+\item{file_name}{(string). The name of the file to save}
 
-\item{file_type}{The type of file to save the dataframe as. Options are "csv", "tsv", or "rda"}
+\item{file_type}{(string). The type of file to save the dataframe as. Options are "csv", "tsv", or "rda"}
 }
 \description{
 The function saves a dataframe in the specified format (CSV, TSV, or RDA) in the specified directory.

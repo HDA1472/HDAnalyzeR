@@ -14,24 +14,24 @@ clean_data(
 )
 }
 \arguments{
-\item{df_in}{The input dataframe}
+\item{df_in}{(tibble). The input dataframe}
 
-\item{keep_cols}{The columns to keep in the output dataframe}
+\item{keep_cols}{(string or vector of strings). The columns to keep in the output dataframe}
 
-\item{cohort}{The cohort to keep}
+\item{cohort}{(string or vector of strings). The cohort to keep}
 
-\item{exclude_plates}{The plates to exclude}
+\item{exclude_plates}{(string or vector of strings). The plates to exclude}
 
-\item{filter_assay}{If TRUE only rows with Assay_Warning == "PASS" are kept, else NULL}
+\item{filter_assay}{(TRUE or NULL). If TRUE only rows with Assay_Warning == "PASS" are kept, else NULL}
 
-\item{filter_qc}{If TRUE only rows with QC_Warning == "PASS" are kept, else NULL}
+\item{filter_qc}{(TRUE or NULL). If TRUE only rows with QC_Warning == "PASS" are kept, else NULL}
 }
 \value{
-df_out The cleaned dataframe
+df_out (tibble). The cleaned dataframe
 }
 \description{
 The function cleans the data by filtering out rows based on the specified criteria.
-It keeps only the specified columns.
+It keeps only the specified columns. It removes rows with NAs in the DAid and NPX columns.
 }
 \examples{
 df <- clean_data(example_data, exclude_plates = c("Plate1", "Plate2"), filter_assay = TRUE)
