@@ -2,8 +2,8 @@
 #'
 #' The function creates a directory with the specified name. If the directory already exists, a message is printed.
 #'
-#' @param dir_name The name of the directory to create
-#' @param date Logical. If TRUE, the current date and time will be appended to the directory name
+#' @param dir_name (string). The name of the directory to create
+#' @param date (logical). If TRUE, the current date and time will be appended to the directory name
 #'
 #' @return NULL
 #' @export
@@ -42,10 +42,10 @@ create_dir <- function(dir_name, date = FALSE) {
 #'
 #' The function saves a dataframe in the specified format (CSV, TSV, or RDA) in the specified directory.
 #'
-#' @param df The dataframe to save
-#' @param dir_name The directory where the file will be saved
-#' @param file_name The name of the file to save
-#' @param file_type The type of file to save the dataframe as. Options are "csv", "tsv", or "rda"
+#' @param df (tibble). The dataframe to save
+#' @param dir_name (string). The directory where the file will be saved
+#' @param file_name (string). The name of the file to save
+#' @param file_type (string). The type of file to save the dataframe as. Options are "csv", "tsv", or "rda"
 #'
 #' @return NULL
 #' @export
@@ -84,9 +84,9 @@ save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
 #'
 #' The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, or TXT format.
 #'
-#' @param file_path The path to the file to import
+#' @param file_path (string). The path to the file to import
 #'
-#' @return df The imported dataframe
+#' @return df (tibble). The imported dataframe
 #' @export
 #'
 #' @examples
@@ -110,4 +110,50 @@ import_df <- function(file_path) {
                stop("Unsupported file type: ", file_extension))
 
   return(df)
+}
+
+
+#' Check for NAs in a column and remove these rows
+#'
+#' The function checks for NAs in the specified column and removes the rows with NAs.
+#' It returns a warning message if any rows are removed stating the number and the indexes of removed rows.
+#'
+#' @param df_in (tibble). The input dataframe
+#' @param col (string). The column to check for NAs
+#'
+#' @return df_out (tibble). The dataframe with NAs removed
+#' @export
+#'
+#' @examples
+remove_na <- function(df_in, cols) {
+
+  rows_to_omit <- integer(0)  # Keeps track of rows to omit
+  warning_messages <- character(0)  # Keeps track of the warning messages
+
+  for (col in cols) {
+
+    if (!is.null(col) && col %in% colnames(df_in)) {
+      na_rows <- which(is.na(df_in[[col]]))
+      num_na_rows <- length(na_rows)
+      rows_to_omit <- c(rows_to_omit, na_rows)
+
+      if (num_na_rows > 0) {
+        warning_message <- sprintf("Omitted %d rows with NAs in column '%s'. Indices of omitted rows: \n%s",
+                                   num_na_rows, col, paste(na_rows, collapse = ", "))
+        warning_messages <- c(warning_messages, warning_message)
+      }
+
+    }
+
+  }
+
+  # Omit the rows with NAs from the dataframe and show warning messages
+  rows_to_omit <- unique(rows_to_omit)
+  df_out <- df_in[-rows_to_omit, ]
+
+  if (length(warning_messages) > 0) {
+    warning(paste(warning_messages, collapse = "\n"))
+  }
+
+  return(df_out)
 }

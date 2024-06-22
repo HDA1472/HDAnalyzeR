@@ -4,12 +4,12 @@ utils::globalVariables(c("PlateID", "Cohort", "Assay_Warning", "QC_Warning"))
 #' The function cleans the data by filtering out rows based on the specified criteria.
 #' It keeps only the specified columns.
 #'
-#' @param df_in The input dataframe
-#' @param keep_cols The columns to keep in the output dataframe
-#' @param cohort The cohort to keep
-#' @param exclude_plates The plates to exclude
-#' @param filter_assay If TRUE only rows with Assay_Warning == "PASS" are kept, else NULL
-#' @param filter_qc If TRUE only rows with QC_Warning == "PASS" are kept, else NULL
+#' @param df_in (tibble). The input dataframe
+#' @param keep_cols (string or vector of strings). The columns to keep in the output dataframe
+#' @param cohort (string or vector of strings). The cohort to keep
+#' @param exclude_plates (string or vector of strings). The plates to exclude
+#' @param filter_assay (TRUE or NULL). If TRUE only rows with Assay_Warning == "PASS" are kept, else NULL
+#' @param filter_qc (TRUE or NULL). If TRUE only rows with QC_Warning == "PASS" are kept, else NULL
 #'
 #' @return df_out The cleaned dataframe
 #' @export
