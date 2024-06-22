@@ -76,3 +76,39 @@ clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age",
 
   return(df_out)
 }
+
+
+#' Generate and store wide and join dataframes
+#'
+#' The function generates wide and join dataframes from the long data and metadata.
+#' It stores them in the data/processed/data_metadata directory.in rda format.
+#'
+#' @param long_data (tibble). The long data
+#' @param metadata (tibble). The metadata
+#'
+#' @return list(wide_data, join_data) (list of tibbles). The wide and join dataframes
+#' @export
+#'
+#' @examples
+#' clean_data <- clean_data(example_data, keep_cols = c("DAid", "Assay", "NPX"))
+#' clean_metadata <- clean_metadata(example_metadata, keep_cols = c("DAid", "GROUP", "Age"))
+#' result_df <- generate_df(clean_data, clean_metadata)
+#' wide_data <- result_df[[1]]
+#' join_data <- result_df[[2]]
+#' # Clean up the created directory
+#' unlink("data", recursive = TRUE)
+generate_df <- function(long_data, metadata) {
+
+  wide_data <- tidyr::pivot_wider(long_data, names_from = "Assay", values_from = "NPX")
+
+  join_data <- wide_data |>
+    dplyr::left_join(metadata, by = "DAid")
+
+  create_dir("data/processed/data_metadata", date = TRUE)
+  save_df(long_data, "data/processed/data_metadata", "long_data", "rda")
+  save_df(wide_data, "data/processed/data_metadata", "wide_data", "rda")
+  save_df(metadata, "data/processed/data_metadata", "metadata", "rda")
+  save_df(join_data, "data/processed/data_metadata", "join_data", "rda")
+
+  return(list(wide_data, join_data))
+}

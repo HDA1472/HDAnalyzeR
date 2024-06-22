@@ -3,6 +3,7 @@
 export(clean_data)
 export(clean_metadata)
 export(create_dir)
+export(generate_df)
 export(import_df)
 export(remove_na)
 export(save_df)
