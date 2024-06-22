@@ -44,3 +44,17 @@ clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NU
 
     return(df_out)
 }
+
+
+clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"), exclude_sample = NULL) {
+
+  df_out <- df_in |>
+    dplyr::filter(if ("Exclude Sample" %in% colnames(df_in)) {
+      is.null(exclude_sample) | `Exclude Sample` == "PASS"
+    } else {
+      TRUE
+    }) |>
+    dplyr::select(dplyr::any_of(keep_cols))
+
+  return(df_out)
+}

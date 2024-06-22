@@ -35,7 +35,6 @@ create_dir <- function(dir_name, date = FALSE) {
   }
 
   invisible(NULL)
-
 }
 
 
@@ -57,6 +56,7 @@ create_dir <- function(dir_name, date = FALSE) {
 #' # Clean up the created directory
 #' unlink("my_data", recursive = TRUE)
 save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda")) {
+
   valid_file_types <- c("csv", "tsv", "rda")
 
   if (!file_type %in% valid_file_types) {
@@ -77,7 +77,6 @@ save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
   }
 
   invisible(NULL)
-
 }
 
 
@@ -97,6 +96,7 @@ save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
 #' # Clean up the created directory
 #' unlink("my_data", recursive = TRUE)
 import_df <- function(file_path) {
+
   # Determine file extension from file path
   file_extension <- tools::file_ext(file_path)
 
