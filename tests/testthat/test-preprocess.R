@@ -29,7 +29,7 @@ test_that("clean_data filters by cohort", {
 
 
 test_that("clean_data filters by Assay_Warning", {
-  result <- clean_data(example_data, filter_assay = TRUE)
+  result <- clean_data(example_data, filter_assay = "PASS")
   expected <- example_data |>
     dplyr::filter(Assay_Warning == "PASS") |>
     dplyr::select(DAid, Assay, NPX)
@@ -38,12 +38,13 @@ test_that("clean_data filters by Assay_Warning", {
 
 
 test_that("clean_data filters by QC_Warning", {
-  result <- clean_data(example_data, filter_qc = TRUE)
+  result <- clean_data(example_data, filter_qc = c("MANUAL_WARN", "PASS"))
   expected <- example_data |>
-    dplyr::filter(QC_Warning == "PASS") |>
+    dplyr::filter(QC_Warning %in% c("MANUAL_WARN", "PASS")) |>
     dplyr::select(DAid, Assay, NPX)
   expect_equal(result, expected)
 })
+
 
 test_that("clean_data handles non-existent columns gracefully", {
   # Create data only with Assay and NPX columns
@@ -55,13 +56,15 @@ test_that("clean_data handles non-existent columns gracefully", {
   expect_equal(result, expected)
 })
 
+
 test_that("clean_data handles all parameters together", {
   # Add Cohort column
   example_data_cohort <- example_data |>
     dplyr::mutate(Cohort = rep(c("A", "B"), length.out = dplyr::n()))
-  result <- clean_data(example_data_cohort, cohort = "A", exclude_plates = "P2", filter_assay = TRUE, filter_qc = TRUE)
+  result <- clean_data(example_data_cohort, cohort = "A", exclude_plates = "P2",
+                       filter_assay = "PASS", filter_qc = c("MANUAL_WARN", "PASS"))
   expected <- example_data_cohort |>
-    dplyr::filter(Cohort %in% "A" & !(PlateID %in% "P2") & Assay_Warning == "PASS" & QC_Warning == "PASS") |>
+    dplyr::filter(Cohort %in% "A" & !(PlateID %in% "P2") & Assay_Warning == "PASS" & QC_Warning %in% c("MANUAL_WARN", "PASS")) |>
     dplyr::select(DAid, Assay, NPX)
   expect_equal(result, expected)
 })
