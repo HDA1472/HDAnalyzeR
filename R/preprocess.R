@@ -66,7 +66,7 @@ clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age",
 
   df_out <- df_in |>
     dplyr::filter(if ("Exclude Sample" %in% colnames(df_in)) {
-      is.null(exclude_sample) | `Exclude Sample` %in% exclude_sample
+      is.null(exclude_sample) | !(`Exclude Sample` %in% exclude_sample)
     } else {
       TRUE
     }) |>

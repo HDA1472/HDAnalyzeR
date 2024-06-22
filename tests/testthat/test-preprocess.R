@@ -68,3 +68,60 @@ test_that("clean_data handles all parameters together", {
     dplyr::select(DAid, Assay, NPX)
   expect_equal(result, expected)
 })
+
+
+test_that("The NA columns are removed", {
+  random_indices <- sample(1:nrow(example_metadata), 20)
+  test_data <- example_data
+  test_data$DAid[random_indices] <- NA
+  suppressWarnings({
+    result <- clean_data(test_data, keep_cols = c("DAid", "NPX"))
+  })
+  expected <- test_data |>
+    dplyr::select(DAid, NPX) |>
+    dplyr::filter(!is.na(DAid))
+  expect_equal(result, expected)
+})
+
+
+# Test clean_metadata ----------------------------------------------------------
+test_that("clean_metadata selects specified columns", {
+  result <- clean_metadata(example_metadata, keep_cols = c("DAid", "Age"))
+  expected <- example_metadata |>
+    dplyr::select(DAid, Age)
+  expect_equal(result, expected)
+})
+
+
+test_that("clean_metadata excludes specified samples", {
+  seed = 543
+  test_metadata <- example_metadata |>
+    dplyr::mutate(`Exclude Sample` = ifelse(runif(dplyr::n()) <= 0.05, "yes", "no"))
+  result <- clean_metadata(test_metadata, keep_cols = c("DAid", "Age"), exclude_sample = "yes")
+  expected <- test_metadata |>
+    dplyr::filter(!(`Exclude Sample` %in% "yes")) |>
+    dplyr::select(DAid, Age)
+  expect_equal(result, expected)
+})
+
+
+test_that("The NA columns are removed", {
+  random_indices <- sample(1:nrow(example_metadata), 20)
+  test_metadata <- example_metadata
+  test_metadata$DAid[random_indices] <- NA
+  suppressWarnings({
+    result <- clean_metadata(test_metadata, keep_cols = c("DAid", "Age"))
+  })
+  expected <- test_metadata |>
+    dplyr::select(DAid, Age) |>
+    dplyr::filter(!is.na(DAid))
+  expect_equal(result, expected)
+})
+
+
+test_that("clean_metadata handles non-existent columns gracefully", {
+  result <- clean_metadata(example_metadata, keep_cols = c("DAid", "Age", "BMI", "Height"))
+  expected <- example_metadata |>
+    dplyr::select(any_of(c("DAid", "Age", "BMI")))
+  expect_equal(result, expected)
+})

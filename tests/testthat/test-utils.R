@@ -32,6 +32,7 @@ test_that("Warning on failed directory creation", {
   unlink(dir_name, recursive = TRUE)
 })
 
+
 # Test save_df -----------------------------------------------------------------
 test_that("save_df creates directory and saves CSV", {
   df <- data.frame(x = 1:10, y = rnorm(10))
@@ -107,6 +108,7 @@ test_that("save_df handles invalid file type", {
   expect_error(save_df(df, dir_name, file_name, invalid_file_type), expected_error_message)
   expect_false(dir.exists(dir_name))
 })
+
 
 # Test import_df ---------------------------------------------------------------
 test_that("import_df handles CSV files", {
@@ -209,3 +211,6 @@ test_that("import_df handles XLSX files", {
 
   unlink(file_name, recursive = TRUE)
 })
+
+
+# Test remove_na ---------------------------------------------------------------
