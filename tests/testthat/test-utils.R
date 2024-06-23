@@ -245,3 +245,15 @@ test_that("remove_na removes NA columns", {
     dplyr::filter(!is.na(Column1) & !is.na(Column2))
   expect_equal(result, expected)
 })
+
+
+# Test calc_na_percentages -----------------------------------------------------
+test_that("calc_na_percentage calculates NA percentages", {
+  set.seed(123)
+  result <- calc_na_percentage(example_metadata)
+  expected <- tibble::tibble(
+    column = c("Grade"),
+    na_percentage = c(91.5)
+  )
+  expect_equal(result, expected)
+})
