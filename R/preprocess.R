@@ -83,7 +83,7 @@ clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age",
 #' Generate and store wide and join dataframes
 #'
 #' The function generates wide and join dataframes from the long data and metadata.
-#' It stores them in the data/processed/data_metadata directory.in rda format.
+#' It stores them in the data/processed/data_metadata directory in RDA format.
 #'
 #' @param long_data (tibble). The long data
 #' @param metadata (tibble). The metadata
