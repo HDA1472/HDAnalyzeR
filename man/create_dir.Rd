@@ -7,9 +7,9 @@
 create_dir(dir_name, date = FALSE)
 }
 \arguments{
-\item{dir_name}{The name of the directory to create}
+\item{dir_name}{(string). The name of the directory to create}
 
-\item{date}{Logical. If TRUE, the current date and time will be appended to the directory name}
+\item{date}{(logical). If TRUE, the current date and time will be appended to the directory name}
 }
 \description{
 The function creates a directory with the specified name. If the directory already exists, a message is printed.

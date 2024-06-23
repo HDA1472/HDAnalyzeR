@@ -32,6 +32,7 @@ test_that("Warning on failed directory creation", {
   unlink(dir_name, recursive = TRUE)
 })
 
+
 # Test save_df -----------------------------------------------------------------
 test_that("save_df creates directory and saves CSV", {
   df <- data.frame(x = 1:10, y = rnorm(10))
@@ -107,6 +108,7 @@ test_that("save_df handles invalid file type", {
   expect_error(save_df(df, dir_name, file_name, invalid_file_type), expected_error_message)
   expect_false(dir.exists(dir_name))
 })
+
 
 # Test import_df ---------------------------------------------------------------
 test_that("import_df handles CSV files", {
@@ -208,4 +210,38 @@ test_that("import_df handles XLSX files", {
   }
 
   unlink(file_name, recursive = TRUE)
+})
+
+
+# Test remove_na ---------------------------------------------------------------
+test_that("remove_na removes NA column", {
+  set.seed(123)
+  test_df <- data.frame(
+    Column1 = sample(c(1:15, rep(NA, 10)), 20, replace = TRUE),
+    Column2 = sample(c(16:30, rep(NA, 10)), 20, replace = TRUE),
+    Column3 = sample(31:50, 20, replace = TRUE)
+  )
+  suppressWarnings({
+    result <- remove_na(test_df, "Column1")
+  })
+  expected <- test_df |>
+    dplyr::filter(!is.na(Column1)) |>
+    dplyr::slice(seq_len(dplyr::n()))
+  expect_equal(result, expected)
+})
+
+
+test_that("remove_na removes NA columns", {
+  set.seed(123)
+  test_df <- data.frame(
+    Column1 = sample(c(1:15, rep(NA, 10)), 20, replace = TRUE),
+    Column2 = sample(c(16:30, rep(NA, 10)), 20, replace = TRUE),
+    Column3 = sample(31:50, 20, replace = TRUE)
+  )
+  suppressWarnings({
+    result <- remove_na(test_df, c("Column1", "Column2"))
+  })
+  expected <- test_df |>
+    dplyr::filter(!is.na(Column1) & !is.na(Column2))
+  expect_equal(result, expected)
 })
