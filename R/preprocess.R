@@ -19,6 +19,7 @@ utils::globalVariables(c("PlateID", "Cohort", "Assay_Warning", "QC_Warning", "Ex
 clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NULL,
                        exclude_plates = NULL, filter_assay = NULL, filter_qc = NULL) {
 
+
   df_out <- df_in |>
     dplyr::filter(if ("PlateID" %in% colnames(df_in)) {
                     !(PlateID %in% exclude_plates)
@@ -36,6 +37,7 @@ clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NU
                     TRUE
                   }) |>
     dplyr::filter(if ("QC_Warning" %in% colnames(df_in)) {
+
                     is.null(filter_qc) | QC_Warning %in% filter_qc
                   } else {
                     TRUE
