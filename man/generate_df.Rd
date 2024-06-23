@@ -16,7 +16,7 @@ list(wide_data, join_data) (list of tibbles). The wide and join dataframes
 }
 \description{
 The function generates wide and join dataframes from the long data and metadata.
-It stores them in the data/processed/data_metadata directory.in rda format.
+It stores them in the data/processed/data_metadata directory in RDA format.
 }
 \examples{
 clean_data <- clean_data(example_data, keep_cols = c("DAid", "Assay", "NPX"))

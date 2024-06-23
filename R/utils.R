@@ -184,7 +184,7 @@ calc_na_percentage <- function(df) {
     dplyr::summarise_all(~ round(sum(is.na(.) / dplyr::n() * 100), 1)) |>
     tidyr::gather(key = "column", value = "na_percentage") |>
     dplyr::filter(na_percentage > 0) |>  # Filter out columns with no NAs
-    dplyr::arrange(desc(na_percentage))
+    dplyr::arrange(dplyr::desc(na_percentage))
 
   return(na_percentage)
 }
