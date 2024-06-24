@@ -15,12 +15,12 @@ Imports:
     dplyr,
     readxl,
     recipes,
-    tibble,
     tidyr,
     utils
 Suggests: 
     testthat (>= 3.0.0),
-    writexl
+    writexl,
+    tibble
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
