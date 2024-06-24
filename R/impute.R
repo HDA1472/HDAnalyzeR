@@ -89,3 +89,56 @@ impute_knn <- function(wide_data, k = 5, exclude_cols = c("DAid", "Disease"),
 
   return(imputed_data)
 }
+
+
+#' Impute via missForest
+#'
+#' This function imputes missing values in a dataset using the `missForest` method.
+#' It allows the user to exclude certain columns from imputation and can also display the
+#' percentage of missing values in each column before imputation.
+#'
+#' @param wide_data (tibble). The input dataframe
+#' @param maxiter (integer). The maximum number of iterations
+#' @param ntree (integer). The number of trees to grow
+#' @param parallelize (string). The type of parallelization to use. Options are "no", "variables", or "forests"
+#' @param ncores (integer). The number of cores to use for parallelization
+#' @param exclude_cols (string or vector of strings). The columns to exclude from imputation
+#' @param show_na_percentage (TRUE or NULL). If TRUE, the percentage of missing values in each column is displayed
+#'
+#' @return A data frame with imputed values.
+#' @export
+#'
+#' @examples
+#' test_data <- example_data |>
+#'   dplyr::select(DAid, Assay, NPX) |>
+#'   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
+#'   dplyr::slice_head(n = 100)
+#' imputed_data <- impute_missForest(test_data, maxiter = 1, ntree = 50, parallelize = "no")
+impute_missForest <- function(wide_data, maxiter = 10, ntree = 100, parallelize = "variables",
+                              ncores = 4, exclude_cols = c("DAid", "Disease"),
+                              show_na_percentage = TRUE) {
+
+  data_in <- wide_data |>
+    dplyr::select(-dplyr::any_of(exclude_cols))
+
+  if (show_na_percentage) {
+    na_percentages <- calc_na_percentage(data_in)
+    print(na_percentages)
+  }
+  if (parallelize == "no") {
+    ncores <- 1
+  } else {
+    doParallel::registerDoParallel(cores = ncores)
+  }
+  set.seed(123)
+  data_in <- as.data.frame(data_in)  # Convert to data frame for missForest
+  imputed_data <- missForest::missForest(data_in, maxiter = maxiter, ntree = ntree,
+                                         verbose = TRUE, parallelize = parallelize)$ximp
+  imputed_data <- tibble::as_tibble(imputed_data)
+
+  cols <- wide_data |>
+    dplyr::select(dplyr::any_of(exclude_cols))
+  imputed_data <- dplyr::bind_cols(cols, imputed_data)
+
+  return(imputed_data)
+}

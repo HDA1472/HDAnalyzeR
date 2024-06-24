@@ -12,15 +12,17 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Imports: 
+    doParallel,
     dplyr,
+    missForest,
     readxl,
     recipes,
+    tibble,
     tidyr,
     utils
 Suggests: 
     testthat (>= 3.0.0),
-    writexl,
-    tibble
+    writexl
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
