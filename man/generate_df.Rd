@@ -4,12 +4,14 @@
 \alias{generate_df}
 \title{Generate and store wide and join dataframes}
 \usage{
-generate_df(long_data, metadata)
+generate_df(long_data, metadata, save = TRUE)
 }
 \arguments{
 \item{long_data}{(tibble). The long data}
 
 \item{metadata}{(tibble). The metadata}
+
+\item{save}{(TRUE or NULL). If TRUE, the dataframes are saved}
 }
 \value{
 list(wide_data, join_data) (list of tibbles). The wide and join dataframes

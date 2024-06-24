@@ -87,6 +87,7 @@ clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age",
 #'
 #' @param long_data (tibble). The long data
 #' @param metadata (tibble). The metadata
+#' @param save (TRUE or NULL). If TRUE, the dataframes are saved
 #'
 #' @return list(wide_data, join_data) (list of tibbles). The wide and join dataframes
 #' @export
@@ -99,18 +100,20 @@ clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age",
 #' join_data <- result_df[[2]]
 #' # Clean up the created directory
 #' unlink("data", recursive = TRUE)
-generate_df <- function(long_data, metadata) {
+generate_df <- function(long_data, metadata, save = TRUE) {
 
-  wide_data <- tidyr::pivot_wider(long_data, names_from = "Assay", values_from = "NPX")
+  wide_data <- long_data |>
+    tidyr::pivot_wider(names_from = "Assay", values_from = "NPX")
 
   join_data <- wide_data |>
     dplyr::left_join(metadata, by = "DAid")
 
-  create_dir("data/processed/data_metadata", date = TRUE)
-  save_df(long_data, "data/processed/data_metadata", "long_data", "rda")
-  save_df(wide_data, "data/processed/data_metadata", "wide_data", "rda")
-  save_df(metadata, "data/processed/data_metadata", "metadata", "rda")
-  save_df(join_data, "data/processed/data_metadata", "join_data", "rda")
-
+  if (save) {
+    create_dir("data/processed/data_metadata", date = TRUE)
+    save_df(long_data, "data/processed/data_metadata", "long_data", "rda")
+    save_df(wide_data, "data/processed/data_metadata", "wide_data", "rda")
+    save_df(metadata, "data/processed/data_metadata", "metadata", "rda")
+    save_df(join_data, "data/processed/data_metadata", "join_data", "rda")
+  }
   return(list(wide_data, join_data))
 }
