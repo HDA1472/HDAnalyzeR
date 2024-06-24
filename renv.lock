@@ -566,6 +566,35 @@
       ],
       "Hash": "bd269daa182b205fa471c89ee9dcc8df"
     },
+    "doParallel": {
+      "Package": "doParallel",
+      "Version": "1.0.17",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "foreach",
+        "iterators",
+        "parallel",
+        "utils"
+      ],
+      "Hash": "451e5edf411987991ab6a5410c45011f"
+    },
+    "doRNG": {
+      "Package": "doRNG",
+      "Version": "1.8.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "foreach",
+        "iterators",
+        "rngtools",
+        "stats",
+        "utils"
+      ],
+      "Hash": "e207fea8a4991e49c7244001746e3232"
+    },
     "downlit": {
       "Package": "downlit",
       "Version": "0.4.4",
@@ -1067,6 +1096,18 @@
       ],
       "Hash": "8954069286b4b2b0d023d1b288dce978"
     },
+    "itertools": {
+      "Package": "itertools",
+      "Version": "0.1-3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "iterators",
+        "parallel"
+      ],
+      "Hash": "9d0ef8912bc1d66357977f5b8e4dc5ed"
+    },
     "jquerylib": {
       "Package": "jquerylib",
       "Version": "0.1.4",
@@ -1267,6 +1308,20 @@
         "utils"
       ],
       "Hash": "fec5f52652d60615fdb3957b3d74324a"
+    },
+    "missForest": {
+      "Package": "missForest",
+      "Version": "1.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "doRNG",
+        "foreach",
+        "iterators",
+        "itertools",
+        "randomForest"
+      ],
+      "Hash": "ae113979be43fecc217c20aaefbbb110"
     },
     "modeldata": {
       "Package": "modeldata",
@@ -1648,6 +1703,17 @@
       ],
       "Hash": "e3087db406e079a8a2fd87f413918ed3"
     },
+    "randomForest": {
+      "Package": "randomForest",
+      "Version": "4.7-1.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "stats"
+      ],
+      "Hash": "b52825075358b1ebd159e262bf40649d"
+    },
     "rappdirs": {
       "Package": "rappdirs",
       "Version": "0.3.3",
@@ -1825,6 +1891,21 @@
         "yaml"
       ],
       "Hash": "27f9502e1cdbfa195f94e03b0f517484"
+    },
+    "rngtools": {
+      "Package": "rngtools",
+      "Version": "1.5.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "digest",
+        "methods",
+        "parallel",
+        "stats",
+        "utils"
+      ],
+      "Hash": "367a915f939520767660671efa0e32bd"
     },
     "roxygen2": {
       "Package": "roxygen2",
