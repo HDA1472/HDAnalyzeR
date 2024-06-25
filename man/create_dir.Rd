@@ -4,12 +4,12 @@
 \alias{create_dir}
 \title{Create directory w/o system date}
 \usage{
-create_dir(dir_name, date = FALSE)
+create_dir(dir_name, date = F)
 }
 \arguments{
 \item{dir_name}{(string). The name of the directory to create}
 
-\item{date}{(logical). If TRUE, the current date and time will be appended to the directory name}
+\item{date}{(logical). If T, the current date and time will be appended to the directory name}
 }
 \description{
 The function creates a directory with the specified name. If the directory already exists, a message is printed.

@@ -1,4 +1,4 @@
-utils::globalVariables(c("PlateID", "Cohort", "Assay_Warning", "QC_Warning", "Exclude Sample"))
+utils::globalVariables(c("PlateID", "Cohort", "Assay_Warning", "Exclude Sample"))
 #' Replace values with NA
 #'
 #' The function replaces the specified values with NA in the input vector.
@@ -30,19 +30,18 @@ replace_with_na <- function(df_in) {
 #' @param keep_cols (string or vector of strings). The columns to keep in the output dataframe
 #' @param cohort (string or vector of strings). The cohort to keep
 #' @param exclude_plates (string or vector of strings). The plates to exclude
-#' @param filter_assay (TRUE or NULL). If TRUE only rows with Assay_Warning == "PASS" are kept, else NULL
-#' @param filter_qc (TRUE or NULL). If TRUE only rows with QC_Warning == "PASS" are kept, else NULL
-#' @param apply_replacement (TRUE or NULL). If TRUE, the specified values are replaced with NA
-#' @param remove_na_cols (string or vector of strings or NULL). The columns to check for NAs and remove respective rows
+#' @param filter_assay (logical). If T only rows with Assay_Warning == "PASS" are kept, else F
+#' @param apply_replacement (logical). If T, the specified values are replaced with NA
+#' @param remove_na_cols (string or vector of strings or F). The columns to check for NAs and remove respective rows
 #'
 #' @return df_out (tibble). The cleaned dataframe
 #' @export
 #'
 #' @examples
 #' df <- clean_data(example_data, exclude_plates = c("Plate1", "Plate2"), filter_assay = TRUE)
-clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NULL,
-                       exclude_plates = NULL, filter_assay = NULL, filter_qc = NULL,
-                       apply_replacement = NULL, remove_na_cols = c("DAid", "NPX")) {
+clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = F,
+                       exclude_plates = F, filter_assay = F, apply_replacement = F,
+                       remove_na_cols = c("DAid", "NPX")) {
 
   df_out <- df_in |>
     dplyr::filter(if ("PlateID" %in% colnames(df_in)) {
@@ -51,28 +50,22 @@ clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NU
                     TRUE
                   }) |>
     dplyr::filter(if ("Cohort" %in% colnames(df_in)) {
-                    is.null(cohort) | Cohort %in% cohort
+                    isFALSE(cohort) | Cohort %in% cohort
                   } else {
                     TRUE
                   }) |>
     dplyr::filter(if ("Assay_Warning" %in% colnames(df_in)) {
-                    is.null(filter_assay) | Assay_Warning %in% filter_assay
-                  } else {
-                    TRUE
-                  }) |>
-    dplyr::filter(if ("QC_Warning" %in% colnames(df_in)) {
-
-                    is.null(filter_qc) | QC_Warning %in% filter_qc
+                    isFALSE(filter_assay) | Assay_Warning %in% filter_assay
                   } else {
                     TRUE
                   }) |>
     dplyr::select(dplyr::any_of(keep_cols))
 
-    if (!is.null(apply_replacement) && apply_replacement) {
+    if (!isFALSE(apply_replacement)) {
       df_out <- replace_with_na(df_out)
     }
 
-    if (!is.null(remove_na_cols)) {
+    if (!isFALSE(remove_na_cols)) {
       df_out <- remove_na(df_out, remove_na_cols)
     }
 
@@ -88,8 +81,8 @@ clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NU
 #' @param df_in (tibble). The input metadata
 #' @param keep_cols (string or vector of strings). The columns to keep in the output metadata
 #' @param exclude_sample (string). The value in the "Exclude Sample" column to exclude
-#' @param apply_replacement (TRUE or NULL). If TRUE, the specified values are replaced with NA
-#' @param remove_na_cols (string or vector of strings or NULL). The columns to check for NAs and remove respective rows
+#' @param apply_replacement (logical). If TRUE, the specified values are replaced with NA
+#' @param remove_na_cols (string or vector of strings or F). The columns to check for NAs and remove respective rows
 #'
 #' @return df_out (tibble). The cleaned metadata
 #' @export
@@ -97,22 +90,22 @@ clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NU
 #' @examples
 #' df <- clean_metadata(example_metadata, exclude_sample = "yes")
 clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
-                           exclude_sample = NULL, apply_replacement = NULL,
+                           exclude_sample = F, apply_replacement = F,
                            remove_na_cols = c("DAid", "Disease")) {
 
   df_out <- df_in |>
     dplyr::filter(if ("Exclude Sample" %in% colnames(df_in)) {
-      is.null(exclude_sample) | !(`Exclude Sample` %in% exclude_sample)
+      isFALSE(exclude_sample) | !(`Exclude Sample` %in% exclude_sample)
     } else {
       TRUE
     }) |>
     dplyr::select(dplyr::any_of(keep_cols))
 
-  if (!is.null(apply_replacement) && apply_replacement) {
+  if (!isFALSE(remove_na_cols)) {
     df_out <- replace_with_na(df_out)
   }
 
-  if (!is.null(remove_na_cols)) {
+  if (!isFALSE(remove_na_cols)) {
     df_out <- remove_na(df_out, remove_na_cols)
   }
 
@@ -140,7 +133,7 @@ clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age",
 #' join_data <- result_df[[2]]
 #' # Clean up the created directory
 #' unlink("data", recursive = TRUE)
-generate_df <- function(long_data, metadata, save = TRUE) {
+generate_df <- function(long_data, metadata, save = T) {
 
   wide_data <- long_data |>
     tidyr::pivot_wider(names_from = "Assay", values_from = "NPX")
@@ -148,8 +141,8 @@ generate_df <- function(long_data, metadata, save = TRUE) {
   join_data <- wide_data |>
     dplyr::left_join(metadata, by = "DAid")
 
-  if (save) {
-    create_dir("data/processed/data_metadata", date = TRUE)
+  if (isTRUE(save)) {
+    create_dir("data/processed/data_metadata", date = T)
     save_df(long_data, "data/processed/data_metadata", "long_data", "rda")
     save_df(wide_data, "data/processed/data_metadata", "wide_data", "rda")
     save_df(metadata, "data/processed/data_metadata", "metadata", "rda")

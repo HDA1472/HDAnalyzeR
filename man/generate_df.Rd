@@ -4,7 +4,7 @@
 \alias{generate_df}
 \title{Generate and store wide and join dataframes}
 \usage{
-generate_df(long_data, metadata, save = TRUE)
+generate_df(long_data, metadata, save = T)
 }
 \arguments{
 \item{long_data}{(tibble). The long data}

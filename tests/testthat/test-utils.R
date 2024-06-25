@@ -8,7 +8,7 @@ test_that("Directory creation without date", {
 
 test_that("Directory creation with date", {
   dir_prefix <- "test_directory_with_date"
-  create_dir(dir_prefix, date = TRUE)
+  create_dir(dir_prefix, date = T)
 
   # List all directories that match the prefix
   created_dirs <- list.files(pattern = paste0("^", dir_prefix, "_\\d{4}_\\d{2}_\\d{2}_\\d{6}$"))

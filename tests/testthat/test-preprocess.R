@@ -49,15 +49,6 @@ test_that("clean_data filters by Assay_Warning", {
 })
 
 
-test_that("clean_data filters by QC_Warning", {
-  result <- clean_data(example_data, filter_qc = c("MANUAL_WARN", "PASS"))
-  expected <- example_data |>
-    dplyr::filter(QC_Warning %in% c("MANUAL_WARN", "PASS")) |>
-    dplyr::select(DAid, Assay, NPX)
-  expect_equal(result, expected)
-})
-
-
 test_that("clean_data handles non-existent columns gracefully", {
   # Create data only with Assay and NPX columns
   partial_data <- example_data |>
@@ -74,9 +65,9 @@ test_that("clean_data handles all parameters together", {
   example_data_cohort <- example_data |>
     dplyr::mutate(Cohort = rep(c("A", "B"), length.out = dplyr::n()))
   result <- clean_data(example_data_cohort, cohort = "A", exclude_plates = "P2",
-                       filter_assay = "PASS", filter_qc = c("MANUAL_WARN", "PASS"))
+                       filter_assay = "PASS")
   expected <- example_data_cohort |>
-    dplyr::filter(Cohort %in% "A" & !(PlateID %in% "P2") & Assay_Warning == "PASS" & QC_Warning %in% c("MANUAL_WARN", "PASS")) |>
+    dplyr::filter(Cohort %in% "A" & !(PlateID %in% "P2") & Assay_Warning == "PASS") |>
     dplyr::select(DAid, Assay, NPX)
   expect_equal(result, expected)
 })
@@ -103,8 +94,21 @@ test_that("The specified values are replaced with NAs", {
   test_data1$DAid[random_indices] <- 0
   test_data2$DAid[random_indices] <- NA
   result <- clean_data(test_data1, keep_cols = c("DAid", "NPX"),
-                       apply_replacement = TRUE, remove_na_cols = NULL)
+                       apply_replacement = T, remove_na_cols = F)
   expected <- test_data2 |>
+    dplyr::select(DAid, NPX)
+  expect_equal(result, expected)
+})
+
+
+test_that("The specified values are not replaced with NAs", {
+  random_indices <- sample(1:nrow(example_metadata), 20)
+  test_data1 <- example_data
+  test_data2 <- example_data
+  test_data1$DAid[random_indices] <- 0
+  result <- clean_data(test_data1, keep_cols = c("DAid", "NPX"),
+                       apply_replacement = F, remove_na_cols = F)
+  expected <- test_data1 |>
     dplyr::select(DAid, NPX)
   expect_equal(result, expected)
 })
@@ -154,10 +158,10 @@ test_that("clean_metadata handles non-existent columns gracefully", {
 
 
 test_that("The specified values are replaced with NAs", {
-  result <- clean_data(example_metadata, keep_cols = c("DAid", "GROUP"),
-                       apply_replacement = TRUE, remove_na_cols = NULL)
+  result <- clean_data(example_metadata, keep_cols = c("DAid", "Disease"),
+                       apply_replacement = T, remove_na_cols = F)
   expected <- example_metadata |>
-    dplyr::select(DAid, GROUP)
+    dplyr::select(DAid, Disease)
   expect_equal(result, expected)
 })
 

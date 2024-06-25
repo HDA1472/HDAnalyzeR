@@ -18,7 +18,7 @@ impute_knn(
 
 \item{exclude_cols}{(string or vector of strings). The columns to exclude from imputation}
 
-\item{show_na_percentage}{(TRUE or NULL). If TRUE, the percentage of missing values in each column is displayed}
+\item{show_na_percentage}{(logical). If T, the percentage of missing values in each column is displayed}
 }
 \value{
 imputed_data (tibble). The dataframe with missing values imputed

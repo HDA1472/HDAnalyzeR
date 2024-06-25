@@ -7,11 +7,10 @@
 clean_data(
   df_in,
   keep_cols = c("DAid", "Assay", "NPX"),
-  cohort = NULL,
-  exclude_plates = NULL,
-  filter_assay = NULL,
-  filter_qc = NULL,
-  apply_replacement = NULL,
+  cohort = F,
+  exclude_plates = F,
+  filter_assay = F,
+  apply_replacement = F,
   remove_na_cols = c("DAid", "NPX")
 )
 }
@@ -24,13 +23,11 @@ clean_data(
 
 \item{exclude_plates}{(string or vector of strings). The plates to exclude}
 
-\item{filter_assay}{(TRUE or NULL). If TRUE only rows with Assay_Warning == "PASS" are kept, else NULL}
+\item{filter_assay}{(logical). If T only rows with Assay_Warning == "PASS" are kept, else F}
 
-\item{filter_qc}{(TRUE or NULL). If TRUE only rows with QC_Warning == "PASS" are kept, else NULL}
+\item{apply_replacement}{(logical). If T, the specified values are replaced with NA}
 
-\item{apply_replacement}{(TRUE or NULL). If TRUE, the specified values are replaced with NA}
-
-\item{remove_na_cols}{(string or vector of strings or NULL). The columns to check for NAs and remove respective rows}
+\item{remove_na_cols}{(string or vector of strings or F). The columns to check for NAs and remove respective rows}
 }
 \value{
 df_out (tibble). The cleaned dataframe
