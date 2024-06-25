@@ -7,7 +7,9 @@
 clean_metadata(
   df_in,
   keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
-  exclude_sample = NULL
+  exclude_sample = NULL,
+  apply_replacement = NULL,
+  remove_na_cols = c("DAid", "Disease")
 )
 }
 \arguments{
@@ -16,6 +18,10 @@ clean_metadata(
 \item{keep_cols}{(string or vector of strings). The columns to keep in the output metadata}
 
 \item{exclude_sample}{(string). The value in the "Exclude Sample" column to exclude}
+
+\item{apply_replacement}{(TRUE or NULL). If TRUE, the specified values are replaced with NA}
+
+\item{remove_na_cols}{(string or vector of strings or NULL). The columns to check for NAs and remove respective rows}
 }
 \value{
 df_out (tibble). The cleaned metadata

@@ -1,4 +1,26 @@
 utils::globalVariables(c("PlateID", "Cohort", "Assay_Warning", "QC_Warning", "Exclude Sample"))
+#' Replace values with NA
+#'
+#' The function replaces the specified values with NA in the input vector.
+#'
+#' @param df_in (tibble). The input dataframe
+#'
+#' @return df_out (tibble). The dataframe with specified values replaced with NA
+#' @export
+#'
+#' @examples
+#' df <- replace_with_na(example_metadata)
+replace_with_na <- function(df_in) {
+  df_out <- df_in |>
+    dplyr::mutate(across(everything(), ~ dplyr::case_when(
+      . %in% c(0, "0", "", "Unknown", "unknown", "none", NA, "na") ~ NA,
+      TRUE ~ .
+    )))
+
+  return(df_out)
+}
+
+
 #' Clean data
 #'
 #' The function cleans the data by filtering out rows based on the specified criteria.
@@ -10,6 +32,8 @@ utils::globalVariables(c("PlateID", "Cohort", "Assay_Warning", "QC_Warning", "Ex
 #' @param exclude_plates (string or vector of strings). The plates to exclude
 #' @param filter_assay (TRUE or NULL). If TRUE only rows with Assay_Warning == "PASS" are kept, else NULL
 #' @param filter_qc (TRUE or NULL). If TRUE only rows with QC_Warning == "PASS" are kept, else NULL
+#' @param apply_replacement (TRUE or NULL). If TRUE, the specified values are replaced with NA
+#' @param remove_na_cols (string or vector of strings or NULL). The columns to check for NAs and remove respective rows
 #'
 #' @return df_out (tibble). The cleaned dataframe
 #' @export
@@ -17,8 +41,8 @@ utils::globalVariables(c("PlateID", "Cohort", "Assay_Warning", "QC_Warning", "Ex
 #' @examples
 #' df <- clean_data(example_data, exclude_plates = c("Plate1", "Plate2"), filter_assay = TRUE)
 clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NULL,
-                       exclude_plates = NULL, filter_assay = NULL, filter_qc = NULL) {
-
+                       exclude_plates = NULL, filter_assay = NULL, filter_qc = NULL,
+                       apply_replacement = NULL, remove_na_cols = c("DAid", "NPX")) {
 
   df_out <- df_in |>
     dplyr::filter(if ("PlateID" %in% colnames(df_in)) {
@@ -44,7 +68,13 @@ clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NU
                   }) |>
     dplyr::select(dplyr::any_of(keep_cols))
 
-    df_out <- remove_na(df_out, c("DAid", "NPX"))
+    if (!is.null(apply_replacement) && apply_replacement) {
+      df_out <- replace_with_na(df_out)
+    }
+
+    if (!is.null(remove_na_cols)) {
+      df_out <- remove_na(df_out, remove_na_cols)
+    }
 
     return(df_out)
 }
@@ -58,13 +88,17 @@ clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NU
 #' @param df_in (tibble). The input metadata
 #' @param keep_cols (string or vector of strings). The columns to keep in the output metadata
 #' @param exclude_sample (string). The value in the "Exclude Sample" column to exclude
+#' @param apply_replacement (TRUE or NULL). If TRUE, the specified values are replaced with NA
+#' @param remove_na_cols (string or vector of strings or NULL). The columns to check for NAs and remove respective rows
 #'
 #' @return df_out (tibble). The cleaned metadata
 #' @export
 #'
 #' @examples
 #' df <- clean_metadata(example_metadata, exclude_sample = "yes")
-clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"), exclude_sample = NULL) {
+clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
+                           exclude_sample = NULL, apply_replacement = NULL,
+                           remove_na_cols = c("DAid", "Disease")) {
 
   df_out <- df_in |>
     dplyr::filter(if ("Exclude Sample" %in% colnames(df_in)) {
@@ -74,7 +108,13 @@ clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age",
     }) |>
     dplyr::select(dplyr::any_of(keep_cols))
 
-  df_out <- remove_na(df_out, c("DAid", "Disease"))
+  if (!is.null(apply_replacement) && apply_replacement) {
+    df_out <- replace_with_na(df_out)
+  }
+
+  if (!is.null(remove_na_cols)) {
+    df_out <- remove_na(df_out, remove_na_cols)
+  }
 
   return(df_out)
 }

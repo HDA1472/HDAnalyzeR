@@ -10,7 +10,9 @@ clean_data(
   cohort = NULL,
   exclude_plates = NULL,
   filter_assay = NULL,
-  filter_qc = NULL
+  filter_qc = NULL,
+  apply_replacement = NULL,
+  remove_na_cols = c("DAid", "NPX")
 )
 }
 \arguments{
@@ -25,6 +27,10 @@ clean_data(
 \item{filter_assay}{(TRUE or NULL). If TRUE only rows with Assay_Warning == "PASS" are kept, else NULL}
 
 \item{filter_qc}{(TRUE or NULL). If TRUE only rows with QC_Warning == "PASS" are kept, else NULL}
+
+\item{apply_replacement}{(TRUE or NULL). If TRUE, the specified values are replaced with NA}
+
+\item{remove_na_cols}{(string or vector of strings or NULL). The columns to check for NAs and remove respective rows}
 }
 \value{
 df_out (tibble). The cleaned dataframe
