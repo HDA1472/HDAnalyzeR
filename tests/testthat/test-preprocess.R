@@ -84,6 +84,20 @@ test_that("The NA columns are removed", {
 })
 
 
+test_that("The specified values are replaced with NAs", {
+  random_indices <- sample(1:nrow(example_metadata), 20)
+  test_data1 <- example_data
+  test_data2 <- example_data
+  test_data1$DAid[random_indices] <- 0
+  test_data2$DAid[random_indices] <- NA
+  result <- clean_data(test_data1, keep_cols = c("DAid", "NPX"),
+                       apply_replacement = TRUE, remove_na_cols = NULL)
+  expected <- test_data2 |>
+    dplyr::select(DAid, NPX)
+  expect_equal(result, expected)
+})
+
+
 # Test clean_metadata ----------------------------------------------------------
 test_that("clean_metadata selects specified columns", {
   result <- clean_metadata(example_metadata, keep_cols = c("DAid", "Age"))
@@ -123,6 +137,15 @@ test_that("clean_metadata handles non-existent columns gracefully", {
   result <- clean_metadata(example_metadata, keep_cols = c("DAid", "Age", "BMI", "Height"))
   expected <- example_metadata |>
     dplyr::select(any_of(c("DAid", "Age", "BMI")))
+  expect_equal(result, expected)
+})
+
+
+test_that("The specified values are replaced with NAs", {
+  result <- clean_data(example_metadata, keep_cols = c("DAid", "GROUP"),
+                       apply_replacement = TRUE, remove_na_cols = NULL)
+  expected <- example_metadata |>
+    dplyr::select(DAid, GROUP)
   expect_equal(result, expected)
 })
 
