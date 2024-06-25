@@ -11,7 +11,7 @@ impute_missForest(
   parallelize = "variables",
   ncores = 4,
   exclude_cols = c("DAid", "Disease"),
-  show_na_percentage = TRUE
+  show_na_percentage = T
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ impute_missForest(
 
 \item{exclude_cols}{(string or vector of strings). The columns to exclude from imputation}
 
-\item{show_na_percentage}{(TRUE or NULL). If TRUE, the percentage of missing values in each column is displayed}
+\item{show_na_percentage}{(logical). If T, the percentage of missing values in each column is displayed}
 }
 \value{
 A data frame with imputed values.

@@ -16,4 +16,5 @@ example_metadata <- example_df |>
       GROUP %in% c("BRC", "CVX", "ENDC", "OVC", "PRC") ~ "Gender_specific",
       TRUE ~ "UCAN"
     )
-  )
+  ) |>
+  dplyr::rename(Disease = GROUP)

@@ -3,7 +3,7 @@
 #' The function creates a directory with the specified name. If the directory already exists, a message is printed.
 #'
 #' @param dir_name (string). The name of the directory to create
-#' @param date (logical). If TRUE, the current date and time will be appended to the directory name
+#' @param date (logical). If T, the current date and time will be appended to the directory name
 #'
 #' @return NULL
 #' @export
@@ -13,7 +13,7 @@
 #' create_dir("my_directory/inner_dir", date = TRUE)
 #' # Clean up the created directory
 #' unlink("my_directory", recursive = TRUE)
-create_dir <- function(dir_name, date = FALSE) {
+create_dir <- function(dir_name, date = F) {
 
   if (date) {
     current_date <- format(Sys.time(), "%Y_%m_%d_%H%M%S")  # Get the current date and time
@@ -106,7 +106,7 @@ import_df <- function(file_path) {
                txt = utils::read.table(file_path, header = TRUE, stringsAsFactors = FALSE),
                rda = { load(file_path); get(ls()[1]) },
                rds = readRDS(file_path),
-               xlsx = readxl::read_excel(file_path),
+               xlsx = readxl::read_excel(file_path, guess_max=10000000),
                stop("Unsupported file type: ", file_extension))
 
   return(df)
