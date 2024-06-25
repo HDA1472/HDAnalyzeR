@@ -163,28 +163,3 @@ remove_na <- function(df_in, cols) {
 
   return(df_out)
 }
-
-
-#' Calculate the percentage of NAs in each column
-#'
-#' The function calculates the percentage of NAs in each column of the input dataframe.
-#' It filters out the columns with 0% missing data and returns the rest in descending order.
-#'
-#' @param df (tibble). The input dataframe
-#'
-#' @return na_percentage (tibble). A tibble with the column names and the percentage of NAs in each column
-#' @export
-#'
-#' @examples
-#' na_percentages <- calc_na_percentage(example_metadata)
-#' print(na_percentages)
-calc_na_percentage <- function(df) {
-
-  na_percentage <- df |>
-    dplyr::summarise_all(~ round(sum(is.na(.) / dplyr::n() * 100), 1)) |>
-    tidyr::gather(key = "column", value = "na_percentage") |>
-    dplyr::filter(na_percentage > 0) |>  # Filter out columns with no NAs
-    dplyr::arrange(dplyr::desc(na_percentage))
-
-  return(na_percentage)
-}
