@@ -1,4 +1,4 @@
-utils::globalVariables(c("DAid"))
+utils::globalVariables(c("DAid", "Assay", "NPX"))
 #' Calculate the percentage of NAs in each column
 #'
 #' The function calculates the percentage of NAs in each column of the input dataframe.
@@ -51,6 +51,16 @@ calc_na_percentage_row <- function(df) {
 }
 
 
-qc_summary <- function() {
+qc_summary <- function(df, wide = T) {
 
+  if (isFALSE(wide)) {
+    df <- df |>
+      dplyr::select(DAid, Assay, NPX) |>
+      tidyr::pivot_wider(names_from = "Assay", values_from = "NPX")
+  }
+
+  na_percentage_col <- calc_na_percentage_col(df)
+  na_percentage_row <- calc_na_percentage_row(df)
+
+  return(list(na_percentage_col, na_percentage_row))
 }
