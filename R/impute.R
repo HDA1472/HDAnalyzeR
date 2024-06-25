@@ -25,7 +25,7 @@ impute_median <- function(wide_data, exclude_cols = c("DAid", "Disease"),
     dplyr::select(-dplyr::any_of(exclude_cols))
 
   if (show_na_percentage) {
-    na_percentages <- calc_na_percentage(data_in)
+    na_percentages <- calc_na_percentage_col(data_in)
     print(na_percentages)
   }
 
@@ -72,7 +72,7 @@ impute_knn <- function(wide_data, k = 5, exclude_cols = c("DAid", "Disease"),
     dplyr::select(-dplyr::any_of(exclude_cols))
 
   if (show_na_percentage) {
-    na_percentages <- calc_na_percentage(data_in)
+    na_percentages <- calc_na_percentage_col(data_in)
     print(na_percentages)
   }
 
@@ -122,7 +122,7 @@ impute_missForest <- function(wide_data, maxiter = 10, ntree = 100, parallelize 
     dplyr::select(-dplyr::any_of(exclude_cols))
 
   if (show_na_percentage) {
-    na_percentages <- calc_na_percentage(data_in)
+    na_percentages <- calc_na_percentage_col(data_in)
     print(na_percentages)
   }
   if (parallelize == "no") {

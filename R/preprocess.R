@@ -12,7 +12,7 @@ utils::globalVariables(c("PlateID", "Cohort", "Assay_Warning", "QC_Warning", "Ex
 #' df <- replace_with_na(example_metadata)
 replace_with_na <- function(df_in) {
   df_out <- df_in |>
-    dplyr::mutate(across(everything(), ~ dplyr::case_when(
+    dplyr::mutate(dplyr::across(dplyr::everything(), ~ dplyr::case_when(
       . %in% c(0, "0", "", "Unknown", "unknown", "none", NA, "na") ~ NA,
       TRUE ~ .
     )))

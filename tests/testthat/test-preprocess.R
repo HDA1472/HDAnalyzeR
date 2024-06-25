@@ -1,3 +1,15 @@
+# Test replace_with_na ---------------------------------------------------------
+test_that("The specified values are replaced with NAs", {
+  random_indices <- sample(1:nrow(example_metadata), 20)
+  test_data1 <- example_data
+  test_data2 <- example_data
+  test_data1$DAid[random_indices] <- 0
+  test_data2$DAid[random_indices] <- NA
+  result <- replace_with_na(test_data1)
+  expected <- test_data2
+  expect_equal(result, expected)
+})
+
 # Test clean_data --------------------------------------------------------------
 test_that("clean_data selects specified columns", {
   result <- clean_data(example_data)
