@@ -14,7 +14,11 @@ generate_df(long_data, metadata, save = T)
 \item{save}{(TRUE or NULL). If TRUE, the dataframes are saved}
 }
 \value{
-list(wide_data, join_data) (list of tibbles). The wide and join dataframes
+A list containing the following elements:
+\itemize{
+\item wide_data (tibble). The wide data
+\item join_data (tibble). The joined data with metadata
+}
 }
 \description{
 The function generates wide and join dataframes from the long data and metadata.
