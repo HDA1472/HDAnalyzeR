@@ -122,7 +122,9 @@ clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age",
 #' @param metadata (tibble). The metadata
 #' @param save (TRUE or NULL). If TRUE, the dataframes are saved
 #'
-#' @return list(wide_data, join_data) (list of tibbles). The wide and join dataframes
+#' @return A list containing the following elements:
+#'  - wide_data (tibble). The wide data
+#'  - join_data (tibble). The joined data with metadata
 #' @export
 #'
 #' @examples
@@ -148,5 +150,5 @@ generate_df <- function(long_data, metadata, save = T) {
     save_df(metadata, "data/processed/data_metadata", "metadata", "rda")
     save_df(join_data, "data/processed/data_metadata", "join_data", "rda")
   }
-  return(list(wide_data, join_data))
+  return(list(wide_data = wide_data, join_data = join_data))
 }
