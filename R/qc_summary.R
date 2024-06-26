@@ -68,7 +68,7 @@ check_normality <- function(df) {
   future::plan(future::multicore)
 
   # Perform Shapiro-Wilk test in parallel
-  p_values <- future.apply::future_lapply(df |> dplyr::select(-DAid), function(column) {
+  p_values <- future.apply::future_lapply(df |> dplyr::select(-dplyr::any_of(c("DAid"))), function(column) {
     stats::shapiro.test(column)$p.value
   })
 
@@ -110,11 +110,14 @@ check_normality <- function(df) {
 #' cor_results <- create_corr_heatmap(df, threshold = 0.7)
 create_corr_heatmap <- function(df, threshold) {
 
-  cor_matrix <- stats::cor(df |> dplyr::select(-DAid),
-                    use = "pairwise.complete.obs",
-                    method = "pearson")
+  cor_matrix <- round(
+    stats::cor(df |> dplyr::select(-dplyr::any_of(c("DAid"))),
+               use = "pairwise.complete.obs",
+               method = "pearson"),
+    2
+  )
 
-  cor_long <- as.data.frame(as.table(cor_matrix), .name_repair = "minimal")
+  cor_long <- as.data.frame(as.table(cor_matrix), .name_repair = "minimal", stringsAsFactors = FALSE)
 
   cor_results <- cor_long |>
     dplyr::filter(Var1 != Var2) |>
