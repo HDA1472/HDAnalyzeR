@@ -14,10 +14,14 @@ RoxygenNote: 7.3.1
 Imports: 
     doParallel,
     dplyr,
+    future,
+    future.apply,
     missForest,
     readxl,
     recipes,
+    stats,
     tibble,
+    tidyheatmaps,
     tidyr,
     utils
 Suggests: 
