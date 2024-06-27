@@ -4,7 +4,7 @@
 \alias{qc_summary_data}
 \title{Summarize the quality control results of Olink data}
 \usage{
-qc_summary_data(df, wide = T, threshold = 0.8)
+qc_summary_data(df, wide = T, threshold = 0.8, report = T)
 }
 \arguments{
 \item{df}{(tibble). The input dataframe}
@@ -12,6 +12,8 @@ qc_summary_data(df, wide = T, threshold = 0.8)
 \item{wide}{(logical). Whether the input dataframe is in wide format. Default is TRUE}
 
 \item{threshold}{(numeric). The reporting protein-protein correlation threshold. Default is 0.8}
+
+\item{report}{(logical). Whether to print the summary. Default is TRUE}
 }
 \value{
 A list containing the following elements:
@@ -25,7 +27,8 @@ A list containing the following elements:
 }
 }
 \description{
-Summarize the quality control results of Olink data
+The function summarizes the quality control results of the input dataframe.
+It can handles both long and wide dataframes
 }
 \examples{
 qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
