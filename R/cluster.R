@@ -29,10 +29,8 @@ cluster_data <- function(df, distance_method = "euclidean", clustering_method = 
       wide_data <- df |> tibble::column_to_rownames(var = names(df)[1])
     }
 
-    order_row <-
-      rownames(wide_data)
-    order_col <-
-      colnames(wide_data)
+    order_row <- rownames(wide_data)
+    order_col <- colnames(wide_data)
 
     if(isTRUE(cluster_rows)) {
       order1 <- wide_data |>
