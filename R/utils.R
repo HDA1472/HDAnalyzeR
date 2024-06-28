@@ -5,7 +5,7 @@
 #' @param dir_name (string). The name of the directory to create
 #' @param date (logical). If T, the current date and time will be appended to the directory name
 #'
-#' @return NULL
+#' @return dir_name (string). The name of the created directory
 #' @export
 #'
 #' @examples
@@ -34,7 +34,7 @@ create_dir <- function(dir_name, date = F) {
     message(paste("Directory", dir_name, "already exists."))
   }
 
-  invisible(NULL)
+  return(dir_name)
 }
 
 
@@ -64,7 +64,7 @@ save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
   }
 
   # Create the directory if it doesn't exist, else store the file in the existing directory
-  create_dir(dir_name)
+  dir_name <- create_dir(dir_name)
 
   file_path <- file.path(dir_name, paste0(file_name, ".", file_type))
 

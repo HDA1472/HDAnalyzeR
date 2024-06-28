@@ -144,11 +144,11 @@ generate_df <- function(long_data, metadata, save = T) {
     dplyr::left_join(metadata, by = "DAid")
 
   if (isTRUE(save)) {
-    create_dir("data/processed/data_metadata", date = T)
-    save_df(long_data, "data/processed/data_metadata", "long_data", "rda")
-    save_df(wide_data, "data/processed/data_metadata", "wide_data", "rda")
-    save_df(metadata, "data/processed/data_metadata", "metadata", "rda")
-    save_df(join_data, "data/processed/data_metadata", "join_data", "rda")
+    dir_name <- create_dir("data/processed/data_metadata", date = T)
+    save_df(long_data, dir_name, "long_data", "rda")
+    save_df(wide_data, dir_name, "wide_data", "rda")
+    save_df(metadata, dir_name, "metadata", "rda")
+    save_df(join_data, dir_name, "join_data", "rda")
   }
   return(list(wide_data = wide_data, join_data = join_data))
 }
