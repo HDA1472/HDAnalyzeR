@@ -136,6 +136,7 @@ do_pca <- function(olink_data,
     wide_data <- olink_data
   }
 
+  set.seed(123)
   if (isTRUE(impute)) {
     pca_rec <- recipes::recipe( ~ ., data = wide_data) |>
       recipes::update_role(DAid, new_role = "id")  |>
@@ -230,6 +231,7 @@ do_umap <- function(olink_data,
     wide_data <- olink_data
   }
 
+  set.seed(123)
   if (isTRUE(impute)) {
     umap_rec <- recipes::recipe( ~ ., data = wide_data) |>
       recipes::update_role(DAid, new_role = "id")  |>
