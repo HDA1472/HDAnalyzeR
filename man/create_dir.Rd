@@ -11,6 +11,9 @@ create_dir(dir_name, date = F)
 
 \item{date}{(logical). If T, the current date and time will be appended to the directory name}
 }
+\value{
+dir_name (string). The name of the created directory
+}
 \description{
 The function creates a directory with the specified name. If the directory already exists, a message is printed.
 }
