@@ -1,4 +1,4 @@
-utils::globalVariables(c("DAid", "Assay", "NPX", "adjusted_p_value"))
+utils::globalVariables(c("DAid", "Assay", "NPX", "adj.P.Val"))
 #' Calculate the percentage of NAs in each column
 #'
 #' The function calculates the percentage of NAs in each column of the input dataframe.
@@ -72,18 +72,18 @@ check_normality <- function(df) {
     stats::shapiro.test(column)$p.value
   })
 
-  adjusted_p_values <- stats::p.adjust(unlist(p_values), method = "BH")
+  adj.P.Val <- stats::p.adjust(unlist(p_values), method = "BH")
 
   # Determine normality based on adjusted p-values
-  normality <- adjusted_p_values > 0.05
+  normality <- adj.P.Val > 0.05
 
   normality_results <- tibble::tibble(
     Protein = names(p_values),
     p_value = unlist(p_values),
-    adjusted_p_value = adjusted_p_values,
+    adj.P.Val = adj.P.Val,
     is_normal = normality
   ) |>
-    dplyr::arrange((adjusted_p_value))
+    dplyr::arrange((adj.P.Val))
 
   return(normality_results)
 }
