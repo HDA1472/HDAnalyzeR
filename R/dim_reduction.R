@@ -106,10 +106,10 @@ plot_dim_reduction <- function(res, x, y, metadata, variable, palette) {
 #' @param save (logical). If TRUE, the plots are saved in the results directory. Default is FALSE
 #'
 #' @return (list). A list with the PCA results and, if requested, the PCA plots
-#' - pca_res (tibble). A tibble with the PCA results
-#' - loadings (tibble). A tibble with the PCA loadings
-#' - pca_plot (plot). A ggplot object with the PCA plot
-#' - loadings_plot (plot). A ggplot object with the PCA loadings plot
+#'   - pca_res (tibble). A tibble with the PCA results
+#'   - loadings (tibble). A tibble with the PCA loadings
+#'   - pca_plot (plot). A ggplot object with the PCA plot
+#'   - loadings_plot (plot). A ggplot object with the PCA loadings plot
 #' @export
 #'
 #' @examples
@@ -203,8 +203,8 @@ do_pca <- function(olink_data,
 #' @param save (logical). If TRUE, the plots are saved in the results directory. Default is FALSE
 #'
 #' @return (list). A list with the UMAP results and, if requested, the UMAP plots
-#' - umap_res (tibble). A tibble with the UMAP results
-#' - umap_plot (plot). A ggplot object with the UMAP plot
+#'   - umap_res (tibble). A tibble with the UMAP results
+#'   - umap_plot (plot). A ggplot object with the UMAP plot
 #' @export
 #'
 #' @examples

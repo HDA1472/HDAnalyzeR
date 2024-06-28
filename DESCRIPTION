@@ -19,6 +19,8 @@ Imports:
     future,
     future.apply,
     ggplot2,
+    ggrepel,
+    limma,
     missForest,
     readxl,
     recipes,
