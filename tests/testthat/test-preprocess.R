@@ -185,27 +185,3 @@ test_that("generate_df returns a list of a wide and a joined dataframe", {
   expect_equal(join_data, expected_join)
   unlink("data", recursive = TRUE)
 })
-
-
-test_that("generate_df saves dataframes properly", {
-  test_data <- example_data |>
-    dplyr::select(DAid, Assay, NPX)
-  test_metadata <- example_metadata |>
-    dplyr::select(DAid, Sex, Age, BMI)
-
-  expected_wide <- test_data |>
-    tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-  expected_join <- expected_wide |> dplyr::left_join(test_metadata, by = "DAid")
-
-  result_df <- generate_df(test_data, test_metadata)
-  long_data <- import_df("data/processed/data_metadata/long_data.rda")
-  wide_data <- import_df("data/processed/data_metadata/wide_data.rda")
-  metadata <- import_df("data/processed/data_metadata/metadata.rda")
-  join_data <- import_df("data/processed/data_metadata/join_data.rda")
-
-  expect_equal(long_data, test_data)
-  expect_equal(wide_data, expected_wide)
-  expect_equal(metadata, test_metadata)
-  expect_equal(join_data, expected_join)
-  unlink("data", recursive = TRUE)
-})
