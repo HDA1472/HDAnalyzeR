@@ -167,11 +167,7 @@ print_summary <- function(sample_n, var_n, na_percentage_col, na_percentage_row,
 #' qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
 qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 
-  if (isFALSE(wide)) {
-    df <- df |>
-      dplyr::select(DAid, Assay, NPX) |>
-      tidyr::pivot_wider(names_from = "Assay", values_from = "NPX")
-  }
+  df <- widen_data(df, wide)
 
   sample_n <- nrow(df)
   protein_n <- ncol(df) - 1

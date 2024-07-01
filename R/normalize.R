@@ -76,13 +76,7 @@ normalize_data <- function(olink_data,
                            file_name = "normalized_data"
                            ) {
 
-  if (isFALSE(wide)) {
-    wide_data <- olink_data |>
-      dplyr::select(DAid, Assay, NPX) |>
-      tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-  } else {
-    wide_data <- olink_data
-  }
+  wide_data <- widen_data(olink_data, wide)
 
   # Prepare the data for scaling
   id_col <- wide_data |> dplyr::pull(DAid)

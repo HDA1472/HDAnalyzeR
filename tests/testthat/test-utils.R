@@ -245,3 +245,24 @@ test_that("remove_na removes NA columns", {
     dplyr::filter(!is.na(Column1) & !is.na(Column2))
   expect_equal(result, expected)
 })
+
+
+# Test widen_data --------------------------------------------------------------
+test_that("widen_data widens data properly", {
+  result <- widen_data(example_data, wide = FALSE)
+  expected <- example_data |>
+    dplyr::select(DAid, Assay, NPX) |>
+    tidyr::pivot_wider(names_from = Assay, values_from = NPX)
+  expect_equal(result, expected)
+})
+
+
+test_that("widen_data does not do anything when wide = T", {
+  test_data <- example_data |>
+    dplyr::select(DAid, Assay, NPX) |>
+    tidyr::pivot_wider(names_from = Assay, values_from = NPX)
+
+  result <- widen_data(test_data, wide = TRUE)
+  expected <- test_data
+  expect_equal(result, expected)
+})
