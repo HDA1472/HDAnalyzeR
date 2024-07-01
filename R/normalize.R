@@ -108,7 +108,7 @@ normalize_data <- function(olink_data,
   }
 
   # Scale the data
-  scaled_data <- as.data.frame(scale(data_wo_batch_effects, center = center, scale = scale))
+  scaled_data <- tibble::as_tibble(scale(data_wo_batch_effects, center = center, scale = scale))
   names(scaled_data) <- names(input_data)
 
   # Prepare data to be returned
