@@ -73,7 +73,7 @@ test_that("do_ttest_de performs DE properly", {
                        dplyr::select(dplyr::any_of(c("DAid", "Disease"))),
                      by = "DAid")
 
-  result <- dplyr::as_tibble(do_ttest_de(de_res, test_data, "AML", "ABL1"), .name_repair = "minimal")
+  result <- tibble::as_tibble(do_ttest_de(de_res, test_data, "AML", "ABL1"), .name_repair = "minimal")
   expected <- tibble::tibble(
     Assay = "ABL1",
     P.Value = "0.00137578481974897",
