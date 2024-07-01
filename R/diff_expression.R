@@ -5,7 +5,7 @@ utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "S
 #' It can correct the results with sex, age, and BMI.
 #' The output dataframe includes the logFC, the p-values, as well as the adjusted p-values with FDR.
 #'
-#' @param wide_data (tibble). A tibble with the Olink data in wide format.
+#' @param join_data (tibble). A tibble with the Olink data in wide format joined with metadata.
 #' @param disease (character). The disease of interest
 #' @param correct_sex (logical). Correct the results with Sex. Default is FALSE
 #' @param correct_age (logical). Correct the results with Age. Default is FALSE
@@ -25,7 +25,7 @@ utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "S
 #'                    by = "DAid")
 #'
 #' do_limma_de(test_data, "AML")
-do_limma_de <- function(wide_data,
+do_limma_de <- function(join_data,
                         disease,
                         correct_sex = F,
                         correct_age = F,
@@ -35,20 +35,20 @@ do_limma_de <- function(wide_data,
 
   # Filter for Sex if disease is Sex specific
   if(!is.null(only_female) & disease %in% only_female) {
-    wide_data <- wide_data |>
+    join_data <- join_data |>
       dplyr::filter(Sex == "Female")
   } else {
-    wide_data <- wide_data
+    join_data <- join_data
   }
 
   if(!is.null(only_male) & disease %in% only_male) {
-    wide_data <- wide_data |>
+    join_data <- join_data |>
       dplyr::filter(Sex == "Male")
   } else {
-    wide_data <- wide_data
+    join_data <- join_data
   }
 
-  wide_data <- wide_data |>
+  join_data <- join_data |>
     dplyr::mutate(Disease = ifelse(Disease == disease, "1_Case", "0_Control"))
 
   # Design a model - add Disease, and Sex, Age, BMI
@@ -64,13 +64,13 @@ do_limma_de <- function(wide_data,
     formula <- paste(formula, "+ BMI")
   }
 
-  design <- stats::model.matrix(stats::as.formula(formula), data = wide_data)
+  design <- stats::model.matrix(stats::as.formula(formula), data = join_data)
   colnames(design) <- c("control", "case", if (correct_sex) "Sex", if (correct_age) "Age", if (correct_bmi) "BMI")
 
   contrast <- limma::makeContrasts(Diff = case - control, levels = design)
 
   # Fit linear model to each protein assay
-  dat_fit <- wide_data |>
+  dat_fit <- join_data |>
     dplyr::select(-dplyr::any_of(c("Disease", "Sex", "Age", "BMI"))) |>
     tibble::column_to_rownames("DAid") |>
     t()
@@ -265,23 +265,23 @@ run_de <- function(olink_data,
 
   # Prepare Olink data and merge them with metadata
   if (isFALSE(wide)) {
-    wide_data <- olink_data |>
+    join_data <- olink_data |>
       dplyr::select(1:3) |>
       tidyr::pivot_wider(names_from = 2, values_from = 3) |>
       dplyr::left_join(
         metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", "Age", "BMI"))),
         by = "DAid")
   } else {
-    wide_data <- olink_data |> dplyr::left_join(
+    join_data <- olink_data |> dplyr::left_join(
       metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", "Age", "BMI"))),
       by = "DAid")
   }
 
   # Run differential expression analysis
-  levels <- unique(wide_data$Disease)
+  levels <- unique(join_data$Disease)
   if (stat == "limma") {
     de_results <- lapply(levels,
-                         function(disease) do_limma_de(wide_data,
+                         function(disease) do_limma_de(join_data,
                                                        disease,
                                                        correct_sex,
                                                        correct_age,
@@ -289,7 +289,7 @@ run_de <- function(olink_data,
                                                        only_female,
                                                        only_male))
   } else if (stat == "ttest") {
-    long_data <- wide_data |>
+    long_data <- join_data |>
       dplyr::select(-dplyr::any_of(c("Age", "BMI"))) |>
       tidyr::pivot_longer(!c("DAid", "Disease", "Sex"), names_to = "Assay", values_to = "NPX")
 
