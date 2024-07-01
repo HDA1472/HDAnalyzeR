@@ -5,7 +5,7 @@
 \title{Differential expression analysis with limma}
 \usage{
 do_limma_de(
-  wide_data,
+  join_data,
   disease,
   correct_sex = F,
   correct_age = F,
@@ -15,7 +15,7 @@ do_limma_de(
 )
 }
 \arguments{
-\item{wide_data}{(tibble). A tibble with the Olink data in wide format.}
+\item{join_data}{(tibble). A tibble with the Olink data in wide format joined with metadata.}
 
 \item{disease}{(character). The disease of interest}
 
