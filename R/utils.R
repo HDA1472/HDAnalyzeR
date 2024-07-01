@@ -1,3 +1,4 @@
+utils::globalVariables(c("DAid", "Assay", "NPX"))
 #' Create directory w/o system date
 #'
 #' The function creates a directory with the specified name. If the directory already exists, a message is printed.
@@ -162,4 +163,30 @@ remove_na <- function(df_in, cols) {
   rownames(df_out) <- NULL  # Re index the rows
 
   return(df_out)
+}
+
+
+#' Widen data
+#'
+#' The function widens the data from long to wide format.
+#'
+#' @param olink_data (tibble). A dataframe containing Olink data to be normalized
+#' @param wide (logical). A logical value indicating whether the data is in wide format
+#'
+#' @return wide_data (tibble). A dataframe containing the data in wide format
+#' @export
+#'
+#' @examples
+#' wide_data <- widen_data(example_data, wide = FALSE)
+widen_data <- function(olink_data, wide) {
+
+  if (isFALSE(wide)) {
+    wide_data <- olink_data |>
+      dplyr::select(DAid, Assay, NPX) |>
+      tidyr::pivot_wider(names_from = Assay, values_from = NPX)
+  } else {
+    wide_data <- olink_data
+  }
+
+  return(wide_data)
 }

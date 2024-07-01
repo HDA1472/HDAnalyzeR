@@ -20,14 +20,8 @@ utils::globalVariables(c("v1", "v2", "val", "x", "y"))
 cluster_data <- function(df, distance_method = "euclidean", clustering_method = "ward.D2",
                          cluster_rows = T, cluster_cols = T, wide = T) {
 
-    if (isFALSE(wide)) {
-      wide_data <- df |>
-        dplyr::select(1:3) |>
-        tidyr::pivot_wider(names_from = 2, values_from = 3) |>
+    wide_data <- widen_data(df, wide) |>
         tibble::column_to_rownames(var = names(df)[1])
-    } else {
-      wide_data <- df |> tibble::column_to_rownames(var = names(df)[1])
-    }
 
     order_row <- rownames(wide_data)
     order_col <- colnames(wide_data)

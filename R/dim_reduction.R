@@ -128,13 +128,7 @@ do_pca <- function(olink_data,
                    plots = F,
                    save = F) {
 
-  if (isFALSE(wide)) {
-    wide_data <- olink_data |>
-      dplyr::select(DAid, Assay, NPX) |>
-      tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-  } else {
-    wide_data <- olink_data
-  }
+  wide_data <- widen_data(olink_data, wide)
 
   set.seed(123)
   if (isTRUE(impute)) {
@@ -223,13 +217,7 @@ do_umap <- function(olink_data,
                     plots = F,
                     save = F) {
 
-  if (isFALSE(wide)) {
-    wide_data <- olink_data |>
-      dplyr::select(DAid, Assay, NPX) |>
-      tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-  } else {
-    wide_data <- olink_data
-  }
+  wide_data <- widen_data(olink_data, wide)
 
   set.seed(123)
   if (isTRUE(impute)) {
