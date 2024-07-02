@@ -4,7 +4,8 @@
 #' It allows the user to exclude certain columns from imputation and can also display the
 #' percentage of missing values in each column before imputation.
 #'
-#' @param wide_data (tibble). The input dataframe
+#' @param olink_data (tibble). The input dataframe
+#' @param wide (logical). If T, the data is in wide format
 #' @param exclude_cols (string or vector of strings). The columns to exclude from imputation
 #' @param show_na_percentage (logical). If T, the percentage of missing values in each column is displayed
 #'
@@ -18,9 +19,10 @@
 #'   C = c(7, 10, 25, 74, 49)
 #' )
 #' imputed_data <- impute_median(test_data)
-impute_median <- function(wide_data, exclude_cols = c("DAid", "Disease"),
+impute_median <- function(olink_data, wide = T, exclude_cols = c("DAid", "Disease"),
                           show_na_percentage = T) {
 
+  wide_data <- widen_data(olink_data, wide)
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))
 
@@ -50,7 +52,8 @@ impute_median <- function(wide_data, exclude_cols = c("DAid", "Disease"),
 #' It allows the user to exclude certain columns from imputation and can also display the
 #' percentage of missing values in each column before imputation.
 #'
-#' @param wide_data (tibble). The input dataframe
+#' @param olink_data (tibble). The input dataframe
+#' @param wide (logical). If T, the data is in wide format
 #' @param k (integer). The number of neighbors to consider for imputation
 #' @param exclude_cols (string or vector of strings). The columns to exclude from imputation
 #' @param show_na_percentage (logical). If T, the percentage of missing values in each column is displayed
@@ -65,9 +68,10 @@ impute_median <- function(wide_data, exclude_cols = c("DAid", "Disease"),
 #'   C = c(7, 10, 25, 74, 49)
 #' )
 #' imputed_data <- impute_knn(test_data, k = 3)
-impute_knn <- function(wide_data, k = 5, exclude_cols = c("DAid", "Disease"),
+impute_knn <- function(olink_data, wide = T, k = 5, exclude_cols = c("DAid", "Disease"),
                        show_na_percentage = TRUE) {
 
+  wide_data <- widen_data(olink_data, wide)
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))
 
@@ -97,7 +101,8 @@ impute_knn <- function(wide_data, k = 5, exclude_cols = c("DAid", "Disease"),
 #' It allows the user to exclude certain columns from imputation and can also display the
 #' percentage of missing values in each column before imputation.
 #'
-#' @param wide_data (tibble). The input dataframe
+#' @param olink_data (tibble). The input dataframe
+#' @param wide (logical). If T, the data is in wide format
 #' @param maxiter (integer). The maximum number of iterations
 #' @param ntree (integer). The number of trees to grow
 #' @param parallelize (string). The type of parallelization to use. Options are "no", "variables", or "forests"
@@ -114,10 +119,11 @@ impute_knn <- function(wide_data, k = 5, exclude_cols = c("DAid", "Disease"),
 #'   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
 #'   dplyr::slice_head(n = 100)
 #' imputed_data <- impute_missForest(test_data, maxiter = 1, ntree = 50, parallelize = "no")
-impute_missForest <- function(wide_data, maxiter = 10, ntree = 100, parallelize = "variables",
+impute_missForest <- function(olink_data, wide = T, maxiter = 10, ntree = 100, parallelize = "variables",
                               ncores = 4, exclude_cols = c("DAid", "Disease"),
                               show_na_percentage = T) {
 
+  wide_data <- widen_data(olink_data, wide)
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))
 

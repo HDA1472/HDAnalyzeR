@@ -5,13 +5,16 @@
 \title{Impute via Median}
 \usage{
 impute_median(
-  wide_data,
+  olink_data,
+  wide = T,
   exclude_cols = c("DAid", "Disease"),
   show_na_percentage = T
 )
 }
 \arguments{
-\item{wide_data}{(tibble). The input dataframe}
+\item{olink_data}{(tibble). The input dataframe}
+
+\item{wide}{(logical). If T, the data is in wide format}
 
 \item{exclude_cols}{(string or vector of strings). The columns to exclude from imputation}
 
