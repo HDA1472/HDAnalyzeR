@@ -5,7 +5,8 @@
 \title{Impute via missForest}
 \usage{
 impute_missForest(
-  wide_data,
+  olink_data,
+  wide = T,
   maxiter = 10,
   ntree = 100,
   parallelize = "variables",
@@ -15,7 +16,9 @@ impute_missForest(
 )
 }
 \arguments{
-\item{wide_data}{(tibble). The input dataframe}
+\item{olink_data}{(tibble). The input dataframe}
+
+\item{wide}{(logical). If T, the data is in wide format}
 
 \item{maxiter}{(integer). The maximum number of iterations}
 

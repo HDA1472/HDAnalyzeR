@@ -5,14 +5,17 @@
 \title{Impute via k-nearest neighbors}
 \usage{
 impute_knn(
-  wide_data,
+  olink_data,
+  wide = T,
   k = 5,
   exclude_cols = c("DAid", "Disease"),
   show_na_percentage = TRUE
 )
 }
 \arguments{
-\item{wide_data}{(tibble). The input dataframe}
+\item{olink_data}{(tibble). The input dataframe}
+
+\item{wide}{(logical). If T, the data is in wide format}
 
 \item{k}{(integer). The number of neighbors to consider for imputation}
 
