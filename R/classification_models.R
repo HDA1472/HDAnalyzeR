@@ -1,3 +1,4 @@
+utils::globalVariables(c("roc_auc"))
 #' Split data into training and test sets
 #'
 #' This function splits the data into training and test sets based on user defined ratio.
@@ -168,3 +169,113 @@ make_groups <- function(join_data,
 }
 
 
+#' Hyperparameter optimization for elastic net
+#'
+#' This function performs hyperparameter optimization for elastic net models.
+#' It uses the glmnet engine for logistic regression and tunes either only penalty or both penalty and mixture.
+#'
+#'
+#' @param train_data (list). List of training data sets from make_groups().
+#' @param exclude_cols (vector). Columns to exclude from the model.
+#' @param disease (character). Disease to predict.
+#' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param metric (function). Metric to optimize. Default is roc_auc.
+#' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
+#' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
+#' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
+#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#'
+#' @return A list with three elements:
+#'  - elnet_tune (tibble). Hyperparameter optimization results.
+#'  - train_set (tibble). Training set.
+#'  - wf (workflow). Workflow object.
+#' @export
+#'
+#' @examples
+#' wide_data <- example_data |>
+#'   dplyr::select(DAid, Assay, NPX) |>
+#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
+#' join_data <- wide_data |>
+#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
+#' diseases <- unique(example_metadata$Disease)
+#' group_list <- make_groups(join_data,
+#'                           diseases,
+#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
+#'                           only_male = "PRC")
+#'
+#' hypopt_res <- elnet_hypopt(group_list, "Sex", "AML", type = "elnet", grid_size = 5, ncores = 1)
+elnet_hypopt <- function(train_data,
+                         exclude_cols,
+                         disease,
+                         type = "lasso",
+                         metric = roc_auc,
+                         cv_sets = 5,
+                         grid_size = 10,
+                         ncores = 4,
+                         seed = 123
+) {
+
+  if (ncores > 1) {
+    doParallel::registerDoParallel(cores = ncores)
+  }
+
+  # Prepare train data and create cross-validation sets with binary classifier
+  train_set <- train_data[[disease]] |>
+    dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
+    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols))
+  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
+
+  elnet_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
+    recipes::update_role(DAid, new_role = "id") |>
+    recipes::step_normalize(recipes::all_numeric()) |>
+    recipes::step_nzv(recipes::all_numeric()) |>
+    recipes::step_corr(recipes::all_numeric()) |>
+    recipes::step_impute_knn(recipes::all_numeric())
+
+  mixture_value <- switch(type,
+                          "lasso" = 1,
+                          "ridge" = 0,
+                          "elnet" = NULL,  # allow tuning for elastic net
+                          stop("Invalid type specified. Choose 'lasso', 'ridge', or 'elnet'."))
+
+  if (is.null(mixture_value)) {
+    elnet_spec <- parsnip::logistic_reg(
+      penalty = tune::tune(),  # lambda
+      mixture = tune::tune()  # alpha
+    ) |>
+      parsnip::set_engine("glmnet")
+  } else {
+    elnet_spec <- parsnip::logistic_reg(
+      penalty = tune::tune(),
+      mixture = mixture_value
+    ) |>
+      parsnip::set_engine("glmnet")
+  }
+
+  elnet_wf <- workflows::workflow() |>
+    workflows::add_model(elnet_spec) |>
+    workflows::add_recipe(elnet_rec)
+
+  elnet_grid <- elnet_wf |>
+    workflows::extract_parameter_set_dials() |>
+    dials::grid_latin_hypercube(size = grid_size)
+
+  roc_res <- yardstick::metric_set(yardstick::roc_auc)
+
+  set.seed(seed)
+  ctrl <- tune::control_grid(save_pred = TRUE, parallel_over = "everything")
+  elnet_tune <- elnet_wf |>
+    tune::tune_grid(
+      train_folds,
+      grid = elnet_grid,
+      control = ctrl,
+      metrics = roc_res
+    )
+
+  return(list(
+    "elnet_tune" = elnet_tune,
+    "train_set" = train_set,
+    "wf" = elnet_wf
+  ))
+}
