@@ -162,10 +162,8 @@ make_groups <- function(join_data,
     }
 
     group_list[[disease]] <- group
-    print(disease)
-    print(case_sample_num)
-    print(samples_per_disease)
   }
+
   return(group_list)
 }
 
