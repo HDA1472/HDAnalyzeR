@@ -134,11 +134,7 @@ do_ttest_de <- function(de_res,
   if(!is.null(only_female) & disease %in% only_female) {
     long_data <- long_data |>
       dplyr::filter(Sex == "Female")
-  } else {
-    long_data <- long_data
-  }
-
-  if(!is.null(only_male) & disease %in% only_male) {
+  } else if(!is.null(only_male) & disease %in% only_male) {
     long_data <- long_data |>
       dplyr::filter(Sex == "Male")
   } else {
@@ -335,7 +331,7 @@ run_de <- function(olink_data,
         ggplot2::ggsave(volcano_plots[[i]], filename = paste0(dir_name, "/", levels[i], "_volcano.png"), width = 10, height = 8)
       }
     }
-    return(list(de_results = de_results, volcano_plots = volcano_plots))
+    return(list("de_results" = de_results, "volcano_plots" = volcano_plots))
   }
   return(de_results)
 }

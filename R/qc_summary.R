@@ -187,12 +187,12 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 
   return(
     list(
-      na_percentage_col = na_percentage_col,
-      na_percentage_row = na_percentage_row,
-      normality_results = normality_results,
-      cor_matrix = cor_matrix,
-      cor_results = cor_results,
-      heatmap = p
+      "na_percentage_col" = na_percentage_col,
+      "na_percentage_row" = na_percentage_row,
+      "normality_results" = normality_results,
+      "cor_matrix" = cor_matrix,
+      "cor_results" = cor_results,
+      "heatmap" = p
       )
     )
 }
@@ -225,8 +225,8 @@ qc_summary_metadata <- function(df, report = T) {
 
   return(
     list(
-      na_percentage_col = na_percentage_col,
-      na_percentage_row = na_percentage_row
+      "na_percentage_col" = na_percentage_col,
+      "na_percentage_row" = na_percentage_row
     )
   )
 }

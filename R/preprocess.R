@@ -150,5 +150,5 @@ generate_df <- function(long_data, metadata, save = T) {
     save_df(metadata, dir_name, "metadata", "rda")
     save_df(join_data, dir_name, "join_data", "rda")
   }
-  return(list(wide_data = wide_data, join_data = join_data))
+  return(list("wide_data" = wide_data, "join_data" = join_data))
 }
