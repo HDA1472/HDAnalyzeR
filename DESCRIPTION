@@ -25,6 +25,7 @@ Imports:
     readxl,
     recipes,
     rlang,
+    rsample,
     stats,
     tibble,
     tidyheatmaps,
