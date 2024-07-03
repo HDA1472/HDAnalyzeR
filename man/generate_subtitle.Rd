@@ -35,11 +35,4 @@ subtitle (character). Subtitle for the plot.
 \description{
 This function generates a subtitle for the variable importance plot.
 }
-\examples{
-features <- tibble::tibble(Variable = c("A", "B", "C"),
-                          Importance = c(0.1, 0.2, 0.3),
-                          Sign = c("NEG", "POS", "NEG"),
-                          Scale_Importance = c(10, 20, 30))
-
-subtitle <- generate_subtitle(features, 0.8, 0.9, 0.7, 0.85, 0.5, c("accuracy", "sensitivity"))
-}
+\keyword{internal}

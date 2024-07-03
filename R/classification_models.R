@@ -176,36 +176,7 @@ make_groups <- function(join_data,
 #' @param disease (character). Disease to predict.
 #'
 #' @return hypopt_plot (plot). Hyperparameter optimization plot.
-#' @export
-#'
-#' @examples
-#' wide_data <- example_data |>
-#'   dplyr::select(DAid, Assay, NPX) |>
-#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-#' join_data <- wide_data |>
-#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-#' diseases <- unique(example_metadata$Disease)
-#' data_split <- split_data(join_data)
-#' train_list <- make_groups(data_split$train_set,
-#'                           diseases,
-#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                           only_male = "PRC")
-#'
-#' test_list <- make_groups(data_split$test_set,
-#'                          diseases,
-#'                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                          only_male = "PRC")
-#'
-#' hypopt_res <- elnet_hypopt(train_list,
-#'                            test_list,
-#'                            "AML",
-#'                            type = "elnet",
-#'                            cv_sets = 2,
-#'                            grid_size = 1,
-#'                            ncores = 1,
-#'                            exclude_cols = "Sex")
-#'
-#' vis_hypopt(hypopt_res$elnet_tune, "penalty", "mixture", "AML")
+#' @keywords internal
 vis_hypopt <- function(tune_res,
                        x,
                        color,
@@ -560,15 +531,7 @@ elnet_testfit <- function(train_set,
 #' @param subtitle (vector). Vector of subtitles to include in the plot. Default is all.
 #'
 #' @return subtitle (character). Subtitle for the plot.
-#' @export
-#'
-#' @examples
-#' features <- tibble::tibble(Variable = c("A", "B", "C"),
-#'                           Importance = c(0.1, 0.2, 0.3),
-#'                           Sign = c("NEG", "POS", "NEG"),
-#'                           Scale_Importance = c(10, 20, 30))
-#'
-#' subtitle <- generate_subtitle(features, 0.8, 0.9, 0.7, 0.85, 0.5, c("accuracy", "sensitivity"))
+#' @keywords internal
 generate_subtitle <- function(features, accuracy, sensitivity, specificity, auc, mixture, subtitle = NULL) {
   subtitle_parts <- c()
 
