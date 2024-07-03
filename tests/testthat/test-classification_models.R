@@ -127,3 +127,16 @@ test_that("make_groups creates groups and filters sex specific groups properly",
   expect_equal(result$B, exp_b)
   expect_equal(result$C, exp_c)
 })
+
+
+# Test generate_subtitle -------------------------------------------------------
+test_that("split_data splits data properly", {
+  features <- tibble::tibble(Variable = c("A", "B", "C"),
+                            Importance = c(0.1, 0.2, 0.3),
+                            Sign = c("NEG", "POS", "NEG"),
+                            Scale_Importance = c(10, 20, 30))
+
+  result <- generate_subtitle(features, 0.8, 0.9, 0.7, 0.85, 0.5, c("accuracy", "sensitivity"))
+  expected <- "accuracy = 0.8    sensitivity = 0.9    \n"
+  expect_equal(result, expected)
+})
