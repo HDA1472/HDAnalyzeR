@@ -1,4 +1,9 @@
-utils::globalVariables(c("roc_auc"))
+utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled_Importance",
+                         "Importance", "Variable", "std_err"))
+utils::globalVariables(c(
+  ".config", "test_data", "test_set", ".pred_class", ".pred_0",
+  "Scaled_Importance", "Importance", "Variable", "std_err"
+))
 #' Split data into training and test sets
 #'
 #' This function splits the data into training and test sets based on user defined ratio.
@@ -27,12 +32,8 @@ split_data <- function(join_data, ratio = 0.75, seed = 123) {
   train_data <- rsample::training(data_split)
   test_data <- rsample::testing(data_split)
 
-  return(
-    list(
-      "train_set" = train_data,
-      "test_set" = test_data
-    )
-  )
+  return(list("train_set" = train_data,
+              "test_set" = test_data))
 }
 
 
@@ -87,12 +88,8 @@ filter_sex_specific_disease <- function(control_data,
     diseases_subset <- diseases
   }
 
-  return(
-    list(
-      "control_data" = control_data,
-      "diseases_subset" = diseases_subset
-    )
-  )
+  return(list("control_data" = control_data,
+              "diseases_subset" = diseases_subset))
 }
 
 
@@ -169,26 +166,16 @@ make_groups <- function(join_data,
 }
 
 
-#' Hyperparameter optimization for elastic net
+#' Visualize hyperparameter optimization results
 #'
-#' This function performs hyperparameter optimization for elastic net models.
-#' It uses the glmnet engine for logistic regression and tunes either only penalty or both penalty and mixture.
+#' This function visualizes the hyperparameter optimization results.
 #'
-#'
-#' @param train_data (list). List of training data sets from make_groups().
-#' @param exclude_cols (vector). Columns to exclude from the model.
+#' @param tune_res (tibble). Hyperparameter optimization results.
+#' @param x (character). X-axis variable of the plot.
+#' @param color (character). Color variable of the plot. Default is NULL.
 #' @param disease (character). Disease to predict.
-#' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
-#' @param metric (function). Metric to optimize. Default is roc_auc.
-#' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
-#' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
-#' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
-#' @param seed (numeric). Seed for reproducibility. Default is 123.
 #'
-#' @return A list with three elements:
-#'  - elnet_tune (tibble). Hyperparameter optimization results.
-#'  - train_set (tibble). Training set.
-#'  - wf (workflow). Workflow object.
+#' @return hypopt_plot (plot). Hyperparameter optimization plot.
 #' @export
 #'
 #' @examples
@@ -198,20 +185,110 @@ make_groups <- function(join_data,
 #' join_data <- wide_data |>
 #'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
 #' diseases <- unique(example_metadata$Disease)
-#' group_list <- make_groups(join_data,
+#' data_split <- split_data(join_data)
+#' train_list <- make_groups(data_split$train_set,
 #'                           diseases,
 #'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
 #'                           only_male = "PRC")
 #'
-#' hypopt_res <- elnet_hypopt(group_list, "Sex", "AML", type = "elnet", grid_size = 5, ncores = 1)
+#' test_list <- make_groups(data_split$test_set,
+#'                          diseases,
+#'                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
+#'                          only_male = "PRC")
+#'
+#' hypopt_res <- elnet_hypopt(train_list,
+#'                            test_list,
+#'                            "AML",
+#'                            type = "elnet",
+#'                            cv_sets = 2,
+#'                            grid_size = 1,
+#'                            ncores = 1,
+#'                            exclude_cols = "Sex")
+#'
+#' vis_hypopt(hypopt_res$elnet_tune, "penalty", "mixture", "AML")
+vis_hypopt <- function(tune_res,
+                       x,
+                       color,
+                       disease) {
+
+  hypopt_res <- tune_res |>
+    tune::collect_metrics()
+
+  hypopt_plot <- ggplot2::ggplot(hypopt_res, ggplot2::aes_string(x = x, y = 'mean', color = color)) +
+    ggplot2::geom_point(size = 3) +
+    ggplot2::geom_errorbar(ggplot2::aes(ymin = mean - std_err,
+                                        ymax = mean + std_err),
+                           alpha = 0.5) +
+    ggplot2::ggtitle(label = paste0(disease,'')) +
+    viridis::scale_color_viridis() +
+    ggplot2::labs(y = "metric_mean") +
+    ggplot2::theme_classic()
+
+  return(hypopt_plot)
+}
+
+
+#' Hyperparameter optimization for elastic net
+#'
+#' This function performs hyperparameter optimization for elastic net models.
+#' It uses the glmnet engine for logistic regression and tunes either only penalty or both penalty and mixture.
+#'
+#'
+#' @param train_data (list). List of training data sets from make_groups().
+#' @param test_data (list). List of testing data sets from make_groups().
+#' @param exclude_cols (vector). Columns to exclude from the model. Default is NULL.
+#' @param disease (character). Disease to predict.
+#' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param metric (function). Metric to optimize. Default is roc_auc.
+#' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
+#' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
+#' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis (logical). Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#'
+#' @return A list with three elements:
+#'  - elnet_tune (tibble). Hyperparameter optimization results.
+#'  - wf (workflow). Workflow object.
+#'  - train_set (tibble). Training set.
+#'  - test_set (tibble). Testing set.
+#' @export
+#'
+#' @examples
+#' wide_data <- example_data |>
+#'   dplyr::select(DAid, Assay, NPX) |>
+#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
+#' join_data <- wide_data |>
+#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
+#' diseases <- unique(example_metadata$Disease)
+#' data_split <- split_data(join_data)
+#' train_list <- make_groups(data_split$train_set,
+#'                           diseases,
+#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
+#'                           only_male = "PRC")
+#'
+#' test_list <- make_groups(data_split$test_set,
+#'                          diseases,
+#'                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
+#'                          only_male = "PRC")
+#'
+#' hypopt_res <- elnet_hypopt(train_list,
+#'                            test_list,
+#'                            "AML",
+#'                            type = "elnet",
+#'                            cv_sets = 2,
+#'                            grid_size = 1,
+#'                            ncores = 1,
+#'                            exclude_cols = "Sex")
 elnet_hypopt <- function(train_data,
-                         exclude_cols,
+                         test_data,
                          disease,
                          type = "lasso",
                          metric = roc_auc,
                          cv_sets = 5,
                          grid_size = 10,
                          ncores = 4,
+                         hypopt_vis = TRUE,
+                         exclude_cols = NULL,
                          seed = 123
 ) {
 
@@ -226,6 +303,11 @@ elnet_hypopt <- function(train_data,
     dplyr::select(-dplyr::any_of(exclude_cols))
   train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
 
+  test_set <- test_data[[disease]] |>
+    dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
+    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols))
+
   elnet_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
     recipes::update_role(DAid, new_role = "id") |>
     recipes::step_normalize(recipes::all_numeric()) |>
@@ -233,22 +315,22 @@ elnet_hypopt <- function(train_data,
     recipes::step_corr(recipes::all_numeric()) |>
     recipes::step_impute_knn(recipes::all_numeric())
 
-  mixture_value <- switch(type,
-                          "lasso" = 1,
-                          "ridge" = 0,
-                          "elnet" = NULL,  # allow tuning for elastic net
-                          stop("Invalid type specified. Choose 'lasso', 'ridge', or 'elnet'."))
-
-  if (is.null(mixture_value)) {
+  if (type == "elnet") {
     elnet_spec <- parsnip::logistic_reg(
       penalty = tune::tune(),  # lambda
       mixture = tune::tune()  # alpha
     ) |>
       parsnip::set_engine("glmnet")
-  } else {
+  } else if (type == "lasso") {
     elnet_spec <- parsnip::logistic_reg(
       penalty = tune::tune(),
-      mixture = mixture_value
+      mixture = 1
+    ) |>
+      parsnip::set_engine("glmnet")
+  } else if (type == "ridge") {
+    elnet_spec <- parsnip::logistic_reg(
+      penalty = tune::tune(),
+      mixture = 0
     ) |>
       parsnip::set_engine("glmnet")
   }
@@ -273,9 +355,370 @@ elnet_hypopt <- function(train_data,
       metrics = roc_res
     )
 
-  return(list(
-    "elnet_tune" = elnet_tune,
-    "train_set" = train_set,
-    "wf" = elnet_wf
-  ))
+  if (hypopt_vis) {
+    if (type == "elnet") {
+      hypopt_plot <- vis_hypopt(elnet_tune, "penalty", "mixture", disease)
+    } else {
+      hypopt_plot <- vis_hypopt(elnet_tune, "penalty", NULL, disease)
+    }
+    return(list("elnet_tune" = elnet_tune,
+                "wf" = elnet_wf,
+                "train_set" = train_set,
+                "test_set" = test_set,
+                "hyperopt_vis" = hypopt_plot))
+  }
+
+  return(list("elnet_tune" = elnet_tune,
+              "wf" = elnet_wf,
+              "train_set" = train_set,
+              "test_set" = test_set))
+}
+
+
+#' Fit the final elastic net model
+#'
+#' This function fits the final elastic net model using the best hyperparameters from hyperparameter optimization.
+#'
+#' @param train_set (tibble). Training set.
+#' @param tune_res (tibble). Hyperparameter optimization results.
+#' @param wf (workflow). Workflow object.
+#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#'
+#' @return A list with three elements:
+#'  - final_elnet (parsnip model). Final elastic net model.
+#'  - best_elnet (tibble). Best hyperparameters from hyperparameter optimization.
+#'  - final_wf (workflow). Final workflow object.
+#' @export
+#'
+#' @examples
+#' wide_data <- example_data |>
+#'   dplyr::select(DAid, Assay, NPX) |>
+#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
+#' join_data <- wide_data |>
+#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
+#' diseases <- unique(example_metadata$Disease)
+#' data_split <- split_data(join_data)
+#' train_list <- make_groups(data_split$train_set,
+#'                           diseases,
+#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
+#'                           only_male = "PRC")
+#'
+#' test_list <- make_groups(data_split$test_set,
+#'                          diseases,
+#'                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
+#'                          only_male = "PRC")
+#'
+#' hypopt_res <- elnet_hypopt(train_list,
+#'                            test_list,
+#'                            "AML",
+#'                            type = "elnet",
+#'                            cv_sets = 2,
+#'                            grid_size = 1,
+#'                            ncores = 1,
+#'                            exclude_cols = "Sex")
+#'
+#' finalfit_res <- elnet_finalfit(hypopt_res$train_set, hypopt_res$elnet_tune, hypopt_res$wf)
+elnet_finalfit <- function(train_set,
+                           tune_res,
+                           wf,
+                           seed = 123) {
+
+  best_elnet <- tune_res |>
+    tune::select_best(metric = "roc_auc") |>
+    dplyr::select(-.config)
+
+  final_wf <- tune::finalize_workflow(wf, best_elnet)
+
+  final_elnet <- final_wf |>
+    parsnip::fit(train_set)
+
+  return(list("final_elnet" = final_elnet,
+              "best_elnet" = best_elnet,
+              "final_wf" = final_wf))
+}
+
+
+#' Test the final elastic net model
+#'
+#' This function tests the final elastic net model on the test set.
+#' It calculates the accuracy, sensitivity, specificity, AUC, and confusion matrix.
+#'
+#' @param train_set (tibble). Training set.
+#' @param test_set (tibble). Testing set.
+#' @param disease (character). Disease to predict.
+#' @param finalfit_res (list). Results from elnet_finalfit().
+#' @param exclude_cols (vector). Columns to exclude from the model. Default is NULL.
+#' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#'
+#' @return A list with two elements:
+#'  - metrics (list). A list with 5 metrics:
+#'   - accuracy (numeric). Accuracy of the model.
+#'   - sensitivity (numeric). Sensitivity of the model.
+#'   - specificity (numeric). Specificity of the model.
+#'   - auc (numeric). AUC of the model.
+#'   - conf_matrix (tibble). Confusion matrix of the model.
+#'  - mixture (numeric). Mixture of lasso and ridge regularization.
+#' @export
+#'
+#' @examples
+#' wide_data <- example_data |>
+#'   dplyr::select(DAid, Assay, NPX) |>
+#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
+#' join_data <- wide_data |>
+#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
+#' diseases <- unique(example_metadata$Disease)
+#' data_split <- split_data(join_data)
+#' train_list <- make_groups(data_split$train_set,
+#'                           diseases,
+#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
+#'                           only_male = "PRC")
+#'
+#' test_list <- make_groups(data_split$test_set,
+#'                          diseases,
+#'                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
+#'                          only_male = "PRC")
+#'
+#' hypopt_res <- elnet_hypopt(train_list,
+#'                            test_list,
+#'                            "AML",
+#'                            type = "elnet",
+#'                            cv_sets = 2,
+#'                            grid_size = 1,
+#'                            ncores = 1,
+#'                            exclude_cols = "Sex")
+#'
+#' finalfit_res <- elnet_finalfit(hypopt_res$train_set, hypopt_res$elnet_tune, hypopt_res$wf)
+#'
+#' testfit_res <- elnet_testfit(hypopt_res$train_set,
+#'                              hypopt_res$test_set,
+#'                              "AML",
+#'                              finalfit_res,
+#'                              exclude_cols = "Sex")
+elnet_testfit <- function(train_set,
+                          test_set,
+                          disease,
+                          finalfit_res,
+                          exclude_cols = NULL,
+                          type = "lasso"
+) {
+
+  splits <- rsample::make_splits(train_set, test_set)
+
+  preds <- tune::last_fit(finalfit_res$final_wf,
+                          splits,
+                          metrics = yardstick::metric_set(yardstick::roc_auc))
+  res <- stats::predict(finalfit_res$final_elnet, new_data = test_set)
+
+  res <- dplyr::bind_cols(res, test_set |> dplyr::select(Disease))
+
+  accuracy <- res |>
+    yardstick::accuracy(Disease, .pred_class)
+
+  sensitivity <- res |>
+    yardstick::sensitivity(Disease, .pred_class)
+
+  specificity <- res |>
+    yardstick::specificity(Disease, .pred_class)
+
+  roc <- preds |>
+    tune::collect_predictions(summarize = F) |>
+    yardstick::roc_curve(truth = Disease, .pred_0)
+
+  auc <- preds |>
+    tune::collect_metrics()
+
+  cm <- res |>
+    yardstick::conf_mat(Disease, .pred_class)
+
+  if (type == "elnet") {
+    mixture <- finalfit_res$best_elnet$mixture
+  } else if (type == "lasso") {
+    mixture <- 1
+  } else if (type == "ridge") {
+    mixture <- 0
+  }
+
+  return(list("metrics" = list("accuracy" = round(accuracy$.estimate, 2),
+                              "sensitivity" = round(sensitivity$.estimate, 2),
+                              "specificity" = round(specificity$.estimate, 2),
+                              "auc" = round(auc$.estimate, 2),
+                              "conf_matrix" = cm),
+              "mixture" = mixture))
+}
+
+
+#' Generate subtitle for variable importance plot
+#'
+#' This function generates a subtitle for the variable importance plot.
+#'
+#' @param features (tibble). Features with importance values.
+#' @param accuracy (numeric). Accuracy of the model.
+#' @param sensitivity (numeric). Sensitivity of the model.
+#' @param specificity (numeric). Specificity of the model.
+#' @param auc (numeric). AUC of the model.
+#' @param mixture (numeric). Mixture of lasso and ridge regularization.
+#' @param subtitle (vector). Vector of subtitles to include in the plot. Default is all.
+#'
+#' @return subtitle (character). Subtitle for the plot.
+#' @export
+#'
+#' @examples
+#' features <- tibble::tibble(Variable = c("A", "B", "C"),
+#'                           Importance = c(0.1, 0.2, 0.3),
+#'                           Sign = c("NEG", "POS", "NEG"),
+#'                           Scale_Importance = c(10, 20, 30))
+#'
+#' subtitle <- generate_subtitle(features, 0.8, 0.9, 0.7, 0.85, 0.5, c("accuracy", "sensitivity"))
+generate_subtitle <- function(features, accuracy, sensitivity, specificity, auc, mixture, subtitle = NULL) {
+  subtitle_parts <- c()
+
+  if ("accuracy" %in% subtitle) {
+    subtitle_parts <- c(subtitle_parts, paste0('accuracy = ', round(accuracy, 2), '    '))
+  }
+
+  if ("sensitivity" %in% subtitle) {
+    subtitle_parts <- c(subtitle_parts, paste0('sensitivity = ', round(sensitivity, 2), '    '))
+  }
+
+  if ("specificity" %in% subtitle) {
+    subtitle_parts <- c(subtitle_parts, paste0('specificity = ', round(specificity, 2), '    '))
+  }
+
+  if ("auc" %in% subtitle) {
+    subtitle_parts <- c(subtitle_parts, paste0('AUC = ', round(auc, 2), '    '))
+  }
+
+  if (length(subtitle_parts) > 0) {
+    subtitle_parts <- c(subtitle_parts, '\n')
+  }
+
+  if ("features" %in% subtitle) {
+    subtitle_parts <- c(subtitle_parts, paste0('Features = ', nrow(features), '    '))
+  }
+
+  if ("top-features" %in% subtitle) {
+    subtitle_parts <- c(subtitle_parts, paste0('top-features = ',
+                                               nrow(features |> dplyr::filter(Scaled_Importance >= 50)),
+                                               '    '))
+  }
+
+  if ("mixture" %in% subtitle) {
+    subtitle_parts <- c(subtitle_parts, paste0('Lasso/Ridge ratio = ', round(mixture, 2), '    '))
+  }
+
+  subtitle <- paste(subtitle_parts, collapse = '')
+
+  return(subtitle)
+}
+
+
+#' Plot variable importance
+#'
+#' This function collects the features and their importance.
+#' It scales their importance and plots it against them.
+#'
+#' @param finalfit_res (list). Results from elnet_finalfit().
+#' @param disease (character). Disease to predict.
+#' @param accuracy (numeric). Accuracy of the model.
+#' @param sensitivity (numeric). Sensitivity of the model.
+#' @param specificity (numeric). Specificity of the model.
+#' @param auc (numeric). AUC of the model.
+#' @param mixture (numeric). Mixture of lasso and ridge regularization.
+#' @param subtitle (vector). Vector of subtitles to include in the plot. Default is a list with all.
+#'
+#' @return A list with two elements:
+#'  - features (tibble). Features with importance values.
+#'  - var_imp_plot (plot). Variable importance plot.
+#' @export
+#'
+#' @examples
+#' wide_data <- example_data |>
+#'   dplyr::select(DAid, Assay, NPX) |>
+#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
+#' join_data <- wide_data |>
+#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
+#' diseases <- unique(example_metadata$Disease)
+#' data_split <- split_data(join_data)
+#' train_list <- make_groups(data_split$train_set,
+#'                           diseases,
+#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
+#'                           only_male = "PRC")
+#'
+#' test_list <- make_groups(data_split$test_set,
+#'                          diseases,
+#'                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
+#'                          only_male = "PRC")
+#'
+#' hypopt_res <- elnet_hypopt(train_list,
+#'                            test_list,
+#'                            "AML",
+#'                            type = "elnet",
+#'                            cv_sets = 2,
+#'                            grid_size = 1,
+#'                            ncores = 1,
+#'                            exclude_cols = "Sex")
+#'
+#' finalfit_res <- elnet_finalfit(hypopt_res$train_set, hypopt_res$elnet_tune, hypopt_res$wf)
+#'
+#' testfit_res <- elnet_testfit(hypopt_res$train_set,
+#'                              hypopt_res$test_set,
+#'                              "AML",
+#'                              finalfit_res,
+#'                              exclude_cols = "Sex")
+#'
+#' plot_var_imp(finalfit_res,
+#'              "AML",
+#'              testfit_res$metrics$accuracy,
+#'              testfit_res$metrics$sensitivity,
+#'              testfit_res$metrics$specificity,
+#'              testfit_res$metrics$auc,
+#'              testfit_res$mixture)
+plot_var_imp <- function (finalfit_res,
+                          disease,
+                          accuracy,
+                          sensitivity,
+                          specificity,
+                          auc,
+                          mixture,
+                          subtitle = c("accuracy",
+                                       "sensitivity",
+                                       "specificity",
+                                       "auc",
+                                       "features",
+                                       "top-features",
+                                       "mixture")
+                          ) {
+
+  features <- finalfit_res$final_elnet |>
+    workflows::extract_fit_parsnip() |>
+    vip::vi(lambda = finalfit_res$best_model$penalty,
+            alpha = finalfit_res$best_model$mixture
+    ) |>
+    dplyr::mutate(
+      Importance = abs(Importance),
+      Variable = forcats::fct_reorder(Variable, Importance)
+    ) |>
+    dplyr::arrange(dplyr::desc(Importance)) |>
+    dplyr::mutate(Scaled_Importance = scales::rescale(Importance, to = c(0, 100))) |>
+    dplyr::filter(Scaled_Importance > 0)
+
+  subtitle_text <- generate_subtitle(features, accuracy, sensitivity, specificity, auc, mixture, subtitle)
+
+  var_imp_plot <- features |>
+    ggplot2::ggplot(ggplot2::aes(x = Scaled_Importance, y = Variable)) +
+    ggplot2::geom_col() +
+    ggplot2::scale_x_continuous(expand = c(0, 0)) +
+    ggplot2::labs(y = NULL) +
+    ggplot2::geom_vline(xintercept = 50, linetype = 'dashed', color = 'black') +
+    ggplot2::scale_x_continuous(breaks = c(0, 100)) +  # Keep x-axis tick labels at 0 and 100
+    ggplot2::ggtitle(label = paste0(disease,''),
+                     subtitle = subtitle_text) +
+    ggplot2::xlab('Importance') +
+    ggplot2::ylab('Features') +
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                   axis.ticks.y = ggplot2::element_blank())
+
+  return(list("features" = features,
+              "var_imp_plot" = var_imp_plot))
 }

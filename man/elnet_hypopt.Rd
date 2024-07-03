@@ -6,20 +6,22 @@
 \usage{
 elnet_hypopt(
   train_data,
-  exclude_cols,
+  test_data,
   disease,
   type = "lasso",
   metric = roc_auc,
   cv_sets = 5,
   grid_size = 10,
   ncores = 4,
+  hypopt_vis = TRUE,
+  exclude_cols = NULL,
   seed = 123
 )
 }
 \arguments{
 \item{train_data}{(list). List of training data sets from make_groups().}
 
-\item{exclude_cols}{(vector). Columns to exclude from the model.}
+\item{test_data}{(list). List of testing data sets from make_groups().}
 
 \item{disease}{(character). Disease to predict.}
 
@@ -33,14 +35,19 @@ elnet_hypopt(
 
 \item{ncores}{(numeric). Number of cores to use for parallel processing. Default is 4.}
 
+\item{hypopt_vis}{(logical). Whether to visualize hyperparameter optimization results. Default is TRUE.}
+
+\item{exclude_cols}{(vector). Columns to exclude from the model. Default is NULL.}
+
 \item{seed}{(numeric). Seed for reproducibility. Default is 123.}
 }
 \value{
 A list with three elements:
 \itemize{
 \item elnet_tune (tibble). Hyperparameter optimization results.
-\item train_set (tibble). Training set.
 \item wf (workflow). Workflow object.
+\item train_set (tibble). Training set.
+\item test_set (tibble). Testing set.
 }
 }
 \description{
@@ -54,10 +61,23 @@ wide_data <- example_data |>
 join_data <- wide_data |>
   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
 diseases <- unique(example_metadata$Disease)
-group_list <- make_groups(join_data,
+data_split <- split_data(join_data)
+train_list <- make_groups(data_split$train_set,
                           diseases,
                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
                           only_male = "PRC")
 
-hypopt_res <- elnet_hypopt(group_list, "Sex", "AML", type = "elnet", grid_size = 5, ncores = 1)
+test_list <- make_groups(data_split$test_set,
+                         diseases,
+                         only_female = c("BRC", "CVX", "ENDC", "OVC"),
+                         only_male = "PRC")
+
+hypopt_res <- elnet_hypopt(train_list,
+                           test_list,
+                           "AML",
+                           type = "elnet",
+                           cv_sets = 2,
+                           grid_size = 1,
+                           ncores = 1,
+                           exclude_cols = "Sex")
 }

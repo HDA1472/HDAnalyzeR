@@ -17,6 +17,7 @@ Imports:
     doParallel,
     dplyr,
     embed,
+    forcats,
     future,
     future.apply,
     ggplot2,
@@ -28,6 +29,7 @@ Imports:
     recipes,
     rlang,
     rsample,
+    scales,
     stats,
     tibble,
     tidyheatmaps,
@@ -35,6 +37,8 @@ Imports:
     tidytext,
     tune,
     utils,
+    vip,
+    viridis,
     workflows,
     yardstick
 Suggests: 
