@@ -43,7 +43,7 @@ correlate <- function(x, y = NULL, use = "pairwise.complete.obs", method = "pear
 #' @return A list containing the following elements:
 #'   - cor_matrix (matrix). A matrix of protein-protein correlations
 #'   - cor_results (tibble). A tibble with the filtered protein pairs and their correlation values
-#'   - p (plot). A heatmap of protein-protein correlations
+#'   - cor_plot (plot). A heatmap of protein-protein correlations
 #' @export
 #'
 #' @examples
@@ -73,7 +73,7 @@ create_corr_heatmap <- function(x,
     dplyr::arrange(dplyr::desc(Freq)) |>
     dplyr::rename(Protein1 = Var1, Protein2 = Var2, Correlation = Freq)
 
-  p <- tidyheatmaps::tidyheatmap(cor_long,
+  cor_plot <- tidyheatmaps::tidyheatmap(cor_long,
                                  rows = Var1,
                                  columns = Var2,
                                  values = Freq,
@@ -87,5 +87,5 @@ create_corr_heatmap <- function(x,
                                  treeheight_col = 20
   )
 
-  return(list("cor_matrix" = cor_matrix, "cor_results" = cor_results, "p" = p))
+  return(list("cor_matrix" = cor_matrix, "cor_results" = cor_results, "cor_plot" = cor_plot))
 }
