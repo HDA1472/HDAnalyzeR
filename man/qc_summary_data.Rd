@@ -7,28 +7,28 @@
 qc_summary_data(df, wide = T, threshold = 0.8, report = T)
 }
 \arguments{
-\item{df}{(tibble). The input dataframe}
+\item{df}{(tibble). The input dataframe.}
 
-\item{wide}{(logical). Whether the input dataframe is in wide format. Default is TRUE}
+\item{wide}{(logical). Whether the input dataframe is in wide format. Default is TRUE.}
 
-\item{threshold}{(numeric). The reporting protein-protein correlation threshold. Default is 0.8}
+\item{threshold}{(numeric). The reporting protein-protein correlation threshold. Default is 0.8.}
 
-\item{report}{(logical). Whether to print the summary. Default is TRUE}
+\item{report}{(logical). Whether to print the summary. Default is TRUE.}
 }
 \value{
 A list containing the following elements:
 \itemize{
-\item na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column
-\item na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row
-\item normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status
-\item cor_matrix (matrix). A matrix of protein-protein correlations
-\item cor_results (tibble). A tibble with the filtered protein pairs and their correlation values
-\item heatmap (ggplot). A heatmap of protein-protein correlations
+\item na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column.
+\item na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row.
+\item normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.
+\item cor_matrix (matrix). A matrix of protein-protein correlations.
+\item cor_results (tibble). A tibble with the filtered protein pairs and their correlation values.
+\item heatmap (ggplot). A heatmap of protein-protein correlations.
 }
 }
 \description{
 The function summarizes the quality control results of the input dataframe.
-It can handles both long and wide dataframes
+It can handles both long and wide dataframes.
 }
 \examples{
 qc_summary_data(example_data, wide = FALSE, threshold = 0.7)

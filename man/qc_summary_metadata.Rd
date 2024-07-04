@@ -4,18 +4,18 @@
 \alias{qc_summary_metadata}
 \title{Summarize the quality control results of metadata}
 \usage{
-qc_summary_metadata(df, report = T)
+qc_summary_metadata(metadata, report = T)
 }
 \arguments{
-\item{df}{(tibble). The input dataframe}
+\item{metadata}{(tibble). The metadata dataframe.}
 
-\item{report}{(logical). Whether to print the summary. Default is TRUE}
+\item{report}{(logical). Whether to print the summary. Default is TRUE.}
 }
 \value{
 A list containing the following elements:
 \itemize{
-\item na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column
-\item na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row
+\item na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column.
+\item na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row.
 }
 }
 \description{
