@@ -9,7 +9,7 @@ create_dir(dir_name, date = F)
 \arguments{
 \item{dir_name}{(string). The name of the directory to create}
 
-\item{date}{(logical). If T, the current date and time will be appended to the directory name}
+\item{date}{(logical). If T, a directory with the current date as name will be created in the directory with \code{dir_name}.}
 }
 \value{
 dir_name (string). The name of the created directory
@@ -18,8 +18,8 @@ dir_name (string). The name of the created directory
 The function creates a directory with the specified name. If the directory already exists, a message is printed.
 }
 \examples{
-create_dir("my_directory", date = FALSE)
-create_dir("my_directory/inner_dir", date = TRUE)
+create_dir("my_directory", date = FALSE)  # create outer directory
+create_dir("my_directory", date = TRUE)  # create inner directory with date as name
 # Clean up the created directory
 unlink("my_directory", recursive = TRUE)
 }

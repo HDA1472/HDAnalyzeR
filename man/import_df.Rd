@@ -17,7 +17,7 @@ The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, or TXT
 }
 \examples{
 df_out <- example_data
-save_df(df_out, "my_data", "sample_data", "rda")
+save_df(df_out, "sample_data", "my_data", file_type = "rda")
 df_in <- load("my_data/sample_data.rda")
 # Clean up the created directory
 unlink("my_data", recursive = TRUE)

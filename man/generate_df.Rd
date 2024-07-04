@@ -4,20 +4,30 @@
 \alias{generate_df}
 \title{Generate and store wide and join dataframes}
 \usage{
-generate_df(long_data, metadata, save = T)
+generate_df(
+  long_data,
+  metadata,
+  join = T,
+  metadata_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
+  save = T
+)
 }
 \arguments{
-\item{long_data}{(tibble). The long data}
+\item{long_data}{(tibble). The long data.}
 
-\item{metadata}{(tibble). The metadata}
+\item{metadata}{(tibble). The metadata.}
 
-\item{save}{(TRUE or NULL). If TRUE, the dataframes are saved}
+\item{join}{(logical). If TRUE, the dataframes are joined with metadata.}
+
+\item{metadata_cols}{(vector). The metadata columns to join with data.}
+
+\item{save}{(logical). If TRUE, the dataframes are saved.}
 }
 \value{
 A list containing the following elements:
 \itemize{
-\item wide_data (tibble). The wide data
-\item join_data (tibble). The joined data with metadata
+\item wide_data (tibble). The wide data.
+\item join_data (tibble). The joined data with metadata. If join is FALSE, this is not returned.
 }
 }
 \description{
@@ -28,8 +38,8 @@ It stores them in the data/processed/data_metadata directory in RDA format.
 clean_data <- clean_data(example_data, keep_cols = c("DAid", "Assay", "NPX"))
 clean_metadata <- clean_metadata(example_metadata, keep_cols = c("DAid", "GROUP", "Age"))
 result_df <- generate_df(clean_data, clean_metadata)
-wide_data <- result_df[[1]]
-join_data <- result_df[[2]]
+wide_data <- result_df$wide_data
+join_data <- result_df$join_data
 # Clean up the created directory
 unlink("data", recursive = TRUE)
 }
