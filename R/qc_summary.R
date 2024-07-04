@@ -1,17 +1,31 @@
 utils::globalVariables(c("DAid", "Assay", "NPX", "adj.P.Val"))
+#' Check the column types of the dataframe
+#'
+#' The function checks the column types of the input dataframe and returns the counts of each class.
+#'
+#' @param df (tibble). The input dataframe.
+#'
+#' @return class_summary (table). A table with the counts of each class in the dataframe.
+#' @keywords internal
+check_col_types <- function(df) {
+  # Get the classes of all columns
+  col_classes <- lapply(df, class)
+
+  # Summarize the counts of each class
+  class_summary <- table(unlist(col_classes))
+
+  return(class_summary)
+}
+
 #' Calculate the percentage of NAs in each column
 #'
 #' The function calculates the percentage of NAs in each column of the input dataframe.
 #' It filters out the columns with 0% missing data and returns the rest in descending order.
 #'
-#' @param df (tibble). The input dataframe
+#' @param df (tibble). The input dataframe.
 #'
-#' @return na_percentage (tibble). A tibble with the column names and the percentage of NAs in each column
-#' @export
-#'
-#' @examples
-#' na_percentages <- calc_na_percentage_col(example_metadata)
-#' print(na_percentages)
+#' @return na_percentage (tibble). A tibble with the column names and the percentage of NAs in each column.
+#' @keywords internal
 calc_na_percentage_col <- function(df) {
 
   na_percentage <- df |>
@@ -29,14 +43,10 @@ calc_na_percentage_col <- function(df) {
 #' The function calculates the percentage of NAs in each row of the input dataframe.
 #' It filters out the rows with 0% missing data and returns the rest in descending order.
 #'
-#' @param df (tibble). The input dataframe
+#' @param df (tibble). The input dataframe.
 #'
-#' @return na_percentage (tibble). A tibble with the DAids and the percentage of NAs in each row
-#' @export
-#'
-#' @examples
-#' na_percentages <- calc_na_percentage_row(example_metadata)
-#' print(na_percentages)
+#' @return na_percentage (tibble). A tibble with the DAids and the percentage of NAs in each row.
+#' @keywords internal
 calc_na_percentage_row <- function(df) {
 
   na_percentage <- df |>
@@ -53,16 +63,10 @@ calc_na_percentage_row <- function(df) {
 
 #' Check normality of the data
 #'
-#' @param df (tibble). The input dataframe
+#' @param df (tibble). The input dataframe.
 #'
-#' @return normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status
-#' @export
-#'
-#' @examples
-#' df <- example_data |>
-#'   dplyr::select(DAid, Assay, NPX) |>
-#'   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX")
-#' normality_results <- check_normality(df)
+#' @return normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.
+#' @keywords internal
 check_normality <- function(df) {
 
   future::plan(future::multicore)
@@ -93,30 +97,29 @@ check_normality <- function(df) {
 #'
 #' The function prints the summary of the quality control results of the input dataframe.
 #'
-#' @param sample_n (numeric). The number of samples
-#' @param var_n (numeric). The number of variables
-#' @param na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column
-#' @param na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row
-#' @param normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status
-#' @param cor_results (tibble). A tibble with the filtered protein pairs and their correlation values
-#' @param heatmap (plot). A heatmap of protein-protein correlations
-#' @param threshold (numeric). The reporting protein-protein correlation threshold
+#' @param sample_n (numeric). The number of samples.
+#' @param var_n (numeric). The number of variables.
+#' @param class_summary (table). A table with the counts of each class in the dataframe.
+#' @param na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column.
+#' @param na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row.
+#' @param normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.
+#' @param cor_results (tibble). A tibble with the filtered protein pairs and their correlation values.
+#' @param heatmap (plot). A heatmap of protein-protein correlations.
+#' @param threshold (numeric). The reporting protein-protein correlation threshold.
 #'
-#' @return NULL
-#' @export
-#'
-#' @examples
-#' summary_results <- qc_summary_data(example_data, wide = FALSE, threshold = 0.7, report = FALSE)
-#' print_summary(summary_results$sample_n, summary_results$var_n, summary_results$na_percentage_col,
-#'               summary_results$na_percentage_row, summary_results$normality_results,
-#'               summary_results$cor_results, summary_results$heatmap, 0.7)
-print_summary <- function(sample_n, var_n, na_percentage_col, na_percentage_row,
+#' @return NULL.
+#' @keywords internal
+print_summary <- function(sample_n, var_n, class_summary, na_percentage_col, na_percentage_row,
                           normality_results = F, cor_results = F, heatmap = F,  threshold = F) {
 
   print("Summary:")
   print("Note: In case of long output, only the first 10 rows are shown. To see the rest display the object with view()")
   print(paste0("Number of samples: ", sample_n))
   print(paste0("Number of variables: ", var_n))
+  print("--------------------------------------")
+  for (class_name in names(class_summary)) {
+    print(paste(class_name, ":", class_summary[class_name]))
+  }
   print("--------------------------------------")
   print("NA percentage in each column:")
   print(na_percentage_col)
@@ -147,41 +150,42 @@ print_summary <- function(sample_n, var_n, na_percentage_col, na_percentage_row,
 #' Summarize the quality control results of Olink data
 #'
 #' The function summarizes the quality control results of the input dataframe.
-#' It can handles both long and wide dataframes
+#' It can handles both long and wide dataframes.
 #'
-#' @param df (tibble). The input dataframe
-#' @param wide (logical). Whether the input dataframe is in wide format. Default is TRUE
-#' @param threshold (numeric). The reporting protein-protein correlation threshold. Default is 0.8
-#' @param report (logical). Whether to print the summary. Default is TRUE
+#' @param df (tibble). The input dataframe.
+#' @param wide (logical). Whether the input dataframe is in wide format. Default is TRUE.
+#' @param threshold (numeric). The reporting protein-protein correlation threshold. Default is 0.8.
+#' @param report (logical). Whether to print the summary. Default is TRUE.
 #'
 #' @return A list containing the following elements:
-#'   - na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column
-#'   - na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row
-#'   - normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status
-#'   - cor_matrix (matrix). A matrix of protein-protein correlations
-#'   - cor_results (tibble). A tibble with the filtered protein pairs and their correlation values
-#'   - heatmap (ggplot). A heatmap of protein-protein correlations
+#'   - na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column.
+#'   - na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row.
+#'   - normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.
+#'   - cor_matrix (matrix). A matrix of protein-protein correlations.
+#'   - cor_results (tibble). A tibble with the filtered protein pairs and their correlation values.
+#'   - heatmap (ggplot). A heatmap of protein-protein correlations.
 #' @export
 #'
 #' @examples
 #' qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
 qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 
-  df <- widen_data(df, wide)
+  wide_data <- widen_data(df, wide)
 
-  sample_n <- nrow(df)
-  protein_n <- ncol(df) - 1
-  na_percentage_col <- calc_na_percentage_col(df)
-  na_percentage_row <- calc_na_percentage_row(df)
-  normality_results <- check_normality(df)
-  cor <- create_corr_heatmap(df |> dplyr::select(-dplyr::any_of(c("DAid"))),
+  sample_n <- nrow(wide_data)
+  protein_n <- ncol(wide_data) - 1
+  class_summary <- check_col_types(wide_data)
+  na_percentage_col <- calc_na_percentage_col(wide_data)
+  na_percentage_row <- calc_na_percentage_row(wide_data)
+  normality_results <- check_normality(wide_data)
+  cor <- create_corr_heatmap(wide_data |> dplyr::select(-dplyr::any_of(c("DAid"))),
                              threshold = threshold)
   cor_matrix <- cor$cor_matrix
   cor_results <- cor$cor_results
   p <- cor$p
 
   if (isTRUE(report)) {
-    print_summary(sample_n, protein_n, na_percentage_col, na_percentage_row,
+    print_summary(sample_n, protein_n, class_summary, na_percentage_col, na_percentage_row,
                   normality_results, cor_results, p, threshold)
   }
 
@@ -202,25 +206,26 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 #'
 #' The function summarizes the quality control results of the input dataframe.
 #'
-#' @param df (tibble). The input dataframe
-#' @param report (logical). Whether to print the summary. Default is TRUE
+#' @param metadata (tibble). The metadata dataframe.
+#' @param report (logical). Whether to print the summary. Default is TRUE.
 #'
 #' @return A list containing the following elements:
-#'   - na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column
-#'   - na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row
+#'   - na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column.
+#'   - na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row.
 #' @export
 #'
 #' @examples
 #' qc_summary_metadata(example_metadata)
-qc_summary_metadata <- function(df, report = T) {
+qc_summary_metadata <- function(metadata, report = T) {
 
-  sample_n <- nrow(df)
-  var_n <- ncol(df) - 1
-  na_percentage_col <- calc_na_percentage_col(df)
-  na_percentage_row <- calc_na_percentage_row(df)
+  sample_n <- nrow(metadata)
+  var_n <- ncol(metadata) - 1
+  class_summary <- check_col_types(metadata)
+  na_percentage_col <- calc_na_percentage_col(metadata)
+  na_percentage_row <- calc_na_percentage_row(metadata)
 
   if (isTRUE(report)) {
-    print_summary(sample_n, var_n, na_percentage_col, na_percentage_row)
+    print_summary(sample_n, var_n, class_summary, na_percentage_col, na_percentage_row)
   }
 
   return(

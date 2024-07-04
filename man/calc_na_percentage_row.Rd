@@ -7,16 +7,13 @@
 calc_na_percentage_row(df)
 }
 \arguments{
-\item{df}{(tibble). The input dataframe}
+\item{df}{(tibble). The input dataframe.}
 }
 \value{
-na_percentage (tibble). A tibble with the DAids and the percentage of NAs in each row
+na_percentage (tibble). A tibble with the DAids and the percentage of NAs in each row.
 }
 \description{
 The function calculates the percentage of NAs in each row of the input dataframe.
 It filters out the rows with 0\% missing data and returns the rest in descending order.
 }
-\examples{
-na_percentages <- calc_na_percentage_row(example_metadata)
-print(na_percentages)
-}
+\keyword{internal}

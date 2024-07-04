@@ -7,17 +7,12 @@
 check_normality(df)
 }
 \arguments{
-\item{df}{(tibble). The input dataframe}
+\item{df}{(tibble). The input dataframe.}
 }
 \value{
-normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status
+normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.
 }
 \description{
 Check normality of the data
 }
-\examples{
-df <- example_data |>
-  dplyr::select(DAid, Assay, NPX) |>
-  tidyr::pivot_wider(names_from = "Assay", values_from = "NPX")
-normality_results <- check_normality(df)
-}
+\keyword{internal}

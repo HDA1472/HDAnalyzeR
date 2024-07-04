@@ -7,6 +7,7 @@
 print_summary(
   sample_n,
   var_n,
+  class_summary,
   na_percentage_col,
   na_percentage_row,
   normality_results = F,
@@ -16,28 +17,28 @@ print_summary(
 )
 }
 \arguments{
-\item{sample_n}{(numeric). The number of samples}
+\item{sample_n}{(numeric). The number of samples.}
 
-\item{var_n}{(numeric). The number of variables}
+\item{var_n}{(numeric). The number of variables.}
 
-\item{na_percentage_col}{(tibble). A tibble with the column names and the percentage of NAs in each column}
+\item{class_summary}{(table). A table with the counts of each class in the dataframe.}
 
-\item{na_percentage_row}{(tibble). A tibble with the DAids and the percentage of NAs in each row}
+\item{na_percentage_col}{(tibble). A tibble with the column names and the percentage of NAs in each column.}
 
-\item{normality_results}{(tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status}
+\item{na_percentage_row}{(tibble). A tibble with the DAids and the percentage of NAs in each row.}
 
-\item{cor_results}{(tibble). A tibble with the filtered protein pairs and their correlation values}
+\item{normality_results}{(tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.}
 
-\item{heatmap}{(plot). A heatmap of protein-protein correlations}
+\item{cor_results}{(tibble). A tibble with the filtered protein pairs and their correlation values.}
 
-\item{threshold}{(numeric). The reporting protein-protein correlation threshold}
+\item{heatmap}{(plot). A heatmap of protein-protein correlations.}
+
+\item{threshold}{(numeric). The reporting protein-protein correlation threshold.}
+}
+\value{
+NULL.
 }
 \description{
 The function prints the summary of the quality control results of the input dataframe.
 }
-\examples{
-summary_results <- qc_summary_data(example_data, wide = FALSE, threshold = 0.7, report = FALSE)
-print_summary(summary_results$sample_n, summary_results$var_n, summary_results$na_percentage_col,
-              summary_results$na_percentage_row, summary_results$normality_results,
-              summary_results$cor_results, summary_results$heatmap, 0.7)
-}
+\keyword{internal}
