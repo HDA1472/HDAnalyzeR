@@ -34,7 +34,7 @@ A list containing the following elements:
 \itemize{
 \item cor_matrix (matrix). A matrix of protein-protein correlations
 \item cor_results (tibble). A tibble with the filtered protein pairs and their correlation values
-\item p (plot). A heatmap of protein-protein correlations
+\item cor_plot (plot). A heatmap of protein-protein correlations
 }
 }
 \description{
