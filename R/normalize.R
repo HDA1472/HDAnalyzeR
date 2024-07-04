@@ -5,30 +5,35 @@
 #' It removes the batch effects and then converts the data back to normal.
 #'
 #' @param wide_data (tibble). A dataframe containing the data to be normalized. The data should be in wide format.
-#' @param batch (vector). A character vector containing the batch information.
-#' @param batch2 (vector). A character vector containing the second batch information. Default is NULL.
+#' @param metadata (tibble). A dataframe containing the metadata information.
+#' @param batch (character). The metadata column containing the batch information.
+#' @param batch2 (character). The metadata column containing the second batch information. Default is NULL.
 #'
 #' @return no_batch_effects (tibble). A dataframe containing the data without batch effects.
 #' @export
 #'
-#' @examples
-#' test_data <- example_data |>
-#'   dplyr::select(DAid, Assay, NPX) |>
-#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-#'
-#' batch <- test_data |>
-#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Cohort), by = "DAid") |>
-#'   dplyr::pull("Cohort")
-#'
-#' input_data <- test_data |> dplyr::select(-DAid)
-#' remove_batch_effects(input_data, batch)
+#' @keywords internal
 remove_batch_effects <- function(wide_data,
+                                 metadata,
                                  batch,
                                  batch2 = NULL
                                  ) {
 
+  batch <- wide_data |>
+    dplyr::left_join(metadata |>
+                       dplyr::select(dplyr::any_of(c("DAid", batch))),
+                     by = "DAid") |>
+    dplyr::pull(batch)
+  if (!is.null(batch2)) {
+    batch2 <- wide_data |>
+      dplyr::left_join(metadata |>
+                         dplyr::select(DAid, batch2),
+                       by = "DAid") |>
+      dplyr::pull(batch2)
+  }
+
   # Prepare the data for limma
-  mat_data <- as.matrix(wide_data)
+  mat_data <- as.matrix(wide_data |> dplyr::select(-DAid))
   transposed_mat <- t(mat_data)
 
   # Remove batch effects
@@ -53,7 +58,7 @@ remove_batch_effects <- function(wide_data,
 #' @param wide (logical). A logical value indicating whether the data is in wide format. Default is TRUE.
 #' @param center (logical). A logical value indicating whether to center the data. Default is TRUE.
 #' @param scale (logical). A logical value indicating whether to scale the data. Default is TRUE.
-#' @param batch (character). The metadata column containing the batch information. Default is NULL.
+#' @param batch (character). The metadata column containing the batch information. In order to correct for batch effects, this parameter should be provided. Default is NULL.
 #' @param batch2 (character). The metadata column containing the second batch information. Default is NULL.
 #' @param return_long (logical). A logical value indicating whether to return the data in long format. Default is FALSE.
 #' @param save (logical). A logical value indicating whether to save the data. Default is FALSE.
@@ -80,34 +85,21 @@ normalize_data <- function(olink_data,
 
   # Prepare the data for scaling
   id_col <- wide_data |> dplyr::pull(DAid)
-  input_data <- wide_data |> dplyr::select(-DAid)
 
   # Remove batch effects
   if (!is.null(batch)) {
-    batch <- wide_data |>
-      dplyr::left_join(metadata |>
-                         dplyr::select(dplyr::any_of(c("DAid", batch))),
-                       by = "DAid") |>
-      dplyr::pull(batch)
-    if (!is.null(batch2)) {
-      batch2 <- wide_data |>
-        dplyr::left_join(metadata |>
-                           dplyr::select(DAid, batch2),
-                         by = "DAid") |>
-        dplyr::pull(batch2)
-    }
-    data_wo_batch_effects <- remove_batch_effects(input_data, batch = batch, batch2 = batch2)
+    data_wo_batch_effects <- remove_batch_effects(wide_data, metadata, batch = batch, batch2 = batch2)
   } else {
-    data_wo_batch_effects <- input_data
+    data_wo_batch_effects <- wide_data |> dplyr::select(-DAid)
   }
 
   # Scale the data
   scaled_data <- tibble::as_tibble(scale(data_wo_batch_effects, center = center, scale = scale))
-  names(scaled_data) <- names(input_data)
+  names(scaled_data) <- names(data_wo_batch_effects)
 
   # Prepare data to be returned
   scaled_data$DAid <- id_col
-  scaled_data <- scaled_data |> dplyr::select(DAid, dplyr::everything())
+  scaled_data <- scaled_data |> dplyr::relocate(DAid, dplyr::everything())
 
   if (isTRUE(return_long)) {
     scaled_data <- scaled_data |> tidyr::pivot_longer(cols = -DAid, names_to = "Assay", values_to = "NPX")

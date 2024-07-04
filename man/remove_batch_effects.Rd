@@ -4,14 +4,16 @@
 \alias{remove_batch_effects}
 \title{Remove batch effects}
 \usage{
-remove_batch_effects(wide_data, batch, batch2 = NULL)
+remove_batch_effects(wide_data, metadata, batch, batch2 = NULL)
 }
 \arguments{
 \item{wide_data}{(tibble). A dataframe containing the data to be normalized. The data should be in wide format.}
 
-\item{batch}{(vector). A character vector containing the batch information.}
+\item{metadata}{(tibble). A dataframe containing the metadata information.}
 
-\item{batch2}{(vector). A character vector containing the second batch information. Default is NULL.}
+\item{batch}{(character). The metadata column containing the batch information.}
+
+\item{batch2}{(character). The metadata column containing the second batch information. Default is NULL.}
 }
 \value{
 no_batch_effects (tibble). A dataframe containing the data without batch effects.
@@ -21,15 +23,4 @@ This function removes batch effects from the data using the limma package.
 It converts the dataframe into matrix and transposes it to get it ready for limma.
 It removes the batch effects and then converts the data back to normal.
 }
-\examples{
-test_data <- example_data |>
-  dplyr::select(DAid, Assay, NPX) |>
-  tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-
-batch <- test_data |>
-  dplyr::left_join(example_metadata |> dplyr::select(DAid, Cohort), by = "DAid") |>
-  dplyr::pull("Cohort")
-
-input_data <- test_data |> dplyr::select(-DAid)
-remove_batch_effects(input_data, batch)
-}
+\keyword{internal}

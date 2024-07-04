@@ -6,7 +6,7 @@
 \usage{
 generate_df(
   long_data,
-  metadata,
+  metadata = NULL,
   join = T,
   metadata_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
   save = T

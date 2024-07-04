@@ -1,11 +1,16 @@
 # Test remove_batch_effects ----------------------------------------------------
 test_that("remove_batch_effects removes batch effects", {
-  # Example from limma (https://rdrr.io/bioc/limma/man/removeBatchEffect.html)
-  test_data <- matrix(rnorm(10*9), 10, 9)
-  test_data[,1:3] <- test_data[, 1:3] + 5
+  # Example based on limma example (https://rdrr.io/bioc/limma/man/removeBatchEffect.html)
+  test_data <- as.data.frame(t(matrix(rnorm(10*9), 10, 9)))
+  daid <- c(1:9)
   batch <- c("A","A","A","B","B","B","C","C","C")
-  result <- remove_batch_effects(t(test_data), batch)
-  expected <- tibble::as_tibble(t(limma::removeBatchEffect(test_data, batch)))
+  test_data <- test_data |>
+    dplyr::mutate(dplyr::across(1:3, ~ . + 5)) |>
+    dplyr::mutate(DAid = daid)
+  test_metadata <- tibble::tibble(DAid = daid, Batch = batch)
+  result <- remove_batch_effects(test_data, test_metadata, "Batch")
+  test_data <- test_data |> dplyr::select(-DAid)
+  expected <- tibble::as_tibble(t(limma::removeBatchEffect(t(test_data), batch)))
   expect_equal(result, expected)
   # It gives warning for the `name` as my function expects a tibble with names and not a matrix like the example
 })
