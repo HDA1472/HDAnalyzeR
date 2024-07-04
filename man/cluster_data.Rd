@@ -27,7 +27,12 @@ cluster_data(
 \item{wide}{(logical). Whether the data is wide or long. Default is TRUE.}
 }
 \value{
-clustering_results (data.frame). A data frame with the clustered data.
+(list). A list with the following elements:
+\itemize{
+\item clustered_data (tibble). A data frame with the clustered data.
+\item hc_rows (hclust). The hierarchical clustering object for rows.
+\item hc_cols (hclust). The hierarchical clustering object for columns.
+}
 }
 \description{
 This function clusters data and returns a data frame with the clustered data.

@@ -17,24 +17,24 @@ create_corr_heatmap(
 \arguments{
 \item{x}{(vector or tibble). A numeric vector, matrix or data frame.}
 
-\item{y}{(vector, tibble or NULL). A numeric vector, matrix or data frame with compatible dimensions with \code{x}. Default is NULL}
+\item{y}{(vector, tibble or NULL). A numeric vector, matrix or data frame with compatible dimensions with \code{x}. Default is NULL.}
 
-\item{use}{(character). A character string. The method to use for computing correlations. Default is "pairwise.complete.obs"}
+\item{use}{(character). A character string. The method to use for computing correlations. Default is "pairwise.complete.obs".}
 
-\item{method}{(character). A character string. The correlation method to use. Default is "pearson"}
+\item{method}{(character). A character string. The correlation method to use. Default is "pearson".}
 
-\item{threshold}{(numeric). The reporting protein-protein correlation threshold. Default is 0.8}
+\item{threshold}{(numeric). The reporting protein-protein correlation threshold. Default is 0.8.}
 
-\item{cluster_rows}{(logical). Whether to cluster the rows. Default is TRUE}
+\item{cluster_rows}{(logical). Whether to cluster the rows. Default is TRUE.}
 
-\item{cluster_cols}{(logical). Whether to cluster the columns. Default is TRUE}
+\item{cluster_cols}{(logical). Whether to cluster the columns. Default is TRUE.}
 }
 \value{
 A list containing the following elements:
 \itemize{
-\item cor_matrix (matrix). A matrix of protein-protein correlations
-\item cor_results (tibble). A tibble with the filtered protein pairs and their correlation values
-\item cor_plot (plot). A heatmap of protein-protein correlations
+\item cor_matrix (matrix). A matrix of protein-protein correlations.
+\item cor_results (tibble). A tibble with the filtered protein pairs and their correlation values.
+\item cor_plot (plot). A heatmap of protein-protein correlations.
 }
 }
 \description{
