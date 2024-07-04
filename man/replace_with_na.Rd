@@ -4,17 +4,20 @@
 \alias{replace_with_na}
 \title{Replace values with NA}
 \usage{
-replace_with_na(df_in)
+replace_with_na(
+  df_in,
+  replace_w_na = c(0, "0", "", "Unknown", "unknown", "none", NA, "na")
+)
 }
 \arguments{
-\item{df_in}{(tibble). The input dataframe}
+\item{df_in}{(tibble). The input dataframe.}
+
+\item{replace_w_na}{(vector). The values to replace with NA. Default is c(0, "0", "", "Unknown", "unknown", "none", NA, "na").}
 }
 \value{
-df_out (tibble). The dataframe with specified values replaced with NA
+df_out (tibble). The dataframe with specified values replaced with NA.
 }
 \description{
 The function replaces the specified values with NA in the input vector.
 }
-\examples{
-df <- replace_with_na(example_metadata)
-}
+\keyword{internal}

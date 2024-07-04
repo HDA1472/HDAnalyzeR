@@ -8,14 +8,14 @@ test_that("Directory creation without date", {
 
 test_that("Directory creation with date", {
   dir_prefix <- "test_directory_with_date"
-  create_dir(dir_prefix, date = T)
+  result <- create_dir(dir_prefix, date = T)
 
   # List all directories that match the prefix
-  created_dirs <- list.files(pattern = paste0("^", dir_prefix, "_\\d{4}_\\d{2}_\\d{2}_\\d{6}$"))
+  expected <- file.path(dir_prefix, format(Sys.Date(), "%Y_%m_%d"))
 
   # Check that at least one directory with the expected prefix and date format exists
-  expect_true(length(created_dirs) > 0, "Directory with date should be created")
-  unlink(created_dirs, recursive = TRUE)
+  expect_true(dir.exists(expected), "Directory with date should be created")
+  unlink(expected, recursive = TRUE)
 })
 
 test_that("Handling existing directory", {
@@ -43,7 +43,7 @@ test_that("save_df creates directory and saves CSV", {
     unlink(dir_name, recursive = TRUE)
   }
 
-  save_df(df, dir_name, file_name, "csv")
+  save_df(df, file_name, dir_name, file_type = "csv")
   expect_true(dir.exists(dir_name))
   expect_true(file.exists(file.path(dir_name, paste0(file_name, ".csv"))))
   unlink(dir_name, recursive = TRUE)
@@ -59,7 +59,7 @@ test_that("save_df saves TSV", {
     unlink(dir_name, recursive = TRUE)
   }
 
-  save_df(df, dir_name, file_name, "tsv")
+  save_df(df, file_name, dir_name, file_type = "tsv")
   expect_true(dir.exists(dir_name))
   expect_true(file.exists(file.path(dir_name, paste0(file_name, ".tsv"))))
   unlink(dir_name, recursive = TRUE)
@@ -74,7 +74,7 @@ test_that("save_df saves RDA", {
     unlink(dir_name, recursive = TRUE)
   }
 
-  save_df(df, dir_name, file_name, "rda")
+  save_df(df, file_name, dir_name, file_type = "rda")
   expect_true(dir.exists(dir_name))
   expect_true(file.exists(file.path(dir_name, paste0(file_name, ".rda"))))
   unlink(dir_name, recursive = TRUE)
@@ -89,7 +89,7 @@ test_that("save_df works with existing directory", {
     dir.create(dir_name)
   }
 
-  save_df(df, dir_name, file_name, "csv")
+  save_df(df, file_name, dir_name, file_type = "csv")
   expect_true(file.exists(file.path(dir_name, paste0(file_name, ".csv"))))
   unlink(dir_name, recursive = TRUE)
 })
@@ -105,7 +105,7 @@ test_that("save_df handles invalid file type", {
   }
 
   expected_error_message <- paste("Unsupported file type:", invalid_file_type)
-  expect_error(save_df(df, dir_name, file_name, invalid_file_type), expected_error_message)
+  expect_error(save_df(df, file_name, dir_name, file_type = invalid_file_type), expected_error_message)
   expect_false(dir.exists(dir_name))
 })
 
@@ -210,40 +210,6 @@ test_that("import_df handles XLSX files", {
   }
 
   unlink(file_name, recursive = TRUE)
-})
-
-
-# Test remove_na ---------------------------------------------------------------
-test_that("remove_na removes NA column", {
-  set.seed(123)
-  test_df <- data.frame(
-    Column1 = sample(c(1:15, rep(NA, 10)), 20, replace = TRUE),
-    Column2 = sample(c(16:30, rep(NA, 10)), 20, replace = TRUE),
-    Column3 = sample(31:50, 20, replace = TRUE)
-  )
-  suppressWarnings({
-    result <- remove_na(test_df, "Column1")
-  })
-  expected <- test_df |>
-    dplyr::filter(!is.na(Column1)) |>
-    dplyr::slice(seq_len(dplyr::n()))
-  expect_equal(result, expected)
-})
-
-
-test_that("remove_na removes NA columns", {
-  set.seed(123)
-  test_df <- data.frame(
-    Column1 = sample(c(1:15, rep(NA, 10)), 20, replace = TRUE),
-    Column2 = sample(c(16:30, rep(NA, 10)), 20, replace = TRUE),
-    Column3 = sample(31:50, 20, replace = TRUE)
-  )
-  suppressWarnings({
-    result <- remove_na(test_df, c("Column1", "Column2"))
-  })
-  expected <- test_df |>
-    dplyr::filter(!is.na(Column1) & !is.na(Column2))
-  expect_equal(result, expected)
 })
 
 

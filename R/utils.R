@@ -4,21 +4,21 @@ utils::globalVariables(c("DAid", "Assay", "NPX"))
 #' The function creates a directory with the specified name. If the directory already exists, a message is printed.
 #'
 #' @param dir_name (string). The name of the directory to create
-#' @param date (logical). If T, the current date and time will be appended to the directory name
+#' @param date (logical). If T, a directory with the current date as name will be created in the directory with `dir_name`.
 #'
 #' @return dir_name (string). The name of the created directory
 #' @export
 #'
 #' @examples
-#' create_dir("my_directory", date = FALSE)
-#' create_dir("my_directory/inner_dir", date = TRUE)
+#' create_dir("my_directory", date = FALSE)  # create outer directory
+#' create_dir("my_directory", date = TRUE)  # create inner directory with date as name
 #' # Clean up the created directory
 #' unlink("my_directory", recursive = TRUE)
 create_dir <- function(dir_name, date = F) {
 
   if (date) {
-    current_date <- format(Sys.time(), "%Y_%m_%d_%H%M%S")  # Get the current date and time
-    dir_name <- paste0(dir_name, "_", current_date)
+    current_date <- format(Sys.time(), "%Y_%m_%d")  # Get the current date
+    dir_name <- paste0(dir_name, "/", current_date)
   }
 
   # Check if the directory already exists
@@ -44,8 +44,9 @@ create_dir <- function(dir_name, date = F) {
 #' The function saves a dataframe in the specified format (CSV, TSV, or RDA) in the specified directory.
 #'
 #' @param df (tibble). The dataframe to save
-#' @param dir_name (string). The directory where the file will be saved
 #' @param file_name (string). The name of the file to save
+#' @param dir_name (string). The directory where the file will be saved
+#' @param date (logical). If T, a directory with the current date as name will be created in the directory with `dir_name`.
 #' @param file_type (string). The type of file to save the dataframe as. Options are "csv", "tsv", or "rda"
 #'
 #' @return NULL
@@ -53,10 +54,10 @@ create_dir <- function(dir_name, date = F) {
 #'
 #' @examples
 #' df <- data.frame(x = 1:10, y = rnorm(10))
-#' save_df(df, "my_data", "sample_data", "csv")
+#' save_df(df, "sample_data", "my_data", file_type = "csv")
 #' # Clean up the created directory
 #' unlink("my_data", recursive = TRUE)
-save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda")) {
+save_df <- function(df, file_name, dir_name, date = F, file_type = c("csv", "tsv", "rda")) {
 
   valid_file_types <- c("csv", "tsv", "rda")
 
@@ -65,7 +66,7 @@ save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
   }
 
   # Create the directory if it doesn't exist, else store the file in the existing directory
-  dir_name <- create_dir(dir_name)
+  dir_name <- create_dir(dir_name, date = date)
 
   file_path <- file.path(dir_name, paste0(file_name, ".", file_type))
 
@@ -92,7 +93,7 @@ save_df <- function(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
 #'
 #' @examples
 #' df_out <- example_data
-#' save_df(df_out, "my_data", "sample_data", "rda")
+#' save_df(df_out, "sample_data", "my_data", file_type = "rda")
 #' df_in <- load("my_data/sample_data.rda")
 #' # Clean up the created directory
 #' unlink("my_data", recursive = TRUE)
@@ -111,58 +112,6 @@ import_df <- function(file_path) {
                stop("Unsupported file type: ", file_extension))
 
   return(df)
-}
-
-
-#' Check for NAs in a column and remove these rows
-#'
-#' The function checks for NAs in the specified column and removes the rows with NAs.
-#' It returns a warning message if any rows are removed stating the number and the indexes of removed rows.
-#'
-#' @param df_in (tibble). The input dataframe
-#' @param cols (string or vector of strings). The column to check for NAs
-#'
-#' @return df_out (tibble). The dataframe with NAs removed
-#' @export
-#'
-#' @examples
-#' df <- data.frame(x = c(1, 2, NA, 4), y = c(NA, 2, 3, 4))
-#' df_out <- remove_na(df, "x")
-remove_na <- function(df_in, cols) {
-
-  rows_to_omit <- integer(0)  # Keeps track of rows to omit
-  warning_messages <- character(0)  # Keeps track of the warning messages
-
-  for (col in cols) {
-
-    if (!is.null(col) && col %in% colnames(df_in)) {
-      na_rows <- which(is.na(df_in[[col]]))
-      num_na_rows <- length(na_rows)
-      rows_to_omit <- c(rows_to_omit, na_rows)
-
-      if (num_na_rows > 0) {
-        warning_message <- sprintf("Omitted %d rows with NAs in column '%s'. Indices of omitted rows: \n%s",
-                                   num_na_rows, col, paste(na_rows, collapse = ", "))
-        warning_messages <- c(warning_messages, warning_message)
-      }
-
-    }
-
-  }
-
-  # Omit the rows with NAs from the dataframe and show warning messages
-  rows_to_omit <- unique(rows_to_omit)
-
-  if (length(warning_messages) > 0) {
-    df_out <- df_in[-rows_to_omit, ]
-    warning(paste(warning_messages, collapse = "\n"))
-  } else {
-    df_out <- df_in
-  }
-
-  rownames(df_out) <- NULL  # Re index the rows
-
-  return(df_out)
 }
 
 

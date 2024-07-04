@@ -7,29 +7,29 @@
 clean_metadata(
   df_in,
   keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
-  exclude_sample = F,
-  apply_replacement = F,
-  remove_na_cols = c("DAid", "Disease")
+  filter_samples = NULL,
+  remove_na_cols = c("DAid", "Disease"),
+  replace_w_na = c("Unknown", "unknown", "none", NA, "na")
 )
 }
 \arguments{
-\item{df_in}{(tibble). The input metadata}
+\item{df_in}{(tibble). The input metadata.}
 
-\item{keep_cols}{(string or vector of strings). The columns to keep in the output metadata}
+\item{keep_cols}{(vector). The columns to keep in the output metadata.}
 
-\item{exclude_sample}{(string). The value in the "Exclude Sample" column to exclude}
+\item{filter_samples}{(vector). The samples to filter out.}
 
-\item{apply_replacement}{(logical). If TRUE, the specified values are replaced with NA}
+\item{remove_na_cols}{(vector). The columns to check for NAs and remove respective rows.}
 
-\item{remove_na_cols}{(string or vector of strings or F). The columns to check for NAs and remove respective rows}
+\item{replace_w_na}{(vector). The values to replace with NA. Default is c("Unknown", "unknown", "none", NA, "na").}
 }
 \value{
-df_out (tibble). The cleaned metadata
+df_out (tibble). The cleaned metadata.
 }
 \description{
 The function cleans the metadata by filtering out rows based on the specified criteria.
 It keeps only the specified columns. It removes rows with NAs in the DAid and Disease columns.
 }
 \examples{
-df <- clean_metadata(example_metadata, exclude_sample = "yes")
+df <- clean_metadata(example_metadata)
 }

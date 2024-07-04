@@ -7,35 +7,38 @@
 clean_data(
   df_in,
   keep_cols = c("DAid", "Assay", "NPX"),
-  cohort = F,
-  exclude_plates = F,
-  filter_assay = F,
-  apply_replacement = F,
-  remove_na_cols = c("DAid", "NPX")
+  cohort = NULL,
+  filter_plates = NULL,
+  filter_assays = NULL,
+  filter_assay_warning = F,
+  remove_na_cols = c("DAid", "NPX"),
+  replace_w_na = c(0, "0", "", "Unknown", "unknown", "none", NA, "na")
 )
 }
 \arguments{
-\item{df_in}{(tibble). The input dataframe}
+\item{df_in}{(tibble). The input dataframe.}
 
-\item{keep_cols}{(string or vector of strings). The columns to keep in the output dataframe}
+\item{keep_cols}{(vector). The columns to keep in the output dataframe.}
 
-\item{cohort}{(string or vector of strings). The cohort to keep}
+\item{cohort}{(vector). The cohort to keep.}
 
-\item{exclude_plates}{(string or vector of strings). The plates to exclude}
+\item{filter_plates}{(vector). The plates to exclude.}
 
-\item{filter_assay}{(logical). If T only rows with Assay_Warning == "PASS" are kept, else F}
+\item{filter_assays}{(vector). The assays to filter out.}
 
-\item{apply_replacement}{(logical). If T, the specified values are replaced with NA}
+\item{filter_assay_warning}{(logical). If TRUE, only the rows with Assay_Warning == "PASS" are kept.}
 
-\item{remove_na_cols}{(string or vector of strings or F). The columns to check for NAs and remove respective rows}
+\item{remove_na_cols}{(vector). The columns to check for NAs and remove respective rows.}
+
+\item{replace_w_na}{(vector). The values to replace with NA. Default is c(0, "0", "", "Unknown", "unknown", "none", NA, "na").}
 }
 \value{
-df_out (tibble). The cleaned dataframe
+df_out (tibble). The cleaned dataframe.
 }
 \description{
 The function cleans the data by filtering out rows based on the specified criteria.
 It keeps only the specified columns. It removes rows with NAs in the DAid and NPX columns.
 }
 \examples{
-df <- clean_data(example_data, exclude_plates = c("Plate1", "Plate2"), filter_assay = TRUE)
+df <- clean_data(example_data, filter_plates = c("Plate1", "Plate2"), filter_assay_warning = TRUE)
 }

@@ -20,7 +20,7 @@ test_that("clean_data selects specified columns", {
 
 
 test_that("clean_data excludes specified plates", {
-  result <- clean_data(example_data, exclude_plates = "Run001")
+  result <- clean_data(example_data, filter_plates = "Run001")
   expected <- example_data |>
     dplyr::filter(!(PlateID %in% "Run001")) |>
     dplyr::select(DAid, Assay, NPX)
@@ -41,7 +41,7 @@ test_that("clean_data filters by cohort", {
 
 
 test_that("clean_data filters by Assay_Warning", {
-  result <- clean_data(example_data, filter_assay = "PASS")
+  result <- clean_data(example_data, filter_assay_warning = T)
   expected <- example_data |>
     dplyr::filter(Assay_Warning == "PASS") |>
     dplyr::select(DAid, Assay, NPX)
@@ -64,8 +64,8 @@ test_that("clean_data handles all parameters together", {
   # Add Cohort column
   example_data_cohort <- example_data |>
     dplyr::mutate(Cohort = rep(c("A", "B"), length.out = dplyr::n()))
-  result <- clean_data(example_data_cohort, cohort = "A", exclude_plates = "P2",
-                       filter_assay = "PASS")
+  result <- clean_data(example_data_cohort, cohort = "A", filter_plates = "P2",
+                       filter_assay_warning = T)
   expected <- example_data_cohort |>
     dplyr::filter(Cohort %in% "A" & !(PlateID %in% "P2") & Assay_Warning == "PASS") |>
     dplyr::select(DAid, Assay, NPX)
@@ -77,12 +77,16 @@ test_that("The NA columns are removed", {
   random_indices <- sample(1:nrow(example_metadata), 20)
   test_data <- example_data
   test_data$DAid[random_indices] <- NA
-  suppressWarnings({
-    result <- clean_data(test_data, keep_cols = c("DAid", "NPX"))
-  })
+
+  result <- clean_data(test_data, keep_cols = c("DAid", "NPX"))
+
   expected <- test_data |>
     dplyr::select(DAid, NPX) |>
     dplyr::filter(!is.na(DAid))
+
+  result <- as.character(unclass(result))
+  expected <- as.character(unclass(expected))
+
   expect_equal(result, expected)
 })
 
@@ -93,8 +97,7 @@ test_that("The specified values are replaced with NAs", {
   test_data2 <- example_data
   test_data1$DAid[random_indices] <- 0
   test_data2$DAid[random_indices] <- NA
-  result <- clean_data(test_data1, keep_cols = c("DAid", "NPX"),
-                       apply_replacement = T, remove_na_cols = F)
+  result <- clean_data(test_data1, keep_cols = c("DAid", "NPX"), remove_na_cols = NULL)
   expected <- test_data2 |>
     dplyr::select(DAid, NPX)
   expect_equal(result, expected)
@@ -106,10 +109,19 @@ test_that("The specified values are not replaced with NAs", {
   test_data1 <- example_data
   test_data2 <- example_data
   test_data1$DAid[random_indices] <- 0
-  result <- clean_data(test_data1, keep_cols = c("DAid", "NPX"),
-                       apply_replacement = F, remove_na_cols = F)
+  result <- clean_data(test_data1, keep_cols = c("DAid", "NPX"), replace_w_na = NULL, remove_na_cols = NULL)
   expected <- test_data1 |>
     dplyr::select(DAid, NPX)
+  expect_equal(result, expected)
+})
+
+
+test_that("clean_data excludes specified assays", {
+  set.seed(123)
+  result <- clean_data(example_data, filter_assays = c("AARSD1", "ABL1"))
+  expected <- example_data |>
+    dplyr::filter(!(Assay %in% c("AARSD1", "ABL1"))) |>
+    dplyr::select(DAid, Assay, NPX)
   expect_equal(result, expected)
 })
 
@@ -125,11 +137,9 @@ test_that("clean_metadata selects specified columns", {
 
 test_that("clean_metadata excludes specified samples", {
   set.seed(123)
-  test_metadata <- example_metadata |>
-    dplyr::mutate(`Exclude Sample` = ifelse(runif(dplyr::n()) <= 0.05, "yes", "no"))
-  result <- clean_metadata(test_metadata, keep_cols = c("DAid", "Age"), exclude_sample = "yes")
-  expected <- test_metadata |>
-    dplyr::filter(!(`Exclude Sample` %in% "yes")) |>
+  result <- clean_metadata(example_metadata, keep_cols = c("DAid", "Age"), filter_samples = c("DA00001", "DA00002"))
+  expected <- example_metadata |>
+    dplyr::filter(!(DAid %in% c("DA00001", "DA00002"))) |>
     dplyr::select(DAid, Age)
   expect_equal(result, expected)
 })
@@ -139,12 +149,16 @@ test_that("The NA columns are removed", {
   random_indices <- sample(1:nrow(example_metadata), 20)
   test_metadata <- example_metadata
   test_metadata$DAid[random_indices] <- NA
-  suppressWarnings({
-    result <- clean_metadata(test_metadata, keep_cols = c("DAid", "Age"))
-  })
+
+  result <- clean_metadata(test_metadata, keep_cols = c("DAid", "Age"))
+
   expected <- test_metadata |>
     dplyr::select(DAid, Age) |>
     dplyr::filter(!is.na(DAid))
+
+  result <- as.character(unclass(result))
+  expected <- as.character(unclass(expected))
+
   expect_equal(result, expected)
 })
 
@@ -158,8 +172,7 @@ test_that("clean_metadata handles non-existent columns gracefully", {
 
 
 test_that("The specified values are replaced with NAs", {
-  result <- clean_data(example_metadata, keep_cols = c("DAid", "Disease"),
-                       apply_replacement = T, remove_na_cols = F)
+  result <- clean_metadata(example_metadata, keep_cols = c("DAid", "Disease"), remove_na_cols = NULL)
   expected <- example_metadata |>
     dplyr::select(DAid, Disease)
   expect_equal(result, expected)

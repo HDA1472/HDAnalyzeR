@@ -3,19 +3,14 @@ utils::globalVariables(c("PlateID", "Cohort", "Assay_Warning", "Exclude Sample")
 #'
 #' The function replaces the specified values with NA in the input vector.
 #'
-#' @param df_in (tibble). The input dataframe
+#' @param df_in (tibble). The input dataframe.
+#' @param replace_w_na (vector). The values to replace with NA. Default is c(0, "0", "", "Unknown", "unknown", "none", NA, "na").
 #'
-#' @return df_out (tibble). The dataframe with specified values replaced with NA
-#' @export
-#'
-#' @examples
-#' df <- replace_with_na(example_metadata)
-replace_with_na <- function(df_in) {
+#' @return df_out (tibble). The dataframe with specified values replaced with NA.
+#' @keywords internal
+replace_with_na <- function(df_in, replace_w_na = c(0, "0", "", "Unknown", "unknown", "none", NA, "na")) {
   df_out <- df_in |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), ~ dplyr::case_when(
-      . %in% c(0, "0", "", "Unknown", "unknown", "none", NA, "na") ~ NA,
-      TRUE ~ .
-    )))
+    dplyr::mutate(dplyr::across(dplyr::everything(), ~ ifelse(. %in% replace_w_na, NA, .)))
 
   return(df_out)
 }
@@ -26,26 +21,27 @@ replace_with_na <- function(df_in) {
 #' The function cleans the data by filtering out rows based on the specified criteria.
 #' It keeps only the specified columns. It removes rows with NAs in the DAid and NPX columns.
 #'
-#' @param df_in (tibble). The input dataframe
-#' @param keep_cols (string or vector of strings). The columns to keep in the output dataframe
-#' @param cohort (string or vector of strings). The cohort to keep
-#' @param exclude_plates (string or vector of strings). The plates to exclude
-#' @param filter_assay (logical). If T only rows with Assay_Warning == "PASS" are kept, else F
-#' @param apply_replacement (logical). If T, the specified values are replaced with NA
-#' @param remove_na_cols (string or vector of strings or F). The columns to check for NAs and remove respective rows
+#' @param df_in (tibble). The input dataframe.
+#' @param keep_cols (vector). The columns to keep in the output dataframe.
+#' @param cohort (vector). The cohort to keep.
+#' @param filter_plates (vector). The plates to exclude.
+#' @param filter_assays (vector). The assays to filter out.
+#' @param filter_assay_warning (logical). If TRUE, only the rows with Assay_Warning == "PASS" are kept.
+#' @param remove_na_cols (vector). The columns to check for NAs and remove respective rows.
+#' @param replace_w_na (vector). The values to replace with NA. Default is c(0, "0", "", "Unknown", "unknown", "none", NA, "na").
 #'
-#' @return df_out (tibble). The cleaned dataframe
+#' @return df_out (tibble). The cleaned dataframe.
 #' @export
 #'
 #' @examples
-#' df <- clean_data(example_data, exclude_plates = c("Plate1", "Plate2"), filter_assay = TRUE)
-clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = F,
-                       exclude_plates = F, filter_assay = F, apply_replacement = F,
-                       remove_na_cols = c("DAid", "NPX")) {
+#' df <- clean_data(example_data, filter_plates = c("Plate1", "Plate2"), filter_assay_warning = TRUE)
+clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = NULL, filter_plates = NULL,
+                       filter_assays = NULL, filter_assay_warning = F, remove_na_cols = c("DAid", "NPX"),
+                       replace_w_na = c(0, "0", "", "Unknown", "unknown", "none", NA, "na")) {
 
   df_out <- df_in |>
     dplyr::filter(if ("PlateID" %in% colnames(df_in)) {
-                    !(PlateID %in% exclude_plates)
+                    !(PlateID %in% filter_plates)
                   } else {
                     TRUE
                   }) |>
@@ -54,19 +50,25 @@ clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = F,
                   } else {
                     TRUE
                   }) |>
-    dplyr::filter(if ("Assay_Warning" %in% colnames(df_in)) {
-                    isFALSE(filter_assay) | Assay_Warning %in% filter_assay
+    dplyr::filter(if (filter_assay_warning == T && "Assay_Warning" %in% colnames(df_in)) {
+                    (Assay_Warning == "PASS")
                   } else {
                     TRUE
                   }) |>
+    dplyr::filter(!(Assay %in% filter_assays)) |>
     dplyr::select(dplyr::any_of(keep_cols))
 
-    if (!isFALSE(apply_replacement)) {
-      df_out <- replace_with_na(df_out)
+    if (!is.null(replace_w_na)) {
+      df_out <- replace_with_na(df_out, replace_w_na)
     }
 
-    if (!isFALSE(remove_na_cols)) {
-      df_out <- remove_na(df_out, remove_na_cols)
+    if (!is.null(remove_na_cols)) {
+      rows_before <- nrow(df_out)
+      df_out <- stats::na.omit(df_out, target.colnames = remove_na_cols)
+      rows_after <- nrow(df_out)
+      if (rows_before != rows_after) {
+        message("Removed ", rows_before - rows_after, " rows with NAs based on ", remove_na_cols)
+      }
     }
 
     return(df_out)
@@ -78,35 +80,36 @@ clean_data <- function(df_in, keep_cols = c("DAid", "Assay", "NPX"), cohort = F,
 #' The function cleans the metadata by filtering out rows based on the specified criteria.
 #' It keeps only the specified columns. It removes rows with NAs in the DAid and Disease columns.
 #'
-#' @param df_in (tibble). The input metadata
-#' @param keep_cols (string or vector of strings). The columns to keep in the output metadata
-#' @param exclude_sample (string). The value in the "Exclude Sample" column to exclude
-#' @param apply_replacement (logical). If TRUE, the specified values are replaced with NA
-#' @param remove_na_cols (string or vector of strings or F). The columns to check for NAs and remove respective rows
+#' @param df_in (tibble). The input metadata.
+#' @param keep_cols (vector). The columns to keep in the output metadata.
+#' @param filter_samples (vector). The samples to filter out.
+#' @param remove_na_cols (vector). The columns to check for NAs and remove respective rows.
+#' @param replace_w_na (vector). The values to replace with NA. Default is c("Unknown", "unknown", "none", NA, "na").
 #'
-#' @return df_out (tibble). The cleaned metadata
+#' @return df_out (tibble). The cleaned metadata.
 #' @export
 #'
 #' @examples
-#' df <- clean_metadata(example_metadata, exclude_sample = "yes")
+#' df <- clean_metadata(example_metadata)
 clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
-                           exclude_sample = F, apply_replacement = F,
-                           remove_na_cols = c("DAid", "Disease")) {
+                           filter_samples = NULL, remove_na_cols = c("DAid", "Disease"),
+                           replace_w_na = c("Unknown", "unknown", "none", NA, "na")) {
 
   df_out <- df_in |>
-    dplyr::filter(if ("Exclude Sample" %in% colnames(df_in)) {
-      isFALSE(exclude_sample) | !(`Exclude Sample` %in% exclude_sample)
-    } else {
-      TRUE
-    }) |>
+    dplyr::filter(!(DAid %in% filter_samples)) |>
     dplyr::select(dplyr::any_of(keep_cols))
 
-  if (!isFALSE(remove_na_cols)) {
-    df_out <- replace_with_na(df_out)
+  if (!is.null(replace_w_na)) {
+    df_out <- replace_with_na(df_out, replace_w_na)
   }
 
-  if (!isFALSE(remove_na_cols)) {
-    df_out <- remove_na(df_out, remove_na_cols)
+  if (!is.null(remove_na_cols)) {
+    rows_before <- nrow(df_out)
+    df_out <- stats::na.omit(df_out, target.colnames = remove_na_cols)
+    rows_after <- nrow(df_out)
+    if (rows_before != rows_after) {
+      message("Removed ", rows_before - rows_after, " rows with NAs based on ", remove_na_cols)
+    }
   }
 
   return(df_out)
@@ -118,37 +121,46 @@ clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age",
 #' The function generates wide and join dataframes from the long data and metadata.
 #' It stores them in the data/processed/data_metadata directory in RDA format.
 #'
-#' @param long_data (tibble). The long data
-#' @param metadata (tibble). The metadata
-#' @param save (TRUE or NULL). If TRUE, the dataframes are saved
+#' @param long_data (tibble). The long data.
+#' @param metadata (tibble). The metadata.
+#' @param join (logical). If TRUE, the dataframes are joined with metadata.
+#' @param metadata_cols (vector). The metadata columns to join with data.
+#' @param save (logical). If TRUE, the dataframes are saved.
 #'
 #' @return A list containing the following elements:
-#'  - wide_data (tibble). The wide data
-#'  - join_data (tibble). The joined data with metadata
+#'  - wide_data (tibble). The wide data.
+#'  - join_data (tibble). The joined data with metadata. If join is FALSE, this is not returned.
 #' @export
 #'
 #' @examples
 #' clean_data <- clean_data(example_data, keep_cols = c("DAid", "Assay", "NPX"))
 #' clean_metadata <- clean_metadata(example_metadata, keep_cols = c("DAid", "GROUP", "Age"))
 #' result_df <- generate_df(clean_data, clean_metadata)
-#' wide_data <- result_df[[1]]
-#' join_data <- result_df[[2]]
+#' wide_data <- result_df$wide_data
+#' join_data <- result_df$join_data
 #' # Clean up the created directory
 #' unlink("data", recursive = TRUE)
-generate_df <- function(long_data, metadata, save = T) {
+generate_df <- function(long_data, metadata = NULL, join = T, metadata_cols = c("DAid", "Disease", "Sex", "Age", "BMI"), save = T) {
 
-  wide_data <- long_data |>
-    tidyr::pivot_wider(names_from = "Assay", values_from = "NPX")
+  wide_data <- widen_data(long_data, wide = F)
 
-  join_data <- wide_data |>
-    dplyr::left_join(metadata, by = "DAid")
+  if (isTRUE(join)) {
+    join_data <- wide_data |>
+      dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(metadata_cols)), by = "DAid")
+    if (isTRUE(save)) {
+      dir_name <- create_dir("data/processed")
+      save_df(wide_data, "wide_data", dir_name, date = T, "rda")
+      save_df(join_data, "join_data", dir_name, date = T, "rda")
+    }
 
-  if (isTRUE(save)) {
-    dir_name <- create_dir("data/processed/data_metadata", date = T)
-    save_df(long_data, dir_name, "long_data", "rda")
-    save_df(wide_data, dir_name, "wide_data", "rda")
-    save_df(metadata, dir_name, "metadata", "rda")
-    save_df(join_data, dir_name, "join_data", "rda")
+    return(list("wide_data" = wide_data, "join_data" = join_data))
+
+  } else {
+    join_data <- NULL
+    if (isTRUE(save)) {
+      dir_name <- create_dir("data/processed")
+      save_df(wide_data, "wide_data", dir_name, date = T, "rda")
+    }
+    return(wide_data)
   }
-  return(list("wide_data" = wide_data, "join_data" = join_data))
 }

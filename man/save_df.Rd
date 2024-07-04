@@ -4,14 +4,16 @@
 \alias{save_df}
 \title{Save dataframe}
 \usage{
-save_df(df, dir_name, file_name, file_type = c("csv", "tsv", "rda"))
+save_df(df, file_name, dir_name, date = F, file_type = c("csv", "tsv", "rda"))
 }
 \arguments{
 \item{df}{(tibble). The dataframe to save}
 
+\item{file_name}{(string). The name of the file to save}
+
 \item{dir_name}{(string). The directory where the file will be saved}
 
-\item{file_name}{(string). The name of the file to save}
+\item{date}{(logical). If T, a directory with the current date as name will be created in the directory with \code{dir_name}.}
 
 \item{file_type}{(string). The type of file to save the dataframe as. Options are "csv", "tsv", or "rda"}
 }
@@ -20,7 +22,7 @@ The function saves a dataframe in the specified format (CSV, TSV, or RDA) in the
 }
 \examples{
 df <- data.frame(x = 1:10, y = rnorm(10))
-save_df(df, "my_data", "sample_data", "csv")
+save_df(df, "sample_data", "my_data", file_type = "csv")
 # Clean up the created directory
 unlink("my_data", recursive = TRUE)
 }
