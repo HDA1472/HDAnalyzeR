@@ -28,7 +28,7 @@ normalize_data(
 
 \item{scale}{(logical). A logical value indicating whether to scale the data. Default is TRUE.}
 
-\item{batch}{(character). The metadata column containing the batch information. Default is NULL.}
+\item{batch}{(character). The metadata column containing the batch information. In order to correct for batch effects, this parameter should be provided. Default is NULL.}
 
 \item{batch2}{(character). The metadata column containing the second batch information. Default is NULL.}
 
