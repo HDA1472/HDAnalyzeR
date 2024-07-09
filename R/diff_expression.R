@@ -187,7 +187,7 @@ do_ttest_de <- function(long_data,
 #' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
 #' @param top_up_prot (numeric). The number of top up regulated proteins to label on the plot. Default is 40.
 #' @param top_down_prot (numeric). The number of top down regulated proteins to label on the plot. Default is 10.
-#' @param palette (vector). The color palette for the plot. Default is c("not significant" = "grey", "significant down" = "blue", "significant up" = "red").
+#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
 #' @param subtitle (logical). If the subtitle should be displayed. Default is TRUE.
 #'
 #' @return p (plot). A ggplot object with the volcano plot.
@@ -198,9 +198,7 @@ create_volcano <- function(disease,
                            logfc_lim = 0,
                            top_up_prot = 40,
                            top_down_prot = 10,
-                           palette = c("not significant" = "grey",
-                                       "significant down" = "blue",
-                                       "significant up" = "red"),
+                           palette = "diff_exp",
                            subtitle = T) {
 
   top.sig.down <- de_result |>
@@ -232,7 +230,6 @@ create_volcano <- function(disease,
     ggplot2::geom_hline(yintercept = -log10(pval_lim), linetype = 'dashed') +
     ggplot2::geom_vline(xintercept = logfc_lim, linetype = 'dashed') +
     ggplot2::geom_vline(xintercept = -logfc_lim, linetype = 'dashed') +
-    ggplot2::scale_color_manual(values = palette) +
     ggplot2::ggtitle(label = paste0(disease, ""),
                      subtitle = paste0("Num significant up = ", num.sig.up,
                                        "\nNum significant down = ", num.sig.down)) +
@@ -242,6 +239,12 @@ create_volcano <- function(disease,
 
     if (isFALSE(subtitle)) {
       p <- p + ggplot2::theme(plot.subtitle = ggplot2::element_blank())
+    }
+
+    if (is.character(palette)) {
+      p <- p + scale_color_hpa(palette)
+    } else {
+      p <- p + ggplot2::scale_color_manual(values = palette)
     }
 
   return(p)
@@ -265,7 +268,7 @@ create_volcano <- function(disease,
 #' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
 #' @param top_up_prot (numeric). The number of top up regulated proteins to label on the plot. Default is 40.
 #' @param top_down_prot (numeric). The number of top down regulated proteins to label on the plot. Default is 10.
-#' @param palette (vector). The color palette for the plot. Default is c("not significant" = "grey", "significant down" = "blue", "significant up" = "red").
+#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
 #' @param subtitle (logical). If the subtitle should be displayed. Default is TRUE.
 #' @param save (logical). Save the volcano plots. Default is FALSE.
 #'
@@ -289,9 +292,7 @@ do_limma <- function(olink_data,
                      logfc_lim = 0,
                      top_up_prot = 40,
                      top_down_prot = 10,
-                     palette = c("not significant" = "grey",
-                                 "significant down" = "blue",
-                                 "significant up" = "red"),
+                     palette = "diff_exp",
                      subtitle = T,
                      save = F) {
 
@@ -366,7 +367,7 @@ do_limma <- function(olink_data,
 #' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
 #' @param top_up_prot (numeric). The number of top up regulated proteins to label on the plot. Default is 40.
 #' @param top_down_prot (numeric). The number of top down regulated proteins to label on the plot. Default is 10.
-#' @param palette (vector). The color palette for the plot. Default is c("not significant" = "grey", "significant down" = "blue", "significant up" = "red").
+#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
 #' @param subtitle (logical). If the subtitle should be displayed. Default is TRUE.
 #' @param save (logical). Save the volcano plots. Default is FALSE.
 #'
@@ -388,9 +389,7 @@ do_ttest <- function(olink_data,
                      logfc_lim = 0,
                      top_up_prot = 40,
                      top_down_prot = 10,
-                     palette = c("not significant" = "grey",
-                                 "significant down" = "blue",
-                                 "significant up" = "red"),
+                     palette = "diff_exp",
                      subtitle = T,
                      save = F) {
 
