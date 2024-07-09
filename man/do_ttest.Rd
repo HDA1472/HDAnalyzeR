@@ -15,8 +15,7 @@ do_ttest(
   logfc_lim = 0,
   top_up_prot = 40,
   top_down_prot = 10,
-  palette = c(`not significant` = "grey", `significant down` = "blue", `significant up` =
-    "red"),
+  palette = "diff_exp",
   subtitle = T,
   save = F
 )
@@ -42,7 +41,7 @@ do_ttest(
 
 \item{top_down_prot}{(numeric). The number of top down regulated proteins to label on the plot. Default is 10.}
 
-\item{palette}{(vector). The color palette for the plot. Default is c("not significant" = "grey", "significant down" = "blue", "significant up" = "red").}
+\item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".}
 
 \item{subtitle}{(logical). If the subtitle should be displayed. Default is TRUE.}
 
