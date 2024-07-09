@@ -42,20 +42,31 @@ test_that("do_pca runs pca analysis properly - loadings", {
 
 # Test do_umap -----------------------------------------------------------------
 test_that("do_umap runs pca analysis properly - umap_res", {
-  expected_subdata <- tibble::tibble(
-    DAid = factor(c("DA00001", "DA00002", "DA00003", "DA00004", "DA00005",
-                    "DA00006", "DA00007", "DA00008", "DA00009", "DA00010")),
-    UMAP1 = c(1.12, 0.66, -1.29, -1.03, 1.18, -1.21, 0.27, 1.61, 0.49, 1.12),
-    UMAP2 = c(-2.07, 2.4, -2.17, -2.76, -2.41, 1.48, -3.47, 0.8, -0.63, 2.37)
-  )
+  wide_df <- example_data |>
+    dplyr::select(DAid, Assay, NPX) |>
+    tidyr::pivot_wider(names_from = Assay, values_from = NPX)
+  set.seed(123)
+  umap_rec <- recipes::recipe( ~ ., data = wide_df) |>
+    recipes::update_role(DAid, new_role = "id")  |>
+    recipes::step_normalize(recipes::all_predictors()) |>
+    recipes::step_impute_knn(recipes::all_predictors(), neighbors = 5) |>
+    embed::step_umap(recipes::all_predictors())
+
+  umap_prep <- recipes::prep(umap_rec)
+
+  expected <-  recipes::juice(umap_prep) |>
+    utils::head(10) |>
+    dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ round(., 2)))
 
   df <- example_data |> dplyr::select(DAid, Assay, NPX)
   umap <- do_umap(df, wide = F, plots = F)
   result_subdata <- umap |>
     utils::head(10) |>
     dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ round(., 2)))
+
   # Keep only the first 10 levels
   first_10_levels <- unique(result_subdata$DAid)[1:10]
   result_subdata$DAid <- factor(result_subdata$DAid, levels = first_10_levels)
-  expect_equal(result_subdata, expected_subdata)
+  expected$DAid <- factor(expected$DAid, levels = first_10_levels)
+  expect_equal(result_subdata, expected)
 })

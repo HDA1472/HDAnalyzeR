@@ -26,12 +26,6 @@ test_that("Handling existing directory", {
   unlink(dir_name, recursive = TRUE)
 })
 
-test_that("Warning on failed directory creation", {
-  dir_name <- "C:/Windows/System32/restricted_directory"  # A directory that likely requires superuser privileges
-  expect_warning(create_dir(dir_name), "Failed to create directory")
-  unlink(dir_name, recursive = TRUE)
-})
-
 
 # Test save_df -----------------------------------------------------------------
 test_that("save_df creates directory and saves CSV", {

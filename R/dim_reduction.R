@@ -229,8 +229,6 @@ do_umap <- function(olink_data,
 
     umap_prep <- recipes::prep(umap_rec)
 
-    tidied_umap <- broom::tidy(umap_prep, 3)
-
   } else {
     umap_rec <- recipes::recipe( ~ ., data = wide_data) |>
       recipes::update_role(DAid, new_role = "id")  |>
