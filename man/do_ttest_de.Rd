@@ -5,41 +5,35 @@
 \title{Differential expression analysis with t-test}
 \usage{
 do_ttest_de(
-  de_res,
   long_data,
   disease,
-  assay,
+  assays,
+  normality_res,
   only_female = NULL,
-  only_male = NULL
+  only_male = NULL,
+  pval_lim = 0.05,
+  logfc_lim = 0
 )
 }
 \arguments{
-\item{de_res}{(matrix). A matrix to store the results}
+\item{long_data}{(tibble). A tibble with the Olink data in long format and the Sex column from metadata.}
 
-\item{long_data}{(tibble). A tibble with the Olink data in long format.}
+\item{disease}{(character). The disease of interest.}
 
-\item{disease}{(character). The disease of interest}
+\item{assays}{(character or vector). The assays to run the differential expression analysis on.}
 
-\item{assay}{(character). The assay of interest}
+\item{only_female}{(character or vector). The female specific diseases. Default is NULL.}
 
-\item{only_female}{(character or vector). The female specific diseases. Default is NULL}
+\item{only_male}{(character or vector). The male specific diseases. Default is NULL.}
 
-\item{only_male}{(character or vector). The male specific diseases. Default is NULL}
+\item{pval_lim}{(numeric). The p-value limit for significance. Default is 0.05.}
+
+\item{logfc_lim}{(numeric). The logFC limit for significance. Default is 0.}
 }
 \value{
-de_res(matrix). A matrix with the differential expression results
+de_res (tibble). A tibble with the differential expression results.
 }
 \description{
 This function performs differential expression analysis using t-test.
 }
-\examples{
-de_res <- matrix(nrow=0, ncol=4)
-colnames(de_res) <- c("Assay", "P.Value", "logFC", "Disease")
-test_data <- example_data |>
-  dplyr::select(DAid, Assay, NPX) |>
-  dplyr::left_join(example_metadata |>
-                     dplyr::select(dplyr::any_of(c("DAid", "Disease"))),
-                   by = "DAid")
-
-do_ttest_de(de_res, test_data, "AML", "ABL1")
-}
+\keyword{internal}

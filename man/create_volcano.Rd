@@ -4,29 +4,39 @@
 \alias{create_volcano}
 \title{Create volcano plots}
 \usage{
-create_volcano(disease, de_result)
+create_volcano(
+  disease,
+  de_result,
+  pval_lim = 0.05,
+  logfc_lim = 0,
+  top_up_prot = 40,
+  top_down_prot = 10,
+  palette = c(`not significant` = "grey", `significant down` = "blue", `significant up` =
+    "red"),
+  subtitle = T
+)
 }
 \arguments{
-\item{disease}{(character). The disease of interest}
+\item{disease}{(character). The disease of interest.}
 
-\item{de_result}{(tibble). The differential expression results}
+\item{de_result}{(tibble). The differential expression results.}
+
+\item{pval_lim}{(numeric). The p-value limit for significance. Default is 0.05.}
+
+\item{logfc_lim}{(numeric). The logFC limit for significance. Default is 0.}
+
+\item{top_up_prot}{(numeric). The number of top up regulated proteins to label on the plot. Default is 40.}
+
+\item{top_down_prot}{(numeric). The number of top down regulated proteins to label on the plot. Default is 10.}
+
+\item{palette}{(vector). The color palette for the plot. Default is c("not significant" = "grey", "significant down" = "blue", "significant up" = "red").}
+
+\item{subtitle}{(logical). If the subtitle should be displayed. Default is TRUE.}
 }
 \value{
-p (plot). A ggplot object with the volcano plot
+p (plot). A ggplot object with the volcano plot.
 }
 \description{
 This function creates volcano plots for the differential expression results.
 }
-\examples{
-test_data <- tibble::tibble(
-  Assay = c("AARSD1", "ABL1", "ACAA1", "ACAN", "ACE2"),
-  logFC = c(0.5, -1.2, 0.3, -0.8, 0.6),
-  adj.P.Val = c(0.01, 0.03, 0.2, 0.05, 0.001),
-  sig = c("significant up",
-          "significant down",
-          "not significant",
-          "significant down",
-          "significant up")
-)
-create_volcano("AML", test_data)
-}
+\keyword{internal}
