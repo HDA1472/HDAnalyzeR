@@ -7,43 +7,37 @@
 do_limma_de(
   join_data,
   disease,
-  correct_sex = F,
-  correct_age = F,
-  correct_bmi = F,
+  correct = c("Sex", "Age", "BMI"),
+  correct_type = c("factor", "numeric", "numeric"),
   only_female = NULL,
-  only_male = NULL
+  only_male = NULL,
+  pval_lim = 0.05,
+  logfc_lim = 0
 )
 }
 \arguments{
 \item{join_data}{(tibble). A tibble with the Olink data in wide format joined with metadata.}
 
-\item{disease}{(character). The disease of interest}
+\item{disease}{(character). The disease of interest.}
 
-\item{correct_sex}{(logical). Correct the results with Sex. Default is FALSE}
+\item{correct}{(character or vector). The variables to correct the results with. Default c("Sex", "Age", "BMI").}
 
-\item{correct_age}{(logical). Correct the results with Age. Default is FALSE}
+\item{correct_type}{(character or vector). The type of the variables to correct the results with. Default c("factor", "numeric", "numeric").}
 
-\item{correct_bmi}{(logical). Correct the results with BMI. Default is FALSE}
+\item{only_female}{(character or vector). The female specific diseases. Default is NULL.}
 
-\item{only_female}{(character or vector). The female specific diseases. Default is NULL}
+\item{only_male}{(character or vector). The male specific diseases. Default is NULL.}
 
-\item{only_male}{(character or vector). The male specific diseases. Default is NULL}
+\item{pval_lim}{(numeric). The p-value limit for significance. Default is 0.05.}
+
+\item{logfc_lim}{(numeric). The logFC limit for significance. Default is 0.}
 }
 \value{
-de_res (tibble). A tibble with the differential expression results
+de_res (tibble). A tibble with the differential expression results.
 }
 \description{
 This function performs differential expression analysis using limma.
 It can correct the results with sex, age, and BMI.
 The output dataframe includes the logFC, the p-values, as well as the adjusted p-values with FDR.
 }
-\examples{
-test_data <- example_data |>
-  dplyr::select(DAid, Assay, NPX) |>
-  tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
-  dplyr::left_join(example_metadata |>
-                     dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", "Age", "BMI"))),
-                   by = "DAid")
-
-do_limma_de(test_data, "AML")
-}
+\keyword{internal}
