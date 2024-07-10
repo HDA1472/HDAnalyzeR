@@ -32,6 +32,7 @@ It annotates the boxplot with color for the selected disease.
 It is also possible to add points to the boxplot.
 }
 \examples{
+
 wide_data <- widen_data(example_data, FALSE)
 join_data <- wide_data |>
   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
