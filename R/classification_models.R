@@ -15,16 +15,7 @@ utils::globalVariables(c(
 #' @return A list with two elements:
 #'  - train_set (tibble). The training set.
 #'  - test_set (tibble). The test set.
-#' @export
-#'
-#' @examples
-#' wide_data <- example_data |>
-#'   dplyr::select(DAid, Assay, NPX) |>
-#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-#' join_data <- wide_data |>
-#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-#'
-#' data_splits <- split_data(join_data)
+#' @keywords internal
 split_data <- function(join_data, ratio = 0.75, seed = 123) {
 
   set.seed(seed)
@@ -51,23 +42,7 @@ split_data <- function(join_data, ratio = 0.75, seed = 123) {
 #' @return A list with two elements:
 #'  - control_data (tibble). Filtered control data.
 #'  - diseases_subset (vector). Filtered diseases vector.
-#' @export
-#'
-#' @examples
-#' wide_data <- example_data |>
-#'   dplyr::select(DAid, Assay, NPX) |>
-#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-#' join_data <- wide_data |>
-#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-#'
-#' diseases <- unique(example_metadata$Disease)
-#' control_data <- join_data |> dplyr::filter(Disease != "BRC")
-#'
-#' filter_sex_specific_disease(control_data,
-#'                             "BRC",
-#'                             diseases,
-#'                             only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                             only_male = "PRC")
+#' @keywords internal
 filter_sex_specific_disease <- function(control_data,
                                         disease,
                                         diseases,
@@ -106,21 +81,7 @@ filter_sex_specific_disease <- function(control_data,
 #' @param seed (numeric). Seed for reproducibility. Default is 123.
 #'
 #' @return A list with combined, balanced control-case groups for each disease
-#' @export
-#'
-#' @examples
-#' wide_data <- example_data |>
-#'   dplyr::select(DAid, Assay, NPX) |>
-#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-#' join_data <- wide_data |>
-#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-#'
-#' diseases <- unique(example_metadata$Disease)
-#'
-#' group_list <- make_groups(join_data,
-#'                           diseases,
-#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                           only_male = "PRC")
+#' @keywords internal
 make_groups <- function(join_data,
                         diseases,
                         only_female = NULL,
@@ -222,34 +183,7 @@ vis_hypopt <- function(tune_res,
 #'  - wf (workflow). Workflow object.
 #'  - train_set (tibble). Training set.
 #'  - test_set (tibble). Testing set.
-#' @export
-#'
-#' @examples
-#' wide_data <- example_data |>
-#'   dplyr::select(DAid, Assay, NPX) |>
-#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-#' join_data <- wide_data |>
-#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-#' diseases <- unique(example_metadata$Disease)
-#' data_split <- split_data(join_data)
-#' train_list <- make_groups(data_split$train_set,
-#'                           diseases,
-#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                           only_male = "PRC")
-#'
-#' test_list <- make_groups(data_split$test_set,
-#'                          diseases,
-#'                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                          only_male = "PRC")
-#'
-#' hypopt_res <- elnet_hypopt(train_list,
-#'                            test_list,
-#'                            "AML",
-#'                            type = "elnet",
-#'                            cv_sets = 2,
-#'                            grid_size = 1,
-#'                            ncores = 1,
-#'                            exclude_cols = "Sex")
+#' @keywords internal
 elnet_hypopt <- function(train_data,
                          test_data,
                          disease,
@@ -359,36 +293,7 @@ elnet_hypopt <- function(train_data,
 #'  - final_elnet (parsnip model). Final elastic net model.
 #'  - best_elnet (tibble). Best hyperparameters from hyperparameter optimization.
 #'  - final_wf (workflow). Final workflow object.
-#' @export
-#'
-#' @examples
-#' wide_data <- example_data |>
-#'   dplyr::select(DAid, Assay, NPX) |>
-#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-#' join_data <- wide_data |>
-#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-#' diseases <- unique(example_metadata$Disease)
-#' data_split <- split_data(join_data)
-#' train_list <- make_groups(data_split$train_set,
-#'                           diseases,
-#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                           only_male = "PRC")
-#'
-#' test_list <- make_groups(data_split$test_set,
-#'                          diseases,
-#'                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                          only_male = "PRC")
-#'
-#' hypopt_res <- elnet_hypopt(train_list,
-#'                            test_list,
-#'                            "AML",
-#'                            type = "elnet",
-#'                            cv_sets = 2,
-#'                            grid_size = 1,
-#'                            ncores = 1,
-#'                            exclude_cols = "Sex")
-#'
-#' finalfit_res <- elnet_finalfit(hypopt_res$train_set, hypopt_res$elnet_tune, hypopt_res$wf)
+#' @keywords internal
 elnet_finalfit <- function(train_set,
                            tune_res,
                            wf,
@@ -429,42 +334,7 @@ elnet_finalfit <- function(train_set,
 #'   - auc (numeric). AUC of the model.
 #'   - conf_matrix (tibble). Confusion matrix of the model.
 #'  - mixture (numeric). Mixture of lasso and ridge regularization.
-#' @export
-#'
-#' @examples
-#' wide_data <- example_data |>
-#'   dplyr::select(DAid, Assay, NPX) |>
-#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-#' join_data <- wide_data |>
-#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-#' diseases <- unique(example_metadata$Disease)
-#' data_split <- split_data(join_data)
-#' train_list <- make_groups(data_split$train_set,
-#'                           diseases,
-#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                           only_male = "PRC")
-#'
-#' test_list <- make_groups(data_split$test_set,
-#'                          diseases,
-#'                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                          only_male = "PRC")
-#'
-#' hypopt_res <- elnet_hypopt(train_list,
-#'                            test_list,
-#'                            "AML",
-#'                            type = "elnet",
-#'                            cv_sets = 2,
-#'                            grid_size = 1,
-#'                            ncores = 1,
-#'                            exclude_cols = "Sex")
-#'
-#' finalfit_res <- elnet_finalfit(hypopt_res$train_set, hypopt_res$elnet_tune, hypopt_res$wf)
-#'
-#' testfit_res <- elnet_testfit(hypopt_res$train_set,
-#'                              hypopt_res$test_set,
-#'                              "AML",
-#'                              finalfit_res,
-#'                              exclude_cols = "Sex")
+#' @keywords internal
 elnet_testfit <- function(train_set,
                           test_set,
                           disease,
@@ -587,55 +457,14 @@ generate_subtitle <- function(features, accuracy, sensitivity, specificity, auc,
 #' @param specificity (numeric). Specificity of the model.
 #' @param auc (numeric). AUC of the model.
 #' @param mixture (numeric). Mixture of lasso and ridge regularization.
+#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
+#' @param vline (logical). Whether to add a vertical line at 50% importance. Default is TRUE.
 #' @param subtitle (vector). Vector of subtitles to include in the plot. Default is a list with all.
 #'
 #' @return A list with two elements:
 #'  - features (tibble). Features with importance values.
 #'  - var_imp_plot (plot). Variable importance plot.
-#' @export
-#'
-#' @examples
-#' wide_data <- example_data |>
-#'   dplyr::select(DAid, Assay, NPX) |>
-#'   tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-#' join_data <- wide_data |>
-#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-#' diseases <- unique(example_metadata$Disease)
-#' data_split <- split_data(join_data)
-#' train_list <- make_groups(data_split$train_set,
-#'                           diseases,
-#'                           only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                           only_male = "PRC")
-#'
-#' test_list <- make_groups(data_split$test_set,
-#'                          diseases,
-#'                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
-#'                          only_male = "PRC")
-#'
-#' hypopt_res <- elnet_hypopt(train_list,
-#'                            test_list,
-#'                            "AML",
-#'                            type = "elnet",
-#'                            cv_sets = 2,
-#'                            grid_size = 1,
-#'                            ncores = 1,
-#'                            exclude_cols = "Sex")
-#'
-#' finalfit_res <- elnet_finalfit(hypopt_res$train_set, hypopt_res$elnet_tune, hypopt_res$wf)
-#'
-#' testfit_res <- elnet_testfit(hypopt_res$train_set,
-#'                              hypopt_res$test_set,
-#'                              "AML",
-#'                              finalfit_res,
-#'                              exclude_cols = "Sex")
-#'
-#' plot_var_imp(finalfit_res,
-#'              "AML",
-#'              testfit_res$metrics$accuracy,
-#'              testfit_res$metrics$sensitivity,
-#'              testfit_res$metrics$specificity,
-#'              testfit_res$metrics$auc,
-#'              testfit_res$mixture)
+#' @keywords internal
 plot_var_imp <- function (finalfit_res,
                           disease,
                           accuracy,
@@ -643,6 +472,8 @@ plot_var_imp <- function (finalfit_res,
                           specificity,
                           auc,
                           mixture,
+                          palette = NULL,
+                          vline = T,
                           subtitle = c("accuracy",
                                        "sensitivity",
                                        "specificity",
@@ -667,21 +498,174 @@ plot_var_imp <- function (finalfit_res,
 
   subtitle_text <- generate_subtitle(features, accuracy, sensitivity, specificity, auc, mixture, subtitle)
 
+  # Prepare palettes
+  if (!is.null(palette) & is.character(palette)) {
+    pals <- get_hpa_palettes()
+    pal <- pals[[palette]]
+  } else if (!is.null(palette)) {
+    pal <- palette
+  } else {
+    pal <- "red3"
+  }
+
   var_imp_plot <- features |>
     ggplot2::ggplot(ggplot2::aes(x = Scaled_Importance, y = Variable)) +
-    ggplot2::geom_col() +
-    ggplot2::scale_x_continuous(expand = c(0, 0)) +
+    ggplot2::geom_col(ggplot2::aes(fill = ifelse(Scaled_Importance > 50, disease, NA))) +
     ggplot2::labs(y = NULL) +
-    ggplot2::geom_vline(xintercept = 50, linetype = 'dashed', color = 'black') +
-    ggplot2::scale_x_continuous(breaks = c(0, 100)) +  # Keep x-axis tick labels at 0 and 100
+    ggplot2::scale_x_continuous(breaks = c(0, 100), expand = c(0, 0)) +  # Keep x-axis tick labels at 0 and 100
+    ggplot2::scale_fill_manual(values = pal, na.value = "grey50") +
     ggplot2::ggtitle(label = paste0(disease,''),
                      subtitle = subtitle_text) +
     ggplot2::xlab('Importance') +
     ggplot2::ylab('Features') +
     ggplot2::theme_classic() +
     ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                   axis.ticks.y = ggplot2::element_blank())
+                   axis.ticks.y = ggplot2::element_blank(),
+                   legend.position = "none")
+
+  if (isTRUE(vline)) {
+    var_imp_plot <- var_imp_plot +
+      ggplot2::geom_vline(xintercept = 50, linetype = 'dashed', color = 'black')
+  }
 
   return(list("features" = features,
               "var_imp_plot" = var_imp_plot))
+}
+
+
+#' Elastic net classification model pipeline
+#'
+#' This function runs the elastic net classification model pipeline.
+#' It splits the data into training and test sets, creates class-balanced groups, and fits the model.
+#' It also performs hyperparameter optimization, fits the final model, tests it, and plots usefull visualizations.
+#'
+#' @param olink_data (tibble). Olink data.
+#' @param metadata (tibble). Metadata.
+#' @param wide (logical). Whether the data is wide format. Default is FALSE.
+#' @param only_female (vector). Vector of diseases that are female specific. Default is NULL.
+#' @param only_male (vector). Vector of diseases that are male specific. Default is NULL.
+#' @param exclude_cols (vector). Columns to exclude from the model. Default is "Sex".
+#' @param ratio (numeric). Ratio of training data to test data. Default is 0.75.
+#' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param metric (function). Metric to optimize. Default is roc_auc.
+#' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
+#' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
+#' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis (logical). Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
+#' @param vline (logical). Whether to add a vertical line at 50% importance. Default is TRUE.
+#' @param subtitle (vector). Vector of subtitles to include in the plot. Default is a list with all.
+#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#'
+#' @return A list with results for each disease. The list contains:
+#' - hypopt_res (list). Hyperparameter optimization results.
+#' - finalfit_res (list). Final model fitting results.
+#' - testfit_res (list). Test model fitting results.
+#' - var_imp_res (list). Variable importance results.
+#' @export
+#'
+#' @examples
+#' unique_samples <- unique(example_data$Sample)
+#' filtered_data <- example_data |>
+#'  dplyr::filter(Sample %in% unique_samples[1:148])
+#'
+#' res <- do_elnet(filtered_data,
+#'                 example_metadata,
+#'                 palette = "cancers12",
+#'                 cv_sets = 2,
+#'                 grid_size = 1,
+#'                 ncores = 1)
+do_elnet <- function(olink_data,
+                     metadata,
+                     wide = F,
+                     only_female = NULL,
+                     only_male = NULL,
+                     exclude_cols = "Sex",
+                     ratio = 0.75,
+                     type = "lasso",
+                     metric = roc_auc,
+                     cv_sets = 5,
+                     grid_size = 10,
+                     ncores = 4,
+                     hypopt_vis = TRUE,
+                     palette = NULL,
+                     vline = T,
+                     subtitle = c("accuracy",
+                                  "sensitivity",
+                                  "specificity",
+                                  "auc",
+                                  "features",
+                                  "top-features",
+                                  "mixture"),
+                     seed = 123) {
+
+  # Prepare datasets
+  wide_data <- widen_data(olink_data, wide)
+  join_data <- wide_data |>
+    dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex))
+  diseases <- unique(metadata$Disease)
+
+  # Prepare sets and groups
+  data_split <- split_data(join_data, ratio, seed)
+  diseases <- unique(join_data$Disease)
+  train_list <- make_groups(data_split$train_set,
+                            diseases,
+                            only_female,
+                            only_male,
+                            seed)
+  test_list <- make_groups(data_split$test_set,
+                           diseases,
+                           only_female,
+                           only_male,
+                           seed)
+
+  message("Sets and groups are ready. Model fitting is starting...")
+
+  # Run model
+  elnet_results <- lapply(diseases, function(disease) {
+    message(paste0("Classification model for ", disease, " is starting..."))
+    hypopt_res <- elnet_hypopt(train_list,
+                               test_list,
+                               disease,
+                               type,
+                               metric,
+                               cv_sets,
+                               grid_size,
+                               ncores,
+                               hypopt_vis,
+                               exclude_cols,
+                               seed)
+
+    finalfit_res <- elnet_finalfit(hypopt_res$train_set,
+                                   hypopt_res$elnet_tune,
+                                   hypopt_res$wf,
+                                   seed)
+
+    testfit_res <- elnet_testfit(hypopt_res$train_set,
+                                 hypopt_res$test_set,
+                                 disease,
+                                 finalfit_res,
+                                 exclude_cols,
+                                 type)
+
+    var_imp_res <- plot_var_imp(finalfit_res,
+                                disease,
+                                testfit_res$metrics$accuracy,
+                                testfit_res$metrics$sensitivity,
+                                testfit_res$metrics$specificity,
+                                testfit_res$metrics$auc,
+                                testfit_res$mixture,
+                                palette = palette,
+                                vline = vline,
+                                subtitle)
+
+    return(list("hypopt_res" = hypopt_res,
+                "finalfit_res" = finalfit_res,
+                "testfit_res" = testfit_res,
+                "var_imp_res" = var_imp_res))
+  })
+
+  names(elnet_results) <- diseases
+
+  return(elnet_results)
 }

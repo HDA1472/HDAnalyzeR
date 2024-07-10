@@ -54,30 +54,4 @@ A list with three elements:
 This function performs hyperparameter optimization for elastic net models.
 It uses the glmnet engine for logistic regression and tunes either only penalty or both penalty and mixture.
 }
-\examples{
-wide_data <- example_data |>
-  dplyr::select(DAid, Assay, NPX) |>
-  tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-join_data <- wide_data |>
-  dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-diseases <- unique(example_metadata$Disease)
-data_split <- split_data(join_data)
-train_list <- make_groups(data_split$train_set,
-                          diseases,
-                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
-                          only_male = "PRC")
-
-test_list <- make_groups(data_split$test_set,
-                         diseases,
-                         only_female = c("BRC", "CVX", "ENDC", "OVC"),
-                         only_male = "PRC")
-
-hypopt_res <- elnet_hypopt(train_list,
-                           test_list,
-                           "AML",
-                           type = "elnet",
-                           cv_sets = 2,
-                           grid_size = 1,
-                           ncores = 1,
-                           exclude_cols = "Sex")
-}
+\keyword{internal}

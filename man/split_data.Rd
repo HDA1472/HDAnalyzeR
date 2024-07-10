@@ -23,12 +23,4 @@ A list with two elements:
 \description{
 This function splits the data into training and test sets based on user defined ratio.
 }
-\examples{
-wide_data <- example_data |>
-  dplyr::select(DAid, Assay, NPX) |>
-  tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-join_data <- wide_data |>
-  dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-
-data_splits <- split_data(join_data)
-}
+\keyword{internal}

@@ -12,6 +12,8 @@ plot_var_imp(
   specificity,
   auc,
   mixture,
+  palette = NULL,
+  vline = T,
   subtitle = c("accuracy", "sensitivity", "specificity", "auc", "features",
     "top-features", "mixture")
 )
@@ -31,6 +33,10 @@ plot_var_imp(
 
 \item{mixture}{(numeric). Mixture of lasso and ridge regularization.}
 
+\item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.}
+
+\item{vline}{(logical). Whether to add a vertical line at 50\% importance. Default is TRUE.}
+
 \item{subtitle}{(vector). Vector of subtitles to include in the plot. Default is a list with all.}
 }
 \value{
@@ -44,46 +50,4 @@ A list with two elements:
 This function collects the features and their importance.
 It scales their importance and plots it against them.
 }
-\examples{
-wide_data <- example_data |>
-  dplyr::select(DAid, Assay, NPX) |>
-  tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-join_data <- wide_data |>
-  dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-diseases <- unique(example_metadata$Disease)
-data_split <- split_data(join_data)
-train_list <- make_groups(data_split$train_set,
-                          diseases,
-                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
-                          only_male = "PRC")
-
-test_list <- make_groups(data_split$test_set,
-                         diseases,
-                         only_female = c("BRC", "CVX", "ENDC", "OVC"),
-                         only_male = "PRC")
-
-hypopt_res <- elnet_hypopt(train_list,
-                           test_list,
-                           "AML",
-                           type = "elnet",
-                           cv_sets = 2,
-                           grid_size = 1,
-                           ncores = 1,
-                           exclude_cols = "Sex")
-
-finalfit_res <- elnet_finalfit(hypopt_res$train_set, hypopt_res$elnet_tune, hypopt_res$wf)
-
-testfit_res <- elnet_testfit(hypopt_res$train_set,
-                             hypopt_res$test_set,
-                             "AML",
-                             finalfit_res,
-                             exclude_cols = "Sex")
-
-plot_var_imp(finalfit_res,
-             "AML",
-             testfit_res$metrics$accuracy,
-             testfit_res$metrics$sensitivity,
-             testfit_res$metrics$specificity,
-             testfit_res$metrics$auc,
-             testfit_res$mixture)
-}
+\keyword{internal}

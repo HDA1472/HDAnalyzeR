@@ -42,38 +42,4 @@ A list with two elements:
 This function tests the final elastic net model on the test set.
 It calculates the accuracy, sensitivity, specificity, AUC, and confusion matrix.
 }
-\examples{
-wide_data <- example_data |>
-  dplyr::select(DAid, Assay, NPX) |>
-  tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-join_data <- wide_data |>
-  dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-diseases <- unique(example_metadata$Disease)
-data_split <- split_data(join_data)
-train_list <- make_groups(data_split$train_set,
-                          diseases,
-                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
-                          only_male = "PRC")
-
-test_list <- make_groups(data_split$test_set,
-                         diseases,
-                         only_female = c("BRC", "CVX", "ENDC", "OVC"),
-                         only_male = "PRC")
-
-hypopt_res <- elnet_hypopt(train_list,
-                           test_list,
-                           "AML",
-                           type = "elnet",
-                           cv_sets = 2,
-                           grid_size = 1,
-                           ncores = 1,
-                           exclude_cols = "Sex")
-
-finalfit_res <- elnet_finalfit(hypopt_res$train_set, hypopt_res$elnet_tune, hypopt_res$wf)
-
-testfit_res <- elnet_testfit(hypopt_res$train_set,
-                             hypopt_res$test_set,
-                             "AML",
-                             finalfit_res,
-                             exclude_cols = "Sex")
-}
+\keyword{internal}

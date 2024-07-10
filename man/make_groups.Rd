@@ -31,17 +31,4 @@ This function creates class-balanced groups for classification models.
 It separates the data into control and case groups.
 It also filters the control data based on the disease in case of sex specific diseases.
 }
-\examples{
-wide_data <- example_data |>
-  dplyr::select(DAid, Assay, NPX) |>
-  tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-join_data <- wide_data |>
-  dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-
-diseases <- unique(example_metadata$Disease)
-
-group_list <- make_groups(join_data,
-                          diseases,
-                          only_female = c("BRC", "CVX", "ENDC", "OVC"),
-                          only_male = "PRC")
-}
+\keyword{internal}

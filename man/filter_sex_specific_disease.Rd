@@ -34,19 +34,4 @@ A list with two elements:
 This function filters the control data based on the disease.
 It also filters the diseases vector to keep only the diseases that we will pick samples from.
 }
-\examples{
-wide_data <- example_data |>
-  dplyr::select(DAid, Assay, NPX) |>
-  tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-join_data <- wide_data |>
-  dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-
-diseases <- unique(example_metadata$Disease)
-control_data <- join_data |> dplyr::filter(Disease != "BRC")
-
-filter_sex_specific_disease(control_data,
-                            "BRC",
-                            diseases,
-                            only_female = c("BRC", "CVX", "ENDC", "OVC"),
-                            only_male = "PRC")
-}
+\keyword{internal}
