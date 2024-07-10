@@ -26,7 +26,6 @@ Imports:
     limma,
     missForest,
     parsnip,
-    purrr,
     readxl,
     recipes,
     rlang,

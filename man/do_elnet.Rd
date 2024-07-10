@@ -22,6 +22,8 @@ do_elnet(
   vline = T,
   subtitle = c("accuracy", "sensitivity", "specificity", "auc", "features",
     "top-features", "mixture"),
+  nfeatures = 9,
+  points = T,
   seed = 123
 )
 }
@@ -57,6 +59,10 @@ do_elnet(
 \item{vline}{(logical). Whether to add a vertical line at 50\% importance. Default is TRUE.}
 
 \item{subtitle}{(vector). Vector of subtitles to include in the plot. Default is a list with all.}
+
+\item{nfeatures}{(numeric). Number of top features to include in the boxplot. Default is 9.}
+
+\item{points}{(logical). Whether to add points to the boxplot. Default is TRUE.}
 
 \item{seed}{(numeric). Seed for reproducibility. Default is 123.}
 }

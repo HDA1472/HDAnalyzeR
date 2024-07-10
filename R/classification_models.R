@@ -1,9 +1,5 @@
 utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled_Importance",
                          "Importance", "Variable", "std_err"))
-utils::globalVariables(c(
-  ".config", "test_data", "test_set", ".pred_class", ".pred_0",
-  "Scaled_Importance", "Importance", "Variable", "std_err"
-))
 #' Split data into training and test sets
 #'
 #' This function splits the data into training and test sets based on user defined ratio.
@@ -556,6 +552,8 @@ plot_var_imp <- function (finalfit_res,
 #' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
 #' @param vline (logical). Whether to add a vertical line at 50% importance. Default is TRUE.
 #' @param subtitle (vector). Vector of subtitles to include in the plot. Default is a list with all.
+#' @param nfeatures (numeric). Number of top features to include in the boxplot. Default is 9.
+#' @param points (logical). Whether to add points to the boxplot. Default is TRUE.
 #' @param seed (numeric). Seed for reproducibility. Default is 123.
 #'
 #' @return A list with results for each disease. The list contains:
@@ -662,12 +660,18 @@ do_elnet <- function(olink_data,
                                 vline = vline,
                                 subtitle)
 
+    top_features <- var_imp_res$features |>
+      dplyr::arrange(dplyr::desc(Scaled_Importance)) |>
+      dplyr::select(Variable) |>
+      dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+      utils::head(nfeatures)
+    proteins <- top_features[['Variable']]
+
     boxplot_res <- create_protein_boxplot(join_data,
+                                          proteins,
                                           disease,
-                                          features = var_imp_res$features,
-                                          nfeatures = nfeatures,
-                                          palette = palette,
-                                          points = points)
+                                          points,
+                                          palette)
 
     return(list("hypopt_res" = hypopt_res,
                 "finalfit_res" = finalfit_res,
