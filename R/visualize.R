@@ -1,7 +1,27 @@
+utils::globalVariables(c("Value"))
+#' Create boxplots for proteins
+#'
+#' This function creates a boxplot for the top n proteins in the dataset.
+#' It annotates the boxplot with color for the selected disease.
+#' It is also possible to add points to the boxplot.
+#'
+#' @param join_data (tibble). The dataset with the wide Olink data joined with the metadata.
+#' @param proteins (vector). The proteins to include in the boxplot.
+#' @param disease (character). The disease to annotate.
+#' @param points (logical). Whether to add points to the boxplot.
+#' @param palette (character). The color palette to use. Default is red3.
+#'
+#' @return boxplot_panel (plot). The boxplot panel with the selected proteins.
+#' @export
+#'
+#' @examples
+#' wide_data <- widen_data(example_data, FALSE)
+#' join_data <- wide_data |>
+#'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
+#' create_protein_boxplot(join_data, c("A1BG", "A2M"), "AML", palette = "cancers12")
 create_protein_boxplot <- function(join_data,
-                                   features,
+                                   proteins,
                                    disease,
-                                   nfeatures = 9,
                                    points = T,
                                    palette = NULL) {
 
@@ -16,18 +36,11 @@ create_protein_boxplot <- function(join_data,
     pal <- "red3"
   }
 
-  top_features <- features |>
-    dplyr::arrange(desc(Scaled_Importance)) |>
-    dplyr::select(Variable) |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
-    head(nfeatures)
-  top_features <- top_features[['Variable']]
-
   long_data <- join_data |>
-    dplyr::select(Disease, dplyr::all_of(top_features)) |>
+    dplyr::select(Disease, dplyr::all_of(proteins)) |>
     tidyr::pivot_longer(cols = !Disease, names_to = "Protein", values_to = "Value")
 
-  long_data$Protein <- factor(long_data$Protein, levels = top_features, labels = top_features)
+  long_data$Protein <- factor(long_data$Protein, levels = proteins, labels = proteins)
 
   # Create boxplot
   boxplot <- long_data |>
