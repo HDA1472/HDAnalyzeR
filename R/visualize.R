@@ -18,7 +18,7 @@ utils::globalVariables(c("Value"))
 #' wide_data <- widen_data(example_data, FALSE)
 #' join_data <- wide_data |>
 #'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-#' create_protein_boxplot(join_data, c("A1BG", "A2M"), "AML", palette = "cancers12")
+#' create_protein_boxplot(join_data, c("AARSD1", "ABL1"), "AML", palette = "cancers12")
 create_protein_boxplot <- function(join_data,
                                    proteins,
                                    disease,
