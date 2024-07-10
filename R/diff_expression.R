@@ -241,7 +241,7 @@ create_volcano <- function(disease,
       p <- p + ggplot2::theme(plot.subtitle = ggplot2::element_blank())
     }
 
-    if (is.character(palette)) {
+    if (is.null(names(palette))) {
       p <- p + scale_color_hpa(palette)
     } else {
       p <- p + ggplot2::scale_color_manual(values = palette)

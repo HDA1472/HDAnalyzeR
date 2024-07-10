@@ -499,9 +499,10 @@ plot_var_imp <- function (finalfit_res,
   subtitle_text <- generate_subtitle(features, accuracy, sensitivity, specificity, auc, mixture, subtitle)
 
   # Prepare palettes
-  if (!is.null(palette) & is.character(palette)) {
-    pals <- get_hpa_palettes()
-    pal <- pals[[palette]]
+  pals <- get_hpa_palettes()
+  if (!is.null(palette) && is.null(names(palette))) {
+    pal <- pals[palette]
+    pal <- unlist(pals[[palette]])
   } else if (!is.null(palette)) {
     pal <- palette
   } else {
@@ -514,7 +515,7 @@ plot_var_imp <- function (finalfit_res,
     ggplot2::labs(y = NULL) +
     ggplot2::scale_x_continuous(breaks = c(0, 100), expand = c(0, 0)) +  # Keep x-axis tick labels at 0 and 100
     ggplot2::scale_fill_manual(values = pal, na.value = "grey50") +
-    ggplot2::ggtitle(label = paste0(disease,''),
+    ggplot2::ggtitle(label = paste0(disease, ''),
                      subtitle = subtitle_text) +
     ggplot2::xlab('Importance') +
     ggplot2::ylab('Features') +
@@ -597,6 +598,8 @@ do_elnet <- function(olink_data,
                                   "features",
                                   "top-features",
                                   "mixture"),
+                     nfeatures = 9,
+                     points = T,
                      seed = 123) {
 
   # Prepare datasets
@@ -659,10 +662,18 @@ do_elnet <- function(olink_data,
                                 vline = vline,
                                 subtitle)
 
+    boxplot_res <- create_protein_boxplot(join_data,
+                                          disease,
+                                          features = var_imp_res$features,
+                                          nfeatures = nfeatures,
+                                          palette = palette,
+                                          points = points)
+
     return(list("hypopt_res" = hypopt_res,
                 "finalfit_res" = finalfit_res,
                 "testfit_res" = testfit_res,
-                "var_imp_res" = var_imp_res))
+                "var_imp_res" = var_imp_res,
+                "boxplot_res" = boxplot_res))
   })
 
   names(elnet_results) <- diseases
