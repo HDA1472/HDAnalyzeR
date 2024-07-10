@@ -32,7 +32,7 @@ It annotates the boxplot with color for the selected disease.
 It is also possible to add points to the boxplot.
 }
 \examples{
-wide_data <- widen_data(example_data, F)
+wide_data <- widen_data(example_data, FALSE)
 join_data <- wide_data |>
   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
 create_protein_boxplot(join_data, c("A1BG", "A2M"), "AML", palette = "cancers12")
