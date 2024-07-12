@@ -19,7 +19,7 @@ plot_var_imp(
 )
 }
 \arguments{
-\item{finalfit_res}{(list). Results from elnet_finalfit().}
+\item{finalfit_res}{(list). Results from finalfit().}
 
 \item{disease}{(character). Disease to predict.}
 

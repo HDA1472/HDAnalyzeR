@@ -164,13 +164,13 @@ vis_hypopt <- function(tune_res,
 #'
 #' @param train_data (list). List of training data sets from make_groups().
 #' @param test_data (list). List of testing data sets from make_groups().
-#' @param exclude_cols (vector). Columns to exclude from the model. Default is NULL.
 #' @param disease (character). Disease to predict.
 #' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
 #' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
 #' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
 #' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
 #' @param hypopt_vis (logical). Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param exclude_cols (vector). Columns to exclude from the model. Default is NULL.
 #' @param seed (numeric). Seed for reproducibility. Default is 123.
 #'
 #' @return A list with three elements:
@@ -274,6 +274,29 @@ elnet_hypopt <- function(train_data,
 }
 
 
+#' Hyperparameter optimization for random forest
+#'
+#' This function performs hyperparameter optimization for random forest models.
+#' It uses the ranger engine for logistic regression and tunes the number of trees and
+#' the number of variables randomly sampled at each split.
+#'
+#' @param train_data (list). List of training data sets from make_groups().
+#' @param test_data (list). List of testing data sets from make_groups().
+#' @param disease (character). Disease to predict.
+#' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
+#' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
+#' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis (logical). Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param exclude_cols (vector). Columns to exclude from the model. Default is NULL.
+#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#'
+#' @return A list with four elements:
+#'  - rf_tune (tibble). Hyperparameter optimization results.
+#'  - rf_wf (workflow). Workflow object.
+#'  - train_set (tibble). Training set.
+#'  - test_set (tibble). Testing set.
+#'  - hyperopt_vis (plot). Hyperparameter optimization plot.
+#' @keywords internal
 rf_hypopt <- function(train_data,
                       test_data,
                       disease,
@@ -294,14 +317,15 @@ rf_hypopt <- function(train_data,
     dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
     dplyr::mutate(Disease = as.factor(Disease)) |>
     dplyr::select(-dplyr::any_of(exclude_cols)) |>
-    dplyr::mutate(dplyr::across(where(is.character), as.factor))
+    dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))  # Solve bug of Gower distance function
 
   train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
 
   test_set <- test_data[[disease]] |>
     dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
     dplyr::mutate(Disease = as.factor(Disease)) |>
-    dplyr::select(-dplyr::any_of(exclude_cols))
+    dplyr::select(-dplyr::any_of(exclude_cols)) |>
+    dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))
 
   rf_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
     recipes::update_role(DAid, new_role = "id") |>
@@ -358,9 +382,9 @@ rf_hypopt <- function(train_data,
 }
 
 
-#' Fit the final elastic net model
+#' Fit the final model
 #'
-#' This function fits the final elastic net model using the best hyperparameters from hyperparameter optimization.
+#' This function fits the final model using the best hyperparameters from hyperparameter optimization.
 #'
 #' @param train_set (tibble). Training set.
 #' @param tune_res (tibble). Hyperparameter optimization results.
@@ -368,7 +392,7 @@ rf_hypopt <- function(train_data,
 #' @param seed (numeric). Seed for reproducibility. Default is 123.
 #'
 #' @return A list with three elements:
-#'  - final_elnet (parsnip model). Final elastic net model.
+#'  - final_elnet (parsnip model). Final model.
 #'  - best_elnet (tibble). Best hyperparameters from hyperparameter optimization.
 #'  - final_wf (workflow). Final workflow object.
 #' @keywords internal
@@ -377,24 +401,24 @@ finalfit <- function(train_set,
                      wf,
                      seed = 123) {
 
-  best_elnet <- tune_res |>
+  best <- tune_res |>
     tune::select_best(metric = "roc_auc") |>
     dplyr::select(-.config)
 
-  final_wf <- tune::finalize_workflow(wf, best_elnet)
+  final_wf <- tune::finalize_workflow(wf, best)
 
-  final_elnet <- final_wf |>
+  final <- final_wf |>
     parsnip::fit(train_set)
 
-  return(list("final_elnet" = final_elnet,
-              "best_elnet" = best_elnet,
+  return(list("final" = final,
+              "best" = best,
               "final_wf" = final_wf))
 }
 
 
-#' Test the final elastic net model
+#' Test the final model
 #'
-#' This function tests the final elastic net model on the test set.
+#' This function tests the final model on the test set.
 #' It calculates the accuracy, sensitivity, specificity, AUC, and confusion matrix.
 #'
 #' @param train_set (tibble). Training set.
@@ -413,20 +437,19 @@ finalfit <- function(train_set,
 #'   - conf_matrix (tibble). Confusion matrix of the model.
 #'  - mixture (numeric). Mixture of lasso and ridge regularization.
 #' @keywords internal
-elnet_testfit <- function(train_set,
-                          test_set,
-                          disease,
-                          finalfit_res,
-                          exclude_cols = NULL,
-                          type = "lasso"
-) {
+testfit <- function(train_set,
+                    test_set,
+                    disease,
+                    finalfit_res,
+                    exclude_cols = NULL,
+                    type = "lasso") {
 
   splits <- rsample::make_splits(train_set, test_set)
 
   preds <- tune::last_fit(finalfit_res$final_wf,
                           splits,
                           metrics = yardstick::metric_set(yardstick::roc_auc))
-  res <- stats::predict(finalfit_res$final_elnet, new_data = test_set)
+  res <- stats::predict(finalfit_res$final, new_data = test_set)
 
   res <- dplyr::bind_cols(res, test_set |> dplyr::select(Disease))
 
@@ -455,6 +478,8 @@ elnet_testfit <- function(train_set,
     mixture <- 1
   } else if (type == "ridge") {
     mixture <- 0
+  } else {
+    mixture <- NA
   }
 
   return(list("metrics" = list("accuracy" = round(accuracy$.estimate, 2),
@@ -528,7 +553,7 @@ generate_subtitle <- function(features, accuracy, sensitivity, specificity, auc,
 #' This function collects the features and their importance.
 #' It scales their importance and plots it against them.
 #'
-#' @param finalfit_res (list). Results from elnet_finalfit().
+#' @param finalfit_res (list). Results from finalfit().
 #' @param disease (character). Disease to predict.
 #' @param accuracy (numeric). Accuracy of the model.
 #' @param sensitivity (numeric). Sensitivity of the model.
@@ -561,7 +586,7 @@ plot_var_imp <- function (finalfit_res,
                                        "mixture")
                           ) {
 
-  features <- finalfit_res$final_elnet |>
+  features <- finalfit_res$final |>
     workflows::extract_fit_parsnip() |>
     vip::vi(lambda = finalfit_res$best_model$penalty,
             alpha = finalfit_res$best_model$mixture
@@ -616,7 +641,7 @@ plot_var_imp <- function (finalfit_res,
 #'
 #' This function runs the elastic net classification model pipeline.
 #' It splits the data into training and test sets, creates class-balanced groups, and fits the model.
-#' It also performs hyperparameter optimization, fits the final model, tests it, and plots usefull visualizations.
+#' It also performs hyperparameter optimization, fits the final model, tests it, and plots useful visualizations.
 #'
 #' @param olink_data (tibble). Olink data.
 #' @param metadata (tibble). Metadata.
@@ -626,7 +651,6 @@ plot_var_imp <- function (finalfit_res,
 #' @param exclude_cols (vector). Columns to exclude from the model. Default is "Sex".
 #' @param ratio (numeric). Ratio of training data to test data. Default is 0.75.
 #' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
-#' @param metric (function). Metric to optimize. Default is roc_auc.
 #' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
 #' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
 #' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
@@ -639,10 +663,10 @@ plot_var_imp <- function (finalfit_res,
 #' @param seed (numeric). Seed for reproducibility. Default is 123.
 #'
 #' @return A list with results for each disease. The list contains:
-#' - hypopt_res (list). Hyperparameter optimization results.
-#' - finalfit_res (list). Final model fitting results.
-#' - testfit_res (list). Test model fitting results.
-#' - var_imp_res (list). Variable importance results.
+#'  - hypopt_res (list). Hyperparameter optimization results.
+#'  - finalfit_res (list). Final model fitting results.
+#'  - testfit_res (list). Test model fitting results.
+#'  - var_imp_res (list). Variable importance results.
 #' @export
 #'
 #' @examples
@@ -664,7 +688,6 @@ do_elnet <- function(olink_data,
                      exclude_cols = "Sex",
                      ratio = 0.75,
                      type = "lasso",
-                     metric = roc_auc,
                      cv_sets = 5,
                      grid_size = 10,
                      ncores = 4,
@@ -711,7 +734,6 @@ do_elnet <- function(olink_data,
                                test_list,
                                disease,
                                type,
-                               metric,
                                cv_sets,
                                grid_size,
                                ncores,
@@ -719,17 +741,17 @@ do_elnet <- function(olink_data,
                                exclude_cols,
                                seed)
 
-    finalfit_res <- elnet_finalfit(hypopt_res$train_set,
-                                   hypopt_res$elnet_tune,
-                                   hypopt_res$elnet_wf,
-                                   seed)
+    finalfit_res <- finalfit(hypopt_res$train_set,
+                             hypopt_res$elnet_tune,
+                             hypopt_res$elnet_wf,
+                             seed)
 
-    testfit_res <- elnet_testfit(hypopt_res$train_set,
-                                 hypopt_res$test_set,
-                                 disease,
-                                 finalfit_res,
-                                 exclude_cols,
-                                 type)
+    testfit_res <- testfit(hypopt_res$train_set,
+                           hypopt_res$test_set,
+                           disease,
+                           finalfit_res,
+                           exclude_cols,
+                           type)
 
     var_imp_res <- plot_var_imp(finalfit_res,
                                 disease,
@@ -768,3 +790,150 @@ do_elnet <- function(olink_data,
 }
 
 
+#' Random forest classification model pipeline
+#'
+#' This function runs the random forest classification model pipeline.
+#' It splits the data into training and test sets, creates class-balanced groups, and fits the model.
+#' It also performs hyperparameter optimization, fits the final model, tests it, and plots useful visualizations.
+#'
+#' @param olink_data (tibble). Olink data.
+#' @param metadata (tibble). Metadata.
+#' @param wide (logical). Whether the data is wide format. Default is FALSE.
+#' @param only_female (vector). Vector of diseases that are female specific. Default is NULL.
+#' @param only_male (vector). Vector of diseases that are male specific. Default is NULL.
+#' @param exclude_cols (vector). Columns to exclude from the model. Default is "Sex".
+#' @param ratio (numeric). Ratio of training data to test data. Default is 0.75.
+#' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
+#' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
+#' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis (logical). Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
+#' @param vline (logical). Whether to add a vertical line at 50% importance. Default is TRUE.
+#' @param subtitle (vector). Vector of subtitles to include in the plot. Default is a list with all except mixture.
+#' @param nfeatures (numeric). Number of top features to include in the boxplot. Default is 9.
+#' @param points (logical). Whether to add points to the boxplot. Default is TRUE.
+#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#'
+#' @return A list with results for each disease. The list contains:
+#'  - hypopt_res (list). Hyperparameter optimization results.
+#'  - finalfit_res (list). Final model fitting results.
+#'  - testfit_res (list). Test model fitting results.
+#'  - var_imp_res (list). Variable importance results.
+#' @export
+#'
+#' @examples
+#' unique_samples <- unique(example_data$Sample)
+#' filtered_data <- example_data |>
+#'  dplyr::filter(Sample %in% unique_samples[1:148])
+#'
+#' res <- do_rf(filtered_data,
+#'              example_metadata,
+#'              palette = "cancers12",
+#'              cv_sets = 2,
+#'              grid_size = 1,
+#'              ncores = 1)
+do_rf <- function(olink_data,
+                  metadata,
+                  wide = F,
+                  only_female = NULL,
+                  only_male = NULL,
+                  exclude_cols = "Sex",
+                  ratio = 0.75,
+                  cv_sets = 5,
+                  grid_size = 10,
+                  ncores = 4,
+                  hypopt_vis = TRUE,
+                  palette = NULL,
+                  vline = T,
+                  subtitle = c("accuracy",
+                               "sensitivity",
+                               "specificity",
+                               "auc",
+                               "features",
+                               "top-features"),
+                  nfeatures = 9,
+                  points = T,
+                  seed = 123) {
+
+  # Prepare datasets
+  wide_data <- widen_data(olink_data, wide)
+  join_data <- wide_data |>
+    dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex))
+  diseases <- unique(metadata$Disease)
+
+  # Prepare sets and groups
+  data_split <- split_data(join_data, ratio, seed)
+  diseases <- unique(join_data$Disease)
+  train_list <- make_groups(data_split$train_set,
+                            diseases,
+                            only_female,
+                            only_male,
+                            seed)
+  test_list <- make_groups(data_split$test_set,
+                           diseases,
+                           only_female,
+                           only_male,
+                           seed)
+
+  message("Sets and groups are ready. Model fitting is starting...")
+
+  # Run model
+  rf_results <- lapply(diseases, function(disease) {
+    message(paste0("Classification model for ", disease, " is starting..."))
+    hypopt_res <- rf_hypopt(train_list,
+                            test_list,
+                            disease,
+                            cv_sets,
+                            grid_size,
+                            ncores,
+                            hypopt_vis,
+                            exclude_cols,
+                            seed)
+
+    finalfit_res <- finalfit(hypopt_res$train_set,
+                             hypopt_res$rf_tune,
+                             hypopt_res$rf_wf,
+                             seed)
+
+    testfit_res <- testfit(hypopt_res$train_set,
+                           hypopt_res$test_set,
+                           disease,
+                           finalfit_res,
+                           exclude_cols,
+                           type = "other")
+
+    var_imp_res <- plot_var_imp(finalfit_res,
+                                disease,
+                                testfit_res$metrics$accuracy,
+                                testfit_res$metrics$sensitivity,
+                                testfit_res$metrics$specificity,
+                                testfit_res$metrics$auc,
+                                testfit_res$mixture,
+                                palette = palette,
+                                vline = vline,
+                                subtitle)
+
+    top_features <- var_imp_res$features |>
+      dplyr::arrange(dplyr::desc(Scaled_Importance)) |>
+      dplyr::select(Variable) |>
+      dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+      utils::head(nfeatures)
+    proteins <- top_features[['Variable']]
+
+    boxplot_res <- create_protein_boxplot(join_data,
+                                          proteins,
+                                          disease,
+                                          points,
+                                          palette)
+
+    return(list("hypopt_res" = hypopt_res,
+                "finalfit_res" = finalfit_res,
+                "testfit_res" = testfit_res,
+                "var_imp_res" = var_imp_res,
+                "boxplot_res" = boxplot_res))
+  })
+
+  names(rf_results) <- diseases
+
+  return(rf_results)
+}
