@@ -43,8 +43,7 @@ filter_sex_specific_disease <- function(control_data,
                                         disease,
                                         diseases,
                                         only_female = NULL,
-                                        only_male = NULL
-                                        ) {
+                                        only_male = NULL) {
 
   if(!is.null(only_female) & disease %in% only_female) {
     control_data <- control_data |>
@@ -82,8 +81,7 @@ make_groups <- function(join_data,
                         diseases,
                         only_female = NULL,
                         only_male = NULL,
-                        seed = 123
-                        ) {
+                        seed = 123) {
 
   set.seed(seed)
   group_list <- list()
@@ -188,8 +186,7 @@ elnet_hypopt <- function(train_data,
                          ncores = 4,
                          hypopt_vis = TRUE,
                          exclude_cols = NULL,
-                         seed = 123
-) {
+                         seed = 123) {
 
   if (ncores > 1) {
     doParallel::registerDoParallel(cores = ncores)
@@ -305,8 +302,7 @@ rf_hypopt <- function(train_data,
                       ncores = 4,
                       hypopt_vis = TRUE,
                       exclude_cols = NULL,
-                      seed = 123
-) {
+                      seed = 123) {
 
   if (ncores > 1) {
     doParallel::registerDoParallel(cores = ncores)
@@ -583,8 +579,7 @@ plot_var_imp <- function (finalfit_res,
                                        "auc",
                                        "features",
                                        "top-features",
-                                       "mixture")
-                          ) {
+                                       "mixture")) {
 
   features <- finalfit_res$final |>
     workflows::extract_fit_parsnip() |>
