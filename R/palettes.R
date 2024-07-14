@@ -60,7 +60,7 @@ get_hpa_palettes <- function() {
 #'
 #' @return A ggplot2 scale for color aesthetics.
 #' @keywords internal
-scale_color_hpa <- function(palette = "palette1") {
+scale_color_hpa <- function(palette) {
   hpa_palettes <- get_hpa_palettes()
 
   if (!palette %in% names(hpa_palettes)) {
@@ -77,7 +77,7 @@ scale_color_hpa <- function(palette = "palette1") {
 #'
 #' @return A ggplot2 scale for fill aesthetics.
 #' @keywords internal
-scale_fill_hpa <- function(palette = "palette1") {
+scale_fill_hpa <- function(palette) {
   hpa_palettes <- get_hpa_palettes()
 
   if (!palette %in% names(hpa_palettes)) {
