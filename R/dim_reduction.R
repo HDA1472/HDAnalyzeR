@@ -6,16 +6,7 @@ utils::globalVariables(c("terms", "value", "component", "positive"))
 #' @param tidied_res (tibble). A tibble with the results of the PCA analysis
 #'
 #' @return (plot). A ggplot object
-#' @export
-#'
-#' @examples
-#' # Create a tibble that simulates the results of the PCA analysis
-#' components <- rep(c("PC1", "PC2", "PC3", "PC4"), each = 8)
-#' terms <- rep(paste0("Protein", 1:8), times = 4)
-#' set.seed(123)  # For reproducibility
-#' values <- runif(32, min = -0.3, max = 0.3)
-#' test_data <- tibble::tibble(component = components, terms = terms, value = values)
-#' plot_loadings(test_data)
+#' @keywords internal
 plot_loadings <- function(tidied_res) {
 
   p <- tidied_res |>
@@ -33,6 +24,11 @@ plot_loadings <- function(tidied_res) {
                   y = NULL, fill = "Positive?") +
     ggplot2::theme_classic()
 
+  if (is.null(names(palette))) {
+    p <- p + scale_color_hpa(palette)
+  } else {
+    p <- p + ggplot2::scale_color_manual(values = palette)
+  }
   return(p)
 }
 
@@ -50,20 +46,7 @@ plot_loadings <- function(tidied_res) {
 #' @param palette (vector). A vector with the colors to be used in the plot
 #'
 #' @return (plot). A ggplot object
-#' @export
-#'
-#' @examples
-#' # Create a tibble that simulates the results of the PCA analysis
-#' set.seed(123)  # For reproducibility
-#' pca_res <- tibble::tibble(DAid = 1:100, PC1 = rnorm(100), PC2 = rnorm(100))
-#'
-#' # Create a tibble that simulates the metadata information
-#' metadata <- tibble::tibble(DAid = 1:100,
-#'                            Disease = sample(c("Healthy", "Disease"),
-#'                            100,
-#'                            replace = TRUE))
-#'
-#' plot_dim_reduction(pca_res, "PC1", "PC2", metadata, "Disease", palette = c("red", "blue"))
+#' @keywords internal
 plot_dim_reduction <- function(res, x, y, metadata, variable, palette) {
 
   if (!is.null(metadata)) {
