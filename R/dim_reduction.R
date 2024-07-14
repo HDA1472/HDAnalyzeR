@@ -3,9 +3,9 @@ utils::globalVariables(c("terms", "value", "component", "positive"))
 #'
 #' This function creates a plot of the PCA loadings for the top-8 features and first 4 PCs.
 #'
-#' @param tidied_res (tibble). A tibble with the results of the PCA analysis
+#' @param tidied_res (tibble). A tibble with the results of the PCA analysis.
 #'
-#' @return (plot). A ggplot object
+#' @return (plot). A ggplot object.
 #' @keywords internal
 plot_loadings <- function(tidied_res) {
 
@@ -18,17 +18,13 @@ plot_loadings <- function(tidied_res) {
     dplyr::mutate(positive = factor((value > 0), levels = c(TRUE, FALSE))) |>
     ggplot2::ggplot(ggplot2::aes(abs(value), terms, fill = positive)) +
     ggplot2::geom_col() +
+    ggplot2::scale_fill_manual(values = c("TRUE" = "red3", "FALSE" = "darkblue")) +
     ggplot2::facet_wrap( ~ component, scales = "free_y") +
     tidytext::scale_y_reordered() +
     ggplot2::labs(x = "Absolute value of contribution",
                   y = NULL, fill = "Positive?") +
     ggplot2::theme_classic()
 
-  if (is.null(names(palette))) {
-    p <- p + scale_color_hpa(palette)
-  } else {
-    p <- p + ggplot2::scale_color_manual(values = palette)
-  }
   return(p)
 }
 
@@ -38,25 +34,25 @@ plot_loadings <- function(tidied_res) {
 #' This function creates a plot of the dimensionality reduction results.
 #' The function can be used to plot the results of PCA (1st vs 2nd PC) or UMAP analyses.
 #'
-#' @param res (tibble). A tibble with the results of the dimensionality reduction analysis
-#' @param x (string). The name of the column in `res` that contains the x-axis values
-#' @param y (string). The name of the column in `res` that contains the y-axis values
-#' @param metadata (tibble). A tibble with metadata information to be added to the plot
-#' @param variable (string). The name of the column in `metadata` that contains the variable to be used to plot the points color
-#' @param palette (vector). A vector with the colors to be used in the plot
+#' @param res (tibble). A tibble with the results of the dimensionality reduction analysis.
+#' @param x (string). The name of the column in `res` that contains the x-axis values.
+#' @param y (string). The name of the column in `res` that contains the y-axis values.
+#' @param metadata (tibble). A tibble with metadata information to be added to the plot.
+#' @param color (string). The name of the column in `metadata` that contains the variable to be used to plot the points color.
+#' @param palette (vector). A vector with the colors to be used in the plot.
 #'
 #' @return (plot). A ggplot object
 #' @keywords internal
-plot_dim_reduction <- function(res, x, y, metadata, variable, palette) {
+plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
 
   if (!is.null(metadata)) {
     p <- res |>
       dplyr::left_join(metadata, by = "DAid") |>
       ggplot2::ggplot(ggplot2::aes(!!rlang::sym(x), !!rlang::sym(y))) +
-      ggplot2::geom_point(ggplot2::aes(color = !!rlang::sym(variable)),
+      ggplot2::geom_point(ggplot2::aes(color = !!rlang::sym(color)),
                           alpha = 0.7,
                           size = 2) +
-      ggplot2::labs(color = variable) +
+      ggplot2::labs(color = color) +
       ggplot2::theme_classic()
   } else {
     p <- res |>
@@ -65,7 +61,9 @@ plot_dim_reduction <- function(res, x, y, metadata, variable, palette) {
       ggplot2::theme_classic()
   }
 
-  if (!is.null(palette)) {
+  if (is.null(names(palette))) {
+    p <- p + scale_color_hpa(palette)
+  } else if (!is.null(palette)) {
     p <- p + ggplot2::scale_color_manual(values = palette)
   }
 
@@ -78,21 +76,21 @@ plot_dim_reduction <- function(res, x, y, metadata, variable, palette) {
 #' This function performs a PCA analysis on the data provided.
 #' The function can also create plots of the PCA results and save them in the results directory.
 #'
-#' @param olink_data (tibble). A tibble with the data to be used in the PCA analysis
-#' @param metadata (tibble). A tibble with metadata information to be used in the PCA plots. Default is NULL
-#' @param variable (string). The name of the column in `metadata` that contains the variable
-#' to be used to plot the points color. Default is "Disease"
-#' @param palette (vector). A vector with the colors to be used in the PCA plots. Default is NULL
-#' @param wide (logical). If TRUE, the data is assumed to be in wide format. Default is TRUE
-#' @param impute (logical). If TRUE, the data is imputed before the PCA analysis. Default is TRUE
-#' @param plots (logical). If TRUE, the function creates plots of the PCA results. Default is FALSE
-#' @param save (logical). If TRUE, the plots are saved in the results directory. Default is FALSE
+#' @param olink_data (tibble). A tibble with the data to be used in the PCA analysis.
+#' @param metadata (tibble). A tibble with metadata information to be used in the PCA plots. Default is NULL.
+#' @param color (string). The name of the column in `metadata` that contains the variable.
+#' to be used to plot the points color. Default is "Disease".
+#' @param palette (vector). A vector with the colors to be used in the PCA plots. Default is NULL.
+#' @param wide (logical). If TRUE, the data is assumed to be in wide format. Default is TRUE.
+#' @param impute (logical). If TRUE, the data is imputed before the PCA analysis. Default is TRUE.
+#' @param plots (logical). If TRUE, the function creates plots of the PCA results. Default is FALSE.
+#' @param save (logical). If TRUE, the plots are saved in the results directory. Default is FALSE.
 #'
-#' @return (list). A list with the PCA results and, if requested, the PCA plots
-#'   - pca_res (tibble). A tibble with the PCA results
-#'   - loadings (tibble). A tibble with the PCA loadings
-#'   - pca_plot (plot). A ggplot object with the PCA plot
-#'   - loadings_plot (plot). A ggplot object with the PCA loadings plot
+#' @return (list). A list with the PCA results and, if requested, the PCA plots.
+#'   - pca_res (tibble). A tibble with the PCA results.
+#'   - loadings (tibble). A tibble with the PCA loadings.
+#'   - pca_plot (plot). A ggplot object with the PCA plot.
+#'   - loadings_plot (plot). A ggplot object with the PCA loadings plot.
 #' @export
 #'
 #' @examples
@@ -100,11 +98,11 @@ plot_dim_reduction <- function(res, x, y, metadata, variable, palette) {
 #' do_pca(test_data,
 #'        metadata = example_metadata,
 #'        wide = FALSE,
-#'        variable = "Disease",
+#'        color = "Disease",
 #'        plots = TRUE)
 do_pca <- function(olink_data,
                    metadata = NULL,
-                   variable = "Disease",
+                   color = "Disease",
                    palette = NULL,
                    wide = T,
                    impute = T,
@@ -142,7 +140,7 @@ do_pca <- function(olink_data,
   pca_res <-  recipes::juice(pca_prep)
 
   if (isTRUE(plots)) {
-    pca_plot <- plot_dim_reduction(pca_res, "PC1", "PC2", metadata, variable, palette)
+    pca_plot <- plot_dim_reduction(pca_res, "PC1", "PC2", metadata, color, palette)
     loadings_plot <- plot_loadings(tidied_pca)
 
     if (isTRUE(save)) {
@@ -169,19 +167,19 @@ do_pca <- function(olink_data,
 #' This function performs a UMAP analysis on the data provided.
 #' The function can also create plots of the UMAP results and save them in the results directory.
 #'
-#' @param olink_data (tibble). A tibble with the data to be used in the UMAP analysis
-#' @param metadata (tibble). A tibble with metadata information to be used in the UMAP plots. Default is NULL
-#' @param variable (string). The name of the column in `metadata` that contains the variable
-#' to be used to plot the points color. Default is "Disease"
-#' @param palette (vector). A vector with the colors to be used in the UMAP plots. Default is NULL
-#' @param wide (logical). If TRUE, the data is assumed to be in wide format. Default is TRUE
-#' @param impute (logical). If TRUE, the data is imputed before the UMAP analysis. Default is TRUE
-#' @param plots (logical). If TRUE, the function creates plots of the UMAP results. Default is FALSE
-#' @param save (logical). If TRUE, the plots are saved in the results directory. Default is FALSE
+#' @param olink_data (tibble). A tibble with the data to be used in the UMAP analysis.
+#' @param metadata (tibble). A tibble with metadata information to be used in the UMAP plots. Default is NULL.
+#' @param color (string). The name of the column in `metadata` that contains the variable.
+#' to be used to plot the points color. Default is "Disease".
+#' @param palette (vector). A vector with the colors to be used in the UMAP plots. Default is NULL.
+#' @param wide (logical). If TRUE, the data is assumed to be in wide format. Default is TRUE.
+#' @param impute (logical). If TRUE, the data is imputed before the UMAP analysis. Default is TRUE.
+#' @param plots (logical). If TRUE, the function creates plots of the UMAP results. Default is FALSE.
+#' @param save (logical). If TRUE, the plots are saved in the results directory. Default is FALSE.
 #'
-#' @return (list). A list with the UMAP results and, if requested, the UMAP plots
-#'   - umap_res (tibble). A tibble with the UMAP results
-#'   - umap_plot (plot). A ggplot object with the UMAP plot
+#' @return (list). A list with the UMAP results and, if requested, the UMAP plots.
+#'   - umap_res (tibble). A tibble with the UMAP results.
+#'   - umap_plot (plot). A ggplot object with the UMAP plot.
 #' @export
 #'
 #' @examples
@@ -189,11 +187,11 @@ do_pca <- function(olink_data,
 #' do_umap(test_data,
 #'        metadata = example_metadata,
 #'        wide = FALSE,
-#'        variable = "Disease",
+#'        color = "Disease",
 #'        plots = TRUE)
 do_umap <- function(olink_data,
                     metadata = NULL,
-                    variable = "Disease",
+                    color = "Disease",
                     palette = NULL,
                     wide = T,
                     impute = T,
@@ -225,7 +223,7 @@ do_umap <- function(olink_data,
   umap_res <-  recipes::juice(umap_prep)
 
   if (isTRUE(plots)) {
-    umap_plot <- plot_dim_reduction(umap_res, "UMAP1", "UMAP2", metadata, variable, palette)
+    umap_plot <- plot_dim_reduction(umap_res, "UMAP1", "UMAP2", metadata, color, palette)
 
     if (isTRUE(save)) {
       dir_name <- create_dir("results/umap_plots", date = T)

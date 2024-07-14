@@ -67,10 +67,7 @@ scale_color_hpa <- function(palette = "palette1") {
     stop("Palette not found. Available palettes are: ", paste(names(hpa_palettes), collapse = ", "))
   }
 
-  ggplot2::discrete_scale(
-    aesthetics = "colour",
-    palette = scales::manual_pal(values = hpa_palettes[[palette]])
-  )
+  ggplot2::scale_color_manual(values = hpa_palettes[[palette]])
 }
 
 
@@ -87,8 +84,5 @@ scale_fill_hpa <- function(palette = "palette1") {
     stop("Palette not found. Available palettes are: ", paste(names(hpa_palettes), collapse = ", "))
   }
 
-  ggplot2::discrete_scale(
-    aesthetics = "fill",
-    palette = scales::manual_pal(values = hpa_palettes[[palette]])
-  )
+  ggplot2::scale_fill_manual(values = hpa_palettes[[palette]])
 }
