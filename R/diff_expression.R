@@ -96,6 +96,38 @@ do_limma_de <- function(join_data,
 }
 
 
+do_limma_continuous <- function(join_data,
+                                variable) {
+
+  # Design a model
+  design <- stats::model.matrix(~0 + join_data[[variable]])
+
+  # Fit linear model to each protein assay
+  data_fit <- join_data |>
+    dplyr::select(-dplyr::any_of(c("Disease", "Sex", "Age", "BMI"))) |>
+    tibble::column_to_rownames("DAid") |>
+    t()
+
+  fit <- limma::lmFit(data_fit, design = design, method = "robust", maxit = 10000)
+
+
+  # Apply empirical Bayes smoothing to the SE
+  ebays_fit <- limma::eBayes(fit)
+
+  # Extract DE results
+  de_results <- limma::topTable(ebays_fit,
+                                n = nrow(ebays_fit$p.value),
+                                adjust.method = "fdr",
+                                confint = TRUE)
+
+  de_res <- de_results |>
+    tibble::as_tibble(rownames = "Assay") |>
+    dplyr::arrange(adj.P.Val)
+
+  return(de_res)
+}
+
+
 #' Differential expression analysis with t-test
 #'
 #' This function performs differential expression analysis using t-test.
