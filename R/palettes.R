@@ -59,7 +59,18 @@ get_hpa_palettes <- function() {
 #' @param palette (character). The name of the palette to use. Available palettes are: "sex", "diff_exp", "cancers12", "cancers15".
 #'
 #' @return A ggplot2 scale for color aesthetics.
-#' @keywords internal
+#' @export
+#'
+#' @examples
+#' data <- data.frame(
+#'   var1 = 1:10,
+#'   var2 = seq(2, 20, by = 2),
+#'   Sex = rep(c("Male", "Female"), each = 5)
+#' )
+#'
+#' plot <- ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2, color = Sex)) +
+#'   ggplot2::geom_point() +
+#'   scale_color_hpa("sex")
 scale_color_hpa <- function(palette) {
   hpa_palettes <- get_hpa_palettes()
 
@@ -76,7 +87,17 @@ scale_color_hpa <- function(palette) {
 #' @param palette (character). The name of the palette to use. Available palettes are: "sex", "diff_exp", "cancers12", "cancers15".
 #'
 #' @return A ggplot2 scale for fill aesthetics.
-#' @keywords internal
+#' @export
+#'
+#' @examples
+#' data <- data.frame(
+#'   Sex = c("Male", "Female"),
+#'   Count = c(60, 40)
+#' )
+#'
+#' plot <- ggplot2::ggplot(data, ggplot2::aes(x = Sex, y = Count, fill = Sex)) +
+#'   ggplot2::geom_bar(stat = "identity", position = "dodge") +
+#'   scale_fill_hpa("sex")
 scale_fill_hpa <- function(palette) {
   hpa_palettes <- get_hpa_palettes()
 

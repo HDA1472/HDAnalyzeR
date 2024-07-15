@@ -4,7 +4,7 @@
 \alias{scale_fill_hpa}
 \title{HPA fill scales}
 \usage{
-scale_fill_hpa(palette = "palette1")
+scale_fill_hpa(palette)
 }
 \arguments{
 \item{palette}{(character). The name of the palette to use. Available palettes are: "sex", "diff_exp", "cancers12", "cancers15".}
@@ -15,4 +15,13 @@ A ggplot2 scale for fill aesthetics.
 \description{
 HPA fill scales
 }
-\keyword{internal}
+\examples{
+data <- data.frame(
+  Sex = c("Male", "Female"),
+  Count = c(60, 40)
+)
+
+plot <- ggplot2::ggplot(data, ggplot2::aes(x = Sex, y = Count, fill = Sex)) +
+  ggplot2::geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_hpa("sex")
+}

@@ -4,20 +4,20 @@
 \alias{plot_dim_reduction}
 \title{Create a plot of the dimensionality reduction results}
 \usage{
-plot_dim_reduction(res, x, y, metadata, variable, palette)
+plot_dim_reduction(res, x, y, metadata, color, palette)
 }
 \arguments{
-\item{res}{(tibble). A tibble with the results of the dimensionality reduction analysis}
+\item{res}{(tibble). A tibble with the results of the dimensionality reduction analysis.}
 
-\item{x}{(string). The name of the column in \code{res} that contains the x-axis values}
+\item{x}{(string). The name of the column in \code{res} that contains the x-axis values.}
 
-\item{y}{(string). The name of the column in \code{res} that contains the y-axis values}
+\item{y}{(string). The name of the column in \code{res} that contains the y-axis values.}
 
-\item{metadata}{(tibble). A tibble with metadata information to be added to the plot}
+\item{metadata}{(tibble). A tibble with metadata information to be added to the plot.}
 
-\item{variable}{(string). The name of the column in \code{metadata} that contains the variable to be used to plot the points color}
+\item{color}{(string). The name of the column in \code{metadata} that contains the variable to be used to plot the points color.}
 
-\item{palette}{(vector). A vector with the colors to be used in the plot}
+\item{palette}{(vector). A vector with the colors to be used in the plot.}
 }
 \value{
 (plot). A ggplot object
@@ -26,16 +26,4 @@ plot_dim_reduction(res, x, y, metadata, variable, palette)
 This function creates a plot of the dimensionality reduction results.
 The function can be used to plot the results of PCA (1st vs 2nd PC) or UMAP analyses.
 }
-\examples{
-# Create a tibble that simulates the results of the PCA analysis
-set.seed(123)  # For reproducibility
-pca_res <- tibble::tibble(DAid = 1:100, PC1 = rnorm(100), PC2 = rnorm(100))
-
-# Create a tibble that simulates the metadata information
-metadata <- tibble::tibble(DAid = 1:100,
-                           Disease = sample(c("Healthy", "Disease"),
-                           100,
-                           replace = TRUE))
-
-plot_dim_reduction(pca_res, "PC1", "PC2", metadata, "Disease", palette = c("red", "blue"))
-}
+\keyword{internal}

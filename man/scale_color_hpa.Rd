@@ -4,7 +4,7 @@
 \alias{scale_color_hpa}
 \title{HPA color scales}
 \usage{
-scale_color_hpa(palette = "palette1")
+scale_color_hpa(palette)
 }
 \arguments{
 \item{palette}{(character). The name of the palette to use. Available palettes are: "sex", "diff_exp", "cancers12", "cancers15".}
@@ -15,4 +15,14 @@ A ggplot2 scale for color aesthetics.
 \description{
 This function creates a ggplot2 scale for color aesthetics using the color palettes from the Human Protein Atlas (HPA) project.
 }
-\keyword{internal}
+\examples{
+data <- data.frame(
+  var1 = 1:10,
+  var2 = seq(2, 20, by = 2),
+  Sex = rep(c("Male", "Female"), each = 5)
+)
+
+plot <- ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2, color = Sex)) +
+  ggplot2::geom_point() +
+  scale_color_hpa("sex")
+}

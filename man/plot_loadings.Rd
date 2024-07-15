@@ -7,20 +7,12 @@
 plot_loadings(tidied_res)
 }
 \arguments{
-\item{tidied_res}{(tibble). A tibble with the results of the PCA analysis}
+\item{tidied_res}{(tibble). A tibble with the results of the PCA analysis.}
 }
 \value{
-(plot). A ggplot object
+(plot). A ggplot object.
 }
 \description{
 This function creates a plot of the PCA loadings for the top-8 features and first 4 PCs.
 }
-\examples{
-# Create a tibble that simulates the results of the PCA analysis
-components <- rep(c("PC1", "PC2", "PC3", "PC4"), each = 8)
-terms <- rep(paste0("Protein", 1:8), times = 4)
-set.seed(123)  # For reproducibility
-values <- runif(32, min = -0.3, max = 0.3)
-test_data <- tibble::tibble(component = components, terms = terms, value = values)
-plot_loadings(test_data)
-}
+\keyword{internal}
