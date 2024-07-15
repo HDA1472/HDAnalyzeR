@@ -1,3 +1,57 @@
+# Test plot_loadings -----------------------------------------------------------
+test_that("plot_loadings works with valid input", {
+  tidied_res <- tibble::tibble(
+    terms = rep(paste0("Gene", 1:10), 4),
+    value = rnorm(40),
+    component = rep(paste0("PC", 1:4), each = 10)
+  )
+
+  p <- plot_loadings(tidied_res)
+
+  expect_s3_class(p, "ggplot")
+
+  # Check that the plot contains the correct facets
+  facets <- ggplot2::ggplot_build(p)$layout$layout$PANEL
+  expect_equal(levels(factor(facets)), as.character(1:4))
+
+  # Check that the fill colors are correctly set
+  fill_colors <- unique(ggplot2::ggplot_build(p)$data[[1]]$fill)
+  expect_true(all(fill_colors %in% c("red3", "darkblue")))
+})
+
+
+# Test plot_dim_reduction ------------------------------------------------------
+test_that("plot_dim_reduction works with valid input and metadata", {
+  res <- tibble::tibble(
+    DAid = 1:10,
+    PC1 = rnorm(10),
+    PC2 = rnorm(10)
+  )
+
+  metadata <- tibble::tibble(
+    DAid = 1:10,
+    Sex = rep(c("Male", "Female"), each = 5)
+  )
+
+  palette <- c("Male" = "blue", "Female" = "red")
+
+  p <- plot_dim_reduction(
+    res = res,
+    x = "PC1",
+    y = "PC2",
+    metadata = metadata,
+    color = "Sex",
+    palette = palette
+  )
+
+  expect_s3_class(p, "ggplot")
+
+  # Check that the color scale is applied correctly
+  scale_colors <- unique(ggplot2::ggplot_build(p)$data[[1]]$colour)
+  expect_true(all(scale_colors %in% c("blue", "red")))
+})
+
+
 # Test do_pca ------------------------------------------------------------------
 test_that("do_pca runs pca analysis properly - pca_res", {
   expected_subdata <- tibble::tibble(
