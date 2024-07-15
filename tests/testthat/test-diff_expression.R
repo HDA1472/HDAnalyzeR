@@ -169,8 +169,8 @@ test_that("do_ttest_de changes limits of significance", {
 })
 
 
-# Test create_volcano ----------------------------------------------------------
-test_that("create_volcano works with valid input", {
+# Test plot_volcano ----------------------------------------------------------
+test_that("plot_volcano works with valid input", {
 
   de_result <- data.frame(
     Assay = paste0("Protein", 1:100),
@@ -179,7 +179,7 @@ test_that("create_volcano works with valid input", {
     sig = sample(c("significant up", "significant down", "not significant"), 100, replace = TRUE)
   )
 
-  p <- create_volcano(
+  p <- plot_volcano(
     disease = "DiseaseX",
     de_result = de_result,
     pval_lim = 0.05,
@@ -204,7 +204,7 @@ test_that("create_volcano works with valid input", {
 })
 
 
-test_that("create_volcano handles top significant proteins correctly", {
+test_that("plot_volcano handles top significant proteins correctly", {
   de_result <- data.frame(
     Assay = paste0("Protein", 1:100),
     adj.P.Val = runif(100, 0, 0.1),
@@ -212,7 +212,7 @@ test_that("create_volcano handles top significant proteins correctly", {
     sig = sample(c("significant up", "significant down", "not significant"), 100, replace = TRUE)
   )
 
-  p <- create_volcano(
+  p <- plot_volcano(
     disease = "DiseaseX",
     de_result = de_result,
     pval_lim = 0.05,
