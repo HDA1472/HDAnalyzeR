@@ -180,13 +180,13 @@ test_that("plot_volcano works with valid input", {
   )
 
   p <- plot_volcano(
-    disease = "DiseaseX",
     de_result = de_result,
     pval_lim = 0.05,
     logfc_lim = 0,
     top_up_prot = 10,
     top_down_prot = 10,
-    palette = "diff_exp"
+    palette = "diff_exp",
+    title = "DiseaseX"
   )
 
   expect_s3_class(p, "ggplot")
@@ -213,13 +213,13 @@ test_that("plot_volcano handles top significant proteins correctly", {
   )
 
   p <- plot_volcano(
-    disease = "DiseaseX",
     de_result = de_result,
     pval_lim = 0.05,
     logfc_lim = 0,
     top_up_prot = 10,
     top_down_prot = 10,
-    palette = "diff_exp"
+    palette = "diff_exp",
+    title = "DiseaseX"
   )
 
   data_built <- ggplot2::ggplot_build(p)$data[[1]]

@@ -140,7 +140,12 @@ vis_hypopt <- function(tune_res,
   hypopt_res <- tune_res |>
     tune::collect_metrics()
 
-  hypopt_plot <- ggplot2::ggplot(hypopt_res, ggplot2::aes_string(x = x, y = 'mean', color = color)) +
+  x <- rlang::sym(x)
+  mean <- rlang::sym('mean')
+  if (!is.null(color)) {
+    color <- rlang::sym(color)
+  }
+  hypopt_plot <- ggplot2::ggplot(hypopt_res, ggplot2::aes(x = !!x, y = !!mean, color = !!color)) +
     ggplot2::geom_point(size = 3) +
     ggplot2::geom_errorbar(ggplot2::aes(ymin = mean - std_err,
                                         ymax = mean + std_err),

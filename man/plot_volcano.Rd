@@ -5,19 +5,17 @@
 \title{Create volcano plots}
 \usage{
 plot_volcano(
-  disease,
   de_result,
   pval_lim = 0.05,
   logfc_lim = 0,
   top_up_prot = 40,
   top_down_prot = 10,
   palette = "diff_exp",
+  title = NULL,
   subtitle = T
 )
 }
 \arguments{
-\item{disease}{(character). The disease of interest.}
-
 \item{de_result}{(tibble). The differential expression results.}
 
 \item{pval_lim}{(numeric). The p-value limit for significance. Default is 0.05.}
@@ -29,6 +27,8 @@ plot_volcano(
 \item{top_down_prot}{(numeric). The number of top down regulated proteins to label on the plot. Default is 10.}
 
 \item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".}
+
+\item{title}{(character). The title of the plot.}
 
 \item{subtitle}{(logical). If the subtitle should be displayed. Default is TRUE.}
 }
