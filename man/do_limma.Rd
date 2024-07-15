@@ -65,6 +65,5 @@ This function runs differential expression analysis using limma.
 It can generate and save volcano plots.
 }
 \examples{
-test_data <- example_data |> dplyr::select(DAid, Assay, NPX)
-do_limma(test_data, example_metadata, wide = FALSE)
+do_limma(example_data, example_metadata, wide = FALSE)
 }
