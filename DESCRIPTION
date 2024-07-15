@@ -43,6 +43,8 @@ Imports:
     viridis,
     workflows,
     yardstick
+Remotes:  
+    bioc::limma
 Suggests: 
     glmnet,
     ranger,
