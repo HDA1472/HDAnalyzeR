@@ -766,11 +766,11 @@ do_elnet <- function(olink_data,
       utils::head(nfeatures)
     proteins <- top_features[['Variable']]
 
-    boxplot_res <- create_protein_boxplot(join_data,
-                                          proteins,
-                                          disease,
-                                          points,
-                                          palette)
+    boxplot_res <- plot_protein_boxplot(join_data,
+                                        proteins,
+                                        disease,
+                                        points,
+                                        palette)
 
     return(list("hypopt_res" = hypopt_res,
                 "finalfit_res" = finalfit_res,
@@ -915,11 +915,11 @@ do_rf <- function(olink_data,
       utils::head(nfeatures)
     proteins <- top_features[['Variable']]
 
-    boxplot_res <- create_protein_boxplot(join_data,
-                                          proteins,
-                                          disease,
-                                          points,
-                                          palette)
+    boxplot_res <- plot_protein_boxplot(join_data,
+                                        proteins,
+                                        disease,
+                                        points,
+                                        palette)
 
     return(list("hypopt_res" = hypopt_res,
                 "finalfit_res" = finalfit_res,

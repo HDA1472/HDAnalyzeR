@@ -16,7 +16,7 @@ devtools::install_github("HDA1472/DA_RPackage")
 ```
 
 ## Issues and Support
-If you encounter any bugs or have questions, please open a new issue on our GitHub repository. We appreciate your feedback and contributions!
+If you encounter any bugs, please open a new issue on our GitHub repository.
 
 ## Contact
 For any questions or further information, please contact us at [konstantinos.antonopoulos@scilifelab.se].

@@ -224,14 +224,14 @@ do_ttest_de <- function(long_data,
 #'
 #' @return p (plot). A ggplot object with the volcano plot.
 #' @keywords internal
-create_volcano <- function(disease,
-                           de_result,
-                           pval_lim = 0.05,
-                           logfc_lim = 0,
-                           top_up_prot = 40,
-                           top_down_prot = 10,
-                           palette = "diff_exp",
-                           subtitle = T) {
+plot_volcano <- function(disease,
+                         de_result,
+                         pval_lim = 0.05,
+                         logfc_lim = 0,
+                         top_up_prot = 40,
+                         top_down_prot = 10,
+                         palette = "diff_exp",
+                         subtitle = T) {
 
   top.sig.down <- de_result |>
     dplyr::filter(adj.P.Val < pval_lim & logFC < -logfc_lim) |>
@@ -362,14 +362,14 @@ do_limma <- function(olink_data,
   if (volcano) {
 
     volcano_plots <- lapply(levels,
-                            function(disease) create_volcano(disease,
-                                                             de_results[[disease]],
-                                                             pval_lim,
-                                                             logfc_lim,
-                                                             top_up_prot,
-                                                             top_down_prot,
-                                                             palette,
-                                                             subtitle))
+                            function(disease) plot_volcano(disease,
+                                                           de_results[[disease]],
+                                                           pval_lim,
+                                                           logfc_lim,
+                                                           top_up_prot,
+                                                           top_down_prot,
+                                                           palette,
+                                                           subtitle))
     names(volcano_plots) <- levels
 
     if (isTRUE(save)) {
@@ -473,14 +473,14 @@ do_ttest <- function(olink_data,
   if (volcano) {
 
     volcano_plots <- lapply(levels,
-                            function(disease) create_volcano(disease,
-                                                             de_results[[disease]],
-                                                             pval_lim,
-                                                             logfc_lim,
-                                                             top_up_prot,
-                                                             top_down_prot,
-                                                             palette,
-                                                             subtitle))
+                            function(disease) plot_volcano(disease,
+                                                           de_results[[disease]],
+                                                           pval_lim,
+                                                           logfc_lim,
+                                                           top_up_prot,
+                                                           top_down_prot,
+                                                           palette,
+                                                           subtitle))
     names(volcano_plots) <- levels
 
     if (isTRUE(save)) {
