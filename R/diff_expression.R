@@ -238,7 +238,7 @@ do_ttest_de <- function(long_data,
 #' @param top_up_prot (numeric). The number of top up regulated proteins to label on the plot. Default is 40.
 #' @param top_down_prot (numeric). The number of top down regulated proteins to label on the plot. Default is 10.
 #' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
-#' @param title (character). The title of the plot.
+#' @param title (character). The title of the plot or NULL for no title.
 #' @param subtitle (logical). If the subtitle should be displayed. Default is TRUE.
 #'
 #' @return p (plot). A ggplot object with the volcano plot.
@@ -281,17 +281,18 @@ plot_volcano <- function(de_result,
     ggplot2::geom_hline(yintercept = -log10(pval_lim), linetype = 'dashed') +
     ggplot2::geom_vline(xintercept = logfc_lim, linetype = 'dashed') +
     ggplot2::geom_vline(xintercept = -logfc_lim, linetype = 'dashed') +
-    ggplot2::ggtitle(label = paste0(title, ""),
-                     subtitle = paste0("Num significant up = ", num.sig.up,
-                                       "\nNum significant down = ", num.sig.down)) +
     ggplot2::theme_classic() +
     ggplot2::theme(legend.position = "none",
                    plot.subtitle = ggplot2::element_text(size = 10, face = "italic"))
 
-    if (isFALSE(subtitle)) {
-      p <- p + ggplot2::theme(plot.subtitle = ggplot2::element_blank())
+    if (!is.null(title)) {
+      p <- p + ggplot2::ggtitle(label = paste0(title, ""))
     }
-
+    if (isTRUE(subtitle)) {
+      p <- p + ggplot2::ggtitle(label = paste0(title, ""),
+                                subtitle = paste0("Num significant up = ", num.sig.up,
+                                                  "\nNum significant down = ", num.sig.down))
+    }
     if (is.null(names(palette))) {
       p <- p + scale_color_hpa(palette)
     } else {

@@ -28,7 +28,7 @@ plot_volcano(
 
 \item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".}
 
-\item{title}{(character). The title of the plot.}
+\item{title}{(character). The title of the plot or NULL for no title.}
 
 \item{subtitle}{(logical). If the subtitle should be displayed. Default is TRUE.}
 }
