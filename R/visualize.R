@@ -18,12 +18,12 @@ utils::globalVariables(c("Value"))
 #' wide_data <- widen_data(example_data, FALSE)
 #' join_data <- wide_data |>
 #'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
-#' create_protein_boxplot(join_data, c("AARSD1", "ABL1"), "AML", palette = "cancers12")
-create_protein_boxplot <- function(join_data,
-                                   proteins,
-                                   disease,
-                                   points = T,
-                                   palette = NULL) {
+#' plot_protein_boxplot(join_data, c("AARSD1", "ABL1"), "AML", palette = "cancers12")
+plot_protein_boxplot <- function(join_data,
+                                 proteins,
+                                 disease,
+                                 points = T,
+                                 palette = NULL) {
 
   # Prepare palettes
   pals <- get_hpa_palettes()
@@ -87,4 +87,64 @@ create_protein_boxplot <- function(join_data,
     ggplot2::facet_wrap(~ Protein, scale="free_y")
 
   return(boxplot_panel)
+}
+
+
+#' Create a scatter plot with regression line
+#'
+#' This function creates a scatter plot with a linear regression line.
+#' It is possible to add the standard error of the regression line, as well as the R-squared and p-value.
+#'
+#' @param plot_data (tibble). The wide dataset containing the data to plot as cols.
+#' @param x (character). The column name of the x-axis variable.
+#' @param y (character). The column name of the y-axis variable.
+#' @param se (logical). Whether to add the standard error of the regression line.
+#' @param line_color (character). The color of the regression line.
+#' @param r_2 (logical). Whether to add the R-squared and p-value to the plot.
+#'
+#' @return scatter (plot). The scatter plot with the regression line.
+#' @export
+#'
+#' @examples
+#' plot_scatter_with_regression(example_metadata, "Age", "BMI")
+plot_scatter_with_regression <- function(plot_data,
+                                         x,
+                                         y,
+                                         se = F,
+                                         line_color = "black",
+                                         r_2 = T) {
+  # Fit the linear model
+  formula <- stats::as.formula(paste(y, "~", x))
+  model <- stats::lm(formula, data = plot_data)
+
+  # Get the R-squared and p-value
+  summary_model <- summary(model)
+  r_squared <- summary_model$r.squared
+  p_val <- stats::coef(summary_model)[2, 4]
+
+  # Create the plot
+  x <- rlang::sym(x)
+  y <- rlang::sym(y)
+  scatter <- plot_data |>
+    ggplot2::ggplot(ggplot2::aes(x = !!x, y = !!y)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_smooth(method = "lm", se = se, color = line_color)
+
+  if (isTRUE(r_2)) {
+    scatter <- scatter +
+      ggplot2::annotate("text",
+                        x = Inf,
+                        y = Inf,
+                        label = paste("R2 =", round(r_squared, 2), "\nP =", format.pval(round(p_val, 4))),
+                        hjust = 1.1,
+                        vjust = 2,
+                        size = 5,
+                        color = "black") +
+    ggplot2::theme_classic()
+  } else {
+    scatter <- scatter +
+      ggplot2::theme_classic()
+  }
+
+  return(scatter)
 }
