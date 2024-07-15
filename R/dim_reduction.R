@@ -61,10 +61,12 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
       ggplot2::theme_classic()
   }
 
-  if (is.null(names(palette))) {
-    p <- p + scale_color_hpa(palette)
-  } else if (!is.null(palette)) {
-    p <- p + ggplot2::scale_color_manual(values = palette)
+  if (!is.null(palette)) {
+    if (is.null(names(palette))) {
+      p <- p + scale_color_hpa(palette)
+    } else {
+      p <- p + ggplot2::scale_color_manual(values = palette)
+    }
   }
 
   return(p)

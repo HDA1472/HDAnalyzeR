@@ -7,7 +7,7 @@
 do_pca(
   olink_data,
   metadata = NULL,
-  variable = "Disease",
+  color = "Disease",
   palette = NULL,
   wide = T,
   impute = T,
@@ -16,30 +16,30 @@ do_pca(
 )
 }
 \arguments{
-\item{olink_data}{(tibble). A tibble with the data to be used in the PCA analysis}
+\item{olink_data}{(tibble). A tibble with the data to be used in the PCA analysis.}
 
-\item{metadata}{(tibble). A tibble with metadata information to be used in the PCA plots. Default is NULL}
+\item{metadata}{(tibble). A tibble with metadata information to be used in the PCA plots. Default is NULL.}
 
-\item{variable}{(string). The name of the column in \code{metadata} that contains the variable
-to be used to plot the points color. Default is "Disease"}
+\item{color}{(string). The name of the column in \code{metadata} that contains the variable.
+to be used to plot the points color. Default is "Disease".}
 
-\item{palette}{(vector). A vector with the colors to be used in the PCA plots. Default is NULL}
+\item{palette}{(vector). A vector with the colors to be used in the PCA plots. Default is NULL.}
 
-\item{wide}{(logical). If TRUE, the data is assumed to be in wide format. Default is TRUE}
+\item{wide}{(logical). If TRUE, the data is assumed to be in wide format. Default is TRUE.}
 
-\item{impute}{(logical). If TRUE, the data is imputed before the PCA analysis. Default is TRUE}
+\item{impute}{(logical). If TRUE, the data is imputed before the PCA analysis. Default is TRUE.}
 
-\item{plots}{(logical). If TRUE, the function creates plots of the PCA results. Default is FALSE}
+\item{plots}{(logical). If TRUE, the function creates plots of the PCA results. Default is FALSE.}
 
-\item{save}{(logical). If TRUE, the plots are saved in the results directory. Default is FALSE}
+\item{save}{(logical). If TRUE, the plots are saved in the results directory. Default is FALSE.}
 }
 \value{
-(list). A list with the PCA results and, if requested, the PCA plots
+(list). A list with the PCA results and, if requested, the PCA plots.
 \itemize{
-\item pca_res (tibble). A tibble with the PCA results
-\item loadings (tibble). A tibble with the PCA loadings
-\item pca_plot (plot). A ggplot object with the PCA plot
-\item loadings_plot (plot). A ggplot object with the PCA loadings plot
+\item pca_res (tibble). A tibble with the PCA results.
+\item loadings (tibble). A tibble with the PCA loadings.
+\item pca_plot (plot). A ggplot object with the PCA plot.
+\item loadings_plot (plot). A ggplot object with the PCA loadings plot.
 }
 }
 \description{
@@ -51,6 +51,6 @@ test_data <- example_data |> dplyr::select(DAid, Assay, NPX)
 do_pca(test_data,
        metadata = example_metadata,
        wide = FALSE,
-       variable = "Disease",
+       color = "Disease",
        plots = TRUE)
 }
