@@ -4,6 +4,7 @@ utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "S
 #' This function performs differential expression analysis using limma.
 #' It can correct the results with sex, age, and BMI.
 #' The output dataframe includes the logFC, the p-values, as well as the adjusted p-values with FDR.
+#' The function removes the NAs from the columns that are used to correct for.
 #'
 #' @param join_data (tibble). A tibble with the Olink data in wide format joined with metadata.
 #' @param disease (character). The disease of interest.
@@ -41,6 +42,7 @@ do_limma_de <- function(join_data,
   }
 
   join_data <- join_data |>
+    dplyr::filter(!dplyr::if_any(dplyr::all_of(c("Disease", correct)), is.na)) |>  # Remove NAs from columns in formula
     dplyr::mutate(Disease = ifelse(Disease == disease, "1_Case", "0_Control"))
 
   # Design a model - add Disease, and Sex, Age, BMI
@@ -100,6 +102,7 @@ do_limma_de <- function(join_data,
 #'
 #' This function performs differential expression analysis using limma for a continuous variable.
 #' The output dataframe includes the logFC, the p-values, as well as the adjusted p-values with FDR.
+#' The function removes the NAs from the columns that are used to correct for.
 #'
 #' @param join_data (tibble). A tibble with the Olink data in wide format joined with metadata.
 #' @param variable (character). The variable of interest.
@@ -113,6 +116,8 @@ do_limma_continuous_de <- function(join_data,
                                    pval_lim = 0.05,
                                    logfc_lim = 0) {
 
+  join_data <- join_data |>
+    dplyr::filter(!dplyr::if_any(dplyr::all_of(c(variable)), is.na))  # Remove NAs from columns in formula
   # Design a model
   design <- stats::model.matrix(~0 + join_data[[variable]])
 
