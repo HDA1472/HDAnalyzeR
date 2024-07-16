@@ -39,5 +39,6 @@ de_res (tibble). A tibble with the differential expression results.
 This function performs differential expression analysis using limma.
 It can correct the results with sex, age, and BMI.
 The output dataframe includes the logFC, the p-values, as well as the adjusted p-values with FDR.
+The function removes the NAs from the columns that are used to correct for.
 }
 \keyword{internal}

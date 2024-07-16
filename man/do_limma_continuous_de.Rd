@@ -21,5 +21,6 @@ de_res (tibble). A tibble with the differential expression results.
 \description{
 This function performs differential expression analysis using limma for a continuous variable.
 The output dataframe includes the logFC, the p-values, as well as the adjusted p-values with FDR.
+The function removes the NAs from the columns that are used to correct for.
 }
 \keyword{internal}
