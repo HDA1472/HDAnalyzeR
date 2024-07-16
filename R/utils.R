@@ -111,6 +111,7 @@ import_df <- function(file_path) {
                xlsx = readxl::read_excel(file_path, guess_max=10000000),
                stop("Unsupported file type: ", file_extension))
 
+  df <- tibble::as_tibble(df)
   return(df)
 }
 
