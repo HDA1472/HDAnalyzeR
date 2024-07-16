@@ -13,18 +13,18 @@ impute_knn(
 )
 }
 \arguments{
-\item{olink_data}{(tibble). The input dataframe}
+\item{olink_data}{(tibble). The input dataframe.}
 
-\item{wide}{(logical). If T, the data is in wide format}
+\item{wide}{(logical). If T, the data is in wide format.}
 
-\item{k}{(integer). The number of neighbors to consider for imputation}
+\item{k}{(integer). The number of neighbors to consider for imputation.}
 
-\item{exclude_cols}{(string or vector of strings). The columns to exclude from imputation}
+\item{exclude_cols}{(string or vector of strings). The columns to exclude from imputation.}
 
-\item{show_na_percentage}{(logical). If T, the percentage of missing values in each column is displayed}
+\item{show_na_percentage}{(logical). If T, the percentage of missing values in each column is displayed.}
 }
 \value{
-imputed_data (tibble). The dataframe with missing values imputed
+imputed_data (tibble). The dataframe with missing values imputed.
 }
 \description{
 This function imputes missing values in a dataset using the k-nearest neighbors algorithm.

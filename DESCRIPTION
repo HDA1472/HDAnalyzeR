@@ -24,6 +24,7 @@ Imports:
     ggplot2,
     ggrepel,
     limma,
+    mice,
     missForest,
     parsnip,
     readxl,
@@ -43,7 +44,7 @@ Imports:
     viridis,
     workflows,
     yardstick
-Remotes:  
+Remotes: 
     bioc::limma
 Suggests: 
     glmnet,
