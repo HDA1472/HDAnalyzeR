@@ -16,21 +16,21 @@ impute_missForest(
 )
 }
 \arguments{
-\item{olink_data}{(tibble). The input dataframe}
+\item{olink_data}{(tibble). The input dataframe.}
 
-\item{wide}{(logical). If T, the data is in wide format}
+\item{wide}{(logical). If T, the data is in wide format.}
 
-\item{maxiter}{(integer). The maximum number of iterations}
+\item{maxiter}{(integer). The maximum number of iterations.}
 
-\item{ntree}{(integer). The number of trees to grow}
+\item{ntree}{(integer). The number of trees to grow.}
 
-\item{parallelize}{(string). The type of parallelization to use. Options are "no", "variables", or "forests"}
+\item{parallelize}{(string). The type of parallelization to use. Options are "no", "variables", or "forests".}
 
-\item{ncores}{(integer). The number of cores to use for parallelization}
+\item{ncores}{(integer). The number of cores to use for parallelization.}
 
-\item{exclude_cols}{(string or vector of strings). The columns to exclude from imputation}
+\item{exclude_cols}{(string or vector of strings). The columns to exclude from imputation.}
 
-\item{show_na_percentage}{(logical). If T, the percentage of missing values in each column is displayed}
+\item{show_na_percentage}{(logical). If T, the percentage of missing values in each column is displayed.}
 }
 \value{
 A data frame with imputed values.
