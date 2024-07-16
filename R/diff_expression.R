@@ -279,14 +279,13 @@ plot_volcano <- function(de_result,
     ggplot2::ggplot(ggplot2::aes(x = logFC,
                                  y = -log10(adj.P.Val),
                                  color = sig,
-                                 label = Assay
-    )) +
+                                 label = Assay)) +
     ggplot2::geom_point(size = 1, alpha = 0.4)+
-    ggrepel::geom_text_repel(data = subset(tab, sig.label == "top significance")) +
+    ggrepel::geom_text_repel(data = subset(tab, sig.label == "top significance"), show.legend = FALSE) +
     ggplot2::geom_hline(yintercept = -log10(pval_lim), linetype = 'dashed') +
     ggplot2::geom_vline(xintercept = logfc_lim, linetype = 'dashed') +
     ggplot2::geom_vline(xintercept = -logfc_lim, linetype = 'dashed') +
-    ggplot2::theme_classic() +
+    ggplot2::labs(color = "Significance")
     ggplot2::theme(legend.position = "none",
                    plot.subtitle = ggplot2::element_text(size = 10, face = "italic"))
 
@@ -304,7 +303,7 @@ plot_volcano <- function(de_result,
       p <- p + ggplot2::scale_color_manual(values = palette)
     }
 
-  return(p)
+  return(p + theme_hpa())
 }
 
 

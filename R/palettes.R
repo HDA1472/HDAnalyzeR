@@ -5,47 +5,73 @@
 #' @return A list of color palettes.
 #' @keywords internal
 get_hpa_palettes <- function() {
+
   palettes <- list(
-    sex = c(
-      "Male" = "blue",
-      "Female" = "red"
-    ),
-    diff_exp = c(
-      "not significant" = "grey",
-      "significant down" = "blue",
-      "significant up" = "red"
-    ),
-    cancers12 = c(
-      "AML" = "#A6CEE3",
-      "CLL" = "#2271B5",
-      "LYMPH" = "#08585A",
-      "MYEL" = "#66C2A5",
-      "CRC" = "#B89B74",
-      "LUNGC" = "#ADC74F",
-      "GLIOM" = "#FFD321",
-      "BRC" = "#E8A29A",
-      "CVX" = "#9E0142",
-      "ENDC" = "#B195AE",
-      "OVC" = "#603479",
-      "PRC" = "#E7662B"
-    ),
-    cancers15 = c(
-      "AML" = "#A6CEE3",
-      "CLL" = "#2271B5",
-      "LYMPH" = "#08585A",
-      "MYEL" = "#66C2A5",
-      "CRC" = "#B89B74",
-      "LUNGC" = "#ADC74F",
-      "GLIOM" = "#FFD321",
-      "BRC" = "#E8A29A",
-      "CVX" = "#9E0142",
-      "ENDC" = "#B195AE",
-      "OVC" = "#603479",
-      "PRC" = "#E7662B",
-      "MENI" = "#FFFF80",
-      "SI-NET" = "#504538",
-      "PIT-NET" = "#FFFF00"
-    )
+
+    sex = c("Female" = "red", "Male" = "blue"),
+
+    sex_maria <- c("F"= "#8a72be", "M" = "#A9D0EF"),
+
+    diff_exp = c("not significant" = "grey",
+                 "significant down" = "blue",
+                 "significant up" = "red"),
+
+    cancers12 = c("AML" = "#A6CEE3",
+                  "CLL" = "#2271B5",
+                  "LYMPH" = "#08585A",
+                  "MYEL" = "#66C2A5",
+                  "CRC" = "#B89B74",
+                  "LUNGC" = "#ADC74F",
+                  "GLIOM" = "#FFD321",
+                  "BRC" = "#E8A29A",
+                  "CVX" = "#9E0142",
+                  "ENDC" = "#B195AE",
+                  "OVC" = "#603479",
+                  "PRC" = "#E7662B"),
+
+    cancers15 = c("AML" = "#A6CEE3",
+                  "CLL" = "#2271B5",
+                  "LYMPH" = "#08585A",
+                  "MYEL" = "#66C2A5",
+                  "CRC" = "#B89B74",
+                  "LUNGC" = "#ADC74F",
+                  "GLIOM" = "#FFD321",
+                  "BRC" = "#E8A29A",
+                  "CVX" = "#9E0142",
+                  "ENDC" = "#B195AE",
+                  "OVC" = "#603479",
+                  "PRC" = "#E7662B",
+                  "MENI" = "#FFFF80",
+                  "SI-NET" = "#504538",
+                  "PIT-NET" = "#FFFF00"),
+
+    secreted = c("Secreted to blood" = "#B30000",
+                 "Secreted in brain" = "#FFDD00",
+                 "Secreted to digestive system" = "#1280C4",
+                 "Secreted in male reproductive system" = "#95D4F5",
+                 "Secreted in female reproductive system" = "#F8BDD7",
+                 "Secreted to extracellular matrix"  = "#7F6A9C",
+                 "Secreted in other tissues" = "#FFD480",
+                 "Secreted - unknown location" = "#A1A8AA",
+                 "Intracellular and membrane" = "#F9A266",
+                 "Unknown" = "grey80"),
+
+    specificity = c( "Tissue enriched" = "#e41a1c",
+                     "Group enriched" = "#FF9D00",
+                     "Tissue enhanced" = "#984ea3",
+                     "Low tissue specificity" = "grey40",
+                     "not detected " = "grey"),
+
+  # Disease Atlas class
+  class = c("Healthy" = "#B3B3B3",
+            "Cardiovascular" = "#FC8D62",
+            "Metabolic" = "#E5C494",
+            "Cancer" = "#8DA0CB",
+            "Psychiatric" = "#66C2A5",
+            "Autoimmune" = "#E78AC3",
+            "Infection" = "#FFD92F",
+            "Pediatric" = "#A6D854")
+
   )
 
   return(palettes)
