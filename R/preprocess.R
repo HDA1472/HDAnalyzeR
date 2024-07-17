@@ -142,8 +142,9 @@ clean_metadata <- function(df_in, keep_cols = c("DAid", "Disease", "Sex", "Age",
 #' unlink("data", recursive = TRUE)
 generate_df <- function(long_data, metadata = NULL, join = T, metadata_cols = c("DAid", "Disease", "Sex", "Age", "BMI"), save = T) {
 
-  wide_data <- widen_data(long_data, wide = F)
-
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(long_data)
+  }
   if (isTRUE(join)) {
     join_data <- wide_data |>
       dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(metadata_cols)), by = "DAid")

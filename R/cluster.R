@@ -20,11 +20,19 @@ utils::globalVariables(c("v1", "v2", "val", "x", "y"))
 #' @examples
 #' clean_df <- example_data |> dplyr::select(DAid, Assay, NPX)
 #' clustered_df <- cluster_data(clean_df, wide = FALSE)
-cluster_data <- function(df, distance_method = "euclidean", clustering_method = "ward.D2",
-                         cluster_rows = T, cluster_cols = T, wide = T) {
-
-    wide_data <- widen_data(df, wide) |>
+cluster_data <- function(df,
+                         distance_method = "euclidean",
+                         clustering_method = "ward.D2",
+                         cluster_rows = T,
+                         cluster_cols = T,
+                         wide = T) {
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(df) |>
         tibble::column_to_rownames(var = names(df)[1])
+  } else {
+    wide_data <- df |>
+      tibble::column_to_rownames(var = names(df)[1])
+  }
 
     order_row <- rownames(wide_data)
     order_col <- colnames(wide_data)

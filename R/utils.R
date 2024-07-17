@@ -128,7 +128,7 @@ import_df <- function(file_path) {
 #'
 #' @examples
 #' wide_data <- widen_data(example_data, wide = FALSE)
-widen_data <- function(olink_data, wide) {
+widen_data <- function(olink_data, wide = F) {
 
   if (isFALSE(wide)) {
     wide_data <- olink_data |>

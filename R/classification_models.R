@@ -706,7 +706,9 @@ do_elnet <- function(olink_data,
                      seed = 123) {
 
   # Prepare datasets
-  wide_data <- widen_data(olink_data, wide)
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  }
   join_data <- wide_data |>
     dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex))
   diseases <- unique(metadata$Disease)
@@ -856,7 +858,9 @@ do_rf <- function(olink_data,
                   seed = 123) {
 
   # Prepare datasets
-  wide_data <- widen_data(olink_data, wide)
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  }
   join_data <- wide_data |>
     dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex))
   diseases <- unique(metadata$Disease)

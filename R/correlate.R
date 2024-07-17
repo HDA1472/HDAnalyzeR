@@ -67,18 +67,17 @@ create_corr_heatmap <- function(x,
     dplyr::rename(Protein1 = Var1, Protein2 = Var2, Correlation = Freq)
 
   cor_plot <- tidyheatmaps::tidyheatmap(cor_long,
-                                 rows = Var1,
-                                 columns = Var2,
-                                 values = Freq,
-                                 cluster_rows = TRUE,
-                                 cluster_cols = TRUE,
-                                 show_selected_row_labels = c(""),
-                                 show_selected_col_labels = c(""),
-                                 color_legend_min = -1,
-                                 color_legend_max = 1,
-                                 treeheight_row = 20,
-                                 treeheight_col = 20
-  )
+                                        rows = Var1,
+                                        columns = Var2,
+                                        values = Freq,
+                                        cluster_rows = TRUE,
+                                        cluster_cols = TRUE,
+                                        show_selected_row_labels = c(""),
+                                        show_selected_col_labels = c(""),
+                                        color_legend_min = -1,
+                                        color_legend_max = 1,
+                                        treeheight_row = 20,
+                                        treeheight_col = 20)
 
   return(list("cor_matrix" = cor_matrix, "cor_results" = cor_results, "cor_plot" = cor_plot))
 }

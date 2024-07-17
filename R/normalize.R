@@ -81,7 +81,9 @@ normalize_data <- function(olink_data,
                            file_name = "normalized_data"
                            ) {
 
-  wide_data <- widen_data(olink_data, wide)
+  if (isFALSE(wide)) {
+    olink_data <- widen_data(olink_data)
+  }
 
   # Prepare the data for scaling
   id_col <- wide_data |> dplyr::pull(DAid)
