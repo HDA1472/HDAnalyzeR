@@ -12,7 +12,7 @@ test_that("get_hpa_palettes returns a list of palettes", {
   expect_true("cancers15" %in% names(palettes))
 
   # Check that the "sex" palette has the correct colors
-  expect_equal(palettes$sex, c("Female" = "red", "Male" = "blue"))
+  expect_equal(palettes$sex, c("F" = "red", "M" = "blue"))
 })
 
 

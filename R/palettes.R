@@ -8,7 +8,7 @@ get_hpa_palettes <- function() {
 
   palettes <- list(
 
-    sex = c("Female" = "red", "Male" = "blue"),
+    sex = c("F" = "red", "M" = "blue"),
 
     sex_maria <- c("F"= "#8a72be", "M" = "#A9D0EF"),
 

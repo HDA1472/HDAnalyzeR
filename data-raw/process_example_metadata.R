@@ -15,6 +15,7 @@ example_metadata <- example_df |>
     Cohort = dplyr::case_when(
       GROUP %in% c("BRC", "CVX", "ENDC", "OVC", "PRC") ~ "Gender_specific",
       TRUE ~ "UCAN"
-    )
+    ),
+    Sex = dplyr::case_match(Sex, "Female" ~ "F", "Male" ~ "M", .default = Sex)
   ) |>
   dplyr::rename(Disease = GROUP)
