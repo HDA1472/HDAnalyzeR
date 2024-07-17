@@ -82,7 +82,9 @@ normalize_data <- function(olink_data,
                            ) {
 
   if (isFALSE(wide)) {
-    olink_data <- widen_data(olink_data)
+    wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
   }
 
   # Prepare the data for scaling

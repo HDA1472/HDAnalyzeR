@@ -26,6 +26,8 @@ impute_median <- function(olink_data,
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
   }
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))
@@ -80,6 +82,8 @@ impute_knn <- function(olink_data,
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
   }
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))
@@ -139,6 +143,8 @@ impute_missForest <- function(olink_data,
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
   }
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))
@@ -199,6 +205,8 @@ impute_mice <- function(olink_data,
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
   }
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))

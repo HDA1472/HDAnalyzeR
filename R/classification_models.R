@@ -11,6 +11,7 @@ utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled
 #' @return A list with two elements:
 #'  - train_set (tibble). The training set.
 #'  - test_set (tibble). The test set.
+#'  - data_split (list). The data split object.
 #' @keywords internal
 split_data <- function(join_data, ratio = 0.75, seed = 123) {
 
@@ -20,7 +21,8 @@ split_data <- function(join_data, ratio = 0.75, seed = 123) {
   test_data <- rsample::testing(data_split)
 
   return(list("train_set" = train_data,
-              "test_set" = test_data))
+              "test_set" = test_data,
+              "data_split" = data_split))
 }
 
 
@@ -708,6 +710,8 @@ do_elnet <- function(olink_data,
   # Prepare datasets
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
   }
   join_data <- wide_data |>
     dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex))
@@ -860,6 +864,8 @@ do_rf <- function(olink_data,
   # Prepare datasets
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
   }
   join_data <- wide_data |>
     dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex))
