@@ -29,14 +29,14 @@ do_limma_de <- function(join_data,
   # Filter for Sex if disease is Sex specific
   if(!is.null(only_female) & disease %in% only_female) {
     join_data <- join_data |>
-      dplyr::filter(Sex == "Female")
+      dplyr::filter(Sex == "F")
   } else {
     join_data <- join_data
   }
 
   if(!is.null(only_male) & disease %in% only_male) {
     join_data <- join_data |>
-      dplyr::filter(Sex == "Male")
+      dplyr::filter(Sex == "M")
   } else {
     join_data <- join_data
   }
@@ -182,10 +182,10 @@ do_ttest_de <- function(long_data,
   # Filter for Sex if disease is Sex specific
   if(!is.null(only_female) & disease %in% only_female) {
     long_data <- long_data |>
-      dplyr::filter(Sex == "Female")
+      dplyr::filter(Sex == "F")
   } else if(!is.null(only_male) & disease %in% only_male) {
     long_data <- long_data |>
-      dplyr::filter(Sex == "Male")
+      dplyr::filter(Sex == "M")
   } else {
     long_data <- long_data
   }

@@ -27,7 +27,7 @@ test_that("split_data splits data properly", {
 test_that("filter_sex_specific_disease filters data properly", {
   test_data <- tibble::tibble(
     Disease = c("A", "A", "B", "A", "A", "A", "B", "B"),
-    Sex = c("Female", "Male", "Female", "Male", "Female", "Male", "Female", "Female"),
+    Sex = c("F", "M", "F", "M", "F", "M", "F", "F"),
     protein1 = c(1, 1, 1.6, 2, 1, 1, 1.6, 2),
     protein2 = c(0.8, 0.6, 0.5, 0.3, 0.8, 0.6, 0.5, 0.3)
   )
@@ -36,7 +36,7 @@ test_that("filter_sex_specific_disease filters data properly", {
   diseases_res <- result$diseases_subset
   control_exp <- tibble::tibble(
     Disease = c("A", "B", "A", "B", "B"),
-    Sex = c("Female", "Female", "Female", "Female", "Female"),
+    Sex = c("F", "F", "F", "F", "F"),
     protein1 = c(1, 1.6, 1, 1.6, 2),
     protein2 = c(0.8, 0.5, 0.8, 0.5, 0.3)
   )
@@ -49,7 +49,7 @@ test_that("filter_sex_specific_disease filters data properly", {
 test_that("filter_sex_specific_disease filters data and diseases vector properly", {
   test_data <- tibble::tibble(
     Disease = c("A", "A", "B", "A", "A", "A", "B", "B", "C"),
-    Sex = c("Female", "Male", "Female", "Male", "Female", "Male", "Female", "Female", "Male"),
+    Sex = c("F", "M", "F", "M", "F", "M", "F", "F", "M"),
     protein1 = c(1, 1, 1.6, 2, 1, 1, 1.6, 2, 1),
     protein2 = c(0.8, 0.6, 0.5, 0.3, 0.8, 0.6, 0.5, 0.3, 1)
   )
@@ -58,7 +58,7 @@ test_that("filter_sex_specific_disease filters data and diseases vector properly
   diseases_res <- result$diseases_subset
   control_exp <- tibble::tibble(
     Disease = c("A", "B", "A", "B", "B"),
-    Sex = c("Female", "Female", "Female", "Female", "Female"),
+    Sex = c("F", "F", "F", "F", "F"),
     protein1 = c(1, 1.6, 1, 1.6, 2),
     protein2 = c(0.8, 0.5, 0.8, 0.5, 0.3)
   )
@@ -100,26 +100,26 @@ test_that("make_groups creates groups properly", {
 test_that("make_groups creates groups and filters sex specific groups properly", {
   test_data <- tibble::tibble(
     Disease = c("A", "A", "B", "A", "A", "A", "B", "B", "C", "C", "C", "C"),
-    Sex = c("Female", "Male", "Female", "Male", "Female", "Male", "Female", "Female", "Male", "Female", "Male", "Female"),
+    Sex = c("F", "M", "F", "M", "F", "M", "F", "F", "M", "F", "M", "F"),
     protein1 = c(1, 1, 1.6, 2, 1, 1, 1.6, 2, 1, 2, 1, 2),
     protein2 = c(0.8, 0.6, 0.5, 0.3, 0.8, 0.6, 0.5, 0.3, 0.1, 0.2, 0.1, 0.2)
   )
   result <- make_groups(test_data, c("A", "B", "C"), only_female = "B")
   exp_a <- tibble::tibble(
     Disease = c("A", "A", "A", "A", "A", "B", "B", "B", "C", "C", "C"),
-    Sex = c("Female", "Male", "Male", "Female", "Male", "Female", "Female", "Female", "Female", "Male", "Female"),
+    Sex = c("F", "M", "M", "F", "M", "F", "F", "F", "F", "M", "F"),
     protein1 = c(1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 2),
     protein2 = c(0.8, 0.6, 0.3, 0.8, 0.6, 0.3, 0.3, 0.3, 0.2, 0.1, 0.2)
   )
   exp_b <- tibble::tibble(
     Disease = c("B", "B", "B", "A", "A", "C", "C"),
-    Sex = c("Female", "Female", "Female", "Female", "Female", "Female", "Female"),
+    Sex = c("F", "F", "F", "F", "F", "F", "F"),
     protein1 = c(1.6, 1.6, 2, 1, 1, 2, 2),
     protein2 = c(0.5, 0.5, 0.3, 0.8, 0.8, 0.2, 0.2)
   )
   exp_c <- tibble::tibble(
     Disease = c("C", "C", "C", "C", "A", "A", "B", "B"),
-    Sex = c("Male", "Female", "Male", "Female", "Female", "Female", "Female", "Female"),
+    Sex = c("M", "F", "M", "F", "F", "F", "F", "F"),
     protein1 = c(1, 2, 1, 2, 1, 1, 1.6, 2),
     protein2 = c(0.1, 0.2, 0.1, 0.2, 0.8, 0.8, 0.5, 0.3)
   )

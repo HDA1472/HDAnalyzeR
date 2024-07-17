@@ -49,11 +49,11 @@ filter_sex_specific_disease <- function(control_data,
 
   if(!is.null(only_female) & disease %in% only_female) {
     control_data <- control_data |>
-      dplyr::filter(Sex == "Female")
+      dplyr::filter(Sex == "F")
     diseases_subset <- diseases[!diseases %in% only_male]
   } else if(!is.null(only_male) & disease %in% only_male) {
     control_data <- control_data |>
-      dplyr::filter(Sex == "Male")
+      dplyr::filter(Sex == "M")
     diseases_subset <- diseases[!diseases %in% only_female]
   } else {
     control_data <- control_data
