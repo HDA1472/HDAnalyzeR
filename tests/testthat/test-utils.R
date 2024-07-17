@@ -17,7 +17,6 @@ test_that("Directory creation with date", {
   expect_true(dir.exists(expected), "Directory with date should be created")
 
   unlink(result, recursive = TRUE)
-  unlink(expected, recursive = TRUE)
 })
 
 test_that("Handling existing directory", {
@@ -115,7 +114,7 @@ test_that("import_df handles CSV files", {
 
   if (file.exists(file_name)) {
     df_in <- import_df(file_name)
-    expect_true(is.data.frame(df_in))
+    expect_true(tibble::is_tibble(df_in))
   } else {
     skip("Test skipped: File not found.")
   }
@@ -132,7 +131,7 @@ test_that("import_df handles TSV files", {
 
   if (file.exists(file_name)) {
     df_in <- import_df(file_name)
-    expect_true(is.data.frame(df_in))
+    expect_true(tibble::is_tibble(df_in))
   } else {
     skip("Test skipped: File not found.")
   }
@@ -149,7 +148,7 @@ test_that("import_df handles TXT files", {
 
   if (file.exists(file_name)) {
     df_in <- import_df(file_name)
-    expect_true(is.data.frame(df_in))
+    expect_true(tibble::is_tibble(df_in))
   } else {
     skip("Test skipped: File not found.")
   }
@@ -166,7 +165,7 @@ test_that("import_df handles RDS files", {
 
   if (file.exists(file_name)) {
     df_in <- import_df(file_name)
-    expect_true(is.data.frame(df_in))
+    expect_true(tibble::is_tibble(df_in))
   } else {
     skip("Test skipped: File not found.")
   }
@@ -183,7 +182,7 @@ test_that("import_df handles RDA files", {
 
   if (file.exists(file_name)) {
     df_in <- import_df(file_name)
-    expect_true(is.data.frame(df_in))
+    expect_true(tibble::is_tibble(df_in))
   } else {
     skip("Test skipped: File not found.")
   }
@@ -200,12 +199,25 @@ test_that("import_df handles XLSX files", {
 
   if (file.exists(file_name)) {
     df_in <- import_df(file_name)
-    expect_true(is.data.frame(df_in))
+    expect_true(tibble::is_tibble(df_in))
   } else {
     skip("Test skipped: File not found.")
   }
 
   unlink(file_name, recursive = TRUE)
+})
+
+
+test_that("import_df handles Parquet files", {
+  file_name <- "../testdata/test_parquet.parquet"
+  expect_true(file.exists(file_name))
+
+  if (file.exists(file_name)) {
+    df_in <- import_df(file_name)
+    expect_true(tibble::is_tibble(df_in))
+  } else {
+    skip("Test skipped: File not found.")
+  }
 })
 
 

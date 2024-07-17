@@ -84,7 +84,7 @@ save_df <- function(df, file_name, dir_name, date = F, file_type = c("csv", "tsv
 
 #' Import dataframe
 #'
-#' The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, or TXT format.
+#' The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, TXT, or Parquet format.
 #'
 #' @param file_path (string). The path to the file to import
 #'
@@ -109,6 +109,7 @@ import_df <- function(file_path) {
                rda = { load(file_path); get(ls()[1]) },
                rds = readRDS(file_path),
                xlsx = readxl::read_excel(file_path, guess_max=10000000),
+               parquet = arrow::read_parquet(file_path),
                stop("Unsupported file type: ", file_extension))
 
   df <- tibble::as_tibble(df)
