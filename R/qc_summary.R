@@ -172,6 +172,8 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(df)
+  } else {
+    wide_data <- df
   }
   sample_n <- nrow(wide_data)
   protein_n <- ncol(wide_data) - 1

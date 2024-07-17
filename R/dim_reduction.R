@@ -113,6 +113,8 @@ do_pca <- function(olink_data,
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
   }
 
   set.seed(123)
@@ -204,6 +206,8 @@ do_umap <- function(olink_data,
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
   }
 
   set.seed(123)

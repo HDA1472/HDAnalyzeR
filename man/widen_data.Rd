@@ -4,12 +4,10 @@
 \alias{widen_data}
 \title{Widen data}
 \usage{
-widen_data(olink_data, wide)
+widen_data(olink_data)
 }
 \arguments{
 \item{olink_data}{(tibble). A dataframe containing Olink data to be normalized}
-
-\item{wide}{(logical). A logical value indicating whether the data is in wide format}
 }
 \value{
 wide_data (tibble). A dataframe containing the data in wide format
@@ -18,5 +16,5 @@ wide_data (tibble). A dataframe containing the data in wide format
 The function widens the data from long to wide format.
 }
 \examples{
-wide_data <- widen_data(example_data, wide = FALSE)
+wide_data <- widen_data(example_data)
 }

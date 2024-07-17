@@ -121,22 +121,17 @@ import_df <- function(file_path) {
 #' The function widens the data from long to wide format.
 #'
 #' @param olink_data (tibble). A dataframe containing Olink data to be normalized
-#' @param wide (logical). A logical value indicating whether the data is in wide format
 #'
 #' @return wide_data (tibble). A dataframe containing the data in wide format
 #' @export
 #'
 #' @examples
-#' wide_data <- widen_data(example_data, wide = FALSE)
-widen_data <- function(olink_data, wide = F) {
+#' wide_data <- widen_data(example_data)
+widen_data <- function(olink_data) {
 
-  if (isFALSE(wide)) {
-    wide_data <- olink_data |>
-      dplyr::select(DAid, Assay, NPX) |>
-      tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-  } else {
-    wide_data <- olink_data
-  }
+  wide_data <- olink_data |>
+    dplyr::select(DAid, Assay, NPX) |>
+    tidyr::pivot_wider(names_from = Assay, values_from = NPX)
 
   return(wide_data)
 }

@@ -18,6 +18,7 @@ A list with two elements:
 \itemize{
 \item train_set (tibble). The training set.
 \item test_set (tibble). The test set.
+\item data_split (list). The data split object.
 }
 }
 \description{
