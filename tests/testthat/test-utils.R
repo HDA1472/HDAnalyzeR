@@ -211,20 +211,9 @@ test_that("import_df handles XLSX files", {
 
 # Test widen_data --------------------------------------------------------------
 test_that("widen_data widens data properly", {
-  result <- widen_data(example_data, wide = FALSE)
+  result <- widen_data(example_data)
   expected <- example_data |>
     dplyr::select(DAid, Assay, NPX) |>
     tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-  expect_equal(result, expected)
-})
-
-
-test_that("widen_data does not do anything when wide = T", {
-  test_data <- example_data |>
-    dplyr::select(DAid, Assay, NPX) |>
-    tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-
-  result <- widen_data(test_data, wide = TRUE)
-  expected <- test_data
   expect_equal(result, expected)
 })
