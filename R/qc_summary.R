@@ -170,8 +170,9 @@ print_summary <- function(sample_n, var_n, class_summary, na_percentage_col, na_
 #' qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
 qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 
-  wide_data <- widen_data(df, wide)
-
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(df)
+  }
   sample_n <- nrow(wide_data)
   protein_n <- ncol(wide_data) - 1
   class_summary <- check_col_types(wide_data)

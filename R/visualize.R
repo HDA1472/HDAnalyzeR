@@ -15,7 +15,7 @@ utils::globalVariables(c("Value"))
 #' @export
 #'
 #' @examples
-#' wide_data <- widen_data(example_data, FALSE)
+#' wide_data <- widen_data(example_data)
 #' join_data <- wide_data |>
 #'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
 #' plot_protein_boxplot(join_data, c("AARSD1", "ABL1"), "AML", palette = "cancers12")

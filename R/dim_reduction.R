@@ -111,7 +111,9 @@ do_pca <- function(olink_data,
                    plots = F,
                    save = F) {
 
-  wide_data <- widen_data(olink_data, wide)
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  }
 
   set.seed(123)
   if (isTRUE(impute)) {
@@ -200,7 +202,9 @@ do_umap <- function(olink_data,
                     plots = F,
                     save = F) {
 
-  wide_data <- widen_data(olink_data, wide)
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  }
 
   set.seed(123)
   if (isTRUE(impute)) {

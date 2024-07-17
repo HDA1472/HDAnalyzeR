@@ -24,7 +24,9 @@ impute_median <- function(olink_data,
                           exclude_cols = c("DAid", "Disease"),
                           show_na_percentage = T) {
 
-  wide_data <- widen_data(olink_data, wide)
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  }
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))
 
@@ -76,7 +78,9 @@ impute_knn <- function(olink_data,
                        exclude_cols = c("DAid", "Disease"),
                        show_na_percentage = TRUE) {
 
-  wide_data <- widen_data(olink_data, wide)
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  }
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))
 
@@ -133,7 +137,9 @@ impute_missForest <- function(olink_data,
                               exclude_cols = c("DAid", "Disease"),
                               show_na_percentage = T) {
 
-  wide_data <- widen_data(olink_data, wide)
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  }
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))
 
@@ -191,7 +197,9 @@ impute_mice <- function(olink_data,
                         exclude_cols = c("DAid", "Disease"),
                         show_na_percentage = T) {
 
-  wide_data <- widen_data(olink_data, wide)
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  }
   data_in <- wide_data |>
     dplyr::select(-dplyr::any_of(exclude_cols))
 

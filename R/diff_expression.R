@@ -118,6 +118,7 @@ do_limma_continuous_de <- function(join_data,
 
   join_data <- join_data |>
     dplyr::filter(!dplyr::if_any(dplyr::all_of(c(variable)), is.na))  # Remove NAs from columns in formula
+
   # Design a model
   design <- stats::model.matrix(~0 + join_data[[variable]])
 
