@@ -5,6 +5,9 @@ HDAnalyzeR is an R package developed by the Human Disease Blood Atlas project, d
 
 ## Installation
 
+> [!CAUTION]
+> We recommend to install it in a toy environment as it is currently under development.
+
 You can install the latest version of HDAnalyzeR from GitHub:
 
 ```r
