@@ -1,4 +1,4 @@
-utils::globalVariables(c("DAid", "Assay", "NPX", "adj.P.Val"))
+utils::globalVariables(c("DAid", "Assay", "NPX", "adj.P.Val", "Age", "BMI", "n"))
 #' Check the column types of the dataframe
 #'
 #' The function checks the column types of the input dataframe and returns the counts of each class.
@@ -147,6 +147,80 @@ print_summary <- function(sample_n, var_n, class_summary, na_percentage_col, na_
 }
 
 
+#' Create summary plots for age and sex
+#'
+#' The function creates three plots: two ridge plots for the age and BMI distributions and a bar plot for the number of samples per sex.
+#'
+#' @param metadata (tibble). The metadata dataframe.
+#' @param disease_palette (character). The name of the palette to use for the disease variable. Default is NULL.
+#' @param sex_palette (character). The name of the palette. Default is "sex_hpa".
+#'
+#' @return A list containing the following elements:
+#'  - sex_barplot (plot). A bar plot for the number of samples per sex.
+#'  - age_dist_plot (plot). A ridge plot for the age distributions.
+#'  - bmi_dist_plot (plot). A ridge plot for the BMI distributions.
+#' @keywords internal
+plot_metadata_summary <- function(metadata, disease_palette = NULL, sex_palette = "sex_hpa") {
+
+  plot_list <- list()
+
+  # Ridge plot for age distributions
+  if ("Age" %in% names(metadata)) {
+    age_dist_plot <- metadata |>
+      ggplot2::ggplot(ggplot2::aes(x = Age, y = Disease, fill = Disease)) +
+      ggridges::geom_density_ridges(alpha = 0.7, scale = 0.9) +
+      ggplot2::labs(x = "Age", y = "Disease") +
+      theme_hpa() +
+      ggplot2::theme(legend.position = "none")
+
+    if (is.null(names(disease_palette)) && !is.null(disease_palette)) {
+      age_dist_plot <- age_dist_plot + scale_fill_hpa(disease_palette)
+    } else if (!is.null(disease_palette)) {
+      age_dist_plot <- age_dist_plot + ggplot2::scale_fill_manual(values = disease_palette)
+    }
+
+    plot_list$age_dist_plot <- age_dist_plot
+  }
+
+  # Ridge plot for BMI distributions
+  if ("BMI" %in% names(metadata)) {
+    bmi_dist_plot <- metadata |>
+      ggplot2::ggplot(ggplot2::aes(x = BMI, y = Disease, fill = Disease)) +
+      ggridges::geom_density_ridges(alpha = 0.7, scale = 0.9) +
+      ggplot2::labs(x = "BMI", y = "Disease") +
+      theme_hpa() +
+      ggplot2::theme(legend.position = "none")
+
+    if (is.null(names(disease_palette)) && !is.null(disease_palette)) {
+      bmi_dist_plot <- bmi_dist_plot + scale_fill_hpa(disease_palette)
+    } else if (!is.null(disease_palette)) {
+      bmi_dist_plot <- bmi_dist_plot + ggplot2::scale_fill_manual(values = disease_palette)
+    }
+
+    plot_list$bmi_dist_plot <- bmi_dist_plot
+  }
+
+  # Bar plot for the number of samples
+  if ("Sex" %in% names(metadata)) {
+    sex_barplot <- metadata |>
+      dplyr::count(Disease, Sex) |>
+      ggplot2::ggplot(ggplot2::aes(x = n, y = Disease, fill = Sex)) +
+      ggplot2::geom_bar(stat = "identity", position = "stack") +
+      ggplot2::labs(x = "Number of samples", y = "") +
+      theme_hpa()
+
+    if (is.null(names(sex_palette)) && !is.null(sex_palette)) {
+      sex_barplot <- sex_barplot + scale_fill_hpa(sex_palette)
+    } else if (!is.null(sex_palette)) {
+      sex_barplot <- sex_barplot + ggplot2::scale_fill_manual(values = sex_palette)
+    }
+
+    plot_list$sex_barplot <- sex_barplot
+  }
+  return(plot_list)
+}
+
+
 #' Summarize the quality control results of Olink data
 #'
 #' The function summarizes the quality control results of the input dataframe.
@@ -210,16 +284,21 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 #' The function summarizes the quality control results of the input dataframe.
 #'
 #' @param metadata (tibble). The metadata dataframe.
+#' @param disease_palette (character). The name of the palette to use for the disease variable. Default is NULL.
+#' @param sex_palette (character). The name of the palette. Default is "sex_hpa".
 #' @param report (logical). Whether to print the summary. Default is TRUE.
 #'
 #' @return A list containing the following elements:
 #'   - na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column.
 #'   - na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row.
+#'   - sex_barplot (plot). A bar plot for the number of samples per sex.
+#'   - age_dist_plot (plot). A ridge plot for the age distributions.
+#'   - bmi_dist_plot (plot). A ridge plot for the BMI distributions.
 #' @export
 #'
 #' @examples
 #' qc_summary_metadata(example_metadata)
-qc_summary_metadata <- function(metadata, report = T) {
+qc_summary_metadata <- function(metadata, disease_palette = NULL, sex_palette = "sex_hpa", report = T) {
 
   sample_n <- nrow(metadata)
   var_n <- ncol(metadata) - 1
@@ -231,10 +310,15 @@ qc_summary_metadata <- function(metadata, report = T) {
     print_summary(sample_n, var_n, class_summary, na_percentage_col, na_percentage_row)
   }
 
+  metadata_plot <- plot_metadata_summary(metadata, disease_palette, sex_palette)
+
   return(
     list(
       "na_percentage_col" = na_percentage_col,
-      "na_percentage_row" = na_percentage_row
+      "na_percentage_row" = na_percentage_row,
+      "sex_barplot" = metadata_plot$sex_barplot,
+      "age_dist_plot" = metadata_plot$age_dist_plot,
+      "bmi_dist_plot" = metadata_plot$bmi_dist_plot
     )
   )
 }

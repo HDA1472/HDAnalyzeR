@@ -10,7 +10,7 @@ get_hpa_palettes <- function() {
 
     sex = c("F" = "red", "M" = "blue"),
 
-    sex_maria <- c("F"= "#8a72be", "M" = "#A9D0EF"),
+    sex_hpa = c("F" = "#8a72be", "M" = "#A9D0EF"),
 
     diff_exp = c("not significant" = "grey",
                  "significant down" = "blue",
@@ -82,7 +82,7 @@ get_hpa_palettes <- function() {
 #'
 #' This function creates a ggplot2 scale for color aesthetics using the color palettes from the Human Protein Atlas (HPA) project.
 #'
-#' @param palette (character). The name of the palette to use. Available palettes are: "sex", "diff_exp", "cancers12", "cancers15".
+#' @param palette (character). The name of the palette to use. Available palettes are: "sex", "sex_hpa", "diff_exp", "cancers12", "cancers15".
 #'
 #' @return A ggplot2 scale for color aesthetics.
 #' @export
