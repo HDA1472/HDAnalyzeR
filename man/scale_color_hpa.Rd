@@ -7,7 +7,7 @@
 scale_color_hpa(palette)
 }
 \arguments{
-\item{palette}{(character). The name of the palette to use. Available palettes are: "sex", "diff_exp", "cancers12", "cancers15".}
+\item{palette}{(character). The name of the palette to use. Available palettes are: "sex", "sex_hpa", "diff_exp", "cancers12", "cancers15".}
 }
 \value{
 A ggplot2 scale for color aesthetics.

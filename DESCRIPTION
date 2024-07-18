@@ -24,6 +24,7 @@ Imports:
     ggdendro,
     ggplot2,
     ggrepel,
+    ggridges,
     limma,
     mice,
     missForest,
