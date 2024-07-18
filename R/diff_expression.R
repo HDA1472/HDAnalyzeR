@@ -1,4 +1,4 @@
-utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "Sex", "Disease", "case", "control", "is_normal"))
+utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "Sex", "Disease", "case", "control", "is_normal", "Count"))
 #' Differential expression analysis with limma
 #'
 #' This function performs differential expression analysis using limma.
@@ -287,8 +287,6 @@ plot_volcano <- function(de_result,
     ggplot2::geom_vline(xintercept = logfc_lim, linetype = 'dashed') +
     ggplot2::geom_vline(xintercept = -logfc_lim, linetype = 'dashed') +
     ggplot2::labs(color = "Significance")
-    ggplot2::theme(legend.position = "none",
-                   plot.subtitle = ggplot2::element_text(size = 10, face = "italic"))
 
     if (!is.null(title)) {
       p <- p + ggplot2::ggtitle(label = paste0(title, ""))
@@ -304,7 +302,7 @@ plot_volcano <- function(de_result,
       p <- p + ggplot2::scale_color_manual(values = palette)
     }
 
-  return(p + theme_hpa())
+  return(p + theme_hpa() + ggplot2::theme(legend.position = "none"))
 }
 
 
@@ -402,7 +400,7 @@ do_limma <- function(olink_data,
         ggplot2::ggsave(volcano_plots[[i]], filename = paste0(dir_name, "/", levels[i], "_volcano.png"), width = 10, height = 8)
       }
     }
-    return(list("limma_results" = de_results, "volcano_plots" = volcano_plots))
+    return(list("de_results" = de_results, "volcano_plots" = volcano_plots))
   }
   return(de_results)
 }
@@ -483,7 +481,7 @@ do_limma_continuous <- function(olink_data,
         ggplot2::ggsave(volcano_plots[[i]], filename = paste0(dir_name, "/", levels[i], "_volcano.png"), width = 10, height = 8)
       }
     }
-    return(list("limma_results" = de_results, "volcano_plots" = volcano_plots))
+    return(list("de_results" = de_results, "volcano_plots" = volcano_plots))
   }
   return(de_results)
 }
@@ -596,4 +594,84 @@ do_ttest <- function(olink_data,
     return(list("de_results" = de_results, "volcano_plots" = volcano_plots))
   }
   return(de_results)
+}
+
+
+#' Create a summary plot for the differential expression results
+#'
+#' @param de_results (list). A list with the differential expression results.
+#' @param disease_palette (character or vector). The color palette for the disease. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
+#' @param diff_exp_palette (character or vector). The color palette for the differential expression. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
+#'
+#' @return A list containing the following plots:
+#'   - de_barplot: A barplot with the number of significant proteins for each disease.
+#'   - upset_plot_up: An upset plot with the significant up regulated proteins for each disease.
+#'   - upset_plot_down: An upset plot with the significant down regulated proteins for each disease.
+#' @export
+#'
+#' @examples
+#' de_results <- do_limma(example_data, example_metadata, wide = FALSE)
+#' plots <- plot_de_summary(de_results)
+plot_de_summary <- function(de_results, disease_palette = NULL, diff_exp_palette = "diff_exp") {
+  barplot_data <- de_results$de_results |>
+    dplyr::bind_rows() |>
+    dplyr::mutate(sig = factor(sig, levels = c("not significant", "significant down", "significant up"))) |>
+    dplyr::group_by(Disease, sig) |>
+    dplyr::summarise(Count = dplyr::n()) |>
+    dplyr::ungroup()
+
+  de_barplot <- barplot_data |>
+    ggplot2::ggplot(ggplot2::aes(x = Disease, y = Count, fill = sig)) +
+    ggplot2::geom_bar(stat = "identity", position = "stack") +
+    ggplot2::labs(x = "", y = "Number of proteins", fill = "Significance") +
+    theme_hpa(angled = T) +
+    ggplot2::theme(legend.position = "top",
+                   legend.title = ggplot2::element_text(face = "bold"))
+
+  if (is.null(names(diff_exp_palette)) && !is.null(diff_exp_palette)) {
+    de_barplot <- de_barplot + scale_fill_hpa(diff_exp_palette)
+  } else if (!is.null(diff_exp_palette)) {
+    de_barplot <- de_barplot + ggplot2::scale_fill_manual(values = diff_exp_palette)
+  }
+
+  significant_proteins_up <- lapply(names(de_results$de_results), function(disease) {
+    significant_proteins_up <- de_results$de_results[[disease]] |>
+      dplyr::filter(sig == "significant up") |>
+      dplyr::pull(Assay)
+
+  })
+  names(significant_proteins_up) <- names(de_results$de_results)
+
+  significant_proteins_down <- lapply(names(de_results$de_results), function(disease) {
+
+    significant_proteins_down <- de_results$de_results[[disease]] |>
+      dplyr::filter(sig == "significant down") |>
+      dplyr::pull(Assay)
+
+  })
+  names(significant_proteins_down) <- names(de_results$de_results)
+
+  significant_proteins <- list("up" = significant_proteins_up, "down" = significant_proteins_down)
+
+  if (is.null(names(disease_palette)) && !is.null(disease_palette)) {
+    pal <- get_hpa_palettes()[["cancers12"]]
+  } else if (!is.null(disease_palette)) {
+    pal <- disease_palette
+  } else {
+    pal <- "black"
+  }
+
+  upset_plot_up <- UpSetR::upset(UpSetR::fromList(significant_proteins$up),
+                                 order.by = "freq",
+                                 nsets = length(names(de_results$de_results)),
+                                 sets.bar.color = pal)
+
+  upset_plot_down <- UpSetR::upset(UpSetR::fromList(significant_proteins$down),
+                                   order.by = "freq",
+                                   nsets = length(names(de_results$de_results)),
+                                   sets.bar.color = pal)
+
+  return(list("de_barplot" = de_barplot,
+              "upset_plot_up" = upset_plot_up,
+              "upset_plot_down" = upset_plot_down))
 }
