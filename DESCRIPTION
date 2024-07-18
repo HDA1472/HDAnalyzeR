@@ -41,6 +41,7 @@ Imports:
     tidyselect,
     tidytext,
     tune,
+    UpSetR,
     utils,
     vip,
     viridis,
