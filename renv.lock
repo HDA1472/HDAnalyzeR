@@ -226,6 +226,46 @@
       "Repository": "CRAN",
       "Hash": "46da3912f69e3e6258a033802c4af32e"
     },
+    "UpSetR": {
+      "Package": "UpSetR",
+      "Version": "1.4.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "ggplot2",
+        "grDevices",
+        "gridExtra",
+        "methods",
+        "plyr",
+        "scales",
+        "stats",
+        "utils"
+      ],
+      "Hash": "f6ef89503aaff474873f8bc1823894e1"
+    },
+    "arrow": {
+      "Package": "arrow",
+      "Version": "16.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "R6",
+        "assertthat",
+        "bit64",
+        "cpp11",
+        "glue",
+        "methods",
+        "purrr",
+        "rlang",
+        "stats",
+        "tidyselect",
+        "utils",
+        "vctrs"
+      ],
+      "Hash": "d9cb18a8fc53895548150650cadde3a6"
+    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.2.0",
@@ -235,6 +275,16 @@
         "sys"
       ],
       "Hash": "cad6cf7f1d5f6e906700b9d3e718c796"
+    },
+    "assertthat": {
+      "Package": "assertthat",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "tools"
+      ],
+      "Hash": "50c838a310445e954bc13f26f26a6ecf"
     },
     "backports": {
       "Package": "backports",
@@ -653,6 +703,17 @@
       ],
       "Hash": "999e5fa12058a2bb3a8c204e637e4707"
     },
+    "dichromat": {
+      "Package": "dichromat",
+      "Version": "2.0-0.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "stats"
+      ],
+      "Hash": "16e66f2a483e124af5fc6582d26005f7"
+    },
     "diffobj": {
       "Package": "diffobj",
       "Version": "0.3.5",
@@ -779,6 +840,17 @@
         "sitmo"
       ],
       "Hash": "6d7b942d8f615705f89a7883998fc839"
+    },
+    "easyPubMed": {
+      "Package": "easyPubMed",
+      "Version": "2.13",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "utils"
+      ],
+      "Hash": "de016e6d81383949a0571e890ebd864f"
     },
     "ellipsis": {
       "Package": "ellipsis",
@@ -1041,6 +1113,20 @@
         "withr"
       ],
       "Hash": "cc3361e234c4a5050e29697d675764aa"
+    },
+    "ggridges": {
+      "Package": "ggridges",
+      "Version": "0.5.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "ggplot2",
+        "grid",
+        "scales",
+        "withr"
+      ],
+      "Hash": "66488692cb8621bc78df1b9b819497a6"
     },
     "gh": {
       "Package": "gh",
@@ -2020,6 +2106,17 @@
         "withr"
       ],
       "Hash": "876c618df5ae610be84356d5d7a5d124"
+    },
+    "plyr": {
+      "Package": "plyr",
+      "Version": "1.8.9",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp"
+      ],
+      "Hash": "6b8177fd19982f0020743fadbfdbd933"
     },
     "praise": {
       "Package": "praise",
