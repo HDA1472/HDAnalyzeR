@@ -1,5 +1,5 @@
 utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled_Importance",
-                         "Importance", "Variable", "std_err"))
+                         "Importance", "Variable", "std_err", "Type"))
 #' Split data into training and test sets
 #'
 #' This function splits the data into training and test sets based on user defined ratio.
@@ -430,6 +430,8 @@ finalfit <- function(train_set,
 #' @param finalfit_res (list). Results from elnet_finalfit().
 #' @param exclude_cols (vector). Columns to exclude from the model. Default is NULL.
 #' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
 #'
 #' @return A list with two elements:
 #'  - metrics (list). A list with 5 metrics:
@@ -438,6 +440,7 @@ finalfit <- function(train_set,
 #'   - specificity (numeric). Specificity of the model.
 #'   - auc (numeric). AUC of the model.
 #'   - conf_matrix (tibble). Confusion matrix of the model.
+#'   - roc_curve (tibble). ROC curve of the model.
 #'  - mixture (numeric). Mixture of lasso and ridge regularization.
 #' @keywords internal
 testfit <- function(train_set,
@@ -445,8 +448,11 @@ testfit <- function(train_set,
                     disease,
                     finalfit_res,
                     exclude_cols = NULL,
-                    type = "lasso") {
+                    type = "lasso",
+                    seed = 123,
+                    palette = NULL) {
 
+  set.seed(seed)
   splits <- rsample::make_splits(train_set, test_set)
 
   preds <- tune::last_fit(finalfit_res$final_wf,
@@ -465,9 +471,25 @@ testfit <- function(train_set,
   specificity <- res |>
     yardstick::specificity(Disease, .pred_class)
 
+  if (is.null(names(palette)) && !is.null(palette)) {
+    disease_color <- get_hpa_palettes()[[palette]][[disease]]
+  } else if (!is.null(palette)) {
+    disease_color <- palette
+  } else {
+    disease_color <- "black"
+  }
+
+  selected_point <- tibble::tibble(x = 1 - specificity$.estimate,
+                                   y = sensitivity$.estimate)
   roc <- preds |>
     tune::collect_predictions(summarize = F) |>
-    yardstick::roc_curve(truth = Disease, .pred_0)
+    yardstick::roc_curve(truth = Disease, .pred_0) |>
+    ggplot2::ggplot(ggplot2::aes(x = 1 - specificity, y = sensitivity)) +
+    ggplot2::geom_path(colour = disease_color, size = 2) +
+    ggplot2::geom_point(data = selected_point, ggplot2::aes(x = x, y = y), size = 2, shape = 4, colour = "black") +
+    ggplot2::geom_abline(lty = 3) +
+    ggplot2::coord_equal() +
+    theme_hpa()
 
   auc <- preds |>
     tune::collect_metrics()
@@ -489,7 +511,8 @@ testfit <- function(train_set,
                               "sensitivity" = round(sensitivity$.estimate, 2),
                               "specificity" = round(specificity$.estimate, 2),
                               "auc" = round(auc$.estimate, 2),
-                              "conf_matrix" = cm),
+                              "conf_matrix" = cm,
+                              "roc_curve" = roc),
               "mixture" = mixture))
 }
 
@@ -757,7 +780,9 @@ do_elnet <- function(olink_data,
                            disease,
                            finalfit_res,
                            exclude_cols,
-                           type)
+                           type,
+                           seed,
+                           palette)
 
     var_imp_res <- plot_var_imp(finalfit_res,
                                 disease,
@@ -910,7 +935,9 @@ do_rf <- function(olink_data,
                            disease,
                            finalfit_res,
                            exclude_cols,
-                           type = "other")
+                           type = "other",
+                           seed,
+                           palette)
 
     var_imp_res <- plot_var_imp(finalfit_res,
                                 disease,
@@ -946,4 +973,109 @@ do_rf <- function(olink_data,
   names(rf_results) <- diseases
 
   return(rf_results)
+}
+
+
+#' Plot protein features summary
+#'
+#' This function plots the number of proteins and the number of top proteins for each disease.
+#' It also plots the upset plot of the top or all proteins.
+#'
+#' @param ml_results (list). Results from do_elnet() or do_rf().
+#' @param importance (numeric). Importance threshold for top features. Default is 50.
+#' @param upset_top_features (logical). Whether to plot the upset plot for the top features. Default is FALSE.
+#' @param disease_palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
+#' @param feature_type_palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "all-features" = "pink" and "top-features" = "darkblue".
+#'
+#' @return A list with two elements:
+#'   - features_barplot (plot). Barplot of the number of proteins and top proteins for each disease.
+#'   - upset_plot_features (plot). Upset plot of the top or all proteins.
+#' @export
+#'
+#' @examples
+#' unique_samples <- unique(example_data$Sample)
+#' filtered_data <- example_data |>
+#'  dplyr::filter(Sample %in% unique_samples[1:148])
+#' res <- do_elnet(filtered_data,
+#'                 example_metadata,
+#'                 cv_sets = 2,
+#'                 grid_size = 1,
+#'                 ncores = 1)
+#'
+#' plot <- plot_features_summary(res)
+plot_features_summary <- function(ml_results,
+                                  importance = 50,
+                                  upset_top_features = F,
+                                  disease_palette = NULL,
+                                  feature_type_palette = c("all-features" = "pink", "top-features" = "darkblue")) {
+
+  barplot_data <- lapply(names(ml_results), function(disease) {
+
+    features <- ml_results[[disease]]$var_imp_res$features |>
+      dplyr::mutate(Disease = disease) |>
+      dplyr::select(Disease, Variable) |>
+      dplyr::rename(Assay = Variable) |>
+      dplyr::group_by(Disease) |>
+      dplyr::summarise(Count = dplyr::n()) |>
+      dplyr::ungroup() |>
+      dplyr::mutate(Type = "all-features")
+
+    top_features <- ml_results[[disease]]$var_imp_res$features |>
+      dplyr::mutate(Disease = disease) |>
+      dplyr::filter(Scaled_Importance >= importance) |>
+      dplyr::select(Disease, Variable) |>
+      dplyr::rename(Assay = Variable) |>
+      dplyr::group_by(Disease) |>
+      dplyr::summarise(Count = dplyr::n()) |>
+      dplyr::ungroup() |>
+      dplyr::mutate(Type = "top-features")
+
+    barplot_data <- rbind(features, top_features)
+  })
+
+  barplot_data <- do.call(rbind, barplot_data)
+
+  features_barplot <- barplot_data |>
+    ggplot2::ggplot(ggplot2::aes(x = Disease, y = Count, fill = Type)) +
+    ggplot2::geom_bar(stat = "identity", position = "dodge") +
+    ggplot2::labs(x = "", y = "Number of protein", fill = "Feature type") +
+    theme_hpa(angled = T) +
+    ggplot2::theme(legend.position = "top",
+                   legend.title = ggplot2::element_text(face = "bold"))
+
+  if (is.null(names(feature_type_palette)) && !is.null(feature_type_palette)) {
+    features_barplot <- features_barplot + scale_fill_hpa(feature_type_palette)
+  } else if (!is.null(feature_type_palette)) {
+    features_barplot <- features_barplot + ggplot2::scale_fill_manual(values = feature_type_palette)
+  }
+
+  upset_features <- lapply(names(ml_results), function(disease) {
+
+    if (upset_top_features == T) {
+      upset_features <- ml_results[[disease]]$var_imp_res$features |>
+        dplyr::filter(Scaled_Importance >= importance) |>
+        dplyr::pull(Variable)
+    } else {
+      upset_features <- ml_results[[disease]]$var_imp_res$features |>
+        dplyr::pull(Variable)
+    }
+
+  })
+  names(upset_features) <- names(ml_results)
+
+  if (is.null(names(disease_palette)) && !is.null(disease_palette)) {
+    pal <- get_hpa_palettes()[[disease_palette]]
+  } else if (!is.null(disease_palette)) {
+    pal <- disease_palette
+  } else {
+    pal <- "black"
+  }
+
+  upset_plot_features <- UpSetR::upset(UpSetR::fromList(upset_features),
+                                 order.by = "freq",
+                                 nsets = length(names(ml_results)),
+                                 sets.bar.color = pal)
+
+
+  return(list("features_barplot" = features_barplot, "upset_plot_features" = upset_plot_features))
 }

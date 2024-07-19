@@ -10,7 +10,9 @@ testfit(
   disease,
   finalfit_res,
   exclude_cols = NULL,
-  type = "lasso"
+  type = "lasso",
+  seed = 123,
+  palette = NULL
 )
 }
 \arguments{
@@ -25,6 +27,10 @@ testfit(
 \item{exclude_cols}{(vector). Columns to exclude from the model. Default is NULL.}
 
 \item{type}{(character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
+
+\item{seed}{(numeric). Seed for reproducibility. Default is 123.}
+
+\item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.}
 }
 \value{
 A list with two elements:
@@ -35,6 +41,7 @@ A list with two elements:
 \item specificity (numeric). Specificity of the model.
 \item auc (numeric). AUC of the model.
 \item conf_matrix (tibble). Confusion matrix of the model.
+\item roc_curve (tibble). ROC curve of the model.
 \item mixture (numeric). Mixture of lasso and ridge regularization.
 }
 }

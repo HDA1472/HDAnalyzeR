@@ -599,6 +599,10 @@ do_ttest <- function(olink_data,
 
 #' Create a summary plot for the differential expression results
 #'
+#' This function creates summary plots for the differential expression results.
+#' It creates a barplot with the number of significant proteins for each disease.
+#' It also creates upset plots both for the significant up and down regulated proteins for each disease.
+#'
 #' @param de_results (list). A list with the differential expression results.
 #' @param disease_palette (character or vector). The color palette for the disease. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
 #' @param diff_exp_palette (character or vector). The color palette for the differential expression. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
@@ -654,7 +658,7 @@ plot_de_summary <- function(de_results, disease_palette = NULL, diff_exp_palette
   significant_proteins <- list("up" = significant_proteins_up, "down" = significant_proteins_down)
 
   if (is.null(names(disease_palette)) && !is.null(disease_palette)) {
-    pal <- get_hpa_palettes()[["cancers12"]]
+    pal <- get_hpa_palettes()[[disease_palette]]
   } else if (!is.null(disease_palette)) {
     pal <- disease_palette
   } else {
