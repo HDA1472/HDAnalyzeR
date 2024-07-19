@@ -26,7 +26,9 @@ A list containing the following plots:
 }
 }
 \description{
-Create a summary plot for the differential expression results
+This function creates summary plots for the differential expression results.
+It creates a barplot with the number of significant proteins for each disease.
+It also creates upset plots both for the significant up and down regulated proteins for each disease.
 }
 \examples{
 de_results <- do_limma(example_data, example_metadata, wide = FALSE)
