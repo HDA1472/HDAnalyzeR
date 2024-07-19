@@ -1,4 +1,5 @@
-utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "Sex", "Disease", "case", "control", "is_normal", "Count"))
+utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "Sex",
+                         "Disease", "case", "control", "is_normal", "Count"))
 #' Differential expression analysis with limma
 #'
 #' This function performs differential expression analysis using limma.
