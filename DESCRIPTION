@@ -10,10 +10,11 @@ Description: A package developed by the Human Disease Blood Atlas group, designe
 License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
     arrow,
     broom,
+    clusterProfiler,
     dials,
     doParallel,
     dplyr,
@@ -29,6 +30,7 @@ Imports:
     limma,
     mice,
     missForest,
+    org.Hs.eg.db,
     parsnip,
     purrr,
     readxl,
@@ -50,7 +52,9 @@ Imports:
     workflows,
     yardstick
 Remotes: 
-    bioc::limma
+    bioc::clusterProfiler,
+    bioc::limma,
+    bioc::org.Hs.eg.db
 Suggests: 
     glmnet,
     ranger,
