@@ -9,8 +9,9 @@ utils::globalVariables(c("ENTREZID"))
 #'
 #' @examples
 #' enrichment <- do_ora(c("TP53", "BRCA1", "BRCA2"), database = "KEGG")
-do_ora <- function(gene_list, database = c("KEGG", "GO")) {
+do_ora <- function(de_results, significance = c("up", "down", "all"), database = c("KEGG", "GO")) {
   database <- match.arg(database)
+  significance <- match.arg(significance)
 
   # From gene name to ENTREZID
   gene_conversion <- clusterProfiler::bitr(gene_list,
@@ -48,5 +49,56 @@ plot_enrichment <- function(enrichment) {
   dotplot <- clusterProfiler::dotplot(enrichment)
 }
 
-# kegg_result <- do_ora(gene_list, database = "KEGG")
-# clusterProfiler::dotplot(kegg_result)
+
+#' Perform gene set enrichment analysis (GSEA) using clusterProfiler
+#'
+#' This function performs gene set enrichment analysis (GSEA) using the clusterProfiler package.
+#'
+#' @param de_result (list). A list containing the results of the differential expression analysis.
+#' @param database (character). The database to perform the GSEA. It can be either "KEGG" or "GO".
+#'
+#' @return enrichment_results (list). A list containing the results of the GSEA.
+#' @export
+#'
+#' @examples
+do_gsea <- function(de_results, database = c("KEGG", "GO")) {
+  database <- match.arg(database)
+  diseases <- de_results$de_results |> names()
+  enrichment_results <- list()
+
+  for (disease in diseases) {
+    protein_list <- setNames(de_results$de_results[[disease]]$logFC, de_results$de_results[[disease]]$Assay)
+    sorted_proteins <- sort(protein_list, decreasing = TRUE)
+
+    # From gene name to ENTREZID
+    protein_conversion <- clusterProfiler::bitr(names(sorted_proteins),
+                                                fromType = "SYMBOL",
+                                                toType = "ENTREZID",
+                                                OrgDb = org.Hs.eg.db::org.Hs.eg.db)
+
+    protein_list <- setNames(sorted_proteins, protein_conversion$ENTREZID)
+
+    if (database == "KEGG") {
+      # Perform GSEA for KEGG
+      enrichment <- clusterProfiler::gseKEGG(geneList = protein_list,
+                                             organism = "hsa",
+                                             pvalueCutoff = 0.05,
+                                             pAdjustMethod = "BH",
+                                             minGSSize = 10,
+                                             maxGSSize = 500)
+    } else if (database == "GO") {
+      # Perform GSEA for GO (Biological Process)
+      enrichment <- clusterProfiler::gseGO(geneList = protein_list,
+                                           OrgDb = org.Hs.eg.db::org.Hs.eg.db,
+                                           ont = "BP",
+                                           pvalueCutoff = 0.05,
+                                           pAdjustMethod = "BH",
+                                           minGSSize = 10,
+                                           maxGSSize = 500)
+    }
+
+    enrichment_results[[disease]] <- enrichment
+  }
+
+  return(enrichment_results)
+}

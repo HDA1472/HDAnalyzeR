@@ -7,3 +7,6 @@
 ^data-raw$
 ^logo$
 ^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
