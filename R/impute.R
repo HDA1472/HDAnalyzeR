@@ -22,11 +22,11 @@
 #' test_data
 #'
 #' # Data after imputation
-#' impute_median(test_data, wide = FALSE)
+#' impute_median(test_data)
 impute_median <- function(olink_data,
-                          wide = T,
+                          wide = TRUE,
                           exclude_cols = c("DAid", "Disease"),
-                          show_na_percentage = T) {
+                          show_na_percentage = TRUE) {
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
