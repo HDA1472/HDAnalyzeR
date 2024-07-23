@@ -1,23 +1,26 @@
 utils::globalVariables(c("Value"))
-#' Create boxplots for proteins
+#' Plot protein boxplots
 #'
-#' This function creates a boxplot for the top n proteins in the dataset.
+#' `plot_protein_boxplot()` plots boxplots for the specified proteins in the dataset.
 #' It annotates the boxplot with color for the selected disease.
 #' It is also possible to add points to the boxplot.
 #'
-#' @param join_data (tibble). The dataset with the wide Olink data joined with the metadata.
-#' @param proteins (vector). The proteins to include in the boxplot.
-#' @param disease (character). The disease to annotate.
-#' @param points (logical). Whether to add points to the boxplot.
-#' @param palette (character). The color palette to use. Default is red3.
+#' @param join_data The dataset with the wide Olink data joined with the metadata.
+#' @param proteins The proteins to include in the boxplot.
+#' @param disease The disease to annotate.
+#' @param points Whether to add points to the boxplot.
+#' @param palette The color palette to use. Default is "red3" for the annotated disease.
 #'
-#' @return boxplot_panel (plot). The boxplot panel with the selected proteins.
+#' @return The boxplot panel with the selected proteins.
 #' @export
 #'
 #' @examples
+#' # Prepare the data
 #' wide_data <- widen_data(example_data)
 #' join_data <- wide_data |>
 #'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
+#'
+#' # Boxplots for AARSD1 and ABL1 in AML
 #' plot_protein_boxplot(join_data, c("AARSD1", "ABL1"), "AML", palette = "cancers12")
 plot_protein_boxplot <- function(join_data,
                                  proteins,
@@ -90,29 +93,34 @@ plot_protein_boxplot <- function(join_data,
 }
 
 
-#' Create a scatter plot with regression line
+#' Plot a scatter plot with regression line
 #'
-#' This function creates a scatter plot with a linear regression line.
-#' It is possible to add the standard error of the regression line, as well as the R-squared and p-value.
+#' `plot_scatter_with_regression` plots a scatter plot with a linear regression line.
+#' It is possible to add the standard error of the regression line, as well as the
+#' R-squared and p-value.
 #'
-#' @param plot_data (tibble). The wide dataset containing the data to plot as cols.
-#' @param x (character). The column name of the x-axis variable.
-#' @param y (character). The column name of the y-axis variable.
-#' @param se (logical). Whether to add the standard error of the regression line.
-#' @param line_color (character). The color of the regression line.
-#' @param r_2 (logical). Whether to add the R-squared and p-value to the plot.
+#' @param plot_data The wide dataset containing the data to plot as cols.
+#' @param x The column name of the x-axis variable.
+#' @param y The column name of the y-axis variable.
+#' @param se Whether to add the standard error of the regression line. Default is FALSE.
+#' @param line_color The color of the regression line.
+#' @param r_2 Whether to add the R-squared and p-value to the plot. Default is TRUE.
 #'
-#' @return scatter (plot). The scatter plot with the regression line.
+#' @return The scatter plot with the regression line.
 #' @export
 #'
 #' @examples
-#' plot_scatter_with_regression(example_metadata, "Age", "BMI")
+#' # Prepare the data
+#' wide_data <- widen_data(example_data)
+#'
+#' # Scatter plot for AARSD1 and ABL1
+#' plot_scatter_with_regression(wide_data, "AARSD1", "ABL1", line_color = "red3")
 plot_scatter_with_regression <- function(plot_data,
                                          x,
                                          y,
-                                         se = F,
+                                         se = FALSE,
                                          line_color = "black",
-                                         r_2 = T) {
+                                         r_2 = TRUE) {
   # Fit the linear model
   formula <- stats::as.formula(paste(y, "~", x))
   model <- stats::lm(formula, data = plot_data)

@@ -12,7 +12,7 @@ plot_volcano(
   top_down_prot = 10,
   palette = "diff_exp",
   title = NULL,
-  subtitle = T
+  subtitle = TRUE
 )
 }
 \arguments{

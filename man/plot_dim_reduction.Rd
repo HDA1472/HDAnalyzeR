@@ -2,28 +2,28 @@
 % Please edit documentation in R/dim_reduction.R
 \name{plot_dim_reduction}
 \alias{plot_dim_reduction}
-\title{Create a plot of the dimensionality reduction results}
+\title{Plot sample data points in a two-dimensional plane.}
 \usage{
 plot_dim_reduction(res, x, y, metadata, color, palette)
 }
 \arguments{
-\item{res}{(tibble). A tibble with the results of the dimensionality reduction analysis.}
+\item{res}{A tibble with the results of the dimensionality reduction analysis.}
 
-\item{x}{(string). The name of the column in \code{res} that contains the x-axis values.}
+\item{x}{The name of the column in \code{res} that contains the x-axis values.}
 
-\item{y}{(string). The name of the column in \code{res} that contains the y-axis values.}
+\item{y}{The name of the column in \code{res} that contains the y-axis values.}
 
-\item{metadata}{(tibble). A tibble with metadata information to be added to the plot.}
+\item{metadata}{A tibble with metadata information to be added to the plot. It will be used for coloring the points.}
 
-\item{color}{(string). The name of the column in \code{metadata} that contains the variable to be used to plot the points color.}
+\item{color}{The name of the column in \code{metadata} that contains the variable to be used to plot the points color.}
 
-\item{palette}{(vector). A vector with the colors to be used in the plot.}
+\item{palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}.}
 }
 \value{
-(plot). A ggplot object
+A ggplot object
 }
 \description{
-This function creates a plot of the dimensionality reduction results.
-The function can be used to plot the results of PCA (1st vs 2nd PC) or UMAP analyses.
+\code{plot_dim_reduction()} plots the sample data points in a two-dimensional plane.
+The points can be plotted in the PC1/PC2 or UMAP1/UMAP2 space.
 }
 \keyword{internal}

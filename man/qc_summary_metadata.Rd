@@ -12,27 +12,29 @@ qc_summary_metadata(
 )
 }
 \arguments{
-\item{metadata}{(tibble). The metadata dataframe.}
+\item{metadata}{The metadata dataframe.}
 
-\item{disease_palette}{(character). The name of the palette to use for the disease variable. Default is NULL.}
+\item{disease_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}.}
 
-\item{sex_palette}{(character). The name of the palette. Default is "sex_hpa".}
+\item{sex_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "sex_hpa".}
 
-\item{report}{(logical). Whether to print the summary. Default is TRUE.}
+\item{report}{Whether to print the summary. Default is TRUE.}
 }
 \value{
 A list containing the following elements:
 \itemize{
-\item na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column.
-\item na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row.
-\item sex_barplot (plot). A bar plot for the number of samples per sex.
-\item age_dist_plot (plot). A ridge plot for the age distributions.
-\item bmi_dist_plot (plot). A ridge plot for the BMI distributions.
+\item na_percentage_col: A tibble with the column names and the percentage of NAs in each column.
+\item na_percentage_row: A tibble with the DAids and the percentage of NAs in each row.
+\item sex_barplot: A bar plot for the number of samples per sex.
+\item age_dist_plot: A ridge plot for the age distributions.
+\item bmi_dist_plot: A ridge plot for the BMI distributions.
 }
 }
 \description{
-The function summarizes the quality control results of the input dataframe.
+\code{qc_summary_metadata()} summarizes the quality control results of the metadata dataframe.
+It checks the column types, calculates the percentage of NAs in each column and row,
+and creates summary visualizations for Sex, Age and BMI.
 }
 \examples{
-qc_summary_metadata(example_metadata)
+qc_res <- qc_summary_metadata(example_metadata)
 }

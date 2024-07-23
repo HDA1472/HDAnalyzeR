@@ -2,32 +2,35 @@
 % Please edit documentation in R/visualize.R
 \name{plot_protein_boxplot}
 \alias{plot_protein_boxplot}
-\title{Create boxplots for proteins}
+\title{Plot protein boxplots}
 \usage{
 plot_protein_boxplot(join_data, proteins, disease, points = T, palette = NULL)
 }
 \arguments{
-\item{join_data}{(tibble). The dataset with the wide Olink data joined with the metadata.}
+\item{join_data}{The dataset with the wide Olink data joined with the metadata.}
 
-\item{proteins}{(vector). The proteins to include in the boxplot.}
+\item{proteins}{The proteins to include in the boxplot.}
 
-\item{disease}{(character). The disease to annotate.}
+\item{disease}{The disease to annotate.}
 
-\item{points}{(logical). Whether to add points to the boxplot.}
+\item{points}{Whether to add points to the boxplot.}
 
-\item{palette}{(character). The color palette to use. Default is red3.}
+\item{palette}{The color palette to use. Default is "red3" for the annotated disease.}
 }
 \value{
-boxplot_panel (plot). The boxplot panel with the selected proteins.
+The boxplot panel with the selected proteins.
 }
 \description{
-This function creates a boxplot for the top n proteins in the dataset.
+\code{plot_protein_boxplot()} plots boxplots for the specified proteins in the dataset.
 It annotates the boxplot with color for the selected disease.
 It is also possible to add points to the boxplot.
 }
 \examples{
+# Prepare the data
 wide_data <- widen_data(example_data)
 join_data <- wide_data |>
   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
+
+# Boxplots for AARSD1 and ABL1 in AML
 plot_protein_boxplot(join_data, c("AARSD1", "ABL1"), "AML", palette = "cancers12")
 }

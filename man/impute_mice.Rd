@@ -6,41 +6,47 @@
 \usage{
 impute_mice(
   olink_data,
-  wide = T,
+  wide = TRUE,
   m = 5,
   maxit = 5,
   method = "pmm",
   exclude_cols = c("DAid", "Disease"),
-  show_na_percentage = T
+  show_na_percentage = TRUE
 )
 }
 \arguments{
-\item{olink_data}{(tibble). The input dataframe.}
+\item{olink_data}{The input dataset.}
 
-\item{wide}{(logical). If T, the data is in wide format.}
+\item{wide}{If TRUE, the data is in wide format.}
 
-\item{m}{(integer). The number of imputed datasets to create. Default is 5.}
+\item{m}{The number of imputed datasets to create. Default is 5.}
 
-\item{maxit}{(integer). The maximum number of iterations. Default is 5.}
+\item{maxit}{The maximum number of iterations. Default is 5.}
 
-\item{method}{(string). The imputation method to use. Type \code{methods(mice::mice)} after \code{library(mice)} for all options. Default is "pmm".}
+\item{method}{The imputation method to use. Type \code{methods(mice::mice)} after \code{library(mice)} for all options. Default is "pmm".}
 
-\item{exclude_cols}{(string or vector of strings). The columns to exclude from imputation.}
+\item{exclude_cols}{The columns to exclude from imputation.}
 
-\item{show_na_percentage}{(logical). If T, the percentage of missing values in each column is displayed.}
+\item{show_na_percentage}{If TRUE, the percentage of missing values in each column is displayed.}
 }
 \value{
-imputed_data (tibble). The dataframe with missing values imputed.
+The imputed dataset.
 }
 \description{
-This function imputes missing values in a dataset using the MICE algorithm.
+\code{impute_mice()} imputes missing values in a dataset using the MICE algorithm.
 It allows the user to exclude certain columns from imputation and can also display the
-percentage of missing values in each column before imputation.
+percentage of missing values in each column before imputation. The user can also specify
+the number of imputed datasets to create, the maximum number of iterations, and the imputation
+method to use.
 }
 \examples{
+# Data before imputation
 test_data <- example_data |>
   dplyr::select(DAid, Assay, NPX) |>
   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
   dplyr::slice_head(n = 100)
-imputed_data <- impute_mice(test_data)
+test_data
+
+# Data after imputation
+impute_mice(test_data)
 }

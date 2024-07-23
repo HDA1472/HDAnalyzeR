@@ -260,7 +260,7 @@ plot_volcano <- function(de_result,
                          top_down_prot = 10,
                          palette = "diff_exp",
                          title = NULL,
-                         subtitle = T) {
+                         subtitle = TRUE) {
 
   top.sig.down <- de_result |>
     dplyr::filter(adj.P.Val < pval_lim & logFC < -logfc_lim) |>
@@ -351,17 +351,17 @@ do_limma <- function(olink_data,
                      metadata,
                      correct = c("Sex", "Age", "BMI"),
                      correct_type = c("factor", "numeric", "numeric"),
-                     wide = T,
+                     wide = TRUE,
                      only_female = NULL,
                      only_male = NULL,
-                     volcano = T,
+                     volcano = TRUE,
                      pval_lim = 0.05,
                      logfc_lim = 0,
                      top_up_prot = 40,
                      top_down_prot = 10,
                      palette = "diff_exp",
-                     subtitle = T,
-                     save = F) {
+                     subtitle = TRUE,
+                     save = FALSE) {
 
   # Prepare Olink data and merge them with metadata
   if (isFALSE(wide)) {
@@ -447,15 +447,15 @@ do_limma <- function(olink_data,
 do_limma_continuous <- function(olink_data,
                                 metadata,
                                 variable,
-                                wide = T,
-                                volcano = T,
+                                wide = TRUE,
+                                volcano = TRUE,
                                 pval_lim = 0.05,
                                 logfc_lim = 0,
                                 top_up_prot = 40,
                                 top_down_prot = 10,
                                 palette = "diff_exp",
-                                subtitle = T,
-                                save = F) {
+                                subtitle = TRUE,
+                                save = FALSE) {
 
   # Prepare Olink data and merge them with metadata
   if (isFALSE(wide)) {
@@ -536,17 +536,17 @@ do_limma_continuous <- function(olink_data,
 #' de_results$volcano_plots$AML
 do_ttest <- function(olink_data,
                      metadata,
-                     wide = T,
+                     wide = TRUE,
                      only_female = NULL,
                      only_male = NULL,
-                     volcano = T,
+                     volcano = TRUE,
                      pval_lim = 0.05,
                      logfc_lim = 0,
                      top_up_prot = 40,
                      top_down_prot = 10,
                      palette = "diff_exp",
-                     subtitle = T,
-                     save = F) {
+                     subtitle = TRUE,
+                     save = FALSE) {
 
   # Prepare Olink data and merge them with metadata
   if (isFALSE(wide)) {
@@ -640,7 +640,9 @@ do_ttest <- function(olink_data,
 #'
 #' # Plot summary visualizations
 #' plot_de_summary(de_results)
-plot_de_summary <- function(de_results, disease_palette = NULL, diff_exp_palette = "diff_exp") {
+plot_de_summary <- function(de_results,
+                            disease_palette = NULL,
+                            diff_exp_palette = "diff_exp") {
   barplot_data <- de_results$de_results |>
     dplyr::bind_rows() |>
     dplyr::mutate(sig = factor(sig, levels = c("not significant", "significant down", "significant up"))) |>

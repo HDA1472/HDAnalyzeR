@@ -1,24 +1,28 @@
 #' Impute via Median
 #'
-#' This function imputes missing values in a dataset using the median of each column.
+#' `impute_median()` imputes missing values in a dataset using the median of each column.
 #' It allows the user to exclude certain columns from imputation and can also display the
 #' percentage of missing values in each column before imputation.
 #'
-#' @param olink_data (tibble). The input dataframe.
-#' @param wide (logical). If T, the data is in wide format.
-#' @param exclude_cols (string or vector of strings). The columns to exclude from imputation.
-#' @param show_na_percentage (logical). If T, the percentage of missing values in each column is displayed.
+#' @param olink_data The input dataset.
+#' @param wide If TRUE, the data is in wide format.
+#' @param exclude_cols The columns to exclude from imputation.
+#' @param show_na_percentage If TRUE, the percentage of missing values in each column is displayed.
 #'
-#' @return imputed_data (tibble). The dataframe with missing values imputed.
+#' @return The imputed dataset.
 #' @export
 #'
+#' @details This is the fastest but usually least accurate imputation method.
 #' @examples
-#' test_data <- tibble::tibble(
-#'   A = c(80, 44, NA, 50, 29),
-#'   B = c(30, NA, 85, 70, 54),
-#'   C = c(7, 10, 25, 74, 49)
-#' )
-#' imputed_data <- impute_median(test_data)
+#' # Data before imputation
+#' test_data <- example_data |>
+#'   dplyr::select(DAid, Assay, NPX) |>
+#'   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
+#'   dplyr::slice_head(n = 100)
+#' test_data
+#'
+#' # Data after imputation
+#' impute_median(test_data, wide = FALSE)
 impute_median <- function(olink_data,
                           wide = T,
                           exclude_cols = c("DAid", "Disease"),
@@ -54,28 +58,32 @@ impute_median <- function(olink_data,
 
 #' Impute via k-nearest neighbors
 #'
-#' This function imputes missing values in a dataset using the k-nearest neighbors algorithm.
+#' `impute_knn()` imputes missing values in a dataset using the k-nearest neighbors method.
 #' It allows the user to exclude certain columns from imputation and can also display the
-#' percentage of missing values in each column before imputation.
+#' percentage of missing values in each column before imputation. The user can also specify
+#' the number of neighbors to consider for imputation.
 #'
-#' @param olink_data (tibble). The input dataframe.
-#' @param wide (logical). If T, the data is in wide format.
-#' @param k (integer). The number of neighbors to consider for imputation.
-#' @param exclude_cols (string or vector of strings). The columns to exclude from imputation.
-#' @param show_na_percentage (logical). If T, the percentage of missing values in each column is displayed.
+#' @param olink_data The input dataset.
+#' @param wide If TRUE, the data is in wide format.
+#' @param k The number of neighbors to consider for imputation.
+#' @param exclude_cols The columns to exclude from imputation.
+#' @param show_na_percentage If TRUE, the percentage of missing values in each column is displayed.
 #'
-#' @return imputed_data (tibble). The dataframe with missing values imputed.
+#' @return The imputed dataset.
 #' @export
 #'
 #' @examples
-#' test_data <- tibble::tibble(
-#'   A = c(80, 44, NA, 50, 29),
-#'   B = c(30, NA, 85, 70, 54),
-#'   C = c(7, 10, 25, 74, 49)
-#' )
-#' imputed_data <- impute_knn(test_data, k = 3)
+#' # Data before imputation
+#' test_data <- example_data |>
+#'   dplyr::select(DAid, Assay, NPX) |>
+#'   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
+#'   dplyr::slice_head(n = 100)
+#' test_data
+#'
+#' # Data after imputation
+#' impute_knn(test_data, k = 3)
 impute_knn <- function(olink_data,
-                       wide = T,
+                       wide = TRUE,
                        k = 5,
                        exclude_cols = c("DAid", "Disease"),
                        show_na_percentage = TRUE) {
@@ -110,36 +118,42 @@ impute_knn <- function(olink_data,
 
 #' Impute via missForest
 #'
-#' This function imputes missing values in a dataset using the `missForest` method.
+#' `impute_missForest()` imputes missing values in a dataset using the `missForest` method.
 #' It allows the user to exclude certain columns from imputation and can also display the
-#' percentage of missing values in each column before imputation.
+#' percentage of missing values in each column before imputation. The user can also specify
+#' the maximum number of iterations, the number of trees to grow, the type of parallelization
+#' ("no", "variables", or "forests"), as well as the number of cores to use for parallelization.
 #'
-#' @param olink_data (tibble). The input dataframe.
-#' @param wide (logical). If T, the data is in wide format.
-#' @param maxiter (integer). The maximum number of iterations.
-#' @param ntree (integer). The number of trees to grow.
-#' @param parallelize (string). The type of parallelization to use. Options are "no", "variables", or "forests".
-#' @param ncores (integer). The number of cores to use for parallelization.
-#' @param exclude_cols (string or vector of strings). The columns to exclude from imputation.
-#' @param show_na_percentage (logical). If T, the percentage of missing values in each column is displayed.
+#' @param olink_data The input dataset.
+#' @param wide If TRUE, the data is in wide format.
+#' @param maxiter The maximum number of iterations.
+#' @param ntree  The number of trees to grow.
+#' @param parallelize The type of parallelization to use. Options are "no", "variables", or "forests".
+#' @param ncores The number of cores to use for parallelization.
+#' @param exclude_cols The columns to exclude from imputation.
+#' @param show_na_percentage If TRUE, the percentage of missing values in each column is displayed.
 #'
-#' @return A data frame with imputed values.
+#' @return The imputed dataset.
 #' @export
 #'
 #' @examples
+#' # Data before imputation
 #' test_data <- example_data |>
 #'   dplyr::select(DAid, Assay, NPX) |>
 #'   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
 #'   dplyr::slice_head(n = 100)
-#' imputed_data <- impute_missForest(test_data, maxiter = 1, ntree = 50, parallelize = "no")
+#' test_data
+#'
+#' # Data after imputation
+#' impute_missForest(test_data, maxiter = 1, ntree = 50, parallelize = "no")
 impute_missForest <- function(olink_data,
-                              wide = T,
+                              wide = TRUE,
                               maxiter = 10,
                               ntree = 100,
                               parallelize = "variables",
                               ncores = 4,
                               exclude_cols = c("DAid", "Disease"),
-                              show_na_percentage = T) {
+                              show_na_percentage = TRUE) {
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
@@ -174,34 +188,40 @@ impute_missForest <- function(olink_data,
 
 #' Impute via MICE
 #'
-#' This function imputes missing values in a dataset using the MICE algorithm.
+#' `impute_mice()` imputes missing values in a dataset using the MICE algorithm.
 #' It allows the user to exclude certain columns from imputation and can also display the
-#' percentage of missing values in each column before imputation.
+#' percentage of missing values in each column before imputation. The user can also specify
+#' the number of imputed datasets to create, the maximum number of iterations, and the imputation
+#' method to use.
 #'
-#' @param olink_data (tibble). The input dataframe.
-#' @param wide (logical). If T, the data is in wide format.
-#' @param m (integer). The number of imputed datasets to create. Default is 5.
-#' @param maxit (integer). The maximum number of iterations. Default is 5.
-#' @param method (string). The imputation method to use. Type `methods(mice::mice)` after `library(mice)` for all options. Default is "pmm".
-#' @param exclude_cols (string or vector of strings). The columns to exclude from imputation.
-#' @param show_na_percentage (logical). If T, the percentage of missing values in each column is displayed.
+#' @param olink_data The input dataset.
+#' @param wide If TRUE, the data is in wide format.
+#' @param m The number of imputed datasets to create. Default is 5.
+#' @param maxit The maximum number of iterations. Default is 5.
+#' @param method The imputation method to use. Type `methods(mice::mice)` after `library(mice)` for all options. Default is "pmm".
+#' @param exclude_cols The columns to exclude from imputation.
+#' @param show_na_percentage If TRUE, the percentage of missing values in each column is displayed.
 #'
-#' @return imputed_data (tibble). The dataframe with missing values imputed.
+#' @return The imputed dataset.
 #' @export
 #'
 #' @examples
+#' # Data before imputation
 #' test_data <- example_data |>
 #'   dplyr::select(DAid, Assay, NPX) |>
 #'   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
 #'   dplyr::slice_head(n = 100)
-#' imputed_data <- impute_mice(test_data)
+#' test_data
+#'
+#' # Data after imputation
+#' impute_mice(test_data)
 impute_mice <- function(olink_data,
-                        wide = T,
+                        wide = TRUE,
                         m = 5,
                         maxit = 5,
                         method = "pmm",
                         exclude_cols = c("DAid", "Disease"),
-                        show_na_percentage = T) {
+                        show_na_percentage = TRUE) {
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)

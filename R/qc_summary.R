@@ -1,11 +1,12 @@
 utils::globalVariables(c("DAid", "Assay", "NPX", "adj.P.Val", "Age", "BMI", "n"))
-#' Check the column types of the dataframe
+#' Check the column types of the dataset
 #'
-#' The function checks the column types of the input dataframe and returns the counts of each class.
+#' `check_col_types()` checks the column types of the input dataset and
+#' returns the counts of each class.
 #'
-#' @param df (tibble). The input dataframe.
+#' @param df The input dataset.
 #'
-#' @return class_summary (table). A table with the counts of each class in the dataframe.
+#' @return A table with the counts of each class in the dataset.
 #' @keywords internal
 check_col_types <- function(df) {
   # Get the classes of all columns
@@ -17,14 +18,14 @@ check_col_types <- function(df) {
   return(class_summary)
 }
 
-#' Calculate the percentage of NAs in each column
+#' Calculate the percentage of NAs in each column of the dataset
 #'
-#' The function calculates the percentage of NAs in each column of the input dataframe.
+#' `calc_na_percentage_col()` calculates the percentage of NAs in each column of the input dataset.
 #' It filters out the columns with 0% missing data and returns the rest in descending order.
 #'
-#' @param df (tibble). The input dataframe.
+#' @param df The input dataset.
 #'
-#' @return na_percentage (tibble). A tibble with the column names and the percentage of NAs in each column.
+#' @return A tibble with the column names and the percentage of NAs in each column.
 #' @keywords internal
 calc_na_percentage_col <- function(df) {
 
@@ -38,14 +39,14 @@ calc_na_percentage_col <- function(df) {
 }
 
 
-#' Calculate the percentage of NAs in each row
+#' Calculate the percentage of NAs in each row of the dataset
 #'
-#' The function calculates the percentage of NAs in each row of the input dataframe.
+#' `calc_na_percentage_row()` calculates the percentage of NAs in each row of the input dataset.
 #' It filters out the rows with 0% missing data and returns the rest in descending order.
 #'
-#' @param df (tibble). The input dataframe.
+#' @param df The input dataset.
 #'
-#' @return na_percentage (tibble). A tibble with the DAids and the percentage of NAs in each row.
+#' @return A tibble with the DAids and the percentage of NAs in each row.
 #' @keywords internal
 calc_na_percentage_row <- function(df) {
 
@@ -63,9 +64,13 @@ calc_na_percentage_row <- function(df) {
 
 #' Check normality of the data
 #'
-#' @param df (tibble). The input dataframe.
+#' `check_normality()` checks the normality of the input dataset using the Shapiro-Wilk test.
+#' It performs the test in parallel and returns the p-values, adjusted p-values, and
+#' normality status for each protein.
 #'
-#' @return normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.
+#' @param df The input dataset.
+#'
+#' @return A tibble with the protein names, p-values, adjusted p-values, and normality status.
 #' @keywords internal
 check_normality <- function(df) {
 
@@ -95,19 +100,23 @@ check_normality <- function(df) {
 
 #' Print the summary of the quality control results
 #'
-#' The function prints the summary of the quality control results of the input dataframe.
+#' `print_summary()` prints the summary of the quality control results of the
+#' input dataset. It includes the number of samples and variables, the counts of
+#' each class, the percentage of NAs in each column and row, the normality test
+#' results, the protein-protein correlations above a certain threshold, and the
+#' correlation heatmap.
 #'
-#' @param sample_n (numeric). The number of samples.
-#' @param var_n (numeric). The number of variables.
-#' @param class_summary (table). A table with the counts of each class in the dataframe.
-#' @param na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column.
-#' @param na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row.
-#' @param normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.
-#' @param cor_results (tibble). A tibble with the filtered protein pairs and their correlation values.
-#' @param heatmap (plot). A heatmap of protein-protein correlations.
-#' @param threshold (numeric). The reporting protein-protein correlation threshold.
+#' @param sample_n The number of samples.
+#' @param var_n The number of variables.
+#' @param class_summary A table with the counts of each class in the dataframe.
+#' @param na_percentage_col A tibble with the column names and the percentage of NAs in each column.
+#' @param na_percentage_row A tibble with the DAids and the percentage of NAs in each row.
+#' @param normality_results  A tibble with the protein names, p-values, adjusted p-values, and normality status.
+#' @param cor_results A tibble with the filtered protein pairs and their correlation values.
+#' @param heatmap A heatmap of protein-protein correlations.
+#' @param threshold The reporting protein-protein correlation threshold.
 #'
-#' @return NULL.
+#' @return NULL
 #' @keywords internal
 print_summary <- function(sample_n, var_n, class_summary, na_percentage_col, na_percentage_row,
                           normality_results = F, cor_results = F, heatmap = F,  threshold = F) {
@@ -147,18 +156,20 @@ print_summary <- function(sample_n, var_n, class_summary, na_percentage_col, na_
 }
 
 
-#' Create summary plots for age and sex
+#' Plot summary visualization for Sex, Age and BMI metadata
 #'
-#' The function creates three plots: two ridge plots for the age and BMI distributions and a bar plot for the number of samples per sex.
+#' `plot_metadata_summary()` creates three plots:
+#'    - Two ridge plots for the Age and BMI distributions.
+#'    - A bar plot for the number of samples per Sex.
 #'
-#' @param metadata (tibble). The metadata dataframe.
-#' @param disease_palette (character). The name of the palette to use for the disease variable. Default is NULL.
-#' @param sex_palette (character). The name of the palette. Default is "sex_hpa".
+#' @param metadata The metadata dataframe.
+#' @param disease_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
+#' @param sex_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "sex_hpa".
 #'
 #' @return A list containing the following elements:
-#'  - sex_barplot (plot). A bar plot for the number of samples per sex.
-#'  - age_dist_plot (plot). A ridge plot for the age distributions.
-#'  - bmi_dist_plot (plot). A ridge plot for the BMI distributions.
+#'  - sex_barplot: A bar plot for the number of samples per sex.
+#'  - age_dist_plot: A ridge plot for the age distributions.
+#'  - bmi_dist_plot: A ridge plot for the BMI distributions.
 #' @keywords internal
 plot_metadata_summary <- function(metadata, disease_palette = NULL, sex_palette = "sex_hpa") {
 
@@ -223,25 +234,28 @@ plot_metadata_summary <- function(metadata, disease_palette = NULL, sex_palette 
 
 #' Summarize the quality control results of Olink data
 #'
-#' The function summarizes the quality control results of the input dataframe.
-#' It can handles both long and wide dataframes.
+#' `qc_summary_data()` summarizes the quality control results of the input dataset.
+#' It can handles both long and wide dataframes. The function checks the column types,
+#' calculates the percentage of NAs in each column and row, performs a normality test,
+#' calculates the protein-protein correlations, and creates a heatmap of the correlations.
+#' The user can specify the reporting protein-protein correlation threshold.
 #'
-#' @param df (tibble). The input dataframe.
-#' @param wide (logical). Whether the input dataframe is in wide format. Default is TRUE.
-#' @param threshold (numeric). The reporting protein-protein correlation threshold. Default is 0.8.
-#' @param report (logical). Whether to print the summary. Default is TRUE.
+#' @param df The input dataset.
+#' @param wide Whether the input dataset is in wide format. Default is TRUE.
+#' @param threshold The reporting protein-protein correlation threshold. Default is 0.8.
+#' @param report Whether to print the summary. Default is TRUE.
 #'
 #' @return A list containing the following elements:
-#'   - na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column.
-#'   - na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row.
-#'   - normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.
-#'   - cor_matrix (matrix). A matrix of protein-protein correlations.
-#'   - cor_results (tibble). A tibble with the filtered protein pairs and their correlation values.
-#'   - heatmap (ggplot). A heatmap of protein-protein correlations.
+#'   - na_percentage_col: A tibble with the column names and the percentage of NAs in each column.
+#'   - na_percentage_row: A tibble with the DAids and the percentage of NAs in each row.
+#'   - normality_results: A tibble with the protein names, p-values, adjusted p-values, and normality status.
+#'   - cor_matrix: A matrix of protein-protein correlations.
+#'   - cor_results: A tibble with the filtered protein pairs and their correlation values.
+#'   - heatmap: A heatmap of protein-protein correlations.
 #' @export
 #'
 #' @examples
-#' qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
+#' qc_res <- qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
 qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 
   if (isFALSE(wide)) {
@@ -259,11 +273,18 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
                              threshold = threshold)
   cor_matrix <- cor$cor_matrix
   cor_results <- cor$cor_results
-  p <- cor$p
+  p <- cor$cor_plot
 
   if (isTRUE(report)) {
-    print_summary(sample_n, protein_n, class_summary, na_percentage_col, na_percentage_row,
-                  normality_results, cor_results, p, threshold)
+    print_summary(sample_n,
+                  protein_n,
+                  class_summary,
+                  na_percentage_col,
+                  na_percentage_row,
+                  normality_results,
+                  cor_results,
+                  p,
+                  threshold)
   }
 
   return(
@@ -281,23 +302,25 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 
 #' Summarize the quality control results of metadata
 #'
-#' The function summarizes the quality control results of the input dataframe.
+#' `qc_summary_metadata()` summarizes the quality control results of the metadata dataframe.
+#' It checks the column types, calculates the percentage of NAs in each column and row,
+#' and creates summary visualizations for Sex, Age and BMI.
 #'
-#' @param metadata (tibble). The metadata dataframe.
-#' @param disease_palette (character). The name of the palette to use for the disease variable. Default is NULL.
-#' @param sex_palette (character). The name of the palette. Default is "sex_hpa".
-#' @param report (logical). Whether to print the summary. Default is TRUE.
+#' @param metadata The metadata dataframe.
+#' @param disease_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
+#' @param sex_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "sex_hpa".
+#' @param report Whether to print the summary. Default is TRUE.
 #'
 #' @return A list containing the following elements:
-#'   - na_percentage_col (tibble). A tibble with the column names and the percentage of NAs in each column.
-#'   - na_percentage_row (tibble). A tibble with the DAids and the percentage of NAs in each row.
-#'   - sex_barplot (plot). A bar plot for the number of samples per sex.
-#'   - age_dist_plot (plot). A ridge plot for the age distributions.
-#'   - bmi_dist_plot (plot). A ridge plot for the BMI distributions.
+#'   - na_percentage_col: A tibble with the column names and the percentage of NAs in each column.
+#'   - na_percentage_row: A tibble with the DAids and the percentage of NAs in each row.
+#'   - sex_barplot: A bar plot for the number of samples per sex.
+#'   - age_dist_plot: A ridge plot for the age distributions.
+#'   - bmi_dist_plot: A ridge plot for the BMI distributions.
 #' @export
 #'
 #' @examples
-#' qc_summary_metadata(example_metadata)
+#' qc_res <- qc_summary_metadata(example_metadata)
 qc_summary_metadata <- function(metadata, disease_palette = NULL, sex_palette = "sex_hpa", report = T) {
 
   sample_n <- nrow(metadata)

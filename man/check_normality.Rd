@@ -7,12 +7,14 @@
 check_normality(df)
 }
 \arguments{
-\item{df}{(tibble). The input dataframe.}
+\item{df}{The input dataset.}
 }
 \value{
-normality_results (tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.
+A tibble with the protein names, p-values, adjusted p-values, and normality status.
 }
 \description{
-Check normality of the data
+\code{check_normality()} checks the normality of the input dataset using the Shapiro-Wilk test.
+It performs the test in parallel and returns the p-values, adjusted p-values, and
+normality status for each protein.
 }
 \keyword{internal}

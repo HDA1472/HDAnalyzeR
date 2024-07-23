@@ -49,6 +49,13 @@ df <- example_data |>
   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
   dplyr::select(-DAid)
 
-# Plot correlation heatmap
-create_corr_heatmap(df, threshold = 0.7)
+# Correlate proteins
+results <- create_corr_heatmap(df, threshold = 0.7)
+
+# Print results
+results$cor_plot  # Heatmap of protein-protein correlations
+
+results$cor_matrix[1:5, 1:5]  # Subset of the correlation matrix
+
+results$cor_results  # Filtered protein pairs exceeding correlation threshold
 }

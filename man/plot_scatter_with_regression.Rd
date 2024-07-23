@@ -2,37 +2,42 @@
 % Please edit documentation in R/visualize.R
 \name{plot_scatter_with_regression}
 \alias{plot_scatter_with_regression}
-\title{Create a scatter plot with regression line}
+\title{Plot a scatter plot with regression line}
 \usage{
 plot_scatter_with_regression(
   plot_data,
   x,
   y,
-  se = F,
+  se = FALSE,
   line_color = "black",
-  r_2 = T
+  r_2 = TRUE
 )
 }
 \arguments{
-\item{plot_data}{(tibble). The wide dataset containing the data to plot as cols.}
+\item{plot_data}{The wide dataset containing the data to plot as cols.}
 
-\item{x}{(character). The column name of the x-axis variable.}
+\item{x}{The column name of the x-axis variable.}
 
-\item{y}{(character). The column name of the y-axis variable.}
+\item{y}{The column name of the y-axis variable.}
 
-\item{se}{(logical). Whether to add the standard error of the regression line.}
+\item{se}{Whether to add the standard error of the regression line. Default is FALSE.}
 
-\item{line_color}{(character). The color of the regression line.}
+\item{line_color}{The color of the regression line.}
 
-\item{r_2}{(logical). Whether to add the R-squared and p-value to the plot.}
+\item{r_2}{Whether to add the R-squared and p-value to the plot. Default is TRUE.}
 }
 \value{
-scatter (plot). The scatter plot with the regression line.
+The scatter plot with the regression line.
 }
 \description{
-This function creates a scatter plot with a linear regression line.
-It is possible to add the standard error of the regression line, as well as the R-squared and p-value.
+\code{plot_scatter_with_regression} plots a scatter plot with a linear regression line.
+It is possible to add the standard error of the regression line, as well as the
+R-squared and p-value.
 }
 \examples{
-plot_scatter_with_regression(example_metadata, "Age", "BMI")
+# Prepare the data
+wide_data <- widen_data(example_data)
+
+# Scatter plot for AARSD1 and ABL1
+plot_scatter_with_regression(wide_data, "AARSD1", "ABL1", line_color = "red3")
 }

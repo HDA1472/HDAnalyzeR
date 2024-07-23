@@ -40,8 +40,10 @@ according to the hierarchical clustering of the rows and columns. This data
 can be used to plot a heatmap with ggplot2 that is not having clustering functionality.
 }
 \examples{
+# Original data
 clean_df <- example_data |> dplyr::select(DAid, Assay, NPX)
+clean_df
 
-# Cluster data
+# Clustered data
 cluster_data(clean_df, wide = FALSE)
 }

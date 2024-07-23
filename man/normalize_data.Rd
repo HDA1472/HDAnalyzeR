@@ -2,52 +2,64 @@
 % Please edit documentation in R/normalize.R
 \name{normalize_data}
 \alias{normalize_data}
-\title{Normalize data}
+\title{Normalize data and remove batch effects}
 \usage{
 normalize_data(
   olink_data,
   metadata = NULL,
-  wide = T,
-  center = T,
-  scale = T,
+  wide = TRUE,
+  center = TRUE,
+  scale = TRUE,
   batch = NULL,
   batch2 = NULL,
-  return_long = F,
-  save = F,
+  return_long = FALSE,
+  save = FALSE,
   file_name = "normalized_data"
 )
 }
 \arguments{
-\item{olink_data}{(tibble). A dataframe containing Olink data to be normalized.}
+\item{olink_data}{A dataset containing Olink data to be normalized.}
 
-\item{metadata}{(tibble). A dataframe containing the metadata information.}
+\item{metadata}{A dataset containing the metadata information.}
 
-\item{wide}{(logical). A logical value indicating whether the data is in wide format. Default is TRUE.}
+\item{wide}{A logical value indicating whether the data is in wide format. Default is TRUE.}
 
-\item{center}{(logical). A logical value indicating whether to center the data. Default is TRUE.}
+\item{center}{A logical value indicating whether to center the data. Default is TRUE.}
 
-\item{scale}{(logical). A logical value indicating whether to scale the data. Default is TRUE.}
+\item{scale}{A logical value indicating whether to scale the data. Default is TRUE.}
 
-\item{batch}{(character). The metadata column containing the batch information. In order to correct for batch effects, this parameter should be provided. Default is NULL.}
+\item{batch}{The metadata column containing the batch information. In order to correct for batch effects, this parameter should be provided. Default is NULL.}
 
-\item{batch2}{(character). The metadata column containing the second batch information. Default is NULL.}
+\item{batch2}{The metadata column containing the second batch information. Default is NULL.}
 
-\item{return_long}{(logical). A logical value indicating whether to return the data in long format. Default is FALSE.}
+\item{return_long}{A logical value indicating whether to return the data in long format. Default is FALSE.}
 
-\item{save}{(logical). A logical value indicating whether to save the data. Default is FALSE.}
+\item{save}{A logical value indicating whether to save the data. Default is FALSE.}
 
-\item{file_name}{(character). The name of the file to be saved. Default is "normalized_data".}
+\item{file_name}{The name of the file to be saved. Default is "normalized_data".}
 }
 \value{
-scaled_data (tibble). A dataframe containing the normalized data.
+A tibble containing the normalized data.
 }
 \description{
-This function normalizes the data by removing batch effects and scaling the data.
-It first converts the data to wide format if it is not already in wide format.
-It then removes the batch effects and scales or centers the data.
-To remove batch effects, it uses the remove_batch_effects function, that utilizes limma package.
-For scaling, it uses the scale function from base R.
+\code{normalize_data()} normalizes the data by scaling them and removing their batch effects.
+It first converts the data to wide format if they are not already. It then removes
+the batch effects and scales or centers the data. To remove batch effects, it uses the
+\code{remove_batch_effects()}, that utilizes limma package. For scaling, it uses the \code{scale()}
+from base R.
 }
 \examples{
-scaled_data <- normalize_data(example_data, example_metadata, wide = FALSE, batch = "Cohort")
+# Non-normalized data
+example_data |>
+  dplyr::select(DAid, Assay, NPX) |>
+  tidyr::pivot_wider(names_from = "Assay", values_from = "NPX")
+
+# Center data
+normalize_data(example_data, example_metadata, wide = FALSE, center = TRUE, scale = FALSE)
+
+# Center and scale data (z-score scaling)
+normalize_data(example_data, example_metadata, wide = FALSE, center = TRUE, scale = TRUE)
+
+# Center, scale and remove batch effects
+normalize_data(example_data, example_metadata, wide = FALSE, batch = "Cohort")
 }

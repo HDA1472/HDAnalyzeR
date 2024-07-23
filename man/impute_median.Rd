@@ -12,27 +12,33 @@ impute_median(
 )
 }
 \arguments{
-\item{olink_data}{(tibble). The input dataframe.}
+\item{olink_data}{The input dataset.}
 
-\item{wide}{(logical). If T, the data is in wide format.}
+\item{wide}{If TRUE, the data is in wide format.}
 
-\item{exclude_cols}{(string or vector of strings). The columns to exclude from imputation.}
+\item{exclude_cols}{The columns to exclude from imputation.}
 
-\item{show_na_percentage}{(logical). If T, the percentage of missing values in each column is displayed.}
+\item{show_na_percentage}{If TRUE, the percentage of missing values in each column is displayed.}
 }
 \value{
-imputed_data (tibble). The dataframe with missing values imputed.
+The imputed dataset.
 }
 \description{
-This function imputes missing values in a dataset using the median of each column.
+\code{impute_median()} imputes missing values in a dataset using the median of each column.
 It allows the user to exclude certain columns from imputation and can also display the
 percentage of missing values in each column before imputation.
 }
+\details{
+This is the fastest but usually least accurate imputation method.
+}
 \examples{
-test_data <- tibble::tibble(
-  A = c(80, 44, NA, 50, 29),
-  B = c(30, NA, 85, 70, 54),
-  C = c(7, 10, 25, 74, 49)
-)
-imputed_data <- impute_median(test_data)
+# Data before imputation
+test_data <- example_data |>
+  dplyr::select(DAid, Assay, NPX) |>
+  tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
+  dplyr::slice_head(n = 100)
+test_data
+
+# Data after imputation
+impute_median(test_data, wide = FALSE)
 }

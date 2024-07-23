@@ -2,18 +2,18 @@
 % Please edit documentation in R/qc_summary.R
 \name{calc_na_percentage_row}
 \alias{calc_na_percentage_row}
-\title{Calculate the percentage of NAs in each row}
+\title{Calculate the percentage of NAs in each row of the dataset}
 \usage{
 calc_na_percentage_row(df)
 }
 \arguments{
-\item{df}{(tibble). The input dataframe.}
+\item{df}{The input dataset.}
 }
 \value{
-na_percentage (tibble). A tibble with the DAids and the percentage of NAs in each row.
+A tibble with the DAids and the percentage of NAs in each row.
 }
 \description{
-The function calculates the percentage of NAs in each row of the input dataframe.
+\code{calc_na_percentage_row()} calculates the percentage of NAs in each row of the input dataset.
 It filters out the rows with 0\% missing data and returns the rest in descending order.
 }
 \keyword{internal}

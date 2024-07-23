@@ -1,15 +1,15 @@
 #' Remove batch effects
 #'
-#' This function removes batch effects from the data using the limma package.
+#' `remove_batch_effects()` removes batch effects from the data using the limma package.
 #' It converts the dataframe into matrix and transposes it to get it ready for limma.
-#' It removes the batch effects and then converts the data back to normal.
+#' It removes the batch effects and then converts the data back to normal format.
 #'
-#' @param wide_data (tibble). A dataframe containing the data to be normalized. The data should be in wide format.
-#' @param metadata (tibble). A dataframe containing the metadata information.
-#' @param batch (character). The metadata column containing the batch information.
-#' @param batch2 (character). The metadata column containing the second batch information. Default is NULL.
+#' @param wide_data A tibble containing the data to be normalized. The data should be in wide format.
+#' @param metadata A tibble containing the metadata information.
+#' @param batch The metadata column containing the batch information.
+#' @param batch2 The metadata column containing the second batch information. Default is NULL.
 #'
-#' @return no_batch_effects (tibble). A dataframe containing the data without batch effects.
+#' @return A tibble containing the data without batch effects.
 #' @export
 #'
 #' @keywords internal
@@ -45,39 +45,51 @@ remove_batch_effects <- function(wide_data,
 }
 
 
-#' Normalize data
+#' Normalize data and remove batch effects
 #'
-#' This function normalizes the data by removing batch effects and scaling the data.
-#' It first converts the data to wide format if it is not already in wide format.
-#' It then removes the batch effects and scales or centers the data.
-#' To remove batch effects, it uses the remove_batch_effects function, that utilizes limma package.
-#' For scaling, it uses the scale function from base R.
+#' `normalize_data()` normalizes the data by scaling them and removing their batch effects.
+#' It first converts the data to wide format if they are not already. It then removes
+#' the batch effects and scales or centers the data. To remove batch effects, it uses the
+#' `remove_batch_effects()`, that utilizes limma package. For scaling, it uses the `scale()`
+#' from base R.
 #'
-#' @param olink_data (tibble). A dataframe containing Olink data to be normalized.
-#' @param metadata (tibble). A dataframe containing the metadata information.
-#' @param wide (logical). A logical value indicating whether the data is in wide format. Default is TRUE.
-#' @param center (logical). A logical value indicating whether to center the data. Default is TRUE.
-#' @param scale (logical). A logical value indicating whether to scale the data. Default is TRUE.
-#' @param batch (character). The metadata column containing the batch information. In order to correct for batch effects, this parameter should be provided. Default is NULL.
-#' @param batch2 (character). The metadata column containing the second batch information. Default is NULL.
-#' @param return_long (logical). A logical value indicating whether to return the data in long format. Default is FALSE.
-#' @param save (logical). A logical value indicating whether to save the data. Default is FALSE.
-#' @param file_name (character). The name of the file to be saved. Default is "normalized_data".
+#' @param olink_data A dataset containing Olink data to be normalized.
+#' @param metadata A dataset containing the metadata information.
+#' @param wide A logical value indicating whether the data is in wide format. Default is TRUE.
+#' @param center A logical value indicating whether to center the data. Default is TRUE.
+#' @param scale A logical value indicating whether to scale the data. Default is TRUE.
+#' @param batch The metadata column containing the batch information. In order to correct for batch effects, this parameter should be provided. Default is NULL.
+#' @param batch2 The metadata column containing the second batch information. Default is NULL.
+#' @param return_long A logical value indicating whether to return the data in long format. Default is FALSE.
+#' @param save A logical value indicating whether to save the data. Default is FALSE.
+#' @param file_name The name of the file to be saved. Default is "normalized_data".
 #'
-#' @return scaled_data (tibble). A dataframe containing the normalized data.
+#' @return A tibble containing the normalized data.
 #' @export
 #'
 #' @examples
-#' scaled_data <- normalize_data(example_data, example_metadata, wide = FALSE, batch = "Cohort")
+#' # Non-normalized data
+#' example_data |>
+#'   dplyr::select(DAid, Assay, NPX) |>
+#'   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX")
+#'
+#' # Center data
+#' normalize_data(example_data, example_metadata, wide = FALSE, center = TRUE, scale = FALSE)
+#'
+#' # Center and scale data (z-score scaling)
+#' normalize_data(example_data, example_metadata, wide = FALSE, center = TRUE, scale = TRUE)
+#'
+#' # Center, scale and remove batch effects
+#' normalize_data(example_data, example_metadata, wide = FALSE, batch = "Cohort")
 normalize_data <- function(olink_data,
                            metadata = NULL,
-                           wide = T,
-                           center = T,
-                           scale = T,
+                           wide = TRUE,
+                           center = TRUE,
+                           scale = TRUE,
                            batch = NULL,
                            batch2 = NULL,
-                           return_long = F,
-                           save = F,
+                           return_long = FALSE,
+                           save = FALSE,
                            file_name = "normalized_data"
                            ) {
 

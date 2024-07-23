@@ -2,7 +2,7 @@
 % Please edit documentation in R/qc_summary.R
 \name{plot_metadata_summary}
 \alias{plot_metadata_summary}
-\title{Create summary plots for age and sex}
+\title{Plot summary visualization for Sex, Age and BMI metadata}
 \usage{
 plot_metadata_summary(
   metadata,
@@ -11,21 +11,25 @@ plot_metadata_summary(
 )
 }
 \arguments{
-\item{metadata}{(tibble). The metadata dataframe.}
+\item{metadata}{The metadata dataframe.}
 
-\item{disease_palette}{(character). The name of the palette to use for the disease variable. Default is NULL.}
+\item{disease_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}.}
 
-\item{sex_palette}{(character). The name of the palette. Default is "sex_hpa".}
+\item{sex_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "sex_hpa".}
 }
 \value{
 A list containing the following elements:
 \itemize{
-\item sex_barplot (plot). A bar plot for the number of samples per sex.
-\item age_dist_plot (plot). A ridge plot for the age distributions.
-\item bmi_dist_plot (plot). A ridge plot for the BMI distributions.
+\item sex_barplot: A bar plot for the number of samples per sex.
+\item age_dist_plot: A ridge plot for the age distributions.
+\item bmi_dist_plot: A ridge plot for the BMI distributions.
 }
 }
 \description{
-The function creates three plots: two ridge plots for the age and BMI distributions and a bar plot for the number of samples per sex.
+\code{plot_metadata_summary()} creates three plots:
+\itemize{
+\item Two ridge plots for the Age and BMI distributions.
+\item A bar plot for the number of samples per Sex.
+}
 }
 \keyword{internal}

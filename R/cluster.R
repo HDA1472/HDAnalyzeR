@@ -19,9 +19,11 @@ utils::globalVariables(c("v1", "v2", "val", "x", "y"))
 #' @export
 #'
 #' @examples
+#' # Original data
 #' clean_df <- example_data |> dplyr::select(DAid, Assay, NPX)
+#' clean_df
 #'
-#' # Cluster data
+#' # Clustered data
 #' cluster_data(clean_df, wide = FALSE)
 cluster_data <- function(df,
                          distance_method = "euclidean",

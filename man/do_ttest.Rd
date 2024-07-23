@@ -7,17 +7,17 @@
 do_ttest(
   olink_data,
   metadata,
-  wide = T,
+  wide = TRUE,
   only_female = NULL,
   only_male = NULL,
-  volcano = T,
+  volcano = TRUE,
   pval_lim = 0.05,
   logfc_lim = 0,
   top_up_prot = 40,
   top_down_prot = 10,
   palette = "diff_exp",
-  subtitle = T,
-  save = F
+  subtitle = TRUE,
+  save = FALSE
 )
 }
 \arguments{

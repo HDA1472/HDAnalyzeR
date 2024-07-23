@@ -6,36 +6,40 @@
 \usage{
 impute_knn(
   olink_data,
-  wide = T,
+  wide = TRUE,
   k = 5,
   exclude_cols = c("DAid", "Disease"),
   show_na_percentage = TRUE
 )
 }
 \arguments{
-\item{olink_data}{(tibble). The input dataframe.}
+\item{olink_data}{The input dataset.}
 
-\item{wide}{(logical). If T, the data is in wide format.}
+\item{wide}{If TRUE, the data is in wide format.}
 
-\item{k}{(integer). The number of neighbors to consider for imputation.}
+\item{k}{The number of neighbors to consider for imputation.}
 
-\item{exclude_cols}{(string or vector of strings). The columns to exclude from imputation.}
+\item{exclude_cols}{The columns to exclude from imputation.}
 
-\item{show_na_percentage}{(logical). If T, the percentage of missing values in each column is displayed.}
+\item{show_na_percentage}{If TRUE, the percentage of missing values in each column is displayed.}
 }
 \value{
-imputed_data (tibble). The dataframe with missing values imputed.
+The imputed dataset.
 }
 \description{
-This function imputes missing values in a dataset using the k-nearest neighbors algorithm.
+\code{impute_knn()} imputes missing values in a dataset using the k-nearest neighbors method.
 It allows the user to exclude certain columns from imputation and can also display the
-percentage of missing values in each column before imputation.
+percentage of missing values in each column before imputation. The user can also specify
+the number of neighbors to consider for imputation.
 }
 \examples{
-test_data <- tibble::tibble(
-  A = c(80, 44, NA, 50, 29),
-  B = c(30, NA, 85, 70, 54),
-  C = c(7, 10, 25, 74, 49)
-)
-imputed_data <- impute_knn(test_data, k = 3)
+# Data before imputation
+test_data <- example_data |>
+  dplyr::select(DAid, Assay, NPX) |>
+  tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
+  dplyr::slice_head(n = 100)
+test_data
+
+# Data after imputation
+impute_knn(test_data, k = 3)
 }

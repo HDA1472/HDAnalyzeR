@@ -7,20 +7,20 @@
 remove_batch_effects(wide_data, metadata, batch, batch2 = NULL)
 }
 \arguments{
-\item{wide_data}{(tibble). A dataframe containing the data to be normalized. The data should be in wide format.}
+\item{wide_data}{A tibble containing the data to be normalized. The data should be in wide format.}
 
-\item{metadata}{(tibble). A dataframe containing the metadata information.}
+\item{metadata}{A tibble containing the metadata information.}
 
-\item{batch}{(character). The metadata column containing the batch information.}
+\item{batch}{The metadata column containing the batch information.}
 
-\item{batch2}{(character). The metadata column containing the second batch information. Default is NULL.}
+\item{batch2}{The metadata column containing the second batch information. Default is NULL.}
 }
 \value{
-no_batch_effects (tibble). A dataframe containing the data without batch effects.
+A tibble containing the data without batch effects.
 }
 \description{
-This function removes batch effects from the data using the limma package.
+\code{remove_batch_effects()} removes batch effects from the data using the limma package.
 It converts the dataframe into matrix and transposes it to get it ready for limma.
-It removes the batch effects and then converts the data back to normal.
+It removes the batch effects and then converts the data back to normal format.
 }
 \keyword{internal}

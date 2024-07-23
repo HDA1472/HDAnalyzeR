@@ -17,28 +17,29 @@ print_summary(
 )
 }
 \arguments{
-\item{sample_n}{(numeric). The number of samples.}
+\item{sample_n}{The number of samples.}
 
-\item{var_n}{(numeric). The number of variables.}
+\item{var_n}{The number of variables.}
 
-\item{class_summary}{(table). A table with the counts of each class in the dataframe.}
+\item{class_summary}{A table with the counts of each class in the dataframe.}
 
-\item{na_percentage_col}{(tibble). A tibble with the column names and the percentage of NAs in each column.}
+\item{na_percentage_col}{A tibble with the column names and the percentage of NAs in each column.}
 
-\item{na_percentage_row}{(tibble). A tibble with the DAids and the percentage of NAs in each row.}
+\item{na_percentage_row}{A tibble with the DAids and the percentage of NAs in each row.}
 
-\item{normality_results}{(tibble). A tibble with the protein names, p-values, adjusted p-values, and normality status.}
+\item{normality_results}{A tibble with the protein names, p-values, adjusted p-values, and normality status.}
 
-\item{cor_results}{(tibble). A tibble with the filtered protein pairs and their correlation values.}
+\item{cor_results}{A tibble with the filtered protein pairs and their correlation values.}
 
-\item{heatmap}{(plot). A heatmap of protein-protein correlations.}
+\item{heatmap}{A heatmap of protein-protein correlations.}
 
-\item{threshold}{(numeric). The reporting protein-protein correlation threshold.}
-}
-\value{
-NULL.
+\item{threshold}{The reporting protein-protein correlation threshold.}
 }
 \description{
-The function prints the summary of the quality control results of the input dataframe.
+\code{print_summary()} prints the summary of the quality control results of the
+input dataset. It includes the number of samples and variables, the counts of
+each class, the percentage of NAs in each column and row, the normality test
+results, the protein-protein correlations above a certain threshold, and the
+correlation heatmap.
 }
 \keyword{internal}

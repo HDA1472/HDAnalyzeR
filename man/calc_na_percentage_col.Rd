@@ -2,18 +2,18 @@
 % Please edit documentation in R/qc_summary.R
 \name{calc_na_percentage_col}
 \alias{calc_na_percentage_col}
-\title{Calculate the percentage of NAs in each column}
+\title{Calculate the percentage of NAs in each column of the dataset}
 \usage{
 calc_na_percentage_col(df)
 }
 \arguments{
-\item{df}{(tibble). The input dataframe.}
+\item{df}{The input dataset.}
 }
 \value{
-na_percentage (tibble). A tibble with the column names and the percentage of NAs in each column.
+A tibble with the column names and the percentage of NAs in each column.
 }
 \description{
-The function calculates the percentage of NAs in each column of the input dataframe.
+\code{calc_na_percentage_col()} calculates the percentage of NAs in each column of the input dataset.
 It filters out the columns with 0\% missing data and returns the rest in descending order.
 }
 \keyword{internal}

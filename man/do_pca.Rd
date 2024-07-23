@@ -2,55 +2,65 @@
 % Please edit documentation in R/dim_reduction.R
 \name{do_pca}
 \alias{do_pca}
-\title{Perform PCA analysis}
+\title{Run PCA analysis}
 \usage{
 do_pca(
   olink_data,
   metadata = NULL,
   color = "Disease",
   palette = NULL,
-  wide = T,
-  impute = T,
-  plots = F,
-  save = F
+  wide = TRUE,
+  impute = TRUE,
+  plots = FALSE,
+  pcs = 4,
+  nproteins = 8,
+  save = FALSE
 )
 }
 \arguments{
-\item{olink_data}{(tibble). A tibble with the data to be used in the PCA analysis.}
+\item{olink_data}{A tibble with the data to be used in the PCA analysis.}
 
-\item{metadata}{(tibble). A tibble with metadata information to be used in the PCA plots. Default is NULL.}
+\item{metadata}{A tibble with metadata information to be used in the PCA plots. Default is NULL.}
 
-\item{color}{(string). The name of the column in \code{metadata} that contains the variable.
+\item{color}{The name of the column in \code{metadata} that contains the variable.
 to be used to plot the points color. Default is "Disease".}
 
-\item{palette}{(vector). A vector with the colors to be used in the PCA plots. Default is NULL.}
+\item{palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}.}
 
-\item{wide}{(logical). If TRUE, the data is assumed to be in wide format. Default is TRUE.}
+\item{wide}{If TRUE, the data is assumed to be in wide format. Default is TRUE.}
 
-\item{impute}{(logical). If TRUE, the data is imputed before the PCA analysis. Default is TRUE.}
+\item{impute}{If TRUE, the data is imputed before the PCA analysis. Default is TRUE.}
 
-\item{plots}{(logical). If TRUE, the function creates plots of the PCA results. Default is FALSE.}
+\item{plots}{If TRUE, the function creates plots of the PCA results. Default is FALSE.}
 
-\item{save}{(logical). If TRUE, the plots are saved in the results directory. Default is FALSE.}
+\item{pcs}{The number of PCs to be plotted. Default is 4.}
+
+\item{nproteins}{The number of proteins to be plotted. Default is 8.}
+
+\item{save}{If TRUE, the plots are saved in the results directory. Default is FALSE.}
 }
 \value{
-(list). A list with the PCA results and, if requested, the PCA plots.
+A list with the PCA results and, if requested, the PCA plots.
 \itemize{
-\item pca_res (tibble). A tibble with the PCA results.
-\item loadings (tibble). A tibble with the PCA loadings.
-\item pca_plot (plot). A ggplot object with the PCA plot.
-\item loadings_plot (plot). A ggplot object with the PCA loadings plot.
+\item pca_res: A tibble with the PCA results.
+\item loadings: A tibble with the PCA loadings.
+\item pca_plot: A ggplot object with the data points on the 1st and 2nd PCs plane.
+\item loadings_plot: A PCA loadings ggplot object.
 }
 }
 \description{
-This function performs a PCA analysis on the data provided.
-The function can also create plots of the PCA results and save them in the results directory.
+\code{do_pca()} runs a PCA analysis on the provided data. The function can visualize
+the sample points on the first and second PC plane as well as the PCA loadings.
+It can also save the plots in the results directory.
 }
 \examples{
 test_data <- example_data |> dplyr::select(DAid, Assay, NPX)
+
+# Run PCA analysis
 do_pca(test_data,
        metadata = example_metadata,
        wide = FALSE,
        color = "Disease",
+       palette = "cancers12",
        plots = TRUE)
 }

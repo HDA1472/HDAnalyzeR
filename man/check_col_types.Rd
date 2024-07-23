@@ -2,17 +2,18 @@
 % Please edit documentation in R/qc_summary.R
 \name{check_col_types}
 \alias{check_col_types}
-\title{Check the column types of the dataframe}
+\title{Check the column types of the dataset}
 \usage{
 check_col_types(df)
 }
 \arguments{
-\item{df}{(tibble). The input dataframe.}
+\item{df}{The input dataset.}
 }
 \value{
-class_summary (table). A table with the counts of each class in the dataframe.
+A table with the counts of each class in the dataset.
 }
 \description{
-The function checks the column types of the input dataframe and returns the counts of each class.
+\code{check_col_types()} checks the column types of the input dataset and
+returns the counts of each class.
 }
 \keyword{internal}

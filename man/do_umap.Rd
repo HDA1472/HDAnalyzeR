@@ -2,53 +2,57 @@
 % Please edit documentation in R/dim_reduction.R
 \name{do_umap}
 \alias{do_umap}
-\title{Perform UMAP analysis}
+\title{Run UMAP analysis}
 \usage{
 do_umap(
   olink_data,
   metadata = NULL,
   color = "Disease",
   palette = NULL,
-  wide = T,
-  impute = T,
-  plots = F,
-  save = F
+  wide = TRUE,
+  impute = TRUE,
+  plots = FALSE,
+  save = FALSE
 )
 }
 \arguments{
-\item{olink_data}{(tibble). A tibble with the data to be used in the UMAP analysis.}
+\item{olink_data}{A tibble with the data to be used in the UMAP analysis.}
 
-\item{metadata}{(tibble). A tibble with metadata information to be used in the UMAP plots. Default is NULL.}
+\item{metadata}{A tibble with metadata information to be used in the UMAP plots. Default is NULL.}
 
-\item{color}{(string). The name of the column in \code{metadata} that contains the variable.
+\item{color}{The name of the column in \code{metadata} that contains the variable.
 to be used to plot the points color. Default is "Disease".}
 
-\item{palette}{(vector). A vector with the colors to be used in the UMAP plots. Default is NULL.}
+\item{palette}{A vector with the colors to be used in the UMAP plots. Default is NULL.}
 
-\item{wide}{(logical). If TRUE, the data is assumed to be in wide format. Default is TRUE.}
+\item{wide}{If TRUE, the data is assumed to be in wide format. Default is TRUE.}
 
-\item{impute}{(logical). If TRUE, the data is imputed before the UMAP analysis. Default is TRUE.}
+\item{impute}{If TRUE, the data is imputed before the UMAP analysis. Default is TRUE.}
 
-\item{plots}{(logical). If TRUE, the function creates plots of the UMAP results. Default is FALSE.}
+\item{plots}{If TRUE, the function creates plots of the UMAP results. Default is FALSE.}
 
-\item{save}{(logical). If TRUE, the plots are saved in the results directory. Default is FALSE.}
+\item{save}{If TRUE, the plots are saved in the results directory. Default is FALSE.}
 }
 \value{
-(list). A list with the UMAP results and, if requested, the UMAP plots.
+A list with the UMAP results and, if requested, the UMAP plots.
 \itemize{
-\item umap_res (tibble). A tibble with the UMAP results.
-\item umap_plot (plot). A ggplot object with the UMAP plot.
+\item umap_res: A tibble with the UMAP results.
+\item umap_plot: A ggplot object with the data points on the 1st and 2nd UMAPs plane.
 }
 }
 \description{
-This function performs a UMAP analysis on the data provided.
-The function can also create plots of the UMAP results and save them in the results directory.
+\code{do_umap()} runs a UMAP analysis on the provided data. The function can visualize
+the sample points on the first and second UMAP plane. It can also save the plots
+in the results directory.
 }
 \examples{
 test_data <- example_data |> dplyr::select(DAid, Assay, NPX)
+
+# Run UMAP analysis
 do_umap(test_data,
        metadata = example_metadata,
        wide = FALSE,
-       color = "Disease",
+       color = "Sex",
+       palette = "sex_hpa",
        plots = TRUE)
 }
