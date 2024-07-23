@@ -1,24 +1,28 @@
 #' HPA theme
 #'
-#' This function creates a theme for ggplot2 plots that is used by the Human Protein Atlas (HPA) project.
+#' `theme_hpa()` creates a theme for ggplot2 plots that is used by the Human Protein Atlas (HPA) project.
 #'
-#' @param angled (logical). If TRUE, the x-axis text is angled at 90 degrees. Default is FALSE.
-#' @param axis_x (logical). If FALSE, the x-axis is removed. Default is TRUE.
-#' @param axis_y (logical). If FALSE, the y-axis is removed. Default is TRUE.
-#' @param facet_title (logical). If FALSE, the facet title is removed. Default is TRUE.
+#' @param angled If TRUE, the x-axis text is angled at 90 degrees. Default is FALSE.
+#' @param axis_x If FALSE, the x-axis is removed. Default is TRUE.
+#' @param axis_y If FALSE, the y-axis is removed. Default is TRUE.
+#' @param facet_title If FALSE, the facet title is removed. Default is TRUE.
 #'
 #' @return A ggplot2 theme object.
 #' @export
 #'
 #' @examples
+#' # Create a plot
 #' plot <- example_metadata |>
 #'   ggplot2::ggplot(ggplot2::aes(x = Sex)) +
-#'   ggplot2::geom_bar() +
-#'   theme_hpa()
-theme_hpa <- function(angled = F,
-                      axis_x = T,
-                      axis_y = T,
-                      facet_title = T) {
+#'   ggplot2::geom_bar()
+#' plot
+#'
+#' # Apply the HPA theme
+#' plot + theme_hpa()
+theme_hpa <- function(angled = FALSE,
+                      axis_x = TRUE,
+                      axis_y = TRUE,
+                      facet_title = TRUE) {
 
     t <- ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
                panel.grid.minor = ggplot2::element_blank(),

@@ -2,7 +2,7 @@
 % Please edit documentation in R/preprocess.R
 \name{clean_metadata}
 \alias{clean_metadata}
-\title{Clean metadata}
+\title{Preprocess metadata}
 \usage{
 clean_metadata(
   df_in,
@@ -13,23 +13,32 @@ clean_metadata(
 )
 }
 \arguments{
-\item{df_in}{(tibble). The input metadata.}
+\item{df_in}{The input metadata.}
 
-\item{keep_cols}{(vector). The columns to keep in the output metadata.}
+\item{keep_cols}{The columns to keep in the output metadata.}
 
-\item{filter_samples}{(vector). The samples to filter out.}
+\item{filter_samples}{The samples to filter out.}
 
-\item{remove_na_cols}{(vector). The columns to check for NAs and remove respective rows.}
+\item{remove_na_cols}{The columns to check for NAs and remove respective rows. Defaults is c("DAid", "Disease").}
 
-\item{replace_w_na}{(vector). The values to replace with NA. Default is c("Unknown", "unknown", "none", NA, "na").}
+\item{replace_w_na}{The values to replace with NA. Default is c("Unknown", "unknown", "none", NA, "na").}
 }
 \value{
-df_out (tibble). The cleaned metadata.
+The preprocessed metadata.
 }
 \description{
-The function cleans the metadata by filtering out rows based on the specified criteria.
-It keeps only the specified columns. It removes rows with NAs in the DAid and Disease columns.
+\code{clean_metadata()} preprocesses the metadata by filtering out rows based on the specified criteria.
+\itemize{
+\item It keeps only the specified columns.
+\item It filters out the specified samples.
+\item It removes rows with NAs in the DAid and Disease columns.
+\item It replaces the specified values with NA.
+}
 }
 \examples{
-df <- clean_metadata(example_metadata)
+# Unprocessed metadata
+example_metadata
+
+# Preprocessed metadata
+clean_metadata(example_metadata)
 }

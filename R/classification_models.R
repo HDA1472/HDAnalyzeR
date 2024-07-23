@@ -485,7 +485,7 @@ testfit <- function(train_set,
     tune::collect_predictions(summarize = F) |>
     yardstick::roc_curve(truth = Disease, .pred_0) |>
     ggplot2::ggplot(ggplot2::aes(x = 1 - specificity, y = sensitivity)) +
-    ggplot2::geom_path(colour = disease_color, size = 2) +
+    ggplot2::geom_path(colour = disease_color, linewidth = 2) +
     ggplot2::geom_point(data = selected_point, ggplot2::aes(x = x, y = y), size = 2, shape = 4, colour = "black") +
     ggplot2::geom_abline(lty = 3) +
     ggplot2::coord_equal() +

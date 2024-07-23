@@ -2,23 +2,26 @@
 % Please edit documentation in R/utils.R
 \name{import_df}
 \alias{import_df}
-\title{Import dataframe}
+\title{Import dataframe from file}
 \usage{
 import_df(file_path)
 }
 \arguments{
-\item{file_path}{(string). The path to the file to import}
+\item{file_path}{The path to the file to import.}
 }
 \value{
-df (tibble). The imported dataframe
+The imported dataframe as a tibble.
 }
 \description{
-The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, TXT, or Parquet format.
+\code{import_df()} imports a dataframe from a file. The file format can be CSV,
+TSV, TXT, RDA, RDS, XLSX, or Parquet format. It recognizes the file format,
+reads it and returns it as a tibble.
 }
 \examples{
-df_out <- example_data
-save_df(df_out, "sample_data", "my_data", file_type = "rda")
-df_in <- load("my_data/sample_data.rda")
-# Clean up the created directory
-unlink("my_data", recursive = TRUE)
+# Save a dataframe as an RDA file
+save_df(example_metadata, "metadata", "my_data", file_type = "rda")
+
+# Import the saved RDA file again as a tibble
+metadata <- load("my_data/metadata.rda")
+unlink("my_data", recursive = TRUE)  # Clean up the created directory
 }

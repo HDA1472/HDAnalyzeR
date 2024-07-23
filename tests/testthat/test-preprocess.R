@@ -184,11 +184,13 @@ test_that("generate_df returns a list of a wide and a joined dataframe", {
   test_data <- example_data |>
     dplyr::select(DAid, Assay, NPX)
   test_metadata <- example_metadata |>
-    dplyr::select(DAid, Sex, Age, BMI)
+    dplyr::select(DAid, Disease, Sex, Age, BMI)
 
   expected_wide <- test_data |>
     tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-  expected_join <- expected_wide |> dplyr::left_join(test_metadata, by = "DAid")
+  expected_join <- expected_wide |>
+    dplyr::left_join(test_metadata, by = "DAid") |>
+    dplyr::relocate("DAid", "Disease", "Sex", "Age", "BMI", dplyr::everything())
 
   result_df <- generate_df(test_data, test_metadata)
   wide_data <- result_df[[1]]

@@ -4,26 +4,30 @@
 \alias{theme_hpa}
 \title{HPA theme}
 \usage{
-theme_hpa(angled = F, axis_x = T, axis_y = T, facet_title = T)
+theme_hpa(angled = FALSE, axis_x = TRUE, axis_y = TRUE, facet_title = TRUE)
 }
 \arguments{
-\item{angled}{(logical). If TRUE, the x-axis text is angled at 90 degrees. Default is FALSE.}
+\item{angled}{If TRUE, the x-axis text is angled at 90 degrees. Default is FALSE.}
 
-\item{axis_x}{(logical). If FALSE, the x-axis is removed. Default is TRUE.}
+\item{axis_x}{If FALSE, the x-axis is removed. Default is TRUE.}
 
-\item{axis_y}{(logical). If FALSE, the y-axis is removed. Default is TRUE.}
+\item{axis_y}{If FALSE, the y-axis is removed. Default is TRUE.}
 
-\item{facet_title}{(logical). If FALSE, the facet title is removed. Default is TRUE.}
+\item{facet_title}{If FALSE, the facet title is removed. Default is TRUE.}
 }
 \value{
 A ggplot2 theme object.
 }
 \description{
-This function creates a theme for ggplot2 plots that is used by the Human Protein Atlas (HPA) project.
+\code{theme_hpa()} creates a theme for ggplot2 plots that is used by the Human Protein Atlas (HPA) project.
 }
 \examples{
+# Create a plot
 plot <- example_metadata |>
   ggplot2::ggplot(ggplot2::aes(x = Sex)) +
-  ggplot2::geom_bar() +
-  theme_hpa()
+  ggplot2::geom_bar()
+plot
+
+# Apply the HPA theme
+plot + theme_hpa()
 }

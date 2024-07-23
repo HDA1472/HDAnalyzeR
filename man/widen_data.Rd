@@ -2,19 +2,25 @@
 % Please edit documentation in R/utils.R
 \name{widen_data}
 \alias{widen_data}
-\title{Widen data}
+\title{Widen Olink data}
 \usage{
 widen_data(olink_data)
 }
 \arguments{
-\item{olink_data}{(tibble). A dataframe containing Olink data to be normalized}
+\item{olink_data}{A tibble containing Olink data to be transformed.}
 }
 \value{
-wide_data (tibble). A dataframe containing the data in wide format
+A tibble containing the data in wide format.
 }
 \description{
-The function widens the data from long to wide format.
+\code{widen_data()} transforms the data from long to wide format. It should be used to
+transform Olink data from long to wide format with Assays as columns names and NPX as values.
+The first column contains the DAids.
 }
 \examples{
-wide_data <- widen_data(example_data)
+# Olink data in long format
+example_data
+
+# Transform Olink data in wide format
+widen_data(example_data)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/preprocess.R
 \name{clean_data}
 \alias{clean_data}
-\title{Clean data}
+\title{Preprocess data}
 \usage{
 clean_data(
   df_in,
@@ -10,35 +10,45 @@ clean_data(
   cohort = NULL,
   filter_plates = NULL,
   filter_assays = NULL,
-  filter_assay_warning = F,
+  filter_assay_warning = FALSE,
   remove_na_cols = c("DAid", "NPX"),
   replace_w_na = c(0, "0", "", "Unknown", "unknown", "none", NA, "na")
 )
 }
 \arguments{
-\item{df_in}{(tibble). The input dataframe.}
+\item{df_in}{The input dataframe.}
 
-\item{keep_cols}{(vector). The columns to keep in the output dataframe.}
+\item{keep_cols}{The columns to keep in the output dataframe.}
 
-\item{cohort}{(vector). The cohort to keep.}
+\item{cohort}{The cohort to keep.}
 
-\item{filter_plates}{(vector). The plates to exclude.}
+\item{filter_plates}{The plates to exclude.}
 
-\item{filter_assays}{(vector). The assays to filter out.}
+\item{filter_assays}{The assays to filter out.}
 
-\item{filter_assay_warning}{(logical). If TRUE, only the rows with Assay_Warning == "PASS" are kept.}
+\item{filter_assay_warning}{If TRUE, only the rows with Assay_Warning == "PASS" are kept. Default is FALSE.}
 
-\item{remove_na_cols}{(vector). The columns to check for NAs and remove respective rows.}
+\item{remove_na_cols}{The columns to check for NAs and remove respective rows. Defaults is c("DAid", "NPX").}
 
-\item{replace_w_na}{(vector). The values to replace with NA. Default is c(0, "0", "", "Unknown", "unknown", "none", NA, "na").}
+\item{replace_w_na}{The values to replace with NA. Default is c(0, "0", "", "Unknown", "unknown", "none", NA, "na").}
 }
 \value{
-df_out (tibble). The cleaned dataframe.
+The preprocessed dataframe.
 }
 \description{
-The function cleans the data by filtering out rows based on the specified criteria.
-It keeps only the specified columns. It removes rows with NAs in the DAid and NPX columns.
+\code{clean_data()} preprocesses the data by filtering out rows based on the specified criteria.
+\itemize{
+\item It keeps only the data of the specified cohort, plates, and assays.
+\item It can remove all samples with Assay_Warning != "PASS".
+\item It keeps only the specified columns.
+\item It removes rows with NAs in the DAid and NPX columns.
+\item It replaces the specified values with NA.
+}
 }
 \examples{
-df <- clean_data(example_data, filter_plates = c("Plate1", "Plate2"), filter_assay_warning = TRUE)
+# Unprocessed data
+example_data
+
+# Preprocessed data
+clean_data(example_data, filter_plates = c("Plate1", "Plate2"), filter_assay_warning = TRUE)
 }

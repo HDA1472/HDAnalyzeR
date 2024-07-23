@@ -2,27 +2,34 @@
 % Please edit documentation in R/utils.R
 \name{save_df}
 \alias{save_df}
-\title{Save dataframe}
+\title{Save tibble as CSV, TSV, or RDA file}
 \usage{
-save_df(df, file_name, dir_name, date = F, file_type = c("csv", "tsv", "rda"))
+save_df(
+  df,
+  file_name,
+  dir_name,
+  date = FALSE,
+  file_type = c("csv", "tsv", "rda")
+)
 }
 \arguments{
-\item{df}{(tibble). The dataframe to save}
+\item{df}{The dataframe to save.}
 
-\item{file_name}{(string). The name of the file to save}
+\item{file_name}{The name of the file to save.}
 
-\item{dir_name}{(string). The directory where the file will be saved}
+\item{dir_name}{The directory where the file will be saved.}
 
-\item{date}{(logical). If T, a directory with the current date as name will be created in the directory with \code{dir_name}.}
+\item{date}{If TRUE, a directory with the current date as name will be created in the directory with \code{dir_name}.}
 
-\item{file_type}{(string). The type of file to save the dataframe as. Options are "csv", "tsv", or "rda"}
+\item{file_type}{The type of file to save the dataframe as. Options are "csv", "tsv", or "rda".}
 }
 \description{
-The function saves a dataframe in the specified format (CSV, TSV, or RDA) in the specified directory.
+\code{save_df()} saves a dataframe in the specified format (CSV, TSV, or RDA) in a
+specified directory. If the directory does not exist, it will be created.
+The recommended file type is RDA.
 }
 \examples{
-df <- data.frame(x = 1:10, y = rnorm(10))
-save_df(df, "sample_data", "my_data", file_type = "csv")
-# Clean up the created directory
-unlink("my_data", recursive = TRUE)
+# Save a metadata dataframe as an RDA file
+save_df(example_metadata, "metadata", "my_data", file_type = "rda")
+unlink("my_data", recursive = TRUE)  # Clean up the created directory
 }

@@ -1,20 +1,34 @@
 utils::globalVariables(c("DAid", "Assay", "NPX"))
-#' Create directory w/o system date
+#' Create directory
 #'
-#' The function creates a directory with the specified name. If the directory already exists, a message is printed.
+#' `create_dir()` creates a directory with a specified name.
+#' The user can choose to create another inner directory with the current date as its name.
+#' If the directory already exists, a message is printed.
 #'
-#' @param dir_name (string). The name of the directory to create
-#' @param date (logical). If T, a directory with the current date as name will be created in the directory with `dir_name`.
+#' @param dir_name The name of the directory to create.
+#' @param date If TRUE, a directory with the current date as name will be created inside the directory with `dir_name`.
 #'
-#' @return dir_name (string). The name of the created directory
+#' @return The relative file path of the created directory as a string.
 #' @export
 #'
 #' @examples
-#' create_dir("my_directory", date = FALSE)  # create outer directory
-#' create_dir("my_directory", date = TRUE)  # create inner directory with date as name
-#' # Clean up the created directory
-#' unlink("my_directory", recursive = TRUE)
-create_dir <- function(dir_name, date = F) {
+#' # Create a directory with a specified name
+#' create_dir("my_directory", date = FALSE)
+#' unlink("my_directory", recursive = TRUE)  # Clean up the created directory
+#'
+#' # Create a directory with a specified name and an inner directory with the current date as name
+#' create_dir("my_directory", date = TRUE)
+#' unlink("my_directory", recursive = TRUE)  # Clean up the created directory
+#'
+#' # Create a directory inside another directory
+#' create_dir("outer_directory/inner_directory", date = FALSE)
+#' unlink("outer_directory", recursive = TRUE)  # Clean up the created directory
+#'
+#' # Create a directory inside a pre existing one
+#' create_dir("outer_directory", date = FALSE)
+#' create_dir("outer_directory/inner_directory", date = FALSE)
+#' unlink("outer_directory", recursive = TRUE)  # Clean up the created directory
+create_dir <- function(dir_name, date = FALSE) {
 
   if (date) {
     current_date <- format(Sys.time(), "%Y_%m_%d")  # Get the current date
@@ -39,25 +53,26 @@ create_dir <- function(dir_name, date = F) {
 }
 
 
-#' Save dataframe
+#' Save tibble as CSV, TSV, or RDA file
 #'
-#' The function saves a dataframe in the specified format (CSV, TSV, or RDA) in the specified directory.
+#' `save_df()` saves a dataframe in the specified format (CSV, TSV, or RDA) in a
+#' specified directory. If the directory does not exist, it will be created.
+#' The recommended file type is RDA.
 #'
-#' @param df (tibble). The dataframe to save
-#' @param file_name (string). The name of the file to save
-#' @param dir_name (string). The directory where the file will be saved
-#' @param date (logical). If T, a directory with the current date as name will be created in the directory with `dir_name`.
-#' @param file_type (string). The type of file to save the dataframe as. Options are "csv", "tsv", or "rda"
+#' @param df The dataframe to save.
+#' @param file_name The name of the file to save.
+#' @param dir_name The directory where the file will be saved.
+#' @param date If TRUE, a directory with the current date as name will be created in the directory with `dir_name`.
+#' @param file_type The type of file to save the dataframe as. Options are "csv", "tsv", or "rda".
 #'
 #' @return NULL
 #' @export
 #'
 #' @examples
-#' df <- data.frame(x = 1:10, y = rnorm(10))
-#' save_df(df, "sample_data", "my_data", file_type = "csv")
-#' # Clean up the created directory
-#' unlink("my_data", recursive = TRUE)
-save_df <- function(df, file_name, dir_name, date = F, file_type = c("csv", "tsv", "rda")) {
+#' # Save a metadata dataframe as an RDA file
+#' save_df(example_metadata, "metadata", "my_data", file_type = "rda")
+#' unlink("my_data", recursive = TRUE)  # Clean up the created directory
+save_df <- function(df, file_name, dir_name, date = FALSE, file_type = c("csv", "tsv", "rda")) {
 
   valid_file_types <- c("csv", "tsv", "rda")
 
@@ -82,21 +97,24 @@ save_df <- function(df, file_name, dir_name, date = F, file_type = c("csv", "tsv
 }
 
 
-#' Import dataframe
+#' Import dataframe from file
 #'
-#' The function imports a dataframe from a file in CSV, TSV, RDA, RDS, XLSX, TXT, or Parquet format.
+#' `import_df()` imports a dataframe from a file. The file format can be CSV,
+#' TSV, TXT, RDA, RDS, XLSX, or Parquet format. It recognizes the file format,
+#' reads it and returns it as a tibble.
 #'
-#' @param file_path (string). The path to the file to import
+#' @param file_path The path to the file to import.
 #'
-#' @return df (tibble). The imported dataframe
+#' @return The imported dataframe as a tibble.
 #' @export
 #'
 #' @examples
-#' df_out <- example_data
-#' save_df(df_out, "sample_data", "my_data", file_type = "rda")
-#' df_in <- load("my_data/sample_data.rda")
-#' # Clean up the created directory
-#' unlink("my_data", recursive = TRUE)
+#' # Save a dataframe as an RDA file
+#' save_df(example_metadata, "metadata", "my_data", file_type = "rda")
+#'
+#' # Import the saved RDA file again as a tibble
+#' metadata <- load("my_data/metadata.rda")
+#' unlink("my_data", recursive = TRUE)  # Clean up the created directory
 import_df <- function(file_path) {
 
   # Determine file extension from file path
@@ -117,17 +135,23 @@ import_df <- function(file_path) {
 }
 
 
-#' Widen data
+#' Widen Olink data
 #'
-#' The function widens the data from long to wide format.
+#' `widen_data()` transforms the data from long to wide format. It should be used to
+#' transform Olink data from long to wide format with Assays as columns names and NPX as values.
+#' The first column contains the DAids.
 #'
-#' @param olink_data (tibble). A dataframe containing Olink data to be normalized
+#' @param olink_data A tibble containing Olink data to be transformed.
 #'
-#' @return wide_data (tibble). A dataframe containing the data in wide format
+#' @return A tibble containing the data in wide format.
 #' @export
 #'
 #' @examples
-#' wide_data <- widen_data(example_data)
+#' # Olink data in long format
+#' example_data
+#'
+#' # Transform Olink data in wide format
+#' widen_data(example_data)
 widen_data <- function(olink_data) {
 
   wide_data <- olink_data |>

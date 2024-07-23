@@ -7,21 +7,24 @@
 scale_fill_hpa(palette)
 }
 \arguments{
-\item{palette}{(character). The name of the palette to use. Available palettes are: "sex", "diff_exp", "cancers12", "cancers15".}
+\item{palette}{The name of the palette to use.}
 }
 \value{
 A ggplot2 scale for fill aesthetics.
 }
 \description{
-HPA fill scales
+\code{scale_fill_hpa()} creates a ggplot2 scale for fill aesthetics using the color
+palettes from the Human Protein Atlas (HPA) project.
 }
 \examples{
+# Create an example dataframe
 data <- data.frame(
-  Sex = c("Male", "Female"),
+  Sex = c("M", "F"),
   Count = c(60, 40)
 )
 
-plot <- ggplot2::ggplot(data, ggplot2::aes(x = Sex, y = Count, fill = Sex)) +
+# Create a plot with a custom palette
+ggplot2::ggplot(data, ggplot2::aes(x = Sex, y = Count, fill = Sex)) +
   ggplot2::geom_bar(stat = "identity", position = "dodge") +
-  scale_fill_hpa("sex")
+  scale_fill_hpa("sex_hpa")
 }

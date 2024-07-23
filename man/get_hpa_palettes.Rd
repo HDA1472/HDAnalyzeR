@@ -10,6 +10,6 @@ get_hpa_palettes()
 A list of color palettes.
 }
 \description{
-This function returns a list of color palettes used by the Human Protein Atlas (HPA) project.
+\code{get_hpa_palettes()} returns a list of color palettes used by the Human Protein Atlas (HPA) project.
 }
 \keyword{internal}

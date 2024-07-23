@@ -2,24 +2,38 @@
 % Please edit documentation in R/utils.R
 \name{create_dir}
 \alias{create_dir}
-\title{Create directory w/o system date}
+\title{Create directory}
 \usage{
-create_dir(dir_name, date = F)
+create_dir(dir_name, date = FALSE)
 }
 \arguments{
-\item{dir_name}{(string). The name of the directory to create}
+\item{dir_name}{The name of the directory to create.}
 
-\item{date}{(logical). If T, a directory with the current date as name will be created in the directory with \code{dir_name}.}
+\item{date}{If TRUE, a directory with the current date as name will be created inside the directory with \code{dir_name}.}
 }
 \value{
-dir_name (string). The name of the created directory
+The relative file path of the created directory as a string.
 }
 \description{
-The function creates a directory with the specified name. If the directory already exists, a message is printed.
+\code{create_dir()} creates a directory with a specified name.
+The user can choose to create another inner directory with the current date as its name.
+If the directory already exists, a message is printed.
 }
 \examples{
-create_dir("my_directory", date = FALSE)  # create outer directory
-create_dir("my_directory", date = TRUE)  # create inner directory with date as name
-# Clean up the created directory
-unlink("my_directory", recursive = TRUE)
+# Create a directory with a specified name
+create_dir("my_directory", date = FALSE)
+unlink("my_directory", recursive = TRUE)  # Clean up the created directory
+
+# Create a directory with a specified name and an inner directory with the current date as name
+create_dir("my_directory", date = TRUE)
+unlink("my_directory", recursive = TRUE)  # Clean up the created directory
+
+# Create a directory inside another directory
+create_dir("outer_directory/inner_directory", date = FALSE)
+unlink("outer_directory", recursive = TRUE)  # Clean up the created directory
+
+# Create a directory inside a pre existing one
+create_dir("outer_directory", date = FALSE)
+create_dir("outer_directory/inner_directory", date = FALSE)
+unlink("outer_directory", recursive = TRUE)  # Clean up the created directory
 }

@@ -2,44 +2,46 @@
 % Please edit documentation in R/preprocess.R
 \name{generate_df}
 \alias{generate_df}
-\title{Generate and store wide and join dataframes}
+\title{Create and save wide and join dataframes}
 \usage{
 generate_df(
   long_data,
   metadata = NULL,
-  join = T,
+  join = TRUE,
   metadata_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
-  save = T
+  save = TRUE
 )
 }
 \arguments{
-\item{long_data}{(tibble). The long data.}
+\item{long_data}{The long data.}
 
-\item{metadata}{(tibble). The metadata.}
+\item{metadata}{The metadata.}
 
-\item{join}{(logical). If TRUE, the dataframes are joined with metadata.}
+\item{join}{If TRUE, the dataframes are joined with metadata.}
 
-\item{metadata_cols}{(vector). The metadata columns to join with data.}
+\item{metadata_cols}{The metadata columns to join with data.}
 
-\item{save}{(logical). If TRUE, the dataframes are saved.}
+\item{save}{If TRUE, the dataframes are saved.}
 }
 \value{
 A list containing the following elements:
 \itemize{
-\item wide_data (tibble). The wide data.
-\item join_data (tibble). The joined data with metadata. If join is FALSE, this is not returned.
+\item wide_data: The wide data.
+\item join_data: The joined data with metadata. If join is FALSE, this is not returned.
 }
 }
 \description{
-The function generates wide and join dataframes from the long data and metadata.
-It stores them in the data/processed/data_metadata directory in RDA format.
+\code{generate_df()} creates wide and join dataframes from the long data and metadata.
+It saves them in the data/processed/data_metadata directory in RDA format.
 }
 \examples{
+# Preprocess data and metadata
 clean_data <- clean_data(example_data, keep_cols = c("DAid", "Assay", "NPX"))
-clean_metadata <- clean_metadata(example_metadata, keep_cols = c("DAid", "GROUP", "Age"))
-result_df <- generate_df(clean_data, clean_metadata)
-wide_data <- result_df$wide_data
-join_data <- result_df$join_data
-# Clean up the created directory
-unlink("data", recursive = TRUE)
+clean_metadata <- clean_metadata(example_metadata,
+                                 keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"))
+
+# Create wide and join dataframes
+result_df <- generate_df(clean_data, clean_metadata, save = FALSE)
+result_df$wide_data
+result_df$join_data
 }
