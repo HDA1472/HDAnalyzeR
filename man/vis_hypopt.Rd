@@ -7,18 +7,18 @@
 vis_hypopt(tune_res, x, color, disease)
 }
 \arguments{
-\item{tune_res}{(tibble). Hyperparameter optimization results.}
+\item{tune_res}{Hyperparameter optimization results.}
 
-\item{x}{(character). X-axis variable of the plot.}
+\item{x}{X-axis variable of the plot.}
 
-\item{color}{(character). Color variable of the plot. Default is NULL.}
+\item{color}{Color variable of the plot.}
 
-\item{disease}{(character). Disease to predict.}
+\item{disease}{Disease to predict.}
 }
 \value{
-hypopt_plot (plot). Hyperparameter optimization plot.
+Hyperparameter optimization plot.
 }
 \description{
-This function visualizes the hyperparameter optimization results.
+\code{vis_hypopt()} plots the hyperparameter optimization results.
 }
 \keyword{internal}

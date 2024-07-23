@@ -2,7 +2,7 @@
 % Please edit documentation in R/correlate.R
 \name{create_corr_heatmap}
 \alias{create_corr_heatmap}
-\title{Create a correlation heatmap and report the protein-protein correlations above a threshold}
+\title{Plot correlation heatmap}
 \usage{
 create_corr_heatmap(
   x,
@@ -15,37 +15,40 @@ create_corr_heatmap(
 )
 }
 \arguments{
-\item{x}{(vector or tibble). A numeric vector, matrix or data frame.}
+\item{x}{A numeric vector, matrix or data frame.}
 
-\item{y}{(vector, tibble or NULL). A numeric vector, matrix or data frame with compatible dimensions with \code{x}. Default is NULL.}
+\item{y}{A numeric vector, matrix or data frame with compatible dimensions with \code{x}. Default is NULL.}
 
-\item{use}{(character). A character string. The method to use for computing correlations. Default is "pairwise.complete.obs".}
+\item{use}{A character string. The method to use for computing correlations. Default is "pairwise.complete.obs".}
 
-\item{method}{(character). A character string. The correlation method to use. Default is "pearson".}
+\item{method}{A character string. The correlation method to use. Default is "pearson".}
 
-\item{threshold}{(numeric). The reporting protein-protein correlation threshold. Default is 0.8.}
+\item{threshold}{The reporting protein-protein correlation threshold. Default is 0.8.}
 
-\item{cluster_rows}{(logical). Whether to cluster the rows. Default is TRUE.}
+\item{cluster_rows}{Whether to cluster the rows. Default is TRUE.}
 
-\item{cluster_cols}{(logical). Whether to cluster the columns. Default is TRUE.}
+\item{cluster_cols}{Whether to cluster the columns. Default is TRUE.}
 }
 \value{
 A list containing the following elements:
 \itemize{
-\item cor_matrix (matrix). A matrix of protein-protein correlations.
-\item cor_results (tibble). A tibble with the filtered protein pairs and their correlation values.
-\item cor_plot (plot). A heatmap of protein-protein correlations.
+\item cor_matrix: A matrix of protein-protein correlations.
+\item cor_results: A tibble with the filtered protein pairs and their correlation values.
+\item cor_plot: A heatmap of protein-protein correlations.
 }
 }
 \description{
-The function calculates the correlation matrix of the input dataframe.
-It filters out the protein pairs with correlation values above or below the threshold.
-It then creates a heatmap of the correlation matrix.
+\code{create_corr_heatmap()} calculates the correlation matrix of the input dataset.
+It creates a heatmap of the correlation matrix. It also filters the protein
+pairs with correlation values above the threshold and returns them in a tibble.
 }
 \examples{
+# Prepare data
 df <- example_data |>
   dplyr::select(DAid, Assay, NPX) |>
   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
   dplyr::select(-DAid)
-cor_results <- create_corr_heatmap(df, threshold = 0.7)
+
+# Plot correlation heatmap
+create_corr_heatmap(df, threshold = 0.7)
 }

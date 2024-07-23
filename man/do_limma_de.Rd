@@ -7,7 +7,7 @@
 do_limma_de(
   join_data,
   disease,
-  correct = c("Sex", "Age", "BMI"),
+  correct = c("Sex", "Age"),
   correct_type = c("factor", "numeric", "numeric"),
   only_female = NULL,
   only_male = NULL,
@@ -16,29 +16,29 @@ do_limma_de(
 )
 }
 \arguments{
-\item{join_data}{(tibble). A tibble with the Olink data in wide format joined with metadata.}
+\item{join_data}{A tibble with the Olink data in wide format joined with metadata.}
 
-\item{disease}{(character). The disease of interest.}
+\item{disease}{The disease of interest.}
 
-\item{correct}{(character or vector). The variables to correct the results with. Default c("Sex", "Age", "BMI").}
+\item{correct}{The variables to correct the results with. Default c("Sex", "Age").}
 
-\item{correct_type}{(character or vector). The type of the variables to correct the results with. Default c("factor", "numeric", "numeric").}
+\item{correct_type}{The type of the variables to correct the results with. Default c("factor", "numeric").}
 
-\item{only_female}{(character or vector). The female specific diseases. Default is NULL.}
+\item{only_female}{The female specific diseases. Default is NULL.}
 
-\item{only_male}{(character or vector). The male specific diseases. Default is NULL.}
+\item{only_male}{The male specific diseases. Default is NULL.}
 
-\item{pval_lim}{(numeric). The p-value limit for significance. Default is 0.05.}
+\item{pval_lim}{The p-value limit of significance. Default is 0.05.}
 
-\item{logfc_lim}{(numeric). The logFC limit for significance. Default is 0.}
+\item{logfc_lim}{The logFC limit of significance. Default is 0.}
 }
 \value{
-de_res (tibble). A tibble with the differential expression results.
+A tibble with the differential expression results.
 }
 \description{
-This function performs differential expression analysis using limma.
-It can correct the results with sex, age, and BMI.
-The output dataframe includes the logFC, the p-values, as well as the adjusted p-values with FDR.
+\code{do_limma_de()} performs differential expression analysis using limma package.
+It can correct the results for metadata columns like Sex, Age, or BMI.
+The output tibble includes the logFC, p-values, as well as the FDR adjusted p-values.
 The function removes the NAs from the columns that are used to correct for.
 }
 \keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/classification_models.R
 \name{elnet_hypopt}
 \alias{elnet_hypopt}
-\title{Hyperparameter optimization for elastic net}
+\title{Hyperparameter optimization for elastic net model}
 \usage{
 elnet_hypopt(
   train_data,
@@ -18,37 +18,40 @@ elnet_hypopt(
 )
 }
 \arguments{
-\item{train_data}{(list). List of training data sets from make_groups().}
+\item{train_data}{List of training data sets from \code{make_groups()}.}
 
-\item{test_data}{(list). List of testing data sets from make_groups().}
+\item{test_data}{List of testing data sets from \code{make_groups()}.}
 
-\item{disease}{(character). Disease to predict.}
+\item{disease}{Disease to predict.}
 
-\item{type}{(character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
+\item{type}{Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
 
-\item{cv_sets}{(numeric). Number of cross-validation sets. Default is 5.}
+\item{cv_sets}{Number of cross-validation sets. Default is 5.}
 
-\item{grid_size}{(numeric). Size of the grid for hyperparameter optimization. Default is 10.}
+\item{grid_size}{Size of the hyperparameter optimization grid. Default is 10.}
 
-\item{ncores}{(numeric). Number of cores to use for parallel processing. Default is 4.}
+\item{ncores}{Number of cores to use for parallel processing. Default is 4.}
 
-\item{hypopt_vis}{(logical). Whether to visualize hyperparameter optimization results. Default is TRUE.}
+\item{hypopt_vis}{Whether to visualize hyperparameter optimization results. Default is TRUE.}
 
-\item{exclude_cols}{(vector). Columns to exclude from the model. Default is NULL.}
+\item{exclude_cols}{Columns to exclude from the data before the model is tuned. Default is NULL.}
 
-\item{seed}{(numeric). Seed for reproducibility. Default is 123.}
+\item{seed}{Seed for reproducibility. Default is 123.}
 }
 \value{
-A list with three elements:
+A list with five elements:
 \itemize{
-\item elnet_tune (tibble). Hyperparameter optimization results.
-\item wf (workflow). Workflow object.
-\item train_set (tibble). Training set.
-\item test_set (tibble). Testing set.
+\item elnet_tune: Hyperparameter optimization results.
+\item wf: Workflow object.
+\item train_set: Training set.
+\item test_set: Testing set.
+\item hyperopt_vis: Hyperparameter optimization plot.
 }
 }
 \description{
-This function performs hyperparameter optimization for elastic net models.
-It uses the glmnet engine for logistic regression and tunes either only penalty or both penalty and mixture.
+\code{elnet_hypopt()} tunes an elastic net model and performs hyperparameter optimization.
+It uses the glmnet engine for logistic regression and tunes either only penalty (Lasso or Ridge) or
+both penalty and mixture (Elastic Regression). For the hyperparameter optimization, it uses the
+\code{grid_latin_hypercube()} function from the dials package.
 }
 \keyword{internal}

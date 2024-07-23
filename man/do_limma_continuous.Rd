@@ -38,7 +38,7 @@ do_limma_continuous(
 
 \item{top_down_prot}{(numeric). The number of top down regulated proteins to label on the plot. Default is 10.}
 
-\item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".}
+\item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "diff_exp".}
 
 \item{subtitle}{(logical). If the subtitle should be displayed. Default is TRUE.}
 

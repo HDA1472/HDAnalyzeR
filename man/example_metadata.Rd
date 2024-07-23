@@ -3,22 +3,19 @@
 \docType{data}
 \name{example_metadata}
 \alias{example_metadata}
-\title{Example cancer metadata}
+\title{Cancer cohort metadata}
 \format{
-\subsection{\code{example_metadata}}{
-
-A data frame with 586 rows and 9 columns:
+A tibble with 586 rows and 9 columns:
 \describe{
 \item{DAid}{The Disease Atlas sample ID}
 \item{Sample}{The Sample ID}
-\item{GROUP}{The cancer type}
+\item{Disease}{The cancer type}
 \item{Stage}{The cancer stage}
 \item{Grade}{The cancer grade}
 \item{Sex}{The patient sex}
 \item{Age}{The patient age}
 \item{BMI}{The patient BMI}
 \item{Cohort}{The cohort the patient belongs to}
-}
 }
 }
 \source{
@@ -28,7 +25,11 @@ A data frame with 586 rows and 9 columns:
 example_metadata
 }
 \description{
-A subset of metadata from a synthetic cancer dataset. With DAid, Age, BMI, and Cohort  as extra
-columns. The original dataset was processed with the \code{process_example_metadata} script.
+A data subset from synthetic cancer metadata. DAid, Age, BMI, and Cohort have
+been added as extra columns. The original dataset was processed with the
+\code{process_example_metadata} script.
+}
+\examples{
+example_metadata
 }
 \keyword{datasets}

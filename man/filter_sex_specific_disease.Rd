@@ -2,7 +2,7 @@
 % Please edit documentation in R/classification_models.R
 \name{filter_sex_specific_disease}
 \alias{filter_sex_specific_disease}
-\title{Filter data in case of sex specific diseases}
+\title{Create control groups for sex specific diseases}
 \usage{
 filter_sex_specific_disease(
   control_data,
@@ -13,25 +13,26 @@ filter_sex_specific_disease(
 )
 }
 \arguments{
-\item{control_data}{(tibble). Control data to be filtered.}
+\item{control_data}{Control data to filter.}
 
-\item{disease}{(character). Disease to be filtered.}
+\item{disease}{Disease to create control group.}
 
-\item{diseases}{(vector). Vector of diseases.}
+\item{diseases}{Diseases.}
 
-\item{only_female}{(vector). Vector of diseases that are female specific.}
+\item{only_female}{Diseases that are female specific.}
 
-\item{only_male}{(vector). Vector of diseases that are male specific.}
+\item{only_male}{Diseases that are male specific.}
 }
 \value{
 A list with two elements:
 \itemize{
-\item control_data (tibble). Filtered control data.
-\item diseases_subset (vector). Filtered diseases vector.
+\item control_data: Control data to filter.
+\item diseases_subset: Filtered diseases vector.
 }
 }
 \description{
-This function filters the control data based on the disease.
-It also filters the diseases vector to keep only the diseases that we will pick samples from.
+\code{filter_sex_specific_disease()} creates control groups for sex-specific diseases
+by filtering samples to include only those from the relevant sex and by
+updating the diseases vector to include only the diseases that will be sampled.
 }
 \keyword{internal}

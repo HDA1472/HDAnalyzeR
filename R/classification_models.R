@@ -1,17 +1,17 @@
 utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled_Importance",
                          "Importance", "Variable", "std_err", "Type"))
-#' Split data into training and test sets
+#' Split dataset into training and test sets
 #'
-#' This function splits the data into training and test sets based on user defined ratio.
+#' `split_data()` splits the dataset into training and test sets based on user defined ratio.
 #'
-#' @param join_data (tibble). Wide data joined with metadata.
-#' @param ratio (numeric). Ratio of training data to test data. Default is 0.75.
-#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#' @param join_data Olink data in wide format joined with metadata.
+#' @param ratio Ratio of training data to test data. Default is 0.75.
+#' @param seed Seed for reproducibility. Default is 123.
 #'
-#' @return A list with two elements:
-#'  - train_set (tibble). The training set.
-#'  - test_set (tibble). The test set.
-#'  - data_split (list). The data split object.
+#' @return A list with three elements:
+#'  - train_set: The training set.
+#'  - test_set: The test set.
+#'  - data_split: The data split object.
 #' @keywords internal
 split_data <- function(join_data, ratio = 0.75, seed = 123) {
 
@@ -26,20 +26,21 @@ split_data <- function(join_data, ratio = 0.75, seed = 123) {
 }
 
 
-#' Filter data in case of sex specific diseases
+#' Create control groups for sex specific diseases
 #'
-#' This function filters the control data based on the disease.
-#' It also filters the diseases vector to keep only the diseases that we will pick samples from.
+#' `filter_sex_specific_disease()` creates control groups for sex-specific diseases
+#' by filtering samples to include only those from the relevant sex and by
+#' updating the diseases vector to include only the diseases that will be sampled.
 #'
-#' @param control_data (tibble). Control data to be filtered.
-#' @param disease (character). Disease to be filtered.
-#' @param diseases (vector). Vector of diseases.
-#' @param only_female (vector). Vector of diseases that are female specific.
-#' @param only_male (vector). Vector of diseases that are male specific.
+#' @param control_data Control data to filter.
+#' @param disease Disease to create control group.
+#' @param diseases Diseases.
+#' @param only_female Diseases that are female specific.
+#' @param only_male Diseases that are male specific.
 #'
 #' @return A list with two elements:
-#'  - control_data (tibble). Filtered control data.
-#'  - diseases_subset (vector). Filtered diseases vector.
+#'  - control_data: Control data to filter.
+#'  - diseases_subset: Filtered diseases vector.
 #' @keywords internal
 filter_sex_specific_disease <- function(control_data,
                                         disease,
@@ -65,19 +66,20 @@ filter_sex_specific_disease <- function(control_data,
 }
 
 
-#' Make groups for classification models
+#' Create class-balanced case-control groups for classification models
 #'
-#' This function creates class-balanced groups for classification models.
-#' It separates the data into control and case groups.
-#' It also filters the control data based on the disease in case of sex specific diseases.
+#' `make_groups()` creates class-balanced case-control groups for classification models.
+#' It separates the data into control and case groups. It then calculates the amount of data
+#' from each disease in the control group and randomly selects the number of each control class samples.
+#' It also filters the control data of sex specific diseases.
 #'
-#' @param join_data (tibble). Wide data joined with metadata.
-#' @param diseases (vector). Vector of diseases.
-#' @param only_female (vector). Vector of diseases that are female specific.
-#' @param only_male (vector). Vector of diseases that are male specific.
-#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#' @param join_data Olink data in wide format joined with metadata.
+#' @param diseases Diseases.
+#' @param only_female Diseases that are female specific.
+#' @param only_male Diseases that are male specific.
+#' @param seed Seed for reproducibility. Default is 123.
 #'
-#' @return A list with combined, balanced control-case groups for each disease
+#' @return A list with combined, class-balanced control-case groups for each disease.
 #' @keywords internal
 make_groups <- function(join_data,
                         diseases,
@@ -125,14 +127,14 @@ make_groups <- function(join_data,
 
 #' Visualize hyperparameter optimization results
 #'
-#' This function visualizes the hyperparameter optimization results.
+#' `vis_hypopt()` plots the hyperparameter optimization results.
 #'
-#' @param tune_res (tibble). Hyperparameter optimization results.
-#' @param x (character). X-axis variable of the plot.
-#' @param color (character). Color variable of the plot. Default is NULL.
-#' @param disease (character). Disease to predict.
+#' @param tune_res Hyperparameter optimization results.
+#' @param x X-axis variable of the plot.
+#' @param color Color variable of the plot.
+#' @param disease Disease to predict.
 #'
-#' @return hypopt_plot (plot). Hyperparameter optimization plot.
+#' @return Hyperparameter optimization plot.
 #' @keywords internal
 vis_hypopt <- function(tune_res,
                        x,
@@ -161,28 +163,30 @@ vis_hypopt <- function(tune_res,
 }
 
 
-#' Hyperparameter optimization for elastic net
+#' Hyperparameter optimization for elastic net model
 #'
-#' This function performs hyperparameter optimization for elastic net models.
-#' It uses the glmnet engine for logistic regression and tunes either only penalty or both penalty and mixture.
+#' `elnet_hypopt()` tunes an elastic net model and performs hyperparameter optimization.
+#' It uses the glmnet engine for logistic regression and tunes either only penalty (Lasso or Ridge) or
+#' both penalty and mixture (Elastic Regression). For the hyperparameter optimization, it uses the
+#' `grid_latin_hypercube()` function from the dials package.
 #'
+#' @param train_data List of training data sets from `make_groups()`.
+#' @param test_data List of testing data sets from `make_groups()`.
+#' @param disease Disease to predict.
+#' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is NULL.
+#' @param seed Seed for reproducibility. Default is 123.
 #'
-#' @param train_data (list). List of training data sets from make_groups().
-#' @param test_data (list). List of testing data sets from make_groups().
-#' @param disease (character). Disease to predict.
-#' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
-#' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
-#' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
-#' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
-#' @param hypopt_vis (logical). Whether to visualize hyperparameter optimization results. Default is TRUE.
-#' @param exclude_cols (vector). Columns to exclude from the model. Default is NULL.
-#' @param seed (numeric). Seed for reproducibility. Default is 123.
-#'
-#' @return A list with three elements:
-#'  - elnet_tune (tibble). Hyperparameter optimization results.
-#'  - wf (workflow). Workflow object.
-#'  - train_set (tibble). Training set.
-#'  - test_set (tibble). Testing set.
+#' @return A list with five elements:
+#'  - elnet_tune: Hyperparameter optimization results.
+#'  - wf: Workflow object.
+#'  - train_set: Training set.
+#'  - test_set: Testing set.
+#'  - hyperopt_vis: Hyperparameter optimization plot.
 #' @keywords internal
 elnet_hypopt <- function(train_data,
                          test_data,
@@ -278,28 +282,31 @@ elnet_hypopt <- function(train_data,
 }
 
 
-#' Hyperparameter optimization for random forest
+#' Hyperparameter optimization for random forest model
 #'
-#' This function performs hyperparameter optimization for random forest models.
-#' It uses the ranger engine for logistic regression and tunes the number of trees and
-#' the number of variables randomly sampled at each split.
+#' `rf_hypopt()` performs hyperparameter optimization for random forest models.
+#' It uses the ranger engine for logistic regression and tunes the number of
+#' predictors that will be randomly sampled at each split when creating the
+#' tree models, as well as the minimum number of data points in a node that are
+#' required for the node to be split further. For the hyperparameter optimization,
+#' it uses the `grid_latin_hypercube()` function from the dials package.
 #'
-#' @param train_data (list). List of training data sets from make_groups().
-#' @param test_data (list). List of testing data sets from make_groups().
-#' @param disease (character). Disease to predict.
-#' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
-#' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
-#' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
-#' @param hypopt_vis (logical). Whether to visualize hyperparameter optimization results. Default is TRUE.
-#' @param exclude_cols (vector). Columns to exclude from the model. Default is NULL.
-#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#' @param train_data List of training data sets from `make_groups()`.
+#' @param test_data List of testing data sets from `make_groups()`.
+#' @param disease Disease to predict.
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the grid for hyperparameter optimization. Default is 10.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is NULL.
+#' @param seed Seed for reproducibility. Default is 123.
 #'
-#' @return A list with four elements:
-#'  - rf_tune (tibble). Hyperparameter optimization results.
-#'  - rf_wf (workflow). Workflow object.
-#'  - train_set (tibble). Training set.
-#'  - test_set (tibble). Testing set.
-#'  - hyperopt_vis (plot). Hyperparameter optimization plot.
+#' @return A list with five elements:
+#'  - rf_tune: Hyperparameter optimization results.
+#'  - rf_wf: Workflow object.
+#'  - train_set: Training set.
+#'  - test_set: Testing set.
+#'  - hyperopt_vis: Hyperparameter optimization plot.
 #' @keywords internal
 rf_hypopt <- function(train_data,
                       test_data,
@@ -385,19 +392,19 @@ rf_hypopt <- function(train_data,
 }
 
 
-#' Fit the final model
+#' Fit the best model
 #'
-#' This function fits the final model using the best hyperparameters from hyperparameter optimization.
+#' `finalfit()` fits the model that performed the best in hyperparameter optimization.
 #'
-#' @param train_set (tibble). Training set.
-#' @param tune_res (tibble). Hyperparameter optimization results.
-#' @param wf (workflow). Workflow object.
-#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#' @param train_set Training set.
+#' @param tune_res Hyperparameter optimization results.
+#' @param wf Workflow object.
+#' @param seed Seed for reproducibility. Default is 123.
 #'
 #' @return A list with three elements:
-#'  - final_elnet (parsnip model). Final model.
-#'  - best_elnet (tibble). Best hyperparameters from hyperparameter optimization.
-#'  - final_wf (workflow). Final workflow object.
+#'  - final_elnet: Final model.
+#'  - best_elnet: Best hyperparameters from hyperparameter optimization.
+#'  - final_wf: Final workflow object.
 #' @keywords internal
 finalfit <- function(train_set,
                      tune_res,
@@ -419,29 +426,32 @@ finalfit <- function(train_set,
 }
 
 
-#' Test the final model
+#' Test the best model
 #'
-#' This function tests the final model on the test set.
-#' It calculates the accuracy, sensitivity, specificity, AUC, and confusion matrix.
+#' `testfit()` tests the best model on the test set and calculate metrics.
+#' It calculates the accuracy, sensitivity, specificity, AUC, confusion matrix,
+#' and ROC curve.
 #'
-#' @param train_set (tibble). Training set.
-#' @param test_set (tibble). Testing set.
-#' @param disease (character). Disease to predict.
-#' @param finalfit_res (list). Results from elnet_finalfit().
-#' @param exclude_cols (vector). Columns to exclude from the model. Default is NULL.
-#' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
-#' @param seed (numeric). Seed for reproducibility. Default is 123.
-#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
+#' @param train_set Training set.
+#' @param test_set Testing set.
+#' @param disease Disease to predict.
+#' @param finalfit_res Results from `elnet_finalfit()`.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is NULL.
+#' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param seed Seed for reproducibility. Default is 123.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
 #'
 #' @return A list with two elements:
-#'  - metrics (list). A list with 5 metrics:
-#'   - accuracy (numeric). Accuracy of the model.
-#'   - sensitivity (numeric). Sensitivity of the model.
-#'   - specificity (numeric). Specificity of the model.
-#'   - auc (numeric). AUC of the model.
-#'   - conf_matrix (tibble). Confusion matrix of the model.
-#'   - roc_curve (tibble). ROC curve of the model.
-#'  - mixture (numeric). Mixture of lasso and ridge regularization.
+#'  - metrics: A list with 5 metrics:
+#'   - accuracy: Accuracy of the model.
+#'   - sensitivity: Sensitivity of the model.
+#'   - specificity: Specificity of the model.
+#'   - auc: AUC of the model.
+#'   - conf_matrix: Confusion matrix of the model.
+#'   - roc_curve: ROC curve of the model.
+#'  - mixture: Mixture of lasso and ridge regularization.
+#'
+#' @details In random forest models, mixture is returned as NULL.
 #' @keywords internal
 testfit <- function(train_set,
                     test_set,
@@ -498,7 +508,7 @@ testfit <- function(train_set,
     yardstick::conf_mat(Disease, .pred_class)
 
   if (type == "elnet") {
-    mixture <- finalfit_res$best_elnet$mixture
+    mixture <- finalfit_res$best$mixture
   } else if (type == "lasso") {
     mixture <- 1
   } else if (type == "ridge") {
@@ -517,21 +527,34 @@ testfit <- function(train_set,
 }
 
 
-#' Generate subtitle for variable importance plot
+#' Create subtitle for variable importance plot
 #'
-#' This function generates a subtitle for the variable importance plot.
+#' `generate_subtitle()` generates a subtitle for the variable importance plot.
 #'
-#' @param features (tibble). Features with importance values.
-#' @param accuracy (numeric). Accuracy of the model.
-#' @param sensitivity (numeric). Sensitivity of the model.
-#' @param specificity (numeric). Specificity of the model.
-#' @param auc (numeric). AUC of the model.
-#' @param mixture (numeric). Mixture of lasso and ridge regularization.
-#' @param subtitle (vector). Vector of subtitles to include in the plot. Default is all.
+#' @param features A tibble with features and their model importance.
+#' @param accuracy Accuracy of the model.
+#' @param sensitivity Sensitivity of the model.
+#' @param specificity Specificity of the model.
+#' @param auc AUC of the model.
+#' @param mixture Mixture of lasso and ridge regularization. In random forest models it is NULL.
+#' @param subtitle Vector of subtitle elements to include in the plot.
 #'
-#' @return subtitle (character). Subtitle for the plot.
+#' @return The plot subtitle as character vector.
 #' @keywords internal
-generate_subtitle <- function(features, accuracy, sensitivity, specificity, auc, mixture, subtitle = NULL) {
+generate_subtitle <- function(features,
+                              accuracy,
+                              sensitivity,
+                              specificity,
+                              auc,
+                              mixture,
+                              subtitle = c("accuracy",
+                                           "sensitivity",
+                                           "specificity",
+                                           "auc",
+                                           "features",
+                                           "top-features",
+                                           "mixture")) {
+
   subtitle_parts <- c()
 
   if ("accuracy" %in% subtitle) {
@@ -574,25 +597,25 @@ generate_subtitle <- function(features, accuracy, sensitivity, specificity, auc,
 }
 
 
-#' Plot variable importance
+#' Plot feature variable importance
 #'
-#' This function collects the features and their importance.
+#' `plot_var_imp()` collects the features and their model importance.
 #' It scales their importance and plots it against them.
 #'
-#' @param finalfit_res (list). Results from finalfit().
-#' @param disease (character). Disease to predict.
-#' @param accuracy (numeric). Accuracy of the model.
-#' @param sensitivity (numeric). Sensitivity of the model.
-#' @param specificity (numeric). Specificity of the model.
-#' @param auc (numeric). AUC of the model.
-#' @param mixture (numeric). Mixture of lasso and ridge regularization.
-#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
-#' @param vline (logical). Whether to add a vertical line at 50% importance. Default is TRUE.
-#' @param subtitle (vector). Vector of subtitles to include in the plot. Default is a list with all.
+#' @param finalfit_res Results from `finalfit()`.
+#' @param disease Disease to predict.
+#' @param accuracy Accuracy of the model.
+#' @param sensitivity Sensitivity of the model.
+#' @param specificity Specificity of the model.
+#' @param auc AUC of the model.
+#' @param mixture Mixture of lasso and ridge regularization.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param vline Whether to add a vertical line at 50% importance. Default is TRUE.
+#' @param subtitle Vector of subtitle elements to include in the plot.
 #'
 #' @return A list with two elements:
-#'  - features (tibble). Features with importance values.
-#'  - var_imp_plot (plot). Variable importance plot.
+#'  - features: A tibble with features and their model importance.
+#'  - var_imp_plot: Variable importance plot.
 #' @keywords internal
 plot_var_imp <- function (finalfit_res,
                           disease,
@@ -664,47 +687,54 @@ plot_var_imp <- function (finalfit_res,
 
 #' Elastic net classification model pipeline
 #'
-#' This function runs the elastic net classification model pipeline.
-#' It splits the data into training and test sets, creates class-balanced groups, and fits the model.
-#' It also performs hyperparameter optimization, fits the final model, tests it, and plots useful visualizations.
+#' `do_elnet()` runs the elastic net classification model pipeline. It splits the
+#' data into training and test sets, creates class-balanced case-control groups,
+#' and fits the model. It also performs hyperparameter optimization, fits the best
+#' model, tests it, and plots useful the feature variable importance.
 #'
-#' @param olink_data (tibble). Olink data.
-#' @param metadata (tibble). Metadata.
-#' @param wide (logical). Whether the data is wide format. Default is FALSE.
-#' @param only_female (vector). Vector of diseases that are female specific. Default is NULL.
-#' @param only_male (vector). Vector of diseases that are male specific. Default is NULL.
-#' @param exclude_cols (vector). Columns to exclude from the model. Default is "Sex".
-#' @param ratio (numeric). Ratio of training data to test data. Default is 0.75.
-#' @param type (character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
-#' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
-#' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
-#' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
-#' @param hypopt_vis (logical). Whether to visualize hyperparameter optimization results. Default is TRUE.
-#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
-#' @param vline (logical). Whether to add a vertical line at 50% importance. Default is TRUE.
-#' @param subtitle (vector). Vector of subtitles to include in the plot. Default is a list with all.
-#' @param nfeatures (numeric). Number of top features to include in the boxplot. Default is 9.
-#' @param points (logical). Whether to add points to the boxplot. Default is TRUE.
-#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#' @param olink_data Olink data.
+#' @param metadata Metadata.
+#' @param wide Whether the data is wide format. Default is FALSE.
+#' @param only_female Vector of diseases that are female specific. Default is NULL.
+#' @param only_male Vector of diseases that are male specific. Default is NULL.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is "Sex".
+#' @param ratio Ratio of training data to test data. Default is 0.75.
+#' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param vline Whether to add a vertical line at 50% importance. Default is TRUE.
+#' @param subtitle Vector of subtitle elements to include in the plot. Default is a list with all.
+#' @param nfeatures Number of top features to include in the boxplot. Default is 9.
+#' @param points Whether to add points to the boxplot. Default is TRUE.
+#' @param seed Seed for reproducibility. Default is 123.
 #'
 #' @return A list with results for each disease. The list contains:
-#'  - hypopt_res (list). Hyperparameter optimization results.
-#'  - finalfit_res (list). Final model fitting results.
-#'  - testfit_res (list). Test model fitting results.
-#'  - var_imp_res (list). Variable importance results.
+#'  - hypopt_res: Hyperparameter optimization results.
+#'  - finalfit_res: Final model fitting results.
+#'  - testfit_res: Test model fitting results.
+#'  - var_imp_res: Variable importance results.
 #' @export
 #'
 #' @examples
+#' # Create subset of example_data
 #' unique_samples <- unique(example_data$Sample)
 #' filtered_data <- example_data |>
 #'  dplyr::filter(Sample %in% unique_samples[1:148])
 #'
+#' # Run the elastic net model pipeline
 #' res <- do_elnet(filtered_data,
 #'                 example_metadata,
+#'                 type = "elnet",
 #'                 palette = "cancers12",
-#'                 cv_sets = 2,
-#'                 grid_size = 1,
+#'                 cv_sets = 5,
+#'                 grid_size = 20,
 #'                 ncores = 1)
+#'
+#' # Results for AML
+#' res$AML
 do_elnet <- function(olink_data,
                      metadata,
                      wide = F,
@@ -823,46 +853,52 @@ do_elnet <- function(olink_data,
 
 #' Random forest classification model pipeline
 #'
-#' This function runs the random forest classification model pipeline.
-#' It splits the data into training and test sets, creates class-balanced groups, and fits the model.
-#' It also performs hyperparameter optimization, fits the final model, tests it, and plots useful visualizations.
+#' `do_rf()` runs the random forest classification model pipeline. It splits the
+#' data into training and test sets, creates class-balanced case-control groups,
+#' and fits the model. It also performs hyperparameter optimization, fits the best
+#' model, tests it, and plots useful the feature variable importance.
 #'
-#' @param olink_data (tibble). Olink data.
-#' @param metadata (tibble). Metadata.
-#' @param wide (logical). Whether the data is wide format. Default is FALSE.
-#' @param only_female (vector). Vector of diseases that are female specific. Default is NULL.
-#' @param only_male (vector). Vector of diseases that are male specific. Default is NULL.
-#' @param exclude_cols (vector). Columns to exclude from the model. Default is "Sex".
-#' @param ratio (numeric). Ratio of training data to test data. Default is 0.75.
-#' @param cv_sets (numeric). Number of cross-validation sets. Default is 5.
-#' @param grid_size (numeric). Size of the grid for hyperparameter optimization. Default is 10.
-#' @param ncores (numeric). Number of cores to use for parallel processing. Default is 4.
-#' @param hypopt_vis (logical). Whether to visualize hyperparameter optimization results. Default is TRUE.
-#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
-#' @param vline (logical). Whether to add a vertical line at 50% importance. Default is TRUE.
-#' @param subtitle (vector). Vector of subtitles to include in the plot. Default is a list with all except mixture.
-#' @param nfeatures (numeric). Number of top features to include in the boxplot. Default is 9.
-#' @param points (logical). Whether to add points to the boxplot. Default is TRUE.
-#' @param seed (numeric). Seed for reproducibility. Default is 123.
+#' @param olink_data Olink data.
+#' @param metadata Metadata.
+#' @param wide Whether the data is wide format. Default is FALSE.
+#' @param only_female Vector of diseases that are female specific. Default is NULL.
+#' @param only_male Vector of diseases that are male specific. Default is NULL.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is "Sex".
+#' @param ratio Ratio of training data to test data. Default is 0.75.
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param vline Whether to add a vertical line at 50% importance. Default is TRUE.
+#' @param subtitle Vector of subtitle elements to include in the plot. Default is a list with all.
+#' @param nfeatures Number of top features to include in the boxplot. Default is 9.
+#' @param points Whether to add points to the boxplot. Default is TRUE.
+#' @param seed Seed for reproducibility. Default is 123.
 #'
 #' @return A list with results for each disease. The list contains:
-#'  - hypopt_res (list). Hyperparameter optimization results.
-#'  - finalfit_res (list). Final model fitting results.
-#'  - testfit_res (list). Test model fitting results.
-#'  - var_imp_res (list). Variable importance results.
+#'  - hypopt_res: Hyperparameter optimization results.
+#'  - finalfit_res: Final model fitting results.
+#'  - testfit_res: Test model fitting results.
+#'  - var_imp_res: Variable importance results.
 #' @export
 #'
 #' @examples
+#' # Create subset of example_data
 #' unique_samples <- unique(example_data$Sample)
 #' filtered_data <- example_data |>
 #'  dplyr::filter(Sample %in% unique_samples[1:148])
 #'
+#' # Run the random forest model pipeline
 #' res <- do_rf(filtered_data,
 #'              example_metadata,
 #'              palette = "cancers12",
-#'              cv_sets = 2,
-#'              grid_size = 1,
+#'              cv_sets = 5,
+#'              grid_size = 10,
 #'              ncores = 1)
+#'
+#' # Results for AML
+#' res$AML
 do_rf <- function(olink_data,
                   metadata,
                   wide = F,
@@ -976,33 +1012,38 @@ do_rf <- function(olink_data,
 }
 
 
-#' Plot protein features summary
+#' Plot features summary visualizations
 #'
-#' This function plots the number of proteins and the number of top proteins for each disease.
-#' It also plots the upset plot of the top or all proteins.
+#' `plot_features_summary()` plots the number of proteins and the number of top
+#' proteins for each disease in a barplot. It also plots the upset plot of the
+#' top or all protein features.
 #'
-#' @param ml_results (list). Results from do_elnet() or do_rf().
-#' @param importance (numeric). Importance threshold for top features. Default is 50.
-#' @param upset_top_features (logical). Whether to plot the upset plot for the top features. Default is FALSE.
-#' @param disease_palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
-#' @param feature_type_palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "all-features" = "pink" and "top-features" = "darkblue".
+#' @param ml_results Results from `do_elnet()` or `do_rf()`.
+#' @param importance Importance threshold for top features. Default is 50.
+#' @param upset_top_features Whether to plot the upset plot for the top features. Default is FALSE.
+#' @param disease_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param feature_type_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "all-features" = "pink" and "top-features" = "darkblue".
 #'
 #' @return A list with two elements:
-#'   - features_barplot (plot). Barplot of the number of proteins and top proteins for each disease.
-#'   - upset_plot_features (plot). Upset plot of the top or all proteins.
+#'   - features_barplot: Barplot of the number of proteins and top proteins for each disease.
+#'   - upset_plot_features: Upset plot of the top or all proteins.
 #' @export
 #'
 #' @examples
+#' # Create subset of example_data
 #' unique_samples <- unique(example_data$Sample)
 #' filtered_data <- example_data |>
 #'  dplyr::filter(Sample %in% unique_samples[1:148])
+#'
+#' # Run the elastic net model pipeline
 #' res <- do_elnet(filtered_data,
 #'                 example_metadata,
 #'                 cv_sets = 2,
 #'                 grid_size = 1,
 #'                 ncores = 1)
 #'
-#' plot <- plot_features_summary(res)
+#' # Plot features summary
+#' plot_features_summary(res)
 plot_features_summary <- function(ml_results,
                                   importance = 50,
                                   upset_top_features = F,

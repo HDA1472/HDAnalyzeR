@@ -1,12 +1,14 @@
 utils::globalVariables(c("Var1", "Var2", "Freq"))
-#' Calculate the correlation matrix of the input dataframe
+#' Correlate data
 #'
-#' @param x (vector or tibble). A numeric vector, matrix or data frame.
-#' @param y (vector, tibble or NULL). A numeric vector, matrix or data frame with compatible dimensions with `x`. Default is NULL.
-#' @param use (character). A character string. The method to use for computing correlations. Default is "pairwise.complete.obs".
-#' @param method (character). A character string. The correlation method to use. Default is "pearson".
+#' `correlate()` calculates the correlation matrix of the input dataset.
 #'
-#' @return cor_matrix (matrix). A matrix of protein-protein correlations.
+#' @param x A numeric vector, matrix or tibble.
+#' @param y A numeric vector, matrix or tibble with compatible dimensions with `x`. Default is NULL.
+#' @param use  A character string. The method to use for computing correlations. Default is "pairwise.complete.obs".
+#' @param method A character string. The correlation method to use. Default is "pearson".
+#'
+#' @return A matrix of protein-protein correlations.
 #' @keywords internal
 correlate <- function(x, y = NULL, use = "pairwise.complete.obs", method = "pearson") {
 
@@ -19,32 +21,35 @@ correlate <- function(x, y = NULL, use = "pairwise.complete.obs", method = "pear
 }
 
 
-#' Create a correlation heatmap and report the protein-protein correlations above a threshold
+#' Plot correlation heatmap
 #'
-#' The function calculates the correlation matrix of the input dataframe.
-#' It filters out the protein pairs with correlation values above or below the threshold.
-#' It then creates a heatmap of the correlation matrix.
+#' `create_corr_heatmap()` calculates the correlation matrix of the input dataset.
+#' It creates a heatmap of the correlation matrix. It also filters the protein
+#' pairs with correlation values above the threshold and returns them in a tibble.
 #'
-#' @param x (vector or tibble). A numeric vector, matrix or data frame.
-#' @param y (vector, tibble or NULL). A numeric vector, matrix or data frame with compatible dimensions with `x`. Default is NULL.
-#' @param use (character). A character string. The method to use for computing correlations. Default is "pairwise.complete.obs".
-#' @param method (character). A character string. The correlation method to use. Default is "pearson".
-#' @param threshold (numeric). The reporting protein-protein correlation threshold. Default is 0.8.
-#' @param cluster_rows (logical). Whether to cluster the rows. Default is TRUE.
-#' @param cluster_cols (logical). Whether to cluster the columns. Default is TRUE.
+#' @param x A numeric vector, matrix or data frame.
+#' @param y A numeric vector, matrix or data frame with compatible dimensions with `x`. Default is NULL.
+#' @param use A character string. The method to use for computing correlations. Default is "pairwise.complete.obs".
+#' @param method A character string. The correlation method to use. Default is "pearson".
+#' @param threshold The reporting protein-protein correlation threshold. Default is 0.8.
+#' @param cluster_rows Whether to cluster the rows. Default is TRUE.
+#' @param cluster_cols Whether to cluster the columns. Default is TRUE.
 #'
 #' @return A list containing the following elements:
-#'   - cor_matrix (matrix). A matrix of protein-protein correlations.
-#'   - cor_results (tibble). A tibble with the filtered protein pairs and their correlation values.
-#'   - cor_plot (plot). A heatmap of protein-protein correlations.
+#'   - cor_matrix: A matrix of protein-protein correlations.
+#'   - cor_results: A tibble with the filtered protein pairs and their correlation values.
+#'   - cor_plot: A heatmap of protein-protein correlations.
 #' @export
 #'
 #' @examples
+#' # Prepare data
 #' df <- example_data |>
 #'   dplyr::select(DAid, Assay, NPX) |>
 #'   tidyr::pivot_wider(names_from = "Assay", values_from = "NPX") |>
 #'   dplyr::select(-DAid)
-#' cor_results <- create_corr_heatmap(df, threshold = 0.7)
+#'
+#' # Plot correlation heatmap
+#' create_corr_heatmap(df, threshold = 0.7)
 create_corr_heatmap <- function(x,
                                 y = NULL,
                                 use = "pairwise.complete.obs",

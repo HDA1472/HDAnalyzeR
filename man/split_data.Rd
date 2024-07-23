@@ -2,26 +2,26 @@
 % Please edit documentation in R/classification_models.R
 \name{split_data}
 \alias{split_data}
-\title{Split data into training and test sets}
+\title{Split dataset into training and test sets}
 \usage{
 split_data(join_data, ratio = 0.75, seed = 123)
 }
 \arguments{
-\item{join_data}{(tibble). Wide data joined with metadata.}
+\item{join_data}{Olink data in wide format joined with metadata.}
 
-\item{ratio}{(numeric). Ratio of training data to test data. Default is 0.75.}
+\item{ratio}{Ratio of training data to test data. Default is 0.75.}
 
-\item{seed}{(numeric). Seed for reproducibility. Default is 123.}
+\item{seed}{Seed for reproducibility. Default is 123.}
 }
 \value{
-A list with two elements:
+A list with three elements:
 \itemize{
-\item train_set (tibble). The training set.
-\item test_set (tibble). The test set.
-\item data_split (list). The data split object.
+\item train_set: The training set.
+\item test_set: The test set.
+\item data_split: The data split object.
 }
 }
 \description{
-This function splits the data into training and test sets based on user defined ratio.
+\code{split_data()} splits the dataset into training and test sets based on user defined ratio.
 }
 \keyword{internal}

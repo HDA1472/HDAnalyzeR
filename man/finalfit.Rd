@@ -2,28 +2,28 @@
 % Please edit documentation in R/classification_models.R
 \name{finalfit}
 \alias{finalfit}
-\title{Fit the final model}
+\title{Fit the best model}
 \usage{
 finalfit(train_set, tune_res, wf, seed = 123)
 }
 \arguments{
-\item{train_set}{(tibble). Training set.}
+\item{train_set}{Training set.}
 
-\item{tune_res}{(tibble). Hyperparameter optimization results.}
+\item{tune_res}{Hyperparameter optimization results.}
 
-\item{wf}{(workflow). Workflow object.}
+\item{wf}{Workflow object.}
 
-\item{seed}{(numeric). Seed for reproducibility. Default is 123.}
+\item{seed}{Seed for reproducibility. Default is 123.}
 }
 \value{
 A list with three elements:
 \itemize{
-\item final_elnet (parsnip model). Final model.
-\item best_elnet (tibble). Best hyperparameters from hyperparameter optimization.
-\item final_wf (workflow). Final workflow object.
+\item final_elnet: Final model.
+\item best_elnet: Best hyperparameters from hyperparameter optimization.
+\item final_wf: Final workflow object.
 }
 }
 \description{
-This function fits the final model using the best hyperparameters from hyperparameter optimization.
+\code{finalfit()} fits the model that performed the best in hyperparameter optimization.
 }
 \keyword{internal}

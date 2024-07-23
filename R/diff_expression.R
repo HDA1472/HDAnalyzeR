@@ -2,25 +2,25 @@ utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "S
                          "Disease", "case", "control", "is_normal", "Count"))
 #' Differential expression analysis with limma
 #'
-#' This function performs differential expression analysis using limma.
-#' It can correct the results with sex, age, and BMI.
-#' The output dataframe includes the logFC, the p-values, as well as the adjusted p-values with FDR.
+#' `do_limma_de()` performs differential expression analysis using limma package.
+#' It can correct the results for metadata columns like Sex, Age, or BMI.
+#' The output tibble includes the logFC, p-values, as well as the FDR adjusted p-values.
 #' The function removes the NAs from the columns that are used to correct for.
 #'
-#' @param join_data (tibble). A tibble with the Olink data in wide format joined with metadata.
-#' @param disease (character). The disease of interest.
-#' @param correct (character or vector). The variables to correct the results with. Default c("Sex", "Age", "BMI").
-#' @param correct_type (character or vector). The type of the variables to correct the results with. Default c("factor", "numeric", "numeric").
-#' @param only_female (character or vector). The female specific diseases. Default is NULL.
-#' @param only_male (character or vector). The male specific diseases. Default is NULL.
-#' @param pval_lim (numeric). The p-value limit for significance. Default is 0.05.
-#' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
+#' @param join_data A tibble with the Olink data in wide format joined with metadata.
+#' @param disease The disease of interest.
+#' @param correct The variables to correct the results with. Default c("Sex", "Age").
+#' @param correct_type The type of the variables to correct the results with. Default c("factor", "numeric").
+#' @param only_female The female specific diseases. Default is NULL.
+#' @param only_male The male specific diseases. Default is NULL.
+#' @param pval_lim The p-value limit of significance. Default is 0.05.
+#' @param logfc_lim The logFC limit of significance. Default is 0.
 #'
-#' @return de_res (tibble). A tibble with the differential expression results.
+#' @return A tibble with the differential expression results.
 #' @keywords internal
 do_limma_de <- function(join_data,
                         disease,
-                        correct = c("Sex", "Age", "BMI"),
+                        correct = c("Sex", "Age"),
                         correct_type = c("factor", "numeric", "numeric"),
                         only_female = NULL,
                         only_male = NULL,
@@ -156,17 +156,19 @@ do_limma_continuous_de <- function(join_data,
 
 #' Differential expression analysis with t-test
 #'
-#' This function performs differential expression analysis using t-test.
+#' `do_ttest_de()` performs differential expression analysis using t-test.
+#' It separates the data in case-control groups, checks for data normality and
+#' perform a t-test or Wilcoxon test respectively. It also performs p value FDR adjustment.
 #'
-#' @param long_data (tibble). A tibble with the Olink data in long format and the Sex column from metadata.
-#' @param disease (character). The disease of interest.
-#' @param assays (character or vector). The assays to run the differential expression analysis on.
-#' @param only_female (character or vector). The female specific diseases. Default is NULL.
-#' @param only_male (character or vector). The male specific diseases. Default is NULL.
-#' @param pval_lim (numeric). The p-value limit for significance. Default is 0.05.
-#' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
+#' @param long_data A tibble with the Olink data in long format and the Sex column from metadata.
+#' @param disease The disease of interest.
+#' @param assays The assays to run the differential expression analysis on.
+#' @param only_female The female specific diseases. Default is NULL.
+#' @param only_male The male specific diseases. Default is NULL.
+#' @param pval_lim The p-value limit of significance. Default is 0.05.
+#' @param logfc_lim The logFC limit of significance. Default is 0.
 #'
-#' @return de_res (tibble). A tibble with the differential expression results.
+#' @return A tibble with the differential expression results.
 #' @keywords internal
 do_ttest_de <- function(long_data,
                         disease,
@@ -237,18 +239,19 @@ do_ttest_de <- function(long_data,
 
 #' Create volcano plots
 #'
-#' This function creates volcano plots for the differential expression results.
+#' `plot_volcano()` creates volcano plots for the differential expression results.
+#' It colors and labels the top up and down regulated proteins.
 #'
-#' @param de_result (tibble). The differential expression results.
-#' @param pval_lim (numeric). The p-value limit for significance. Default is 0.05.
-#' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
-#' @param top_up_prot (numeric). The number of top up regulated proteins to label on the plot. Default is 40.
-#' @param top_down_prot (numeric). The number of top down regulated proteins to label on the plot. Default is 10.
-#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
-#' @param title (character). The title of the plot or NULL for no title.
-#' @param subtitle (logical). If the subtitle should be displayed. Default is TRUE.
+#' @param de_result The differential expression results.
+#' @param pval_lim The p-value limit for significance. Default is 0.05.
+#' @param logfc_lim The logFC limit for significance. Default is 0.
+#' @param top_up_prot The number of top up regulated proteins to label on the plot. Default is 40.
+#' @param top_down_prot The number of top down regulated proteins to label on the plot. Default is 10.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
+#' @param title The title of the plot or NULL for no title.
+#' @param subtitle If the subtitle should be displayed. Default is TRUE.
 #'
-#' @return p (plot). A ggplot object with the volcano plot.
+#' @return A ggplot object with the volcano plot.
 #' @keywords internal
 plot_volcano <- function(de_result,
                          pval_lim = 0.05,
@@ -309,32 +312,41 @@ plot_volcano <- function(de_result,
 
 #' Run differential expression analysis with limma
 #'
-#' This function runs differential expression analysis using limma.
+#' `do_limma()` performs differential expression analysis using limma package.
+#' It can correct the results for metadata columns like Sex, Age, or BMI.
+#' The output tibble includes the logFC, p-values, as well as the FDR adjusted p-values.
+#' The function removes the NAs from the columns that are used to correct for.
 #' It can generate and save volcano plots.
 #'
-#' @param olink_data (tibble). A tibble with the Olink data in wide format.
-#' @param metadata (tibble). A tibble with the metadata.
-#' @param correct (character or vector). The variables to correct the results with. Default c("Sex", "Age", "BMI").
-#' @param correct_type (character or vector). The type of the variables to correct the results with. Default c("factor", "numeric", "numeric").
-#' @param wide (logical). If the data is in wide format. Default is TRUE.
-#' @param only_female (character or vector). The female specific diseases. Default is NULL.
-#' @param only_male (character or vector). The male specific diseases. Default is NULL.
-#' @param volcano (logical). Generate volcano plots. Default is TRUE.
-#' @param pval_lim (numeric). The p-value limit for significance. Default is 0.05.
-#' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
-#' @param top_up_prot (numeric). The number of top up regulated proteins to label on the plot. Default is 40.
-#' @param top_down_prot (numeric). The number of top down regulated proteins to label on the plot. Default is 10.
-#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
-#' @param subtitle (logical). If the subtitle should be displayed. Default is TRUE.
-#' @param save (logical). Save the volcano plots. Default is FALSE.
+#' @param olink_data A tibble with the Olink data in wide format.
+#' @param metadata A tibble with the metadata.
+#' @param correct The variables to correct the results with. Default c("Sex", "Age", "BMI").
+#' @param correct_type The type of the variables to correct the results with. Default c("factor", "numeric", "numeric").
+#' @param wide If the data is in wide format. Default is TRUE.
+#' @param only_female The female specific diseases. Default is NULL.
+#' @param only_male The male specific diseases. Default is NULL.
+#' @param volcano Generate volcano plots. Default is TRUE.
+#' @param pval_lim The p-value limit of significance. Default is 0.05.
+#' @param logfc_lim The logFC limit of significance. Default is 0.
+#' @param top_up_prot The number of top up regulated proteins to label on the plot. Default is 40.
+#' @param top_down_prot The number of top down regulated proteins to label on the plot. Default is 10.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
+#' @param subtitle If the subtitle should be displayed. Default is TRUE.
+#' @param save Save the volcano plots. Default is FALSE.
 #'
-#' @return de_results (list). A list with the differential expression results and volcano plots.
+#' @return A list with the differential expression results and volcano plots.
 #'   - de_results: A list with the differential expression results.
 #'   - volcano_plots: A list with the volcano plots.
 #' @export
 #'
 #' @examples
-#' do_limma(example_data, example_metadata, wide = FALSE)
+#' de_results <- do_limma(example_data, example_metadata, wide = FALSE)
+#'
+#' # Results for AML
+#' de_results$de_results$AML
+#'
+#' # Volcano plot for AML
+#' de_results$volcano_plots$AML
 do_limma <- function(olink_data,
                      metadata,
                      correct = c("Sex", "Age", "BMI"),
@@ -421,7 +433,7 @@ do_limma <- function(olink_data,
 #' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
 #' @param top_up_prot (numeric). The number of top up regulated proteins to label on the plot. Default is 40.
 #' @param top_down_prot (numeric). The number of top down regulated proteins to label on the plot. Default is 10.
-#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
+#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
 #' @param subtitle (logical). If the subtitle should be displayed. Default is TRUE.
 #' @param save (logical). Save the volcano plots. Default is FALSE.
 #'
@@ -490,30 +502,38 @@ do_limma_continuous <- function(olink_data,
 
 #' Run differential expression analysis with t-test
 #'
-#' This function runs differential expression analysis using t-test.
+#' `do_ttest()` performs differential expression analysis using t-test.
+#' It separates the data in case-control groups, checks for data normality and
+#' perform a t-test or Wilcoxon test respectively. It also performs p value FDR adjustment.
 #' It can generate and save volcano plots.
 #'
-#' @param olink_data (tibble). A tibble with the Olink data in wide format.
-#' @param metadata (tibble). A tibble with the metadata.
-#' @param wide (logical). If the data is in wide format. Default is TRUE.
-#' @param only_female (character or vector). The female specific diseases. Default is NULL.
-#' @param only_male (character or vector). The male specific diseases. Default is NULL.
-#' @param volcano (logical). Generate volcano plots. Default is TRUE.
-#' @param pval_lim (numeric). The p-value limit for significance. Default is 0.05.
-#' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
-#' @param top_up_prot (numeric). The number of top up regulated proteins to label on the plot. Default is 40.
-#' @param top_down_prot (numeric). The number of top down regulated proteins to label on the plot. Default is 10.
-#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
-#' @param subtitle (logical). If the subtitle should be displayed. Default is TRUE.
-#' @param save (logical). Save the volcano plots. Default is FALSE.
+#' @param olink_data A tibble with the Olink data in wide format.
+#' @param metadata A tibble with the metadata.
+#' @param wide If the data is in wide format. Default is TRUE.
+#' @param only_female The female specific diseases. Default is NULL.
+#' @param only_male The male specific diseases. Default is NULL.
+#' @param volcano Generate volcano plots. Default is TRUE.
+#' @param pval_lim The p-value limit of significance. Default is 0.05.
+#' @param logfc_lim The logFC limit of significance. Default is 0.
+#' @param top_up_prot The number of top up regulated proteins to label on the plot. Default is 40.
+#' @param top_down_prot The number of top down regulated proteins to label on the plot. Default is 10.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
+#' @param subtitle If the subtitle should be displayed. Default is TRUE.
+#' @param save Save the volcano plots. Default is FALSE.
 #'
-#' @return de_results (list). A list with the differential expression results and volcano plots.
+#' @return A list with the differential expression results and volcano plots.
 #'   - de_results: A list with the differential expression results.
 #'   - volcano_plots: A list with the volcano plots.
 #' @export
 #'
 #' @examples
-#' do_ttest(example_data, example_metadata, wide = FALSE)
+#' de_results <- do_ttest(example_data, example_metadata, wide = FALSE)
+#'
+#' # Results for AML
+#' de_results$de_results$AML
+#'
+#' # Volcano plot for AML
+#' de_results$volcano_plots$AML
 do_ttest <- function(olink_data,
                      metadata,
                      wide = T,
@@ -598,15 +618,15 @@ do_ttest <- function(olink_data,
 }
 
 
-#' Create a summary plot for the differential expression results
+#' Plot summary visualizations for the differential expression results
 #'
-#' This function creates summary plots for the differential expression results.
-#' It creates a barplot with the number of significant proteins for each disease.
+#' This function creates summary visualizations for the differential expression results.
+#' It plots a barplot with the number of significant proteins for each disease.
 #' It also creates upset plots both for the significant up and down regulated proteins for each disease.
 #'
-#' @param de_results (list). A list with the differential expression results.
-#' @param disease_palette (character or vector). The color palette for the disease. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.
-#' @param diff_exp_palette (character or vector). The color palette for the differential expression. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".
+#' @param de_results A list with the differential expression results.
+#' @param disease_palette The color palette for the disease. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param diff_exp_palette The color palette for the differential expression. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
 #'
 #' @return A list containing the following plots:
 #'   - de_barplot: A barplot with the number of significant proteins for each disease.
@@ -615,8 +635,11 @@ do_ttest <- function(olink_data,
 #' @export
 #'
 #' @examples
+#' # Run differential expression analysis
 #' de_results <- do_limma(example_data, example_metadata, wide = FALSE)
-#' plots <- plot_de_summary(de_results)
+#'
+#' # Plot summary visualizations
+#' plot_de_summary(de_results)
 plot_de_summary <- function(de_results, disease_palette = NULL, diff_exp_palette = "diff_exp") {
   barplot_data <- de_results$de_results |>
     dplyr::bind_rows() |>

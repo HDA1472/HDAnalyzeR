@@ -2,7 +2,7 @@
 % Please edit documentation in R/diff_expression.R
 \name{plot_de_summary}
 \alias{plot_de_summary}
-\title{Create a summary plot for the differential expression results}
+\title{Plot summary visualizations for the differential expression results}
 \usage{
 plot_de_summary(
   de_results,
@@ -11,11 +11,11 @@ plot_de_summary(
 )
 }
 \arguments{
-\item{de_results}{(list). A list with the differential expression results.}
+\item{de_results}{A list with the differential expression results.}
 
-\item{disease_palette}{(character or vector). The color palette for the disease. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.}
+\item{disease_palette}{The color palette for the disease. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
 
-\item{diff_exp_palette}{(character or vector). The color palette for the differential expression. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".}
+\item{diff_exp_palette}{The color palette for the differential expression. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "diff_exp".}
 }
 \value{
 A list containing the following plots:
@@ -26,11 +26,14 @@ A list containing the following plots:
 }
 }
 \description{
-This function creates summary plots for the differential expression results.
-It creates a barplot with the number of significant proteins for each disease.
+This function creates summary visualizations for the differential expression results.
+It plots a barplot with the number of significant proteins for each disease.
 It also creates upset plots both for the significant up and down regulated proteins for each disease.
 }
 \examples{
+# Run differential expression analysis
 de_results <- do_limma(example_data, example_metadata, wide = FALSE)
-plots <- plot_de_summary(de_results)
+
+# Plot summary visualizations
+plot_de_summary(de_results)
 }

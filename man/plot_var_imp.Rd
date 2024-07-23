@@ -2,7 +2,7 @@
 % Please edit documentation in R/classification_models.R
 \name{plot_var_imp}
 \alias{plot_var_imp}
-\title{Plot variable importance}
+\title{Plot feature variable importance}
 \usage{
 plot_var_imp(
   finalfit_res,
@@ -19,35 +19,35 @@ plot_var_imp(
 )
 }
 \arguments{
-\item{finalfit_res}{(list). Results from finalfit().}
+\item{finalfit_res}{Results from \code{finalfit()}.}
 
-\item{disease}{(character). Disease to predict.}
+\item{disease}{Disease to predict.}
 
-\item{accuracy}{(numeric). Accuracy of the model.}
+\item{accuracy}{Accuracy of the model.}
 
-\item{sensitivity}{(numeric). Sensitivity of the model.}
+\item{sensitivity}{Sensitivity of the model.}
 
-\item{specificity}{(numeric). Specificity of the model.}
+\item{specificity}{Specificity of the model.}
 
-\item{auc}{(numeric). AUC of the model.}
+\item{auc}{AUC of the model.}
 
-\item{mixture}{(numeric). Mixture of lasso and ridge regularization.}
+\item{mixture}{Mixture of lasso and ridge regularization.}
 
-\item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.}
+\item{palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
 
-\item{vline}{(logical). Whether to add a vertical line at 50\% importance. Default is TRUE.}
+\item{vline}{Whether to add a vertical line at 50\% importance. Default is TRUE.}
 
-\item{subtitle}{(vector). Vector of subtitles to include in the plot. Default is a list with all.}
+\item{subtitle}{Vector of subtitle elements to include in the plot.}
 }
 \value{
 A list with two elements:
 \itemize{
-\item features (tibble). Features with importance values.
-\item var_imp_plot (plot). Variable importance plot.
+\item features: A tibble with features and their model importance.
+\item var_imp_plot: Variable importance plot.
 }
 }
 \description{
-This function collects the features and their importance.
+\code{plot_var_imp()} collects the features and their model importance.
 It scales their importance and plots it against them.
 }
 \keyword{internal}

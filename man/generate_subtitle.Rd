@@ -2,7 +2,7 @@
 % Please edit documentation in R/classification_models.R
 \name{generate_subtitle}
 \alias{generate_subtitle}
-\title{Generate subtitle for variable importance plot}
+\title{Create subtitle for variable importance plot}
 \usage{
 generate_subtitle(
   features,
@@ -11,28 +11,29 @@ generate_subtitle(
   specificity,
   auc,
   mixture,
-  subtitle = NULL
+  subtitle = c("accuracy", "sensitivity", "specificity", "auc", "features",
+    "top-features", "mixture")
 )
 }
 \arguments{
-\item{features}{(tibble). Features with importance values.}
+\item{features}{A tibble with features and their model importance.}
 
-\item{accuracy}{(numeric). Accuracy of the model.}
+\item{accuracy}{Accuracy of the model.}
 
-\item{sensitivity}{(numeric). Sensitivity of the model.}
+\item{sensitivity}{Sensitivity of the model.}
 
-\item{specificity}{(numeric). Specificity of the model.}
+\item{specificity}{Specificity of the model.}
 
-\item{auc}{(numeric). AUC of the model.}
+\item{auc}{AUC of the model.}
 
-\item{mixture}{(numeric). Mixture of lasso and ridge regularization.}
+\item{mixture}{Mixture of lasso and ridge regularization. In random forest models it is NULL.}
 
-\item{subtitle}{(vector). Vector of subtitles to include in the plot. Default is all.}
+\item{subtitle}{Vector of subtitle elements to include in the plot.}
 }
 \value{
-subtitle (character). Subtitle for the plot.
+The plot subtitle as character vector.
 }
 \description{
-This function generates a subtitle for the variable importance plot.
+\code{generate_subtitle()} generates a subtitle for the variable importance plot.
 }
 \keyword{internal}

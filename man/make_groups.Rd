@@ -2,7 +2,7 @@
 % Please edit documentation in R/classification_models.R
 \name{make_groups}
 \alias{make_groups}
-\title{Make groups for classification models}
+\title{Create class-balanced case-control groups for classification models}
 \usage{
 make_groups(
   join_data,
@@ -13,22 +13,23 @@ make_groups(
 )
 }
 \arguments{
-\item{join_data}{(tibble). Wide data joined with metadata.}
+\item{join_data}{Olink data in wide format joined with metadata.}
 
-\item{diseases}{(vector). Vector of diseases.}
+\item{diseases}{Diseases.}
 
-\item{only_female}{(vector). Vector of diseases that are female specific.}
+\item{only_female}{Diseases that are female specific.}
 
-\item{only_male}{(vector). Vector of diseases that are male specific.}
+\item{only_male}{Diseases that are male specific.}
 
-\item{seed}{(numeric). Seed for reproducibility. Default is 123.}
+\item{seed}{Seed for reproducibility. Default is 123.}
 }
 \value{
-A list with combined, balanced control-case groups for each disease
+A list with combined, class-balanced control-case groups for each disease.
 }
 \description{
-This function creates class-balanced groups for classification models.
-It separates the data into control and case groups.
-It also filters the control data based on the disease in case of sex specific diseases.
+\code{make_groups()} creates class-balanced case-control groups for classification models.
+It separates the data into control and case groups. It then calculates the amount of data
+from each disease in the control group and randomly selects the number of each control class samples.
+It also filters the control data of sex specific diseases.
 }
 \keyword{internal}

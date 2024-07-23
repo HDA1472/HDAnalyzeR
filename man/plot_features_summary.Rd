@@ -2,7 +2,7 @@
 % Please edit documentation in R/classification_models.R
 \name{plot_features_summary}
 \alias{plot_features_summary}
-\title{Plot protein features summary}
+\title{Plot features summary visualizations}
 \usage{
 plot_features_summary(
   ml_results,
@@ -13,36 +13,41 @@ plot_features_summary(
 )
 }
 \arguments{
-\item{ml_results}{(list). Results from do_elnet() or do_rf().}
+\item{ml_results}{Results from \code{do_elnet()} or \code{do_rf()}.}
 
-\item{importance}{(numeric). Importance threshold for top features. Default is 50.}
+\item{importance}{Importance threshold for top features. Default is 50.}
 
-\item{upset_top_features}{(logical). Whether to plot the upset plot for the top features. Default is FALSE.}
+\item{upset_top_features}{Whether to plot the upset plot for the top features. Default is FALSE.}
 
-\item{disease_palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.}
+\item{disease_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
 
-\item{feature_type_palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "all-features" = "pink" and "top-features" = "darkblue".}
+\item{feature_type_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "all-features" = "pink" and "top-features" = "darkblue".}
 }
 \value{
 A list with two elements:
 \itemize{
-\item features_barplot (plot). Barplot of the number of proteins and top proteins for each disease.
-\item upset_plot_features (plot). Upset plot of the top or all proteins.
+\item features_barplot: Barplot of the number of proteins and top proteins for each disease.
+\item upset_plot_features: Upset plot of the top or all proteins.
 }
 }
 \description{
-This function plots the number of proteins and the number of top proteins for each disease.
-It also plots the upset plot of the top or all proteins.
+\code{plot_features_summary()} plots the number of proteins and the number of top
+proteins for each disease in a barplot. It also plots the upset plot of the
+top or all protein features.
 }
 \examples{
+# Create subset of example_data
 unique_samples <- unique(example_data$Sample)
 filtered_data <- example_data |>
  dplyr::filter(Sample \%in\% unique_samples[1:148])
+
+# Run the elastic net model pipeline
 res <- do_elnet(filtered_data,
                 example_metadata,
                 cv_sets = 2,
                 grid_size = 1,
                 ncores = 1)
 
-plot <- plot_features_summary(res)
+# Plot features summary
+plot_features_summary(res)
 }

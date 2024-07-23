@@ -25,7 +25,6 @@ Imports:
     forcats,
     future,
     future.apply,
-    ggdendro,
     ggplot2,
     ggrepel,
     ggridges,

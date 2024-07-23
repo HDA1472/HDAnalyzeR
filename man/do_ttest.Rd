@@ -21,43 +21,51 @@ do_ttest(
 )
 }
 \arguments{
-\item{olink_data}{(tibble). A tibble with the Olink data in wide format.}
+\item{olink_data}{A tibble with the Olink data in wide format.}
 
-\item{metadata}{(tibble). A tibble with the metadata.}
+\item{metadata}{A tibble with the metadata.}
 
-\item{wide}{(logical). If the data is in wide format. Default is TRUE.}
+\item{wide}{If the data is in wide format. Default is TRUE.}
 
-\item{only_female}{(character or vector). The female specific diseases. Default is NULL.}
+\item{only_female}{The female specific diseases. Default is NULL.}
 
-\item{only_male}{(character or vector). The male specific diseases. Default is NULL.}
+\item{only_male}{The male specific diseases. Default is NULL.}
 
-\item{volcano}{(logical). Generate volcano plots. Default is TRUE.}
+\item{volcano}{Generate volcano plots. Default is TRUE.}
 
-\item{pval_lim}{(numeric). The p-value limit for significance. Default is 0.05.}
+\item{pval_lim}{The p-value limit of significance. Default is 0.05.}
 
-\item{logfc_lim}{(numeric). The logFC limit for significance. Default is 0.}
+\item{logfc_lim}{The logFC limit of significance. Default is 0.}
 
-\item{top_up_prot}{(numeric). The number of top up regulated proteins to label on the plot. Default is 40.}
+\item{top_up_prot}{The number of top up regulated proteins to label on the plot. Default is 40.}
 
-\item{top_down_prot}{(numeric). The number of top down regulated proteins to label on the plot. Default is 10.}
+\item{top_down_prot}{The number of top down regulated proteins to label on the plot. Default is 10.}
 
-\item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is "diff_exp".}
+\item{palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "diff_exp".}
 
-\item{subtitle}{(logical). If the subtitle should be displayed. Default is TRUE.}
+\item{subtitle}{If the subtitle should be displayed. Default is TRUE.}
 
-\item{save}{(logical). Save the volcano plots. Default is FALSE.}
+\item{save}{Save the volcano plots. Default is FALSE.}
 }
 \value{
-de_results (list). A list with the differential expression results and volcano plots.
+A list with the differential expression results and volcano plots.
 \itemize{
 \item de_results: A list with the differential expression results.
 \item volcano_plots: A list with the volcano plots.
 }
 }
 \description{
-This function runs differential expression analysis using t-test.
+\code{do_ttest()} performs differential expression analysis using t-test.
+It separates the data in case-control groups, checks for data normality and
+perform a t-test or Wilcoxon test respectively. It also performs p value FDR adjustment.
 It can generate and save volcano plots.
 }
 \examples{
-do_ttest(example_data, example_metadata, wide = FALSE)
+de_results <- do_ttest(example_data, example_metadata, wide = FALSE)
+
+# Results for AML
+de_results$de_results$AML
+
+# Volcano plot for AML
+de_results$volcano_plots$AML
 }

@@ -8,37 +8,40 @@ cluster_data(
   df,
   distance_method = "euclidean",
   clustering_method = "ward.D2",
-  cluster_rows = T,
-  cluster_cols = T,
-  wide = T
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  wide = TRUE
 )
 }
 \arguments{
-\item{df}{(tibble). A data frame with the data to cluster.}
+\item{df}{The dataset to cluster.}
 
-\item{distance_method}{(character). The distance method to use. Default is "euclidean".}
+\item{distance_method}{The distance method to use. Default is "euclidean".}
 
-\item{clustering_method}{(character). The clustering method to use. Default is "ward.D2".}
+\item{clustering_method}{The clustering method to use. Default is "ward.D2".}
 
-\item{cluster_rows}{(logical). Whether to cluster rows. Default is TRUE.}
+\item{cluster_rows}{Whether to cluster rows. Default is TRUE.}
 
-\item{cluster_cols}{(logical). Whether to cluster columns. Default is TRUE.}
+\item{cluster_cols}{Whether to cluster columns. Default is TRUE.}
 
-\item{wide}{(logical). Whether the data is wide or long. Default is TRUE.}
+\item{wide}{Whether the data is wide or long. Default is TRUE.}
 }
 \value{
 (list). A list with the following elements:
 \itemize{
-\item clustered_data (tibble). A data frame with the clustered data.
-\item hc_rows (hclust). The hierarchical clustering object for rows.
-\item hc_cols (hclust). The hierarchical clustering object for columns.
+\item clustered_data: A dataset ordered according to the hierarchical clustering of the rows and columns.
+\item hc_rows: The hierarchical clustering object for rows.
+\item hc_cols: The hierarchical clustering object for columns.
 }
 }
 \description{
-This function clusters data and returns a data frame with the clustered data.
-This data can be used to plot a heatmap with ggplot2.
+\code{cluster_data()} takes in a dataset and returns a the same dataset ordered
+according to the hierarchical clustering of the rows and columns. This data
+can be used to plot a heatmap with ggplot2 that is not having clustering functionality.
 }
 \examples{
 clean_df <- example_data |> dplyr::select(DAid, Assay, NPX)
-clustered_df <- cluster_data(clean_df, wide = FALSE)
+
+# Cluster data
+cluster_data(clean_df, wide = FALSE)
 }

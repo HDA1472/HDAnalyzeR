@@ -27,65 +27,72 @@ do_elnet(
 )
 }
 \arguments{
-\item{olink_data}{(tibble). Olink data.}
+\item{olink_data}{Olink data.}
 
-\item{metadata}{(tibble). Metadata.}
+\item{metadata}{Metadata.}
 
-\item{wide}{(logical). Whether the data is wide format. Default is FALSE.}
+\item{wide}{Whether the data is wide format. Default is FALSE.}
 
-\item{only_female}{(vector). Vector of diseases that are female specific. Default is NULL.}
+\item{only_female}{Vector of diseases that are female specific. Default is NULL.}
 
-\item{only_male}{(vector). Vector of diseases that are male specific. Default is NULL.}
+\item{only_male}{Vector of diseases that are male specific. Default is NULL.}
 
-\item{exclude_cols}{(vector). Columns to exclude from the model. Default is "Sex".}
+\item{exclude_cols}{Columns to exclude from the data before the model is tuned. Default is "Sex".}
 
-\item{ratio}{(numeric). Ratio of training data to test data. Default is 0.75.}
+\item{ratio}{Ratio of training data to test data. Default is 0.75.}
 
-\item{type}{(character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
+\item{type}{Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
 
-\item{cv_sets}{(numeric). Number of cross-validation sets. Default is 5.}
+\item{cv_sets}{Number of cross-validation sets. Default is 5.}
 
-\item{grid_size}{(numeric). Size of the grid for hyperparameter optimization. Default is 10.}
+\item{grid_size}{Size of the hyperparameter optimization grid. Default is 10.}
 
-\item{ncores}{(numeric). Number of cores to use for parallel processing. Default is 4.}
+\item{ncores}{Number of cores to use for parallel processing. Default is 4.}
 
-\item{hypopt_vis}{(logical). Whether to visualize hyperparameter optimization results. Default is TRUE.}
+\item{hypopt_vis}{Whether to visualize hyperparameter optimization results. Default is TRUE.}
 
-\item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.}
+\item{palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
 
-\item{vline}{(logical). Whether to add a vertical line at 50\% importance. Default is TRUE.}
+\item{vline}{Whether to add a vertical line at 50\% importance. Default is TRUE.}
 
-\item{subtitle}{(vector). Vector of subtitles to include in the plot. Default is a list with all.}
+\item{subtitle}{Vector of subtitle elements to include in the plot. Default is a list with all.}
 
-\item{nfeatures}{(numeric). Number of top features to include in the boxplot. Default is 9.}
+\item{nfeatures}{Number of top features to include in the boxplot. Default is 9.}
 
-\item{points}{(logical). Whether to add points to the boxplot. Default is TRUE.}
+\item{points}{Whether to add points to the boxplot. Default is TRUE.}
 
-\item{seed}{(numeric). Seed for reproducibility. Default is 123.}
+\item{seed}{Seed for reproducibility. Default is 123.}
 }
 \value{
 A list with results for each disease. The list contains:
 \itemize{
-\item hypopt_res (list). Hyperparameter optimization results.
-\item finalfit_res (list). Final model fitting results.
-\item testfit_res (list). Test model fitting results.
-\item var_imp_res (list). Variable importance results.
+\item hypopt_res: Hyperparameter optimization results.
+\item finalfit_res: Final model fitting results.
+\item testfit_res: Test model fitting results.
+\item var_imp_res: Variable importance results.
 }
 }
 \description{
-This function runs the elastic net classification model pipeline.
-It splits the data into training and test sets, creates class-balanced groups, and fits the model.
-It also performs hyperparameter optimization, fits the final model, tests it, and plots useful visualizations.
+\code{do_elnet()} runs the elastic net classification model pipeline. It splits the
+data into training and test sets, creates class-balanced case-control groups,
+and fits the model. It also performs hyperparameter optimization, fits the best
+model, tests it, and plots useful the feature variable importance.
 }
 \examples{
+# Create subset of example_data
 unique_samples <- unique(example_data$Sample)
 filtered_data <- example_data |>
  dplyr::filter(Sample \%in\% unique_samples[1:148])
 
+# Run the elastic net model pipeline
 res <- do_elnet(filtered_data,
                 example_metadata,
+                type = "elnet",
                 palette = "cancers12",
-                cv_sets = 2,
-                grid_size = 1,
+                cv_sets = 5,
+                grid_size = 20,
                 ncores = 1)
+
+# Results for AML
+res$AML
 }

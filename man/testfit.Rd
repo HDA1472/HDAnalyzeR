@@ -2,7 +2,7 @@
 % Please edit documentation in R/classification_models.R
 \name{testfit}
 \alias{testfit}
-\title{Test the final model}
+\title{Test the best model}
 \usage{
 testfit(
   train_set,
@@ -16,37 +16,41 @@ testfit(
 )
 }
 \arguments{
-\item{train_set}{(tibble). Training set.}
+\item{train_set}{Training set.}
 
-\item{test_set}{(tibble). Testing set.}
+\item{test_set}{Testing set.}
 
-\item{disease}{(character). Disease to predict.}
+\item{disease}{Disease to predict.}
 
-\item{finalfit_res}{(list). Results from elnet_finalfit().}
+\item{finalfit_res}{Results from \code{elnet_finalfit()}.}
 
-\item{exclude_cols}{(vector). Columns to exclude from the model. Default is NULL.}
+\item{exclude_cols}{Columns to exclude from the data before the model is tuned. Default is NULL.}
 
-\item{type}{(character). Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
+\item{type}{Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
 
-\item{seed}{(numeric). Seed for reproducibility. Default is 123.}
+\item{seed}{Seed for reproducibility. Default is 123.}
 
-\item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from get_hpa_palettes(). Default is NULL.}
+\item{palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
 }
 \value{
 A list with two elements:
 \itemize{
-\item metrics (list). A list with 5 metrics:
-\item accuracy (numeric). Accuracy of the model.
-\item sensitivity (numeric). Sensitivity of the model.
-\item specificity (numeric). Specificity of the model.
-\item auc (numeric). AUC of the model.
-\item conf_matrix (tibble). Confusion matrix of the model.
-\item roc_curve (tibble). ROC curve of the model.
-\item mixture (numeric). Mixture of lasso and ridge regularization.
+\item metrics: A list with 5 metrics:
+\item accuracy: Accuracy of the model.
+\item sensitivity: Sensitivity of the model.
+\item specificity: Specificity of the model.
+\item auc: AUC of the model.
+\item conf_matrix: Confusion matrix of the model.
+\item roc_curve: ROC curve of the model.
+\item mixture: Mixture of lasso and ridge regularization.
 }
 }
 \description{
-This function tests the final model on the test set.
-It calculates the accuracy, sensitivity, specificity, AUC, and confusion matrix.
+\code{testfit()} tests the best model on the test set and calculate metrics.
+It calculates the accuracy, sensitivity, specificity, AUC, confusion matrix,
+and ROC curve.
+}
+\details{
+In random forest models, mixture is returned as NULL.
 }
 \keyword{internal}

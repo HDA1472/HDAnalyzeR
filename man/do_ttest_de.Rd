@@ -16,24 +16,26 @@ do_ttest_de(
 )
 }
 \arguments{
-\item{long_data}{(tibble). A tibble with the Olink data in long format and the Sex column from metadata.}
+\item{long_data}{A tibble with the Olink data in long format and the Sex column from metadata.}
 
-\item{disease}{(character). The disease of interest.}
+\item{disease}{The disease of interest.}
 
-\item{assays}{(character or vector). The assays to run the differential expression analysis on.}
+\item{assays}{The assays to run the differential expression analysis on.}
 
-\item{only_female}{(character or vector). The female specific diseases. Default is NULL.}
+\item{only_female}{The female specific diseases. Default is NULL.}
 
-\item{only_male}{(character or vector). The male specific diseases. Default is NULL.}
+\item{only_male}{The male specific diseases. Default is NULL.}
 
-\item{pval_lim}{(numeric). The p-value limit for significance. Default is 0.05.}
+\item{pval_lim}{The p-value limit of significance. Default is 0.05.}
 
-\item{logfc_lim}{(numeric). The logFC limit for significance. Default is 0.}
+\item{logfc_lim}{The logFC limit of significance. Default is 0.}
 }
 \value{
-de_res (tibble). A tibble with the differential expression results.
+A tibble with the differential expression results.
 }
 \description{
-This function performs differential expression analysis using t-test.
+\code{do_ttest_de()} performs differential expression analysis using t-test.
+It separates the data in case-control groups, checks for data normality and
+perform a t-test or Wilcoxon test respectively. It also performs p value FDR adjustment.
 }
 \keyword{internal}

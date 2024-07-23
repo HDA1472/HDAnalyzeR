@@ -1,4 +1,4 @@
-# Test impute_median -----------------------------------------------------------
+# Test cluster_data ------------------------------------------------------------
 test_that("cluster_data clusters wide data properly", {
   test_data <- tibble::tibble(
     ID = c("A", "B", "C"),

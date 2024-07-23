@@ -2,23 +2,23 @@
 % Please edit documentation in R/correlate.R
 \name{correlate}
 \alias{correlate}
-\title{Calculate the correlation matrix of the input dataframe}
+\title{Correlate data}
 \usage{
 correlate(x, y = NULL, use = "pairwise.complete.obs", method = "pearson")
 }
 \arguments{
-\item{x}{(vector or tibble). A numeric vector, matrix or data frame.}
+\item{x}{A numeric vector, matrix or tibble.}
 
-\item{y}{(vector, tibble or NULL). A numeric vector, matrix or data frame with compatible dimensions with \code{x}. Default is NULL.}
+\item{y}{A numeric vector, matrix or tibble with compatible dimensions with \code{x}. Default is NULL.}
 
-\item{use}{(character). A character string. The method to use for computing correlations. Default is "pairwise.complete.obs".}
+\item{use}{A character string. The method to use for computing correlations. Default is "pairwise.complete.obs".}
 
-\item{method}{(character). A character string. The correlation method to use. Default is "pearson".}
+\item{method}{A character string. The correlation method to use. Default is "pearson".}
 }
 \value{
-cor_matrix (matrix). A matrix of protein-protein correlations.
+A matrix of protein-protein correlations.
 }
 \description{
-Calculate the correlation matrix of the input dataframe
+\code{correlate()} calculates the correlation matrix of the input dataset.
 }
 \keyword{internal}
