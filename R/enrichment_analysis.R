@@ -1,15 +1,16 @@
 utils::globalVariables(c("ENTREZID"))
 #' Perform over-representation analysis (ORA) using clusterProfiler
 #'
-#' @param gene_list (vector). A list of gene names.
+#' @param gene_list (character). A vector containing the gene names.
+#' @param significance (character). The significance of the genes. It can be either "up", "down", or "all".
 #' @param database (character). The database to perform the ORA. It can be either "KEGG" or "GO".
 #'
 #' @return enrichment (list). A list containing the results of the ORA.
 #' @export
 #'
 #' @examples
-#' enrichment <- do_ora(c("TP53", "BRCA1", "BRCA2"), database = "KEGG")
-do_ora <- function(de_results, significance = c("up", "down", "all"), database = c("KEGG", "GO")) {
+#' #enrichment <- do_ora(c("TP53", "BRCA1", "BRCA2"), database = "KEGG")
+do_ora <- function(gene_list, significance = c("up", "down", "all"), database = c("KEGG", "GO")) {
   database <- match.arg(database)
   significance <- match.arg(significance)
 
@@ -54,20 +55,22 @@ plot_enrichment <- function(enrichment) {
 #'
 #' This function performs gene set enrichment analysis (GSEA) using the clusterProfiler package.
 #'
-#' @param de_result (list). A list containing the results of the differential expression analysis.
+#' @param de_results (list). A list containing the results of the differential expression analysis.
 #' @param database (character). The database to perform the GSEA. It can be either "KEGG" or "GO".
 #'
 #' @return enrichment_results (list). A list containing the results of the GSEA.
 #' @export
 #'
 #' @examples
+#' #enrichment_results <- do_gsea(de_results, database = "KEGG")
 do_gsea <- function(de_results, database = c("KEGG", "GO")) {
   database <- match.arg(database)
   diseases <- de_results$de_results |> names()
   enrichment_results <- list()
 
   for (disease in diseases) {
-    protein_list <- setNames(de_results$de_results[[disease]]$logFC, de_results$de_results[[disease]]$Assay)
+    protein_list <- stats::setNames(de_results$de_results[[disease]]$logFC,
+                                    de_results$de_results[[disease]]$Assay)
     sorted_proteins <- sort(protein_list, decreasing = TRUE)
 
     # From gene name to ENTREZID
@@ -76,7 +79,7 @@ do_gsea <- function(de_results, database = c("KEGG", "GO")) {
                                                 toType = "ENTREZID",
                                                 OrgDb = org.Hs.eg.db::org.Hs.eg.db)
 
-    protein_list <- setNames(sorted_proteins, protein_conversion$ENTREZID)
+    protein_list <- stats::setNames(sorted_proteins, protein_conversion$ENTREZID)
 
     if (database == "KEGG") {
       # Perform GSEA for KEGG

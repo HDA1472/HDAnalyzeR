@@ -4,10 +4,16 @@
 \alias{do_ora}
 \title{Perform over-representation analysis (ORA) using clusterProfiler}
 \usage{
-do_ora(gene_list, database = c("KEGG", "GO"))
+do_ora(
+  gene_list,
+  significance = c("up", "down", "all"),
+  database = c("KEGG", "GO")
+)
 }
 \arguments{
-\item{gene_list}{(vector). A list of gene names.}
+\item{gene_list}{(character). A vector containing the gene names.}
+
+\item{significance}{(character). The significance of the genes. It can be either "up", "down", or "all".}
 
 \item{database}{(character). The database to perform the ORA. It can be either "KEGG" or "GO".}
 }
@@ -18,5 +24,5 @@ enrichment (list). A list containing the results of the ORA.
 Perform over-representation analysis (ORA) using clusterProfiler
 }
 \examples{
-enrichment <- do_ora(c("TP53", "BRCA1", "BRCA2"), database = "KEGG")
+#enrichment <- do_ora(c("TP53", "BRCA1", "BRCA2"), database = "KEGG")
 }
