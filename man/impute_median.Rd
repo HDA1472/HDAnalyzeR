@@ -6,9 +6,9 @@
 \usage{
 impute_median(
   olink_data,
-  wide = T,
+  wide = TRUE,
   exclude_cols = c("DAid", "Disease"),
-  show_na_percentage = T
+  show_na_percentage = TRUE
 )
 }
 \arguments{
@@ -40,5 +40,5 @@ test_data <- example_data |>
 test_data
 
 # Data after imputation
-impute_median(test_data, wide = FALSE)
+impute_median(test_data)
 }
