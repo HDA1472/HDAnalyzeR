@@ -4,25 +4,29 @@
 \alias{do_ora}
 \title{Perform over-representation analysis (ORA) using clusterProfiler}
 \usage{
-do_ora(
-  gene_list,
-  significance = c("up", "down", "all"),
-  database = c("KEGG", "GO")
-)
+do_ora(gene_list, database = c("KEGG", "GO"))
 }
 \arguments{
-\item{gene_list}{(character). A vector containing the gene names.}
+\item{gene_list}{A character vector containing the gene names.}
 
-\item{significance}{(character). The significance of the genes. It can be either "up", "down", or "all".}
-
-\item{database}{(character). The database to perform the ORA. It can be either "KEGG" or "GO".}
+\item{database}{The database to perform the ORA. It can be either "KEGG" or "GO".}
 }
 \value{
-enrichment (list). A list containing the results of the ORA.
+A list containing the results of the ORA.
 }
 \description{
-Perform over-representation analysis (ORA) using clusterProfiler
+\code{do_ora()} performs over-representation analysis (ORA) using the clusterProfiler package.
+It also produces useful plots to visualize the results.
 }
 \examples{
-#enrichment <- do_ora(c("TP53", "BRCA1", "BRCA2"), database = "KEGG")
+# Perform Differential Expression Analysis
+de_res <- do_limma(example_data, example_metadata, wide = FALSE)
+
+# Extract the up-regulated proteins for AML
+sig_up_proteins_aml <- de_res$de_results$AML |>
+  dplyr::filter(sig == "significant up") |>
+  dplyr::pull(Assay)
+
+# Perform ORA with GO database
+do_ora(sig_up_proteins_aml, database = "GO")
 }

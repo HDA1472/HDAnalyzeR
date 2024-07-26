@@ -321,6 +321,11 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 #'
 #' @examples
 #' qc_res <- qc_summary_metadata(example_metadata)
+#'
+#' # Metadata distributions
+#' qc_res$sex_barplot
+#' qc_res$age_dist_plot
+#' qc_res$bmi_dist_plot
 qc_summary_metadata <- function(metadata, disease_palette = NULL, sex_palette = "sex_hpa", report = T) {
 
   sample_n <- nrow(metadata)

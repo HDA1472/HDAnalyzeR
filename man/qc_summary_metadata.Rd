@@ -37,4 +37,9 @@ and creates summary visualizations for Sex, Age and BMI.
 }
 \examples{
 qc_res <- qc_summary_metadata(example_metadata)
+
+# Metadata distributions
+qc_res$sex_barplot
+qc_res$age_dist_plot
+qc_res$bmi_dist_plot
 }

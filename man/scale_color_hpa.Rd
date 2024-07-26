@@ -7,7 +7,7 @@
 scale_color_hpa(palette)
 }
 \arguments{
-\item{palette}{The name of the palette to use.}
+\item{palette}{The name of the palette to use. It should be one of the palettes from \code{get_hpa_palettes()}.}
 }
 \value{
 A ggplot2 scale for color aesthetics.
@@ -24,8 +24,11 @@ data <- data.frame(
   Sex = rep(c("M", "F"), each = 5)
 )
 
-# Create a plot with a custom palette
-ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2, color = Sex)) +
-  ggplot2::geom_point() +
-  scale_color_hpa("sex_hpa")
+# Create a plot
+plot <- ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2, color = Sex)) +
+  ggplot2::geom_point()
+plot
+
+# Add a custom palette
+plot + scale_color_hpa("sex_hpa")
 }

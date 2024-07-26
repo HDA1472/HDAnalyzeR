@@ -7,8 +7,8 @@
 do_limma(
   olink_data,
   metadata,
-  correct = c("Sex", "Age", "BMI"),
-  correct_type = c("factor", "numeric", "numeric"),
+  correct = c("Sex", "Age"),
+  correct_type = c("factor", "numeric"),
   wide = TRUE,
   only_female = NULL,
   only_male = NULL,
@@ -27,7 +27,7 @@ do_limma(
 
 \item{metadata}{A tibble with the metadata.}
 
-\item{correct}{The variables to correct the results with. Default c("Sex", "Age", "BMI").}
+\item{correct}{The variables to correct the results with. Default c("Sex", "Age").}
 
 \item{correct_type}{The type of the variables to correct the results with. Default c("factor", "numeric", "numeric").}
 

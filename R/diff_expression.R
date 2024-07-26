@@ -320,7 +320,7 @@ plot_volcano <- function(de_result,
 #'
 #' @param olink_data A tibble with the Olink data in wide format.
 #' @param metadata A tibble with the metadata.
-#' @param correct The variables to correct the results with. Default c("Sex", "Age", "BMI").
+#' @param correct The variables to correct the results with. Default c("Sex", "Age").
 #' @param correct_type The type of the variables to correct the results with. Default c("factor", "numeric", "numeric").
 #' @param wide If the data is in wide format. Default is TRUE.
 #' @param only_female The female specific diseases. Default is NULL.
@@ -349,8 +349,8 @@ plot_volcano <- function(de_result,
 #' de_results$volcano_plots$AML
 do_limma <- function(olink_data,
                      metadata,
-                     correct = c("Sex", "Age", "BMI"),
-                     correct_type = c("factor", "numeric", "numeric"),
+                     correct = c("Sex", "Age"),
+                     correct_type = c("factor", "numeric"),
                      wide = TRUE,
                      only_female = NULL,
                      only_male = NULL,
@@ -620,7 +620,7 @@ do_ttest <- function(olink_data,
 
 #' Plot summary visualizations for the differential expression results
 #'
-#' This function creates summary visualizations for the differential expression results.
+#' `plot_de_summary()` creates summary visualizations for the differential expression results.
 #' It plots a barplot with the number of significant proteins for each disease.
 #' It also creates upset plots both for the significant up and down regulated proteins for each disease.
 #'

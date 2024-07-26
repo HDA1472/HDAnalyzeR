@@ -7,7 +7,7 @@
 scale_fill_hpa(palette)
 }
 \arguments{
-\item{palette}{The name of the palette to use.}
+\item{palette}{The name of the palette to use. It should be one of the palettes from \code{get_hpa_palettes()}.}
 }
 \value{
 A ggplot2 scale for fill aesthetics.
@@ -23,8 +23,11 @@ data <- data.frame(
   Count = c(60, 40)
 )
 
-# Create a plot with a custom palette
-ggplot2::ggplot(data, ggplot2::aes(x = Sex, y = Count, fill = Sex)) +
-  ggplot2::geom_bar(stat = "identity", position = "dodge") +
-  scale_fill_hpa("sex_hpa")
+# Create a plot
+plot <- ggplot2::ggplot(data, ggplot2::aes(x = Sex, y = Count, fill = Sex)) +
+  ggplot2::geom_bar(stat = "identity", position = "dodge")
+plot
+
+# Add a custom palette
+plot + scale_fill_hpa("sex_hpa")
 }

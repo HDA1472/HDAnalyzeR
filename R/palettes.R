@@ -83,7 +83,7 @@ get_hpa_palettes <- function() {
 #' `scale_color_hpa()` creates a ggplot2 scale for color aesthetics using the color
 #' palettes from the Human Protein Atlas (HPA) project.
 #'
-#' @param palette The name of the palette to use.
+#' @param palette The name of the palette to use. It should be one of the palettes from `get_hpa_palettes()`.
 #'
 #' @return A ggplot2 scale for color aesthetics.
 #' @export
@@ -96,10 +96,13 @@ get_hpa_palettes <- function() {
 #'   Sex = rep(c("M", "F"), each = 5)
 #' )
 #'
-#' # Create a plot with a custom palette
-#' ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2, color = Sex)) +
-#'   ggplot2::geom_point() +
-#'   scale_color_hpa("sex_hpa")
+#' # Create a plot
+#' plot <- ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2, color = Sex)) +
+#'   ggplot2::geom_point()
+#' plot
+#'
+#' # Add a custom palette
+#' plot + scale_color_hpa("sex_hpa")
 scale_color_hpa <- function(palette) {
   hpa_palettes <- get_hpa_palettes()
 
@@ -116,7 +119,7 @@ scale_color_hpa <- function(palette) {
 #' `scale_fill_hpa()` creates a ggplot2 scale for fill aesthetics using the color
 #' palettes from the Human Protein Atlas (HPA) project.
 #'
-#' @param palette The name of the palette to use.
+#' @param palette The name of the palette to use. It should be one of the palettes from `get_hpa_palettes()`.
 #'
 #' @return A ggplot2 scale for fill aesthetics.
 #' @export
@@ -128,10 +131,13 @@ scale_color_hpa <- function(palette) {
 #'   Count = c(60, 40)
 #' )
 #'
-#' # Create a plot with a custom palette
-#' ggplot2::ggplot(data, ggplot2::aes(x = Sex, y = Count, fill = Sex)) +
-#'   ggplot2::geom_bar(stat = "identity", position = "dodge") +
-#'   scale_fill_hpa("sex_hpa")
+#' # Create a plot
+#' plot <- ggplot2::ggplot(data, ggplot2::aes(x = Sex, y = Count, fill = Sex)) +
+#'   ggplot2::geom_bar(stat = "identity", position = "dodge")
+#' plot
+#'
+#' # Add a custom palette
+#' plot + scale_fill_hpa("sex_hpa")
 scale_fill_hpa <- function(palette) {
   hpa_palettes <- get_hpa_palettes()
 

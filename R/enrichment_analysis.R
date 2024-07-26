@@ -1,18 +1,28 @@
 utils::globalVariables(c("ENTREZID"))
 #' Perform over-representation analysis (ORA) using clusterProfiler
 #'
-#' @param gene_list (character). A vector containing the gene names.
-#' @param significance (character). The significance of the genes. It can be either "up", "down", or "all".
-#' @param database (character). The database to perform the ORA. It can be either "KEGG" or "GO".
+#' `do_ora()` performs over-representation analysis (ORA) using the clusterProfiler package.
+#' It also produces useful plots to visualize the results.
 #'
-#' @return enrichment (list). A list containing the results of the ORA.
+#' @param gene_list A character vector containing the gene names.
+#' @param database The database to perform the ORA. It can be either "KEGG" or "GO".
+#'
+#' @return A list containing the results of the ORA.
 #' @export
 #'
 #' @examples
-#' #enrichment <- do_ora(c("TP53", "BRCA1", "BRCA2"), database = "KEGG")
-do_ora <- function(gene_list, significance = c("up", "down", "all"), database = c("KEGG", "GO")) {
+#' # Perform Differential Expression Analysis
+#' de_res <- do_limma(example_data, example_metadata, wide = FALSE)
+#'
+#' # Extract the up-regulated proteins for AML
+#' sig_up_proteins_aml <- de_res$de_results$AML |>
+#'   dplyr::filter(sig == "significant up") |>
+#'   dplyr::pull(Assay)
+#'
+#' # Perform ORA with GO database
+#' do_ora(sig_up_proteins_aml, database = "GO")
+do_ora <- function(gene_list, database = c("KEGG", "GO")) {
   database <- match.arg(database)
-  significance <- match.arg(significance)
 
   # From gene name to ENTREZID
   gene_conversion <- clusterProfiler::bitr(gene_list,
@@ -32,22 +42,27 @@ do_ora <- function(gene_list, significance = c("up", "down", "all"), database = 
                                             ont = "BP")
   }
 
-  return(enrichment)
-}
+  if (!any(enrichment@result$p.adjust < 0.05)) {
+    message("No significant terms found.")
+    return(NULL)
+  }
 
-
-#' Plot the results of the ORA
-#'
-#' @param enrichment (list). The results of the ORA.
-#'
-#' @return dotplot (plot). A dotplot showing the results of the ORA.
-#' @export
-#'
-#' @examples
-#' enrichment <- do_ora(c("TP53", "BRCA1", "BRCA2"), database = "KEGG")
-#' plots <- plot_enrichment(enrichment)
-plot_enrichment <- function(enrichment) {
+  # Visualize the results
   dotplot <- clusterProfiler::dotplot(enrichment)
+  barplot <- barplot(enrichment, drop = TRUE,
+                     showCategory = 10,
+                     font.size = 8)
+  goplot <- clusterProfiler::goplot(enrichment,
+                                    showCategory = 10)
+  cnetplot <- clusterProfiler::cnetplot(enrichment,
+                                        categorySize = "pvalue",
+                                        color.params = list(foldChange = gene_list))
+
+  return(list("enrichment" = enrichment,
+              "dotplot" = dotplot,
+              "barplot" = barplot,
+              "goplot" = goplot,
+              "cnetplot" = cnetplot))
 }
 
 

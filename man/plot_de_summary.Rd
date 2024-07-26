@@ -26,7 +26,7 @@ A list containing the following plots:
 }
 }
 \description{
-This function creates summary visualizations for the differential expression results.
+\code{plot_de_summary()} creates summary visualizations for the differential expression results.
 It plots a barplot with the number of significant proteins for each disease.
 It also creates upset plots both for the significant up and down regulated proteins for each disease.
 }
