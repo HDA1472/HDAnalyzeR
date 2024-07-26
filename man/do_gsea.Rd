@@ -2,7 +2,7 @@
 % Please edit documentation in R/enrichment_analysis.R
 \name{do_gsea}
 \alias{do_gsea}
-\title{Perform gene set enrichment analysis (GSEA) using clusterProfiler}
+\title{Perform gene set enrichment analysis}
 \usage{
 do_gsea(de_results, database = c("KEGG", "GO"))
 }

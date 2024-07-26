@@ -1,5 +1,5 @@
 utils::globalVariables(c("ENTREZID"))
-#' Perform over-representation analysis (ORA) using clusterProfiler
+#' Perform over-representation analysis
 #'
 #' `do_ora()` performs over-representation analysis (ORA) using the clusterProfiler package.
 #' It also produces useful plots to visualize the results.
@@ -66,7 +66,7 @@ do_ora <- function(gene_list, database = c("KEGG", "GO")) {
 }
 
 
-#' Perform gene set enrichment analysis (GSEA) using clusterProfiler
+#' Perform gene set enrichment analysis
 #'
 #' This function performs gene set enrichment analysis (GSEA) using the clusterProfiler package.
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/enrichment_analysis.R
 \name{do_ora}
 \alias{do_ora}
-\title{Perform over-representation analysis (ORA) using clusterProfiler}
+\title{Perform over-representation analysis}
 \usage{
 do_ora(gene_list, database = c("KEGG", "GO"))
 }

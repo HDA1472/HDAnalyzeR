@@ -1,6 +1,16 @@
 url: https://hda1472.github.io/DA_RPackage/
 template:
   bootstrap: 5
+  light-switch: true
+  includes:
+    in_header: pkgdown/extra.css
+
+footer:
+  structure:
+    left: developed_by
+    right: legal
+  components:
+    legal: Provided without **any warranty**.
 
 reference:
 - title: Preprocessing Data

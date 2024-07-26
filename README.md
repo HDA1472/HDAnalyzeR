@@ -1,4 +1,4 @@
-# HDAnalyzeR - Internal RPackage <img src="man/figures/logo.png" align="right" height="200" alt="" />
+# HDAnalyzeR <img src="man/figures/logo.png" align="right" height="200" alt="" />
 [![R-CMD-check](https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml)
 
 HDAnalyzeR is an R package developed by the Human Disease Blood Atlas project, designed to facilitate proteomics analysis for biomarker selection from blood plasma samples. It offers ready-to-use functions for common proteomics tasks such as protein differential expression analysis, classification models, imputation methods, dimensionality reduction, and data visualization, aiming to streamline workflows and enhance the standardization and efficiency of biomarker discovery in disease research.
