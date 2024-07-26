@@ -1,0 +1,8 @@
+pandoc: 3.1.11
+pkgdown: 2.1.0
+pkgdown_sha: ~
+articles: {}
+last_built: 2024-07-26T17:29Z
+urls:
+  reference: https://hda1472.github.io/DA_RPackage/reference
+  article: https://hda1472.github.io/DA_RPackage/articles
