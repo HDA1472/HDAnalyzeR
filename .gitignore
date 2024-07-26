@@ -6,4 +6,5 @@ logo/
 .RData
 .Rproj.user
 .Rhistory
+.Rprofile
 docs
