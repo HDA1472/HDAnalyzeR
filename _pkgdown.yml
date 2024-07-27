@@ -1,30 +1,26 @@
 url: https://hda1472.github.io/DA_RPackage/
 template:
   bootstrap: 5
-  light-switch: true
+  light-switch: yes
   includes:
     in_header: pkgdown/extra.css
-
 footer:
   structure:
     left: developed_by
     right: legal
   components:
     legal: Provided without **any warranty**.
-
 reference:
 - title: Preprocessing Data
-
 - subtitle: Preprocessing
-  desc: >
+  desc: |
     Functions that help you prepare your data for analysis.
   contents:
   - clean_data
   - clean_metadata
   - generate_df
-
 - subtitle: Data Normalization and Imputation
-  desc: >
+  desc: |
     Functions that normalize data, remove batch effects, and impute missing values.
   contents:
   - normalize_data
@@ -32,84 +28,67 @@ reference:
   - impute_knn
   - impute_missForest
   - impute_mice
-
 - subtitle: Data Quality Control
-  desc: >
+  desc: |
     Functions that perform quality control check and dimensionality reduction on your data.
   contents:
   - qc_summary_data
   - qc_summary_metadata
   - do_pca
   - do_umap
-
-
 - title: Main Proteomics Analysis
-
 - subtitle: Correlation and Clustering
-  desc: >
+  desc: |
     Functions that perform protein-protein correlation and can order data based on their hierarchical clustering.
   contents:
   - create_corr_heatmap
   - cluster_data
-
 - subtitle: Differential Expression Analysis
-  desc: >
+  desc: |
     Functions that perform protein differential expression analysis.
   contents:
   - do_limma
   - do_limma_continuous
   - do_ttest
-
 - subtitle: Classification Models
-  desc: >
+  desc: |
     Functions that run Machine Learning classification model pipelines.
   contents:
   - do_elnet
   - do_rf
-
 - subtitle: Visualize Results
-  desc: >
+  desc: |
     Functions that visualize the results of your analysis.
   contents:
   - plot_de_summary
   - plot_features_summary
   - plot_protein_boxplot
   - plot_scatter_with_regression
-
-
 - title: Post Analysis
-  desc: >
+  desc: |
     Functions that analyze the potential biormarkers and their biological impact further.
-  contents:
-  - literature_search
-
-
+  contents: literature_search
 - title: Generic Utilities
-  desc: >
+  desc: |
     Functions that perform general tasks.
   contents:
   - create_dir
   - save_df
   - import_df
   - widen_data
-
-
 - title: Palettes and Themes
-  desc: >
+  desc: |
     Functions that customize the appearance of your plots.
   contents:
   - scale_color_hpa
   - scale_fill_hpa
   - theme_hpa
-
-
 - title: Built in datasets
   contents:
   - example_data
   - example_metadata
-
-
 - title: Under Development
   contents:
   - do_ora
   - do_gsea
+
