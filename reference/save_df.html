@@ -101,6 +101,9 @@ The recommended file type is RDA.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Save a metadata dataframe as an RDA file</span></span></span>
 <span class="r-in"><span><span class="fu">save_df</span><span class="op">(</span><span class="va">example_metadata</span>, <span class="st">"metadata"</span>, <span class="st">"my_data"</span>, file_type <span class="op">=</span> <span class="st">"rda"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"my_data/metadata.rda"</span><span class="op">)</span>  <span class="co"># Check if the file exists</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"my_data"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># Clean up the created directory</span></span></span>
 </code></pre></div>
     </div>
