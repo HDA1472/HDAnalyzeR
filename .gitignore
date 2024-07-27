@@ -8,3 +8,4 @@ logo/
 .Rhistory
 .Rprofile
 docs
+inst/doc

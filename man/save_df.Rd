@@ -31,5 +31,7 @@ The recommended file type is RDA.
 \examples{
 # Save a metadata dataframe as an RDA file
 save_df(example_metadata, "metadata", "my_data", file_type = "rda")
+
+file.exists("my_data/metadata.rda")  # Check if the file exists
 unlink("my_data", recursive = TRUE)  # Clean up the created directory
 }

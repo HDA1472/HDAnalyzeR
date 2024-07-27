@@ -71,6 +71,8 @@ create_dir <- function(dir_name, date = FALSE) {
 #' @examples
 #' # Save a metadata dataframe as an RDA file
 #' save_df(example_metadata, "metadata", "my_data", file_type = "rda")
+#'
+#' file.exists("my_data/metadata.rda")  # Check if the file exists
 #' unlink("my_data", recursive = TRUE)  # Clean up the created directory
 save_df <- function(df, file_name, dir_name, date = FALSE, file_type = c("csv", "tsv", "rda")) {
 
@@ -113,7 +115,8 @@ save_df <- function(df, file_name, dir_name, date = FALSE, file_type = c("csv", 
 #' save_df(example_metadata, "metadata", "my_data", file_type = "rda")
 #'
 #' # Import the saved RDA file again as a tibble
-#' metadata <- load("my_data/metadata.rda")
+#' import_df("my_data/metadata.rda")
+#'
 #' unlink("my_data", recursive = TRUE)  # Clean up the created directory
 import_df <- function(file_path) {
 

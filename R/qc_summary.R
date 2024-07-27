@@ -320,7 +320,7 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 #' @export
 #'
 #' @examples
-#' qc_res <- qc_summary_metadata(example_metadata)
+#' qc_res <- qc_summary_metadata(example_metadata, disease_palette = "cancers12")
 #'
 #' # Metadata distributions
 #' qc_res$sex_barplot

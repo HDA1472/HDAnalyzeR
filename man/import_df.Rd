@@ -22,6 +22,7 @@ reads it and returns it as a tibble.
 save_df(example_metadata, "metadata", "my_data", file_type = "rda")
 
 # Import the saved RDA file again as a tibble
-metadata <- load("my_data/metadata.rda")
+import_df("my_data/metadata.rda")
+
 unlink("my_data", recursive = TRUE)  # Clean up the created directory
 }

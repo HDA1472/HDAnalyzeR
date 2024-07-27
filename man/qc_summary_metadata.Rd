@@ -36,7 +36,7 @@ It checks the column types, calculates the percentage of NAs in each column and 
 and creates summary visualizations for Sex, Age and BMI.
 }
 \examples{
-qc_res <- qc_summary_metadata(example_metadata)
+qc_res <- qc_summary_metadata(example_metadata, disease_palette = "cancers12")
 
 # Metadata distributions
 qc_res$sex_barplot
