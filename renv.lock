@@ -848,9 +848,14 @@
     },
     "clusterProfiler": {
       "Package": "clusterProfiler",
-      "Version": "4.12.0",
-      "Source": "Bioconductor",
-      "Repository": "Bioconductor 3.19",
+      "Version": "4.12.2",
+      "Source": "bioc_xgit",
+      "RemoteType": "bioc_xgit",
+      "RemoteMirror": "https://git.bioconductor.org/packages",
+      "RemoteRepo": "clusterProfiler",
+      "RemoteRelease": "release",
+      "RemoteSha": "8efbc390a08862f3f606b04fe596320bdaf1b33f",
+      "RemoteBranch": "RELEASE_3_19",
       "Requirements": [
         "AnnotationDbi",
         "DOSE",
@@ -873,7 +878,7 @@
         "utils",
         "yulab.utils"
       ],
-      "Hash": "4dcafdc7266ccabdde011cbab04b1730"
+      "Hash": "a9c119e8eef4fbd7ee7b33a4cdc12932"
     },
     "codetools": {
       "Package": "codetools",
@@ -887,9 +892,9 @@
     },
     "colorspace": {
       "Package": "colorspace",
-      "Version": "2.1-0",
+      "Version": "2.1-1",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "grDevices",
@@ -897,7 +902,7 @@
         "methods",
         "stats"
       ],
-      "Hash": "f20c47fd52fae58b4e377c37bb8c335b"
+      "Hash": "d954cb1c57e8d8b756165d7ba18aa55a"
     },
     "commonmark": {
       "Package": "commonmark",
@@ -1275,7 +1280,7 @@
     },
     "enrichplot": {
       "Package": "enrichplot",
-      "Version": "1.24.0",
+      "Version": "1.24.2",
       "Source": "Bioconductor",
       "Repository": "Bioconductor 3.19",
       "Requirements": [
@@ -1304,7 +1309,7 @@
         "utils",
         "yulab.utils"
       ],
-      "Hash": "19039e8a7075c61615d6f1459fb13ec6"
+      "Hash": "e0cede4c92d6474f83cd1197f761e5b2"
     },
     "evaluate": {
       "Package": "evaluate",
@@ -4280,9 +4285,9 @@
     },
     "yulab.utils": {
       "Package": "yulab.utils",
-      "Version": "0.1.4",
+      "Version": "0.1.5",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "cli",
         "digest",
@@ -4293,7 +4298,7 @@
         "tools",
         "utils"
       ],
-      "Hash": "60ee2aaa179dc282e9fa7367bad76e89"
+      "Hash": "a48f7cc93890f8285c5ab9476197163e"
     },
     "zip": {
       "Package": "zip",

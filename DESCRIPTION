@@ -54,8 +54,7 @@ Imports:
     yardstick
 Remotes: 
     bioc::clusterProfiler,
-    bioc::limma,
-    bioc::org.Hs.eg.db
+    bioc::limma
 Suggests: 
     glmnet,
     knitr,
