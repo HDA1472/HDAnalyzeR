@@ -1,6 +1,8 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://hda1472.github.io/DA_RPackage/404.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/LICENSE-text.html</loc></url>
+<url><loc>https://hda1472.github.io/DA_RPackage/articles/HDAnalyzeR.html</loc></url>
+<url><loc>https://hda1472.github.io/DA_RPackage/articles/index.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/authors.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/index.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/calc_na_percentage_col.html</loc></url>

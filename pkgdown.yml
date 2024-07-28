@@ -1,8 +1,9 @@
 pandoc: 3.1.11
 pkgdown: 2.1.0
 pkgdown_sha: ~
-articles: {}
-last_built: 2024-07-27T20:44Z
+articles:
+  HDAnalyzeR: HDAnalyzeR.html
+last_built: 2024-07-28T08:49Z
 urls:
   reference: https://hda1472.github.io/DA_RPackage/reference
   article: https://hda1472.github.io/DA_RPackage/articles
