@@ -135,7 +135,7 @@ qc_data$heatmap
 ```
 
 ```{r}
-qc_summary_metadata(clean_metadata)
+qc_summary_metadata(clean_metadata, disease_palette = "cancers12")
 ```
 
 ## Biomarker Identification
