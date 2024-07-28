@@ -151,6 +151,7 @@ test_that("AML Classification Results Test", {
 
   res <- do_elnet(filtered_data,
                   example_metadata,
+                  wide = FALSE,
                   palette = "cancers12",
                   cv_sets = 2,
                   grid_size = 1,
@@ -216,6 +217,7 @@ test_that("AML Classification Results Test", {
 
   res <- do_rf(filtered_data,
                example_metadata,
+               wide = FALSE,
                palette = "cancers12",
                cv_sets = 2,
                grid_size = 1,

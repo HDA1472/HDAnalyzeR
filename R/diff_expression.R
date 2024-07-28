@@ -27,10 +27,12 @@ do_limma_de <- function(join_data,
                         pval_lim = 0.05,
                         logfc_lim = 0) {
 
+  sex_specific <- FALSE
   # Filter for Sex if disease is Sex specific
   if(!is.null(only_female) & disease %in% only_female) {
     join_data <- join_data |>
       dplyr::filter(Sex == "F")
+    sex_specific <- TRUE
   } else {
     join_data <- join_data
   }
@@ -38,12 +40,13 @@ do_limma_de <- function(join_data,
   if(!is.null(only_male) & disease %in% only_male) {
     join_data <- join_data |>
       dplyr::filter(Sex == "M")
+    sex_specific <- TRUE
   } else {
     join_data <- join_data
   }
 
   join_data <- join_data |>
-    dplyr::filter(!dplyr::if_any(dplyr::all_of(c("Disease", correct)), is.na)) |>  # Remove NAs from columns in formula
+    dplyr::filter(!dplyr::if_any(dplyr::all_of(c("Disease", "Sex", correct)), is.na)) |>  # Remove NAs from columns in formula
     dplyr::mutate(Disease = ifelse(Disease == disease, "1_Case", "0_Control"))
 
   # Design a model - add Disease, and Sex, Age, BMI
@@ -52,12 +55,22 @@ do_limma_de <- function(join_data,
   if (!is.null(correct)) {
     for (i in 1:length(correct)) {
       if (correct_type[i] == "factor") {
-        cofactor = paste("as.factor(", correct[i], ")")
+        if (correct[i] == "Sex" && sex_specific == TRUE) {
+          join_data <- join_data |>
+            dplyr::select(-Sex)
+          next
+        } else {
+          cofactor = paste("as.factor(", correct[i], ")")
+        }
       } else {
         cofactor = correct[i]
       }
       formula <- paste(formula, "+", cofactor)
     }
+  }
+
+  if (c("Sex") %in% correct && sex_specific == TRUE) {
+    correct <- correct[!correct == 'Sex']
   }
 
   design <- stats::model.matrix(stats::as.formula(formula), data = join_data)
@@ -339,6 +352,9 @@ plot_volcano <- function(de_result,
 #'   - volcano_plots: A list with the volcano plots.
 #' @export
 #'
+#' @details For sex-specific diseases, there will be no correction for Sex.
+#' This is performed automatically by the function.
+#'
 #' @examples
 #' de_results <- do_limma(example_data, example_metadata, wide = FALSE)
 #'
@@ -369,11 +385,11 @@ do_limma <- function(olink_data,
       dplyr::select(DAid, Assay, NPX) |>
       tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
       dplyr::left_join(
-        metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", correct))),
+        metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", correct))),
         by = "DAid")
   } else {
     join_data <- olink_data |> dplyr::left_join(
-      metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", correct))),
+      metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", correct))),
       by = "DAid")
   }
 

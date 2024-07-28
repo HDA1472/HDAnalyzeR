@@ -7,7 +7,7 @@
 do_elnet(
   olink_data,
   metadata,
-  wide = F,
+  wide = TRUE,
   only_female = NULL,
   only_male = NULL,
   exclude_cols = "Sex",
@@ -18,7 +18,7 @@ do_elnet(
   ncores = 4,
   hypopt_vis = TRUE,
   palette = NULL,
-  vline = T,
+  vline = TRUE,
   subtitle = c("accuracy", "sensitivity", "specificity", "auc", "features",
     "top-features", "mixture"),
   nfeatures = 9,
@@ -31,7 +31,7 @@ do_elnet(
 
 \item{metadata}{Metadata.}
 
-\item{wide}{Whether the data is wide format. Default is FALSE.}
+\item{wide}{Whether the data is wide format. Default is TRUE.}
 
 \item{only_female}{Vector of diseases that are female specific. Default is NULL.}
 
@@ -87,6 +87,7 @@ filtered_data <- example_data |>
 # Run the elastic net model pipeline
 res <- do_elnet(filtered_data,
                 example_metadata,
+                wide = FALSE,
                 type = "elnet",
                 palette = "cancers12",
                 cv_sets = 5,

@@ -7,7 +7,7 @@
 do_rf(
   olink_data,
   metadata,
-  wide = F,
+  wide = TRUE,
   only_female = NULL,
   only_male = NULL,
   exclude_cols = "Sex",
@@ -17,7 +17,7 @@ do_rf(
   ncores = 4,
   hypopt_vis = TRUE,
   palette = NULL,
-  vline = T,
+  vline = TRUE,
   subtitle = c("accuracy", "sensitivity", "specificity", "auc", "features",
     "top-features"),
   nfeatures = 9,
@@ -30,7 +30,7 @@ do_rf(
 
 \item{metadata}{Metadata.}
 
-\item{wide}{Whether the data is wide format. Default is FALSE.}
+\item{wide}{Whether the data is wide format. Default is TRUE.}
 
 \item{only_female}{Vector of diseases that are female specific. Default is NULL.}
 
@@ -84,6 +84,7 @@ filtered_data <- example_data |>
 # Run the random forest model pipeline
 res <- do_rf(filtered_data,
              example_metadata,
+             wide = FALSE,
              palette = "cancers12",
              cv_sets = 5,
              grid_size = 10,

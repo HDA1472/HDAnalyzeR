@@ -135,16 +135,6 @@ test_that("clean_metadata selects specified columns", {
 })
 
 
-test_that("clean_metadata excludes specified samples", {
-  set.seed(123)
-  result <- clean_metadata(example_metadata, keep_cols = c("DAid", "Age"), filter_samples = c("DA00001", "DA00002"))
-  expected <- example_metadata |>
-    dplyr::filter(!(DAid %in% c("DA00001", "DA00002"))) |>
-    dplyr::select(DAid, Age)
-  expect_equal(result, expected)
-})
-
-
 test_that("The NA columns are removed", {
   random_indices <- sample(1:nrow(example_metadata), 20)
   test_metadata <- example_metadata

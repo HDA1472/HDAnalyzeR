@@ -11,7 +11,7 @@ do_umap(
   palette = NULL,
   wide = TRUE,
   impute = TRUE,
-  plots = FALSE,
+  plots = TRUE,
   save = FALSE
 )
 }
@@ -29,7 +29,7 @@ to be used to plot the points color. Default is "Disease".}
 
 \item{impute}{If TRUE, the data is imputed before the UMAP analysis. Default is TRUE.}
 
-\item{plots}{If TRUE, the function creates plots of the UMAP results. Default is FALSE.}
+\item{plots}{If TRUE, the function creates plots of the UMAP results. Default is TRUE.}
 
 \item{save}{If TRUE, the plots are saved in the results directory. Default is FALSE.}
 }
@@ -53,6 +53,5 @@ do_umap(test_data,
        metadata = example_metadata,
        wide = FALSE,
        color = "Sex",
-       palette = "sex_hpa",
-       plots = TRUE)
+       palette = "sex_hpa")
 }

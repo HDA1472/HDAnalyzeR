@@ -11,7 +11,7 @@ do_pca(
   palette = NULL,
   wide = TRUE,
   impute = TRUE,
-  plots = FALSE,
+  plots = TRUE,
   pcs = 4,
   nproteins = 8,
   save = FALSE
@@ -31,7 +31,7 @@ to be used to plot the points color. Default is "Disease".}
 
 \item{impute}{If TRUE, the data is imputed before the PCA analysis. Default is TRUE.}
 
-\item{plots}{If TRUE, the function creates plots of the PCA results. Default is FALSE.}
+\item{plots}{If TRUE, the function creates plots of the PCA results. Default is TRUE.}
 
 \item{pcs}{The number of PCs to be plotted. Default is 4.}
 
@@ -61,6 +61,5 @@ do_pca(test_data,
        metadata = example_metadata,
        wide = FALSE,
        color = "Disease",
-       palette = "cancers12",
-       plots = TRUE)
+       palette = "cancers12")
 }

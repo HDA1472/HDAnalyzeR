@@ -14,6 +14,210 @@ knitr::opts_chunk$set(
 )
 ```
 
+HDAnalyzeR is an R package developed to streamline and enhance proteomics analysis, particularly for biomarker selection from blood plasma samples. It is developed by and optimized to be used from Human Disease Blood Atlas group internally with Olink proteomics data. This vignette will guide you through the essential steps to use the package, from data loading and quality control to data cleaning, dimensionality reduction, and biomarker identification. Let's get started by loading the package!
+
 ```{r setup}
 library(HDAnalyzeR)
 ```
+
+This document introduces you to HDAnalyzeR's basic set of tools, and shows you how to analyze and identify biomarkers in a dataset of cancer blood plasma samples. 
+
+## Loading the Data
+
+First, we load the package's `example_data` and `example_metadata`.
+
+```{r}
+head(example_data)
+```
+
+```{r}
+head(example_metadata)
+```
+>📓 In real-world scenarios, you would load your own data and metadata files instead of using the example dataset. In order to run the package without issues, make sure that your data include the following columns: DAid, Assay and, NPX, while your metadata include the following columns: DAid and Disease. Also, if you have a Sex column in your metadata, the data should be encoded as M and F.
+
+## Quality Control (QC)
+
+### Data QC
+
+`qc_summary_data()` provides a comprehensive summary of the input dataset. It will check the column types, calculate the percentage of NAs in each column and row, perform normality tests for all the different Assays, calculate protein-protein correlations, and create a heatmap of these correlations. Users can also specify the threshold for reporting protein-protein correlations.
+
+```{r}
+qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
+```
+
+### Metadata QC
+
+`qc_summary_metadata()` summarizes quality control results of the metadata dataframe. It checks the column types, calculates the percentage of NAs in each column and row exactly as `qc_summary_data()`, and creates summary visualizations for key metadata variables such as Sex, Age, and BMI.
+
+```{r}
+qc_summary_metadata(example_metadata, disease_palette = "cancers12")
+```
+
+## Data Cleaning
+
+### Data Cleaning
+
+As we saw from the QC results, the data contains NAs and other issues that need to be addressed. `clean_data()` preprocesses the dataset by filtering out rows based on specified criteria. In this case we will keep only the data which Assay_Warning is "PASS" and only DAid, Assay and NPX columns. 
+
+```{r}
+clean_data <- clean_data(example_data, 
+                         keep_cols = c("DAid", "Assay", "NPX"),
+                         filter_assay_warning = TRUE)
+head(clean_data)
+```
+
+### Metadata Cleaning
+
+In our case, `clean_metadata()` preprocesses the metadata just by keeping only the specified columns.
+
+```{r}
+clean_metadata <- clean_metadata(example_metadata, 
+                                 keep_cols = c("DAid", "Disease", "Sex", "Age"))
+head(clean_metadata)
+```
+
+### Data Transformation
+
+Once the data is cleaned, we recommend transforming it into a tidy format (wide format) if it's not already in that form. `generate_df()` will create for us both the wide Olink dataset as well as the joined with metadata dataset.
+
+```{r}
+dfs <- generate_df(clean_data, 
+                   clean_metadata, 
+                   metadata_cols = c("DAid", "Disease", "Sex", "Age"), 
+                   save = FALSE)
+
+wide_data <- dfs$wide_data
+head(wide_data)
+
+join_data <- dfs$join_data
+head(join_data)
+```
+
+>📓 While HDAnalyzeR can work with long format data, most functions will transform it into a wide format, which can slightly slow down the pipeline. Thus, starting with tidy data is advisable.
+
+## Imputation and Dimensionality Reduction
+
+Next, we will impute missing values using K-nearest neighbors (KNN) with 3 neighbors via `impute_knn()`. 
+
+```{r}
+imputed_data <- impute_knn(wide_data, 
+                           k = 3,
+                           exclude_cols = c("DAid"),
+                           show_na_percentage = FALSE)
+head(imputed_data)
+```
+
+After imputation, we will run Principal Component Analysis (PCA) via `do_pca()` and Uniform Manifold Approximation and Projection (UMAP) via `do_umap()` to check for outliers, batch effects, and other potential issues. 
+
+```{r}
+do_pca(imputed_data, 
+       clean_metadata,
+       color = "Sex",
+       palette = "sex_hpa",
+       impute = FALSE,
+       pcs = 6)
+```
+
+```{r}
+do_umap(imputed_data, 
+        clean_metadata,
+        color = "Disease",
+        palette = "cancers12",
+        impute = FALSE)
+```
+
+We will perform another QC check to ensure that everything is as expected after cleaning and imputing the data.
+
+```{r}
+qc_summary_data(imputed_data, wide = TRUE, threshold = 0.7)
+```
+
+```{r}
+qc_summary_metadata(clean_metadata)
+```
+
+## Biomarker Identification
+
+### Differential Expression Analysis
+
+We will run a differential expression analysis to identify potential biomarkers. We will use `do_limma()` so that we will be able to correct also for Age. This method will help us pinpoint proteins that are significantly different between conditions. We will present only the results for AML (Acute Myeloid Leukemia).
+
+```{r}
+de_res <- do_limma(imputed_data, 
+                   clean_metadata,
+                   correct = c("Sex", "Age"),
+                   correct_type = c("factor", "numeric"),
+                   only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                   only_male = "PRC")
+
+de_res$de_results$AML
+
+de_res$volcano_plots$AML
+```
+
+We can also summarize the results via `plot_de_summary()`.
+
+```{r}
+plot_de_summary(de_res, disease_palette = "cancers12")
+```
+
+### Lasso Machine Learning Classification Model
+
+In addition to differential expression analysis, we will use a Lasso machine learning classification model to identify significant features. This model will help us understand which proteins are most predictive of the conditions being studied. We will present only the results for AML.
+
+```{r}
+lasso_res <- do_elnet(imputed_data, 
+                      clean_metadata, 
+                      only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                      only_male = "PRC",
+                      exclude_cols = c("Sex", "Age"),
+                      type = "lasso",
+                      palette = "cancers12",
+                      subtitle = c("accuracy", 
+                                   "sensitivity", 
+                                   "specificity", 
+                                   "auc", 
+                                   "features",
+                                   "top-features"),
+                      nfeatures = 12)
+
+lasso_res$AML$hypopt_res$hypopt_vis
+
+lasso_res$AML$testfit_res$metrics
+
+lasso_res$AML$var_imp_res$features
+
+lasso_res$AML$var_imp_res$var_imp_plot
+
+lasso_res$AML$boxplot_res
+```
+
+We can get a visual summary of the results via `plot_features_summary()` too.
+
+```{r}
+plot_features_summary(lasso_res, disease_palette = "cancers12")
+```
+
+## Presenting Results
+
+The final step involves searching the literature for all proteins identified by both differential expression and the ML model as significant features, providing a comprehensive overview of potential biomarkers. We will search the literature only for 5 AML biomarkers and we will request for 5 articles per protein.
+
+```{r}
+# Extract the proteins identified by both DE and Lasso
+de_proteins <- de_res$de_results$AML |> 
+  dplyr::filter(sig == "significant up" | sig == "significant down") |> 
+  dplyr::pull(Assay)
+
+lasso_proteins <- lasso_res$AML$var_imp_res$features |> 
+  dplyr::filter(Scaled_Importance > 0) |> 
+  dplyr::pull(Variable)
+
+intersect_proteins <- list(
+  "Acute Myeloid Leukemia" = intersect(de_proteins, lasso_proteins)[1:5]
+)
+
+# Search the literature for these proteins
+literature_search(intersect_proteins, max_articles = 5)
+```
+
+>📓 Remember that these data are a dummy-dataset with fake data.

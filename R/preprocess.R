@@ -92,13 +92,11 @@ clean_data <- function(df_in,
 #'
 #' `clean_metadata()` preprocesses the metadata by filtering out rows based on the specified criteria.
 #'   - It keeps only the specified columns.
-#'   - It filters out the specified samples.
 #'   - It removes rows with NAs in the DAid and Disease columns.
 #'   - It replaces the specified values with NA.
 #'
 #' @param df_in The input metadata.
 #' @param keep_cols The columns to keep in the output metadata.
-#' @param filter_samples The samples to filter out.
 #' @param remove_na_cols The columns to check for NAs and remove respective rows. Defaults is c("DAid", "Disease").
 #' @param replace_w_na The values to replace with NA. Default is c("Unknown", "unknown", "none", NA, "na").
 #'
@@ -113,12 +111,10 @@ clean_data <- function(df_in,
 #' clean_metadata(example_metadata)
 clean_metadata <- function(df_in,
                            keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
-                           filter_samples = NULL,
                            remove_na_cols = c("DAid", "Disease"),
                            replace_w_na = c("Unknown", "unknown", "none", NA, "na")) {
 
   df_out <- df_in |>
-    dplyr::filter(!(DAid %in% filter_samples)) |>
     dplyr::select(dplyr::any_of(keep_cols))
 
   if (!is.null(replace_w_na)) {

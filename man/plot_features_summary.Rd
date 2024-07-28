@@ -7,7 +7,7 @@
 plot_features_summary(
   ml_results,
   importance = 50,
-  upset_top_features = F,
+  upset_top_features = FALSE,
   disease_palette = NULL,
   feature_type_palette = c(`all-features` = "pink", `top-features` = "darkblue")
 )
@@ -44,6 +44,7 @@ filtered_data <- example_data |>
 # Run the elastic net model pipeline
 res <- do_elnet(filtered_data,
                 example_metadata,
+                wide = FALSE,
                 cv_sets = 2,
                 grid_size = 1,
                 ncores = 1)

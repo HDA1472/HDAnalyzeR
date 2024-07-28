@@ -67,6 +67,10 @@ The output tibble includes the logFC, p-values, as well as the FDR adjusted p-va
 The function removes the NAs from the columns that are used to correct for.
 It can generate and save volcano plots.
 }
+\details{
+For sex-specific diseases, there will be no correction for Sex.
+This is performed automatically by the function.
+}
 \examples{
 de_results <- do_limma(example_data, example_metadata, wide = FALSE)
 

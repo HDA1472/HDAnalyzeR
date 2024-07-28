@@ -272,7 +272,7 @@ elnet_hypopt <- function(train_data,
                 "elnet_wf" = elnet_wf,
                 "train_set" = train_set,
                 "test_set" = test_set,
-                "hyperopt_vis" = hypopt_plot))
+                "hypopt_vis" = hypopt_plot))
   }
 
   return(list("elnet_tune" = elnet_tune,
@@ -382,7 +382,7 @@ rf_hypopt <- function(train_data,
                 "rf_wf" = rf_wf,
                 "train_set" = train_set,
                 "test_set" = test_set,
-                "hyperopt_vis" = hypopt_plot))
+                "hypopt_vis" = hypopt_plot))
   }
 
   return(list("rf_tune" = rf_tune,
@@ -694,7 +694,7 @@ plot_var_imp <- function (finalfit_res,
 #'
 #' @param olink_data Olink data.
 #' @param metadata Metadata.
-#' @param wide Whether the data is wide format. Default is FALSE.
+#' @param wide Whether the data is wide format. Default is TRUE.
 #' @param only_female Vector of diseases that are female specific. Default is NULL.
 #' @param only_male Vector of diseases that are male specific. Default is NULL.
 #' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is "Sex".
@@ -727,6 +727,7 @@ plot_var_imp <- function (finalfit_res,
 #' # Run the elastic net model pipeline
 #' res <- do_elnet(filtered_data,
 #'                 example_metadata,
+#'                 wide = FALSE,
 #'                 type = "elnet",
 #'                 palette = "cancers12",
 #'                 cv_sets = 5,
@@ -737,7 +738,7 @@ plot_var_imp <- function (finalfit_res,
 #' res$AML
 do_elnet <- function(olink_data,
                      metadata,
-                     wide = F,
+                     wide = TRUE,
                      only_female = NULL,
                      only_male = NULL,
                      exclude_cols = "Sex",
@@ -748,7 +749,7 @@ do_elnet <- function(olink_data,
                      ncores = 4,
                      hypopt_vis = TRUE,
                      palette = NULL,
-                     vline = T,
+                     vline = TRUE,
                      subtitle = c("accuracy",
                                   "sensitivity",
                                   "specificity",
@@ -860,7 +861,7 @@ do_elnet <- function(olink_data,
 #'
 #' @param olink_data Olink data.
 #' @param metadata Metadata.
-#' @param wide Whether the data is wide format. Default is FALSE.
+#' @param wide Whether the data is wide format. Default is TRUE.
 #' @param only_female Vector of diseases that are female specific. Default is NULL.
 #' @param only_male Vector of diseases that are male specific. Default is NULL.
 #' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is "Sex".
@@ -892,6 +893,7 @@ do_elnet <- function(olink_data,
 #' # Run the random forest model pipeline
 #' res <- do_rf(filtered_data,
 #'              example_metadata,
+#'              wide = FALSE,
 #'              palette = "cancers12",
 #'              cv_sets = 5,
 #'              grid_size = 10,
@@ -901,7 +903,7 @@ do_elnet <- function(olink_data,
 #' res$AML
 do_rf <- function(olink_data,
                   metadata,
-                  wide = F,
+                  wide = TRUE,
                   only_female = NULL,
                   only_male = NULL,
                   exclude_cols = "Sex",
@@ -911,7 +913,7 @@ do_rf <- function(olink_data,
                   ncores = 4,
                   hypopt_vis = TRUE,
                   palette = NULL,
-                  vline = T,
+                  vline = TRUE,
                   subtitle = c("accuracy",
                                "sensitivity",
                                "specificity",
@@ -1038,6 +1040,7 @@ do_rf <- function(olink_data,
 #' # Run the elastic net model pipeline
 #' res <- do_elnet(filtered_data,
 #'                 example_metadata,
+#'                 wide = FALSE,
 #'                 cv_sets = 2,
 #'                 grid_size = 1,
 #'                 ncores = 1)
@@ -1046,7 +1049,7 @@ do_rf <- function(olink_data,
 #' plot_features_summary(res)
 plot_features_summary <- function(ml_results,
                                   importance = 50,
-                                  upset_top_features = F,
+                                  upset_top_features = FALSE,
                                   disease_palette = NULL,
                                   feature_type_palette = c("all-features" = "pink", "top-features" = "darkblue")) {
 

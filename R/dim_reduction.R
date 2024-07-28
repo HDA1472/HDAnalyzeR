@@ -90,7 +90,7 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
 #' @param wide If TRUE, the data is assumed to be in wide format. Default is TRUE.
 #' @param impute If TRUE, the data is imputed before the PCA analysis. Default is TRUE.
-#' @param plots If TRUE, the function creates plots of the PCA results. Default is FALSE.
+#' @param plots If TRUE, the function creates plots of the PCA results. Default is TRUE.
 #' @param pcs The number of PCs to be plotted. Default is 4.
 #' @param nproteins The number of proteins to be plotted. Default is 8.
 #' @param save If TRUE, the plots are saved in the results directory. Default is FALSE.
@@ -110,15 +110,14 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
 #'        metadata = example_metadata,
 #'        wide = FALSE,
 #'        color = "Disease",
-#'        palette = "cancers12",
-#'        plots = TRUE)
+#'        palette = "cancers12")
 do_pca <- function(olink_data,
                    metadata = NULL,
                    color = "Disease",
                    palette = NULL,
                    wide = TRUE,
                    impute = TRUE,
-                   plots = FALSE,
+                   plots = TRUE,
                    pcs = 4,
                    nproteins = 8,
                    save = FALSE) {
@@ -193,7 +192,7 @@ do_pca <- function(olink_data,
 #' @param palette A vector with the colors to be used in the UMAP plots. Default is NULL.
 #' @param wide If TRUE, the data is assumed to be in wide format. Default is TRUE.
 #' @param impute If TRUE, the data is imputed before the UMAP analysis. Default is TRUE.
-#' @param plots If TRUE, the function creates plots of the UMAP results. Default is FALSE.
+#' @param plots If TRUE, the function creates plots of the UMAP results. Default is TRUE.
 #' @param save If TRUE, the plots are saved in the results directory. Default is FALSE.
 #'
 #' @return A list with the UMAP results and, if requested, the UMAP plots.
@@ -209,15 +208,14 @@ do_pca <- function(olink_data,
 #'        metadata = example_metadata,
 #'        wide = FALSE,
 #'        color = "Sex",
-#'        palette = "sex_hpa",
-#'        plots = TRUE)
+#'        palette = "sex_hpa")
 do_umap <- function(olink_data,
                     metadata = NULL,
                     color = "Disease",
                     palette = NULL,
                     wide = TRUE,
                     impute = TRUE,
-                    plots = FALSE,
+                    plots = TRUE,
                     save = FALSE) {
 
   if (isFALSE(wide)) {
