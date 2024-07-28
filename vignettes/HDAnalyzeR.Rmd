@@ -42,7 +42,8 @@ head(example_metadata)
 `qc_summary_data()` provides a comprehensive summary of the input dataset. It will check the column types, calculate the percentage of NAs in each column and row, perform normality tests for all the different Assays, calculate protein-protein correlations, and create a heatmap of these correlations. Users can also specify the threshold for reporting protein-protein correlations.
 
 ```{r}
-qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
+qc_data <- qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
+qc_data$heatmap
 ```
 
 ### Metadata QC
@@ -129,7 +130,8 @@ do_umap(imputed_data,
 We will perform another QC check to ensure that everything is as expected after cleaning and imputing the data.
 
 ```{r}
-qc_summary_data(imputed_data, wide = TRUE, threshold = 0.7)
+qc_data <- qc_summary_data(imputed_data, wide = TRUE, threshold = 0.7)
+qc_data$heatmap
 ```
 
 ```{r}
@@ -179,7 +181,8 @@ lasso_res <- do_elnet(imputed_data,
                                    "auc", 
                                    "features",
                                    "top-features"),
-                      nfeatures = 12)
+                      nfeatures = 12,
+                      points = FALSE)
 
 lasso_res$AML$hypopt_res$hypopt_vis
 
@@ -217,7 +220,8 @@ intersect_proteins <- list(
 )
 
 # Search the literature for these proteins
-literature_search(intersect_proteins, max_articles = 5)
+search_results <- literature_search(intersect_proteins, max_articles = 5)
+search_results$`Acute Myeloid Leukemia`$ADA
 ```
 
 >📓 Remember that these data are a dummy-dataset with fake data.
