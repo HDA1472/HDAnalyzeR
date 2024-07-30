@@ -65,6 +65,8 @@ It can generate and save volcano plots.</p>
 <span>  <span class="va">olink_data</span>,</span>
 <span>  <span class="va">metadata</span>,</span>
 <span>  <span class="va">variable</span>,</span>
+<span>  correct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sex"</span><span class="op">)</span>,</span>
+<span>  correct_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"factor"</span><span class="op">)</span>,</span>
 <span>  wide <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  volcano <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  pval_lim <span class="op">=</span> <span class="fl">0.05</span>,</span>
@@ -91,6 +93,14 @@ It can generate and save volcano plots.</p>
 
 <dt id="arg-variable">variable<a class="anchor" aria-label="anchor" href="#arg-variable"></a></dt>
 <dd><p>(character). The variable of interest.</p></dd>
+
+
+<dt id="arg-correct">correct<a class="anchor" aria-label="anchor" href="#arg-correct"></a></dt>
+<dd><p>(character). The variables to correct the results with. Default is c("Sex").</p></dd>
+
+
+<dt id="arg-correct-type">correct_type<a class="anchor" aria-label="anchor" href="#arg-correct-type"></a></dt>
+<dd><p>(character). The type of the variables to correct the results with. Default is c("factor").</p></dd>
 
 
 <dt id="arg-wide">wide<a class="anchor" aria-label="anchor" href="#arg-wide"></a></dt>
@@ -131,7 +141,7 @@ It can generate and save volcano plots.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>de_results (list). A list with the differential expression results and volcano plots.</p><ul><li><p>de_results: A list with the differential expression results.</p></li>
+    <p>A list with the differential expression results and volcano plots.</p><ul><li><p>de_results: A list with the differential expression results.</p></li>
 <li><p>volcano_plots: A list with the volcano plots.</p></li>
 </ul></div>
 
@@ -139,23 +149,23 @@ It can generate and save volcano plots.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">do_limma_continuous</span><span class="op">(</span><span class="va">example_data</span>, <span class="va">example_metadata</span>, <span class="st">"Age"</span>, wide <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $de_results</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 100 × 10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Assay     logFC   CI.L   CI.R AveExpr     t   P.Value adj.P.Val     B sig    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AKT1S1   0.051<span style="text-decoration: underline;">3</span> 0.049<span style="text-decoration: underline;">7</span> 0.052<span style="text-decoration: underline;">9</span>    3.47  62.4 2.87<span style="color: #949494;">e</span><span style="color: #BB0000;">-254</span> 2.87<span style="color: #949494;">e</span><span style="color: #BB0000;">-252</span>  572. signif…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ADAMTS15 0.043<span style="text-decoration: underline;">5</span> 0.042<span style="text-decoration: underline;">0</span> 0.044<span style="text-decoration: underline;">9</span>    2.99  59.0 9.94<span style="color: #949494;">e</span><span style="color: #BB0000;">-243</span> 4.97<span style="color: #949494;">e</span><span style="color: #BB0000;">-241</span>  545. signif…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AARSD1   0.045<span style="text-decoration: underline;">9</span> 0.044<span style="text-decoration: underline;">3</span> 0.047<span style="text-decoration: underline;">5</span>    3.13  55.5 5.93<span style="color: #949494;">e</span><span style="color: #BB0000;">-230</span> 1.98<span style="color: #949494;">e</span><span style="color: #BB0000;">-228</span>  516. signif…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ATOX1    0.043<span style="text-decoration: underline;">9</span> 0.042<span style="text-decoration: underline;">4</span> 0.045<span style="text-decoration: underline;">5</span>    2.97  54.5 2.33<span style="color: #949494;">e</span><span style="color: #BB0000;">-228</span> 5.83<span style="color: #949494;">e</span><span style="color: #BB0000;">-227</span>  512. signif…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ATG4A    0.037<span style="text-decoration: underline;">3</span> 0.036<span style="text-decoration: underline;">0</span> 0.038<span style="text-decoration: underline;">7</span>    2.55  54.4 1.50<span style="color: #949494;">e</span><span style="color: #BB0000;">-226</span> 3.00<span style="color: #949494;">e</span><span style="color: #BB0000;">-225</span>  508. signif…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ADM      0.027<span style="text-decoration: underline;">3</span> 0.026<span style="text-decoration: underline;">3</span> 0.028<span style="text-decoration: underline;">4</span>    1.87  49.7 1.45<span style="color: #949494;">e</span><span style="color: #BB0000;">-211</span> 2.42<span style="color: #949494;">e</span><span style="color: #BB0000;">-210</span>  473. signif…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AKR1B1   0.033<span style="text-decoration: underline;">9</span> 0.032<span style="text-decoration: underline;">4</span> 0.035<span style="text-decoration: underline;">4</span>    2.29  44.3 6.18<span style="color: #949494;">e</span><span style="color: #BB0000;">-186</span> 8.82<span style="color: #949494;">e</span><span style="color: #BB0000;">-185</span>  414. signif…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AK1      0.034<span style="text-decoration: underline;">4</span> 0.032<span style="text-decoration: underline;">8</span> 0.035<span style="text-decoration: underline;">9</span>    2.34  43.5 1.36<span style="color: #949494;">e</span><span style="color: #BB0000;">-183</span> 1.70<span style="color: #949494;">e</span><span style="color: #BB0000;">-182</span>  409. signif…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ARHGEF12 0.047<span style="text-decoration: underline;">7</span> 0.045<span style="text-decoration: underline;">5</span> 0.049<span style="text-decoration: underline;">8</span>    3.26  43.2 2.20<span style="color: #949494;">e</span><span style="color: #BB0000;">-181</span> 2.44<span style="color: #949494;">e</span><span style="color: #BB0000;">-180</span>  404. signif…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ACY1     0.030<span style="text-decoration: underline;">5</span> 0.029<span style="text-decoration: underline;">1</span> 0.031<span style="text-decoration: underline;">9</span>    2.10  42.2 7.73<span style="color: #949494;">e</span><span style="color: #BB0000;">-178</span> 7.73<span style="color: #949494;">e</span><span style="color: #BB0000;">-177</span>  396. signif…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 100 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Assay        logFC as.factor.Sex.F as.factor.Sex.M AveExpr     F   P.Value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ADAMTS15 -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">149</span>            3.05            2.89    2.99 <span style="text-decoration: underline;">1</span>925. 2.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-294</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AARSD1    0.001<span style="text-decoration: underline;">90</span>             2.86            3.15    3.13 <span style="text-decoration: underline;">1</span>573. 3.26<span style="color: #949494;">e</span><span style="color: #BB0000;">-272</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AKT1S1    0.007<span style="text-decoration: underline;">08</span>             2.92            3.10    3.47 <span style="text-decoration: underline;">1</span>424. 3.61<span style="color: #949494;">e</span><span style="color: #BB0000;">-261</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ATOX1     0.009<span style="text-decoration: underline;">75</span>             2.27            2.43    2.97 <span style="text-decoration: underline;">1</span>192. 5.98<span style="color: #949494;">e</span><span style="color: #BB0000;">-245</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ATG4A     0.006<span style="text-decoration: underline;">28</span>             2.05            2.19    2.55 <span style="text-decoration: underline;">1</span>174. 1.24<span style="color: #949494;">e</span><span style="color: #BB0000;">-241</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ADM       0.002<span style="text-decoration: underline;">23</span>             1.74            1.67    1.87  982. 6.31<span style="color: #949494;">e</span><span style="color: #BB0000;">-227</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AK1       0.001<span style="text-decoration: underline;">28</span>             2.18            2.33    2.34  777. 5.32<span style="color: #949494;">e</span><span style="color: #BB0000;">-201</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AKR1B1    0.008<span style="text-decoration: underline;">19</span>             1.74            1.78    2.29  761. 1.48<span style="color: #949494;">e</span><span style="color: #BB0000;">-197</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ARHGEF12  0.008<span style="text-decoration: underline;">56</span>             2.53            2.89    3.26  730. 7.16<span style="color: #949494;">e</span><span style="color: #BB0000;">-194</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ATP5IF1   0.008<span style="text-decoration: underline;">09</span>             2.93            3.28    3.60  692. 3.77<span style="color: #949494;">e</span><span style="color: #BB0000;">-190</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 90 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: adj.P.Val &lt;dbl&gt;, sig &lt;chr&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $volcano_plots</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 15 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-plt img"><img src="do_limma_continuous-1.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
