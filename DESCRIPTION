@@ -57,6 +57,7 @@ Imports:
 Remotes: 
     bioc::clusterProfiler,
     bioc::limma
+    bioc::ReactomePA
 Suggests: 
     glmnet,
     knitr,
