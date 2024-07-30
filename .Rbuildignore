@@ -1,4 +1,4 @@
-..Rcheck
+
 ^renv$
 ^renv\.lock$
 ^Rpackage\.Rproj$
@@ -11,4 +11,4 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-^vignettes
+
