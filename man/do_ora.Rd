@@ -43,5 +43,5 @@ sig_up_proteins_aml <- de_res$de_results$AML |>
   dplyr::pull(Assay)
 
 # Perform ORA with GO database
-do_ora(sig_up_proteins_aml, database = "GO")
+do_ora(sig_up_proteins_aml, database = "GO", ncateg = 5)
 }

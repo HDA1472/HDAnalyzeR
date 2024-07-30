@@ -82,7 +82,7 @@ model, tests it, and plots useful the feature variable importance.
 # Create subset of example_data
 unique_samples <- unique(example_data$Sample)
 filtered_data <- example_data |>
- dplyr::filter(Sample \%in\% unique_samples[1:148])
+ dplyr::filter(Sample \%in\% unique_samples[1:100])
 
 # Run the elastic net model pipeline
 res <- do_elnet(filtered_data,

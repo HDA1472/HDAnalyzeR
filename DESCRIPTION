@@ -56,7 +56,7 @@ Imports:
     yardstick
 Remotes: 
     bioc::clusterProfiler,
-    bioc::limma
+    bioc::limma,
     bioc::ReactomePA
 Suggests: 
     glmnet,
