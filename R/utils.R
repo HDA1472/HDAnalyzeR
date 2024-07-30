@@ -124,8 +124,8 @@ import_df <- function(file_path) {
   file_extension <- tools::file_ext(file_path)
 
   df <- switch(tolower(file_extension),
-               csv = utils::read.csv(file_path, stringsAsFactors = FALSE),
-               tsv = utils::read.delim(file_path, stringsAsFactors = FALSE),
+               csv = readr::read_csv(file_path),
+               tsv = readr::read_tsv(file_path),
                txt = utils::read.table(file_path, header = TRUE, stringsAsFactors = FALSE),
                rda = { load(file_path); get(ls()[1]) },
                rds = readRDS(file_path),
