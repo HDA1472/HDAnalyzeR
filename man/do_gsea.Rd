@@ -4,19 +4,48 @@
 \alias{do_gsea}
 \title{Perform gene set enrichment analysis}
 \usage{
-do_gsea(de_results, database = c("KEGG", "GO"))
+do_gsea(
+  de_results,
+  database = c("KEGG", "GO", "Reactome"),
+  background = NULL,
+  pval_lim = 0.05,
+  ncateg = 10,
+  fontsize = 10
+)
 }
 \arguments{
-\item{de_results}{(list). A list containing the results of the differential expression analysis.}
+\item{de_results}{A tibble containing the results of a differential expression analysis.}
 
-\item{database}{(character). The database to perform the GSEA. It can be either "KEGG" or "GO".}
+\item{database}{The database to perform the GSEA. It can be either "KEGG", "GO", or "Reactome".}
+
+\item{background}{A character vector containing the background genes.}
+
+\item{pval_lim}{The p-value threshold to consider a term as significant.}
+
+\item{ncateg}{The number of categories to show in the plots.}
+
+\item{fontsize}{The font size for the plots.}
 }
 \value{
-enrichment_results (list). A list containing the results of the GSEA.
+A list containing the results of the GSEA.
 }
 \description{
 This function performs gene set enrichment analysis (GSEA) using the clusterProfiler package.
+It also produces useful plots to visualize the results.
+}
+\details{
+The ontology option used when database = "GO" is "ALL".
+When Reactome is used, background functionality is not available.
 }
 \examples{
-#enrichment_results <- do_gsea(de_results, database = "KEGG")
+# Run Differential Expression Analysis and extract results
+de_res <- do_limma(example_data, example_metadata, wide = FALSE)
+de_results <- de_res$de_results$AML
+
+# Run GSEA with Reactome database
+do_gsea(de_results,
+        database = "Reactome",
+        pval_lim = 0.9,  # Remember that the data is artificial
+        ncateg = 10,
+        fontsize = 10)
 }

@@ -4,12 +4,24 @@
 \alias{do_ora}
 \title{Perform over-representation analysis}
 \usage{
-do_ora(gene_list, database = c("KEGG", "GO"))
+do_ora(
+  gene_list,
+  database = c("KEGG", "GO", "Reactome"),
+  pval_lim = 0.05,
+  ncateg = 10,
+  fontsize = 10
+)
 }
 \arguments{
 \item{gene_list}{A character vector containing the gene names.}
 
-\item{database}{The database to perform the ORA. It can be either "KEGG" or "GO".}
+\item{database}{The database to perform the ORA. It can be either "KEGG", "GO", or "Reactome".}
+
+\item{pval_lim}{The p-value threshold to consider a term as significant.}
+
+\item{ncateg}{The number of categories to show in the plots.}
+
+\item{fontsize}{The font size for the plots.}
 }
 \value{
 A list containing the results of the ORA.
@@ -17,6 +29,9 @@ A list containing the results of the ORA.
 \description{
 \code{do_ora()} performs over-representation analysis (ORA) using the clusterProfiler package.
 It also produces useful plots to visualize the results.
+}
+\details{
+The ontology option used when database = "GO" is "BP" (Biological Process).
 }
 \examples{
 # Perform Differential Expression Analysis

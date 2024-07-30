@@ -34,6 +34,7 @@ Imports:
     org.Hs.eg.db,
     parsnip,
     purrr,
+    ReactomePA,
     readr,
     readxl,
     recipes,
