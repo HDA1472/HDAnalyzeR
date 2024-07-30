@@ -67,7 +67,10 @@ reference:
 - title: Post Analysis
   desc: |
     Functions that analyze the potential biormarkers and their biological impact further.
-  contents: literature_search
+  contents:
+  - literature_search
+  - do_ora
+  - do_gsea
 - title: Generic Utilities
   desc: |
     Functions that perform general tasks.
@@ -87,8 +90,3 @@ reference:
   contents:
   - example_data
   - example_metadata
-- title: Under Development
-  contents:
-  - do_ora
-  - do_gsea
-

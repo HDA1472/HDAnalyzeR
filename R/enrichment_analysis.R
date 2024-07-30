@@ -5,11 +5,15 @@ utils::globalVariables(c("ENTREZID"))
 #' It also produces useful plots to visualize the results.
 #'
 #' @param gene_list A character vector containing the gene names.
-#' @param database The database to perform the ORA. It can be either "KEGG" or "GO".
+#' @param database The database to perform the ORA. It can be either "KEGG", "GO", or "Reactome".
+#' @param pval_lim The p-value threshold to consider a term as significant.
+#' @param ncateg The number of categories to show in the plots.
+#' @param fontsize The font size for the plots.
 #'
 #' @return A list containing the results of the ORA.
 #' @export
 #'
+#' @details The ontology option used when database = "GO" is "BP" (Biological Process).
 #' @examples
 #' # Perform Differential Expression Analysis
 #' de_res <- do_limma(example_data, example_metadata, wide = FALSE)
@@ -20,8 +24,12 @@ utils::globalVariables(c("ENTREZID"))
 #'   dplyr::pull(Assay)
 #'
 #' # Perform ORA with GO database
-#' do_ora(sig_up_proteins_aml, database = "GO")
-do_ora <- function(gene_list, database = c("KEGG", "GO")) {
+#' do_ora(sig_up_proteins_aml, database = "GO", ncateg = 5)
+do_ora <- function(gene_list,
+                   database = c("KEGG", "GO", "Reactome"),
+                   pval_lim = 0.05,
+                   ncateg = 10,
+                   fontsize = 10) {
   database <- match.arg(database)
 
   # From gene name to ENTREZID
@@ -36,27 +44,42 @@ do_ora <- function(gene_list, database = c("KEGG", "GO")) {
     # Perform KEGG enrichment analysis
     enrichment <- clusterProfiler::enrichKEGG(gene = gene_list, organism = "hsa")
   } else if (database == "GO") {
-    # Perform GO enrichment analysis (Biological Process)
+    # Perform GO enrichment analysis
     enrichment <- clusterProfiler::enrichGO(gene = gene_list,
                                             OrgDb = org.Hs.eg.db::org.Hs.eg.db,
                                             ont = "BP")
+  } else if (database == "Reactome") {
+    # Perform Reactome enrichment analysis
+    enrichment <- ReactomePA::enrichPathway(gene = gene_list,
+                                            organism = "human",
+                                            pvalueCutoff = pval_lim)
   }
 
-  if (!any(enrichment@result$p.adjust < 0.05)) {
+  if (!any(enrichment@result$p.adjust < pval_lim)) {
     message("No significant terms found.")
     return(NULL)
   }
 
   # Visualize the results
-  dotplot <- clusterProfiler::dotplot(enrichment)
-  barplot <- barplot(enrichment, drop = TRUE,
-                     showCategory = 10,
-                     font.size = 8)
+  dotplot <- clusterProfiler::dotplot(enrichment,
+                                      showCategory = ncateg,
+                                      font.size = fontsize)
+
+  barplot <- barplot(enrichment,
+                     drop = TRUE,
+                     showCategory = ncateg,
+                     font.size = fontsize)
+
   goplot <- clusterProfiler::goplot(enrichment,
-                                    showCategory = 10)
+                                    showCategory = ncateg)
+
+  enrichment <- clusterProfiler::setReadable(enrichment, OrgDb = org.Hs.eg.db::org.Hs.eg.db)
   cnetplot <- clusterProfiler::cnetplot(enrichment,
+                                        showCategory = ncateg,
                                         categorySize = "pvalue",
-                                        color.params = list(foldChange = gene_list))
+                                        color.params = list(foldChange = gene_list),
+                                        cex.params = list(category_label = (fontsize + 2)/12,
+                                                          gene_label = (fontsize)/12))
 
   return(list("enrichment" = enrichment,
               "dotplot" = dotplot,
@@ -69,54 +92,130 @@ do_ora <- function(gene_list, database = c("KEGG", "GO")) {
 #' Perform gene set enrichment analysis
 #'
 #' This function performs gene set enrichment analysis (GSEA) using the clusterProfiler package.
+#' It also produces useful plots to visualize the results.
 #'
-#' @param de_results (list). A list containing the results of the differential expression analysis.
-#' @param database (character). The database to perform the GSEA. It can be either "KEGG" or "GO".
+#' @param de_results A tibble containing the results of a differential expression analysis.
+#' @param database The database to perform the GSEA. It can be either "KEGG", "GO", or "Reactome".
+#' @param background A character vector containing the background genes.
+#' @param pval_lim The p-value threshold to consider a term as significant.
+#' @param ncateg The number of categories to show in the plots.
+#' @param fontsize The font size for the plots.
 #'
-#' @return enrichment_results (list). A list containing the results of the GSEA.
+#' @return A list containing the results of the GSEA.
 #' @export
 #'
+#' @details The ontology option used when database = "GO" is "ALL".
+#' When Reactome is used, background functionality is not available.
 #' @examples
-#' #enrichment_results <- do_gsea(de_results, database = "KEGG")
-do_gsea <- function(de_results, database = c("KEGG", "GO")) {
+#' # Run Differential Expression Analysis and extract results
+#' de_res <- do_limma(example_data, example_metadata, wide = FALSE)
+#' de_results <- de_res$de_results$AML
+#'
+#' # Run GSEA with Reactome database
+#' do_gsea(de_results,
+#'         database = "Reactome",
+#'         pval_lim = 0.9,  # Remember that the data is artificial
+#'         ncateg = 10,
+#'         fontsize = 10)
+do_gsea <- function(de_results,
+                    database = c("KEGG", "GO", "Reactome"),
+                    background = NULL,
+                    pval_lim = 0.05,
+                    ncateg = 10,
+                    fontsize = 10) {
   database <- match.arg(database)
-  diseases <- de_results$de_results |> names()
-  enrichment_results <- list()
 
-  for (disease in diseases) {
-    protein_list <- stats::setNames(de_results$de_results[[disease]]$logFC,
-                                    de_results$de_results[[disease]]$Assay)
-    sorted_proteins <- sort(protein_list, decreasing = TRUE)
+  # Prepare sorted_protein_list
+  protein_list <- stats::setNames(de_results$logFC,
+                                  de_results$Assay)
+  sorted_protein_list <- sort(protein_list, decreasing = TRUE)
 
-    # From gene name to ENTREZID
-    protein_conversion <- clusterProfiler::bitr(names(sorted_proteins),
-                                                fromType = "SYMBOL",
-                                                toType = "ENTREZID",
-                                                OrgDb = org.Hs.eg.db::org.Hs.eg.db)
+  # From gene name to ENTREZID
+  protein_conversion <- clusterProfiler::bitr(names(sorted_protein_list),
+                                              fromType = "SYMBOL",
+                                              toType = "ENTREZID",
+                                              OrgDb = org.Hs.eg.db::org.Hs.eg.db)
 
-    protein_list <- stats::setNames(sorted_proteins, protein_conversion$ENTREZID)
+  protein_list <- stats::setNames(sorted_protein_list, protein_conversion$ENTREZID)
 
-    if (database == "KEGG") {
-      # Perform GSEA for KEGG
+  if (database == "KEGG") {
+    # Perform GSEA for KEGG
+    if (!is.null(background)) {
       enrichment <- clusterProfiler::gseKEGG(geneList = protein_list,
                                              organism = "hsa",
-                                             pvalueCutoff = 0.05,
+                                             pvalueCutoff = pval_lim,
+                                             pAdjustMethod = "BH",
+                                             universe = background,
+                                             minGSSize = 10,
+                                             maxGSSize = 500)
+    } else {
+      enrichment <- clusterProfiler::gseKEGG(geneList = protein_list,
+                                             organism = "hsa",
+                                             pvalueCutoff = pval_lim,
                                              pAdjustMethod = "BH",
                                              minGSSize = 10,
                                              maxGSSize = 500)
-    } else if (database == "GO") {
-      # Perform GSEA for GO (Biological Process)
-      enrichment <- clusterProfiler::gseGO(geneList = protein_list,
-                                           OrgDb = org.Hs.eg.db::org.Hs.eg.db,
-                                           ont = "BP",
-                                           pvalueCutoff = 0.05,
-                                           pAdjustMethod = "BH",
-                                           minGSSize = 10,
-                                           maxGSSize = 500)
     }
-
-    enrichment_results[[disease]] <- enrichment
+  } else if (database == "GO") {
+    # Perform GSEA for GO
+    if (!is.null(background)) {
+      enrichment <- clusterProfiler::gseGO(geneList = protein_list,
+                                         OrgDb = org.Hs.eg.db::org.Hs.eg.db,
+                                         ont = "BP",
+                                         pvalueCutoff = pval_lim,
+                                         pAdjustMethod = "BH",
+                                         universe = background,
+                                         minGSSize = 10,
+                                         maxGSSize = 500)
+    } else {
+      enrichment <- clusterProfiler::gseGO(geneList = protein_list,
+                                         OrgDb = org.Hs.eg.db::org.Hs.eg.db,
+                                         ont = "BP",
+                                         pvalueCutoff = pval_lim,
+                                         pAdjustMethod = "BH",
+                                         minGSSize = 10,
+                                         maxGSSize = 500)
+    }
+  } else if (database == "Reactome") {
+    # Perform GSEA for Reactome
+    enrichment <- ReactomePA::gsePathway(protein_list,
+                                         organism = "human",
+                                         pvalueCutoff = pval_lim,
+                                         pAdjustMethod = "BH",
+                                         verbose = FALSE)
   }
 
-  return(enrichment_results)
+  if (!any(enrichment@result$p.adjust < pval_lim)) {
+    message("No significant terms found.")
+    return(NULL)
+  }
+
+  # Visualize the results
+  dotplot <- clusterProfiler::dotplot(enrichment,
+                                      showCategory = ncateg,
+                                      font.size = fontsize,
+                                      split=".sign") +
+    ggplot2::facet_grid(.~.sign)
+
+  ridgeplot <- clusterProfiler::ridgeplot(enrichment) +
+    ggplot2::labs(x = "enrichment distribution")
+
+  gseaplot <- clusterProfiler::gseaplot(enrichment,
+                                        by = "all",
+                                        title = enrichment$Description[1],
+                                        geneSetID = 1)
+
+  enrichment <- clusterProfiler::setReadable(enrichment, OrgDb = org.Hs.eg.db::org.Hs.eg.db)
+  cnetplot <- clusterProfiler::cnetplot(enrichment,
+                                        showCategory = ncateg,
+                                        categorySize = "pvalue",
+                                        color.params = list(foldChange = protein_list),
+                                        cex.params = list(category_label = (fontsize + 2)/12,
+                                                          gene_label = (fontsize)/12))
+
+  return(list("enrichment" = enrichment,
+              "dotplot" = dotplot,
+              "cnetplot" = cnetplot,
+              "ridgeplot" = ridgeplot,
+              "gseaplot" = gseaplot))
 }
