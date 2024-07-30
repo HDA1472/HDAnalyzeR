@@ -736,6 +736,71 @@ AML.</p>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-17-2.png" width="700"></p>
 </div>
 </div>
+<div class="section level2">
+<h2 id="one-step-further">One step further<a class="anchor" aria-label="anchor" href="#one-step-further"></a>
+</h2>
+<p>The final step involves performing an Over-Representation Analysis
+for the up-regulated proteins from differential expression, that are
+also identified as features by the ML model. In this example, we will
+use the Gene Ontology (GO) database.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Extract the proteins identified by both DE and Lasso</span></span>
+<span><span class="va">de_proteins</span> <span class="op">&lt;-</span> <span class="va">de_res</span><span class="op">$</span><span class="va">de_results</span><span class="op">$</span><span class="va">AML</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sig</span> <span class="op">==</span> <span class="st">"significant up"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">Assay</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lasso_proteins</span> <span class="op">&lt;-</span> <span class="va">lasso_res</span><span class="op">$</span><span class="va">AML</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">features</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Scaled_Importance</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">Variable</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">intersect_proteins</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">de_proteins</span>, <span class="va">lasso_proteins</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Perform ORA with GO database</span></span>
+<span><span class="fu"><a href="../reference/do_ora.html">do_ora</a></span><span class="op">(</span><span class="va">intersect_proteins</span>, database <span class="op">=</span> <span class="st">"GO"</span>, ncateg <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 'select()' returned 1:1 mapping between keys and columns</span></span>
+<span><span class="co">#&gt; $enrichment</span></span>
+<span><span class="co">#&gt; #</span></span>
+<span><span class="co">#&gt; # over-representation test</span></span>
+<span><span class="co">#&gt; #</span></span>
+<span><span class="co">#&gt; #...@organism     Homo sapiens </span></span>
+<span><span class="co">#&gt; #...@ontology     BP </span></span>
+<span><span class="co">#&gt; #...@keytype      ENTREZID </span></span>
+<span><span class="co">#&gt; #...@gene     chr [1:10] "100" "328" "9048" "9289" "25" "9296" "191" "267" "405" "30817"</span></span>
+<span><span class="co">#&gt; #...pvalues adjusted by 'BH' with cutoff &lt;0.05 </span></span>
+<span><span class="co">#&gt; #...5 enriched terms found</span></span>
+<span><span class="co">#&gt; 'data.frame':    5 obs. of  9 variables:</span></span>
+<span><span class="co">#&gt;  $ ID         : chr  "GO:0048534" "GO:0048872" "GO:0050900" "GO:0002520" ...</span></span>
+<span><span class="co">#&gt;  $ Description: chr  "hematopoietic or lymphoid organ development" "homeostasis of number of cells" "leukocyte migration" "immune system development" ...</span></span>
+<span><span class="co">#&gt;  $ GeneRatio  : chr  "3/10" "4/10" "4/10" "3/10" ...</span></span>
+<span><span class="co">#&gt;  $ BgRatio    : chr  "98/18888" "322/18888" "396/18888" "197/18888" ...</span></span>
+<span><span class="co">#&gt;  $ pvalue     : num  1.58e-05 1.61e-05 3.62e-05 1.27e-04 1.40e-04</span></span>
+<span><span class="co">#&gt;  $ p.adjust   : num  0.00625 0.00625 0.00938 0.02182 0.02182</span></span>
+<span><span class="co">#&gt;  $ qvalue     : num  0.00308 0.00308 0.00463 0.01078 0.01078</span></span>
+<span><span class="co">#&gt;  $ geneID     : chr  "ADA/ARTN/ABL1" "ADA/ADGRG1/ABL1/ARNT" "ADA/ARTN/ABL1/ADGRE2" "ADA/ARTN/ABL1" ...</span></span>
+<span><span class="co">#&gt;  $ Count      : int  3 4 4 3 2</span></span>
+<span><span class="co">#&gt; #...Citation</span></span>
+<span><span class="co">#&gt;  T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu.</span></span>
+<span><span class="co">#&gt;  clusterProfiler 4.0: A universal enrichment tool for interpreting omics data.</span></span>
+<span><span class="co">#&gt;  The Innovation. 2021, 2(3):100141 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $dotplot</span></span></code></pre></div>
+<p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
+<pre><code><span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $barplot</span></span></code></pre>
+<p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-18-2.png" width="700"></p>
+<pre><code><span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $goplot</span></span></code></pre>
+<p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-18-3.png" width="700"></p>
+<pre><code><span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $cnetplot</span></span></code></pre>
+<p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-18-4.png" width="700"></p>
+<blockquote>
+<p>📓 Remember that these data are a dummy-dataset with fake data.</p>
+</blockquote>
+</div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
