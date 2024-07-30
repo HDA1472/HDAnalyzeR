@@ -199,9 +199,9 @@ elnet_hypopt <- function(train_data,
                          exclude_cols = NULL,
                          seed = 123) {
 
-  # if (ncores > 1) {
-  #   doParallel::registerDoParallel(cores = ncores)
-  # }
+  if (ncores > 1) {
+    doParallel::registerDoParallel(cores = ncores)
+  }
 
   # Prepare train data and create cross-validation sets with binary classifier
   train_set <- train_data[[disease]] |>
@@ -253,7 +253,7 @@ elnet_hypopt <- function(train_data,
   roc_res <- yardstick::metric_set(yardstick::roc_auc)
 
   set.seed(seed)
-  ctrl <- tune::control_grid(save_pred = TRUE)
+  ctrl <- tune::control_grid(save_pred = TRUE, parallel_over = "everything")
   elnet_tune <- elnet_wf |>
     tune::tune_grid(
       train_folds,
@@ -318,9 +318,9 @@ rf_hypopt <- function(train_data,
                       exclude_cols = NULL,
                       seed = 123) {
 
-  # if (ncores > 1) {
-  #   doParallel::registerDoParallel(cores = ncores)
-  # }
+  if (ncores > 1) {
+    doParallel::registerDoParallel(cores = ncores)
+  }
 
   # Prepare train data and create cross-validation sets with binary classifier
   train_set <- train_data[[disease]] |>
@@ -366,7 +366,7 @@ rf_hypopt <- function(train_data,
   roc_res <- yardstick::metric_set(yardstick::roc_auc)
 
   set.seed(seed)
-  ctrl <- tune::control_grid(save_pred = TRUE)
+  ctrl <- tune::control_grid(save_pred = TRUE, parallel_over = "everything")
   rf_tune <- rf_wf |>
     tune::tune_grid(
       train_folds,
