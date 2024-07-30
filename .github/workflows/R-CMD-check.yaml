@@ -38,8 +38,6 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-      - name: r-lib/actions/set future.globals.maxSize
-        run: echo "options(future.globals.maxSize = 800 * 1024^2)" >> ~/.Rprofile
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck

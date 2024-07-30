@@ -114,9 +114,7 @@ do_ora <- function(gene_list,
 #' # Run GSEA with Reactome database
 #' do_gsea(de_results,
 #'         database = "GO",
-#'         pval_lim = 0.9,  # Remember that the data is artificial
-#'         ncateg = 10,
-#'         fontsize = 10)
+#'         pval_lim = 0.9)  # Remember that the data is artificial
 do_gsea <- function(de_results,
                     database = c("KEGG", "GO", "Reactome"),
                     background = NULL,
