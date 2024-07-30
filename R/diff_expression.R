@@ -118,27 +118,43 @@ do_limma_de <- function(join_data,
 #' The output dataframe includes the logFC, the p-values, as well as the adjusted p-values with FDR.
 #' The function removes the NAs from the columns that are used to correct for.
 #'
-#' @param join_data (tibble). A tibble with the Olink data in wide format joined with metadata.
-#' @param variable (character). The variable of interest.
-#' @param pval_lim (numeric). The p-value limit for significance. Default is 0.05.
-#' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
+#' @param join_data A tibble with the Olink data in wide format joined with metadata.
+#' @param variable The variable of interest.
+#' @param correct The variables to correct the results with. Default is c("Sex").
+#' @param correct_type The type of the variables to correct the results with. Default is c("factor").
+#' @param pval_lim The p-value limit for significance. Default is 0.05.
+#' @param logfc_lim The logFC limit for significance. Default is 0.
 #'
-#' @return de_res (tibble). A tibble with the differential expression results.
+#' @return A tibble with the differential expression results.
 #' @keywords internal
 do_limma_continuous_de <- function(join_data,
                                    variable,
+                                   correct = c("Sex"),
+                                   correct_type = c("factor"),
                                    pval_lim = 0.05,
                                    logfc_lim = 0) {
 
   join_data <- join_data |>
-    dplyr::filter(!dplyr::if_any(dplyr::all_of(c(variable)), is.na))  # Remove NAs from columns in formula
+    dplyr::filter(!dplyr::if_any(dplyr::all_of(c(variable, correct)), is.na))  # Remove NAs from columns in formula
 
   # Design a model
-  design <- stats::model.matrix(~0 + join_data[[variable]])
+  formula <- paste("~0 +" , variable)
+
+  if (!is.null(correct)) {
+    for (i in 1:length(correct)) {
+      if (correct_type[i] == "factor") {
+        cofactor = paste("as.factor(", correct[i], ")")
+      } else {
+        cofactor = correct[i]
+      }
+      formula <- paste(formula, "+", cofactor)
+    }
+  }
+  design <- stats::model.matrix(stats::as.formula(formula), data = join_data)
 
   # Fit linear model to each protein assay
   data_fit <- join_data |>
-    dplyr::select(-dplyr::any_of(c("Disease", "Sex", "Age", "BMI"))) |>
+    dplyr::select(-dplyr::any_of(c(variable, correct))) |>
     tibble::column_to_rownames("DAid") |>
     t()
 
@@ -156,6 +172,7 @@ do_limma_continuous_de <- function(join_data,
 
   de_res <- de_results |>
     tibble::as_tibble(rownames = "Assay") |>
+    dplyr::rename(logFC = colnames(de_results)[1]) |>
     dplyr::mutate(sig = dplyr::case_when(
       adj.P.Val < pval_lim & logFC < -logfc_lim ~ "significant down",
       adj.P.Val < pval_lim & logFC > logfc_lim ~ "significant up",
@@ -443,6 +460,8 @@ do_limma <- function(olink_data,
 #' @param olink_data (tibble). A tibble with the Olink data in wide format.
 #' @param metadata (tibble). A tibble with the metadata.
 #' @param variable (character). The variable of interest.
+#' @param correct (character). The variables to correct the results with. Default is c("Sex").
+#' @param correct_type (character). The type of the variables to correct the results with. Default is c("factor").
 #' @param wide (logical). If the data is in wide format. Default is TRUE.
 #' @param volcano (logical). Generate volcano plots. Default is TRUE.
 #' @param pval_lim (numeric). The p-value limit for significance. Default is 0.05.
@@ -453,7 +472,7 @@ do_limma <- function(olink_data,
 #' @param subtitle (logical). If the subtitle should be displayed. Default is TRUE.
 #' @param save (logical). Save the volcano plots. Default is FALSE.
 #'
-#' @return de_results (list). A list with the differential expression results and volcano plots.
+#' @return A list with the differential expression results and volcano plots.
 #'   - de_results: A list with the differential expression results.
 #'   - volcano_plots: A list with the volcano plots.
 #' @export
@@ -463,6 +482,8 @@ do_limma <- function(olink_data,
 do_limma_continuous <- function(olink_data,
                                 metadata,
                                 variable,
+                                correct = c("Sex"),
+                                correct_type = c("factor"),
                                 wide = TRUE,
                                 volcano = TRUE,
                                 pval_lim = 0.05,
@@ -479,17 +500,19 @@ do_limma_continuous <- function(olink_data,
       dplyr::select(DAid, Assay, NPX) |>
       tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
       dplyr::left_join(
-        metadata |> dplyr::select(dplyr::any_of(c("DAid", variable))),
+        metadata |> dplyr::select(dplyr::any_of(c("DAid", variable, correct))),
         by = "DAid")
   } else {
     join_data <- olink_data |> dplyr::left_join(
-      metadata |> dplyr::select(dplyr::any_of(c("DAid", variable))),
+      metadata |> dplyr::select(dplyr::any_of(c("DAid", variable, correct))),
       by = "DAid")
   }
 
   # Run differential expression analysis
   de_results <- do_limma_continuous_de(join_data,
                                        variable,
+                                       correct,
+                                       correct_type,
                                        pval_lim,
                                        logfc_lim)
 

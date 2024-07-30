@@ -4,19 +4,30 @@
 \alias{do_limma_continuous_de}
 \title{Differential expression analysis with limma for continuous variable}
 \usage{
-do_limma_continuous_de(join_data, variable, pval_lim = 0.05, logfc_lim = 0)
+do_limma_continuous_de(
+  join_data,
+  variable,
+  correct = c("Sex"),
+  correct_type = c("factor"),
+  pval_lim = 0.05,
+  logfc_lim = 0
+)
 }
 \arguments{
-\item{join_data}{(tibble). A tibble with the Olink data in wide format joined with metadata.}
+\item{join_data}{A tibble with the Olink data in wide format joined with metadata.}
 
-\item{variable}{(character). The variable of interest.}
+\item{variable}{The variable of interest.}
 
-\item{pval_lim}{(numeric). The p-value limit for significance. Default is 0.05.}
+\item{correct}{The variables to correct the results with. Default is c("Sex").}
 
-\item{logfc_lim}{(numeric). The logFC limit for significance. Default is 0.}
+\item{correct_type}{The type of the variables to correct the results with. Default is c("factor").}
+
+\item{pval_lim}{The p-value limit for significance. Default is 0.05.}
+
+\item{logfc_lim}{The logFC limit for significance. Default is 0.}
 }
 \value{
-de_res (tibble). A tibble with the differential expression results.
+A tibble with the differential expression results.
 }
 \description{
 This function performs differential expression analysis using limma for a continuous variable.

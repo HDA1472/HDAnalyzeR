@@ -8,6 +8,8 @@ do_limma_continuous(
   olink_data,
   metadata,
   variable,
+  correct = c("Sex"),
+  correct_type = c("factor"),
   wide = TRUE,
   volcano = TRUE,
   pval_lim = 0.05,
@@ -25,6 +27,10 @@ do_limma_continuous(
 \item{metadata}{(tibble). A tibble with the metadata.}
 
 \item{variable}{(character). The variable of interest.}
+
+\item{correct}{(character). The variables to correct the results with. Default is c("Sex").}
+
+\item{correct_type}{(character). The type of the variables to correct the results with. Default is c("factor").}
 
 \item{wide}{(logical). If the data is in wide format. Default is TRUE.}
 
@@ -45,7 +51,7 @@ do_limma_continuous(
 \item{save}{(logical). Save the volcano plots. Default is FALSE.}
 }
 \value{
-de_results (list). A list with the differential expression results and volcano plots.
+A list with the differential expression results and volcano plots.
 \itemize{
 \item de_results: A list with the differential expression results.
 \item volcano_plots: A list with the volcano plots.
