@@ -117,68 +117,61 @@ When Reactome is used, background functionality is not available.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Run GSEA with Reactome database</span></span></span>
 <span class="r-in"><span><span class="fu">do_gsea</span><span class="op">(</span><span class="va">de_results</span>,</span></span>
-<span class="r-in"><span>        database <span class="op">=</span> <span class="st">"Reactome"</span>,</span></span>
+<span class="r-in"><span>        database <span class="op">=</span> <span class="st">"GO"</span>,</span></span>
 <span class="r-in"><span>        pval_lim <span class="op">=</span> <span class="fl">0.9</span>,  <span class="co"># Remember that the data is artificial</span></span></span>
 <span class="r-in"><span>        ncateg <span class="op">=</span> <span class="fl">10</span>,</span></span>
 <span class="r-in"><span>        fontsize <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'select()' returned 1:1 mapping between keys and columns</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: org.Hs.eg.db</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: AnnotationDbi</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: stats4</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocGenerics</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘BiocGenerics’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:dplyr’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     combine, intersect, setdiff, union</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     IQR, mad, sd, var, xtabs</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     Filter, Find, Map, Position, Reduce, anyDuplicated, aperm, append,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     as.data.frame, basename, cbind, colnames, dirname, do.call,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     duplicated, eval, evalq, get, grep, grepl, intersect, is.unsorted,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     lapply, mapply, match, mget, order, paste, pmax, pmax.int, pmin,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     pmin.int, rank, rbind, rownames, sapply, setdiff, table, tapply,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     union, unique, unsplit, which.max, which.min</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: Biobase</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Welcome to Bioconductor</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     Vignettes contain introductory material; view with</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     'browseVignettes()'. To cite Bioconductor, see</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     'citation("Biobase")', and for packages 'citation("pkgname")'.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: IRanges</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: S4Vectors</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘S4Vectors’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:Matrix’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     expand, unname</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:dplyr’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     first, rename</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:utils’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     findMatches</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     I, expand.grid, unname</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘IRanges’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:dplyr’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     collapse, desc, slice</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘AnnotationDbi’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:dplyr’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     select</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> no term enriched under specific pvalueCutoff...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No significant terms found.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> using 'fgsea' for GSEA analysis, please cite Korotkevich et al (2019).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> preparing geneSet collections...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GSEA analysis...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> leading edge analysis...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> done...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $enrichment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # Gene Set Enrichment Analysis</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...@organism 	 Homo sapiens </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...@setType 	 BP </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...@keytype 	 ENTREZID </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...@geneList 	 Named num [1:100] 1.57 1.45 1.4 1.2 1.11 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "names")= chr [1:100] "566" "328" "100" "9289" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...nPerm 	 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...pvalues adjusted by 'BH' with cutoff &lt;0.9 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...262 enriched terms found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	262 obs. of  11 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ID             : chr  "GO:0045184" "GO:0048585" "GO:0051641" "GO:0008104" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Description    : chr  "establishment of protein localization" "negative regulation of response to stimulus" "cellular localization" "protein localization" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ setSize        : int  10 18 25 15 15 19 42 10 13 14 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ enrichmentScore: num  -0.713 0.672 -0.553 -0.614 -0.614 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ NES            : num  -1.72 1.68 -1.66 -1.66 -1.66 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pvalue         : num  0.01764 0.00381 0.01233 0.04138 0.04138 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ p.adjust       : num  0.59 0.59 0.59 0.59 0.59 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ qvalue         : num  0.573 0.573 0.573 0.573 0.573 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ rank           : num  10 23 10 10 10 14 15 19 23 9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ leading_edge   : chr  "tags=30%, list=10%, signal=30%" "tags=50%, list=23%, signal=47%" "tags=24%, list=10%, signal=29%" "tags=27%, list=10%, signal=28%" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ core_enrichment: chr  "ATP5IF1/ATG4A/ANGPT1" "ADA/ANGPT2/ABL1/AIF1/ARID4B/AMFR/ACE2/ARHGAP25/ARNT" "ATP5IF1/ANXA3/AGR2/ATG4A/APP/ANGPT1" "ATP5IF1/AGR2/ATG4A/ANGPT1" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...Citation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  clusterProfiler 4.0: A universal enrichment tool for interpreting omics data.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  The Innovation. 2021, 2(3):100141 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $dotplot</span>
+<span class="r-plt img"><img src="do_gsea-1.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cnetplot</span>
+<span class="r-plt img"><img src="do_gsea-2.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ridgeplot</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 0.198</span>
+<span class="r-plt img"><img src="do_gsea-3.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gseaplot</span>
+<span class="r-plt img"><img src="do_gsea-4.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
