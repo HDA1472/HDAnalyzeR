@@ -722,7 +722,7 @@ plot_var_imp <- function (finalfit_res,
 #' # Create subset of example_data
 #' unique_samples <- unique(example_data$Sample)
 #' filtered_data <- example_data |>
-#'  dplyr::filter(Sample %in% unique_samples[1:100])
+#'  dplyr::filter(Sample %in% unique_samples[1:148])
 #'
 #' # Run the elastic net model pipeline
 #' res <- do_elnet(filtered_data,
@@ -888,7 +888,7 @@ do_elnet <- function(olink_data,
 #' # Create subset of example_data
 #' unique_samples <- unique(example_data$Sample)
 #' filtered_data <- example_data |>
-#'  dplyr::filter(Sample %in% unique_samples[1:100])
+#'  dplyr::filter(Sample %in% unique_samples[1:148])
 #'
 #' # Run the random forest model pipeline
 #' res <- do_rf(filtered_data,
@@ -1035,7 +1035,7 @@ do_rf <- function(olink_data,
 #' # Create subset of example_data
 #' unique_samples <- unique(example_data$Sample)
 #' filtered_data <- example_data |>
-#'  dplyr::filter(Sample %in% unique_samples[1:100])
+#'  dplyr::filter(Sample %in% unique_samples[1:148])
 #'
 #' # Run the elastic net model pipeline
 #' res <- do_elnet(filtered_data,

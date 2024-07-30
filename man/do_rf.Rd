@@ -79,7 +79,7 @@ model, tests it, and plots useful the feature variable importance.
 # Create subset of example_data
 unique_samples <- unique(example_data$Sample)
 filtered_data <- example_data |>
- dplyr::filter(Sample \%in\% unique_samples[1:100])
+ dplyr::filter(Sample \%in\% unique_samples[1:148])
 
 # Run the random forest model pipeline
 res <- do_rf(filtered_data,

@@ -35,7 +35,7 @@ literature_search <- function(prot_dis_list, max_articles = 10) {
     articles_database[[disease]] <- list()
     for (protein in proteins[[disease]]) {
       # Collect articles from PubMed
-      ids <- easyPubMed::get_pubmed_ids(paste0(protein, '[All Fields] AND "', disease, '[All Fields]"'))
+      ids <- easyPubMed::get_pubmed_ids(paste0(protein, '[All Fields] AND ', disease, '[All Fields]'))
       message(paste0("Searching for articles on ", protein, " and ", disease))
       abstracts_xml <- easyPubMed::fetch_pubmed_data(pubmed_id_list = ids, retmax = max_articles)
 
