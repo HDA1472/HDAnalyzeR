@@ -7,6 +7,7 @@
 do_ttest(
   olink_data,
   metadata,
+  case,
   wide = TRUE,
   only_female = NULL,
   only_male = NULL,
@@ -24,6 +25,8 @@ do_ttest(
 \item{olink_data}{A tibble with the Olink data in wide format.}
 
 \item{metadata}{A tibble with the metadata.}
+
+\item{case}{The case group.}
 
 \item{wide}{If the data is in wide format. Default is TRUE.}
 
@@ -61,11 +64,11 @@ perform a t-test or Wilcoxon test respectively. It also performs p value FDR adj
 It can generate and save volcano plots.
 }
 \examples{
-de_results <- do_ttest(example_data, example_metadata, wide = FALSE)
+de_results <- do_ttest(example_data, example_metadata, "AML", wide = FALSE)
 
 # Results for AML
-de_results$de_results$AML
+de_results$de_results
 
 # Volcano plot for AML
-de_results$volcano_plots$AML
+de_results$volcano_plot
 }

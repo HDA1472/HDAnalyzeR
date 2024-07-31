@@ -1027,6 +1027,8 @@ do_rf <- function(olink_data,
 #'                     example_metadata,
 #'                     "AML",
 #'                     wide = FALSE,
+#'                     only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                     only_male = "PRC",
 #'                     cv_sets = 2,
 #'                     grid_size = 1,
 #'                     ncores = 1)

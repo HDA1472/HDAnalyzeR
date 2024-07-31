@@ -143,30 +143,63 @@ qc_summary_metadata(clean_metadata, disease_palette = "cancers12")
 
 ### Differential Expression Analysis
 
-We will run a differential expression analysis to identify potential biomarkers. We will use `do_limma()` so that we will be able to correct also for Age. This method will help us pinpoint proteins that are significantly different between conditions. We will present only the results for AML (Acute Myeloid Leukemia).
+We will run a differential expression analysis to identify potential biomarkers. We will use `do_limma()` so that we will be able to correct also for Age. This method will help us pinpoint proteins that are significantly different between conditions. We will present only the results for AML (Acute Myeloid Leukemia), BRC (Breast Cancer), and PRC (Prostate Cancer).
 
 ```{r}
-de_res <- do_limma(imputed_data, 
-                   clean_metadata,
-                   correct = c("Sex", "Age"),
-                   correct_type = c("factor", "numeric"),
-                   only_female = c("BRC", "OVC", "CVX", "ENDC"),
-                   only_male = "PRC")
+de_res_aml <- do_limma(imputed_data, 
+                       clean_metadata,
+                       "AML",
+                       correct = c("Sex", "Age"),
+                       correct_type = c("factor", "numeric"),
+                       only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                       only_male = "PRC")
 
-de_res$de_results$AML
+de_res_aml$de_results
 
-de_res$volcano_plots$AML
+de_res_aml$volcano_plot
 ```
 
-We can also summarize the results via `plot_de_summary()`.
+```{r}
+de_res_brc <- do_limma(imputed_data, 
+                       clean_metadata,
+                       "BRC",
+                       correct = c("Sex", "Age"),
+                       correct_type = c("factor", "numeric"),
+                       only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                       only_male = "PRC")
+
+de_res_brc$de_results
+
+de_res_brc$volcano_plot
+```
 
 ```{r}
+de_res_prc <- do_limma(imputed_data, 
+                       clean_metadata,
+                       "PRC",
+                       correct = c("Sex", "Age"),
+                       correct_type = c("factor", "numeric"),
+                       only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                       only_male = "PRC")
+
+de_res_prc$de_results
+
+de_res_prc$volcano_plot
+```
+
+We can also summarize the results via `plot_de_summary()`.  In order to use this function we need to store the results in a list.
+
+```{r}
+de_res <- list("AML" = de_res_aml, 
+                  "BRC" = de_res_brc, 
+                  "PRC" = de_res_prc)
+
 plot_de_summary(de_res, disease_palette = "cancers12")
 ```
 
 ### Lasso Machine Learning Classification Model
 
-In addition to differential expression analysis, we will use a Lasso machine learning classification model to identify significant features. This model will help us understand which proteins are most predictive of the conditions being studied. We will present only the results for AML, BRC and PRC.
+In addition to differential expression analysis, we will use a Lasso machine learning classification model to identify significant features. This model will help us understand which proteins are most predictive of the conditions being studied. Once again, we will present only the results for AML, BRC and, PRC.
 
 ```{r}
 lasso_res_aml <- do_elnet(imputed_data, 

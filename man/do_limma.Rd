@@ -7,6 +7,7 @@
 do_limma(
   olink_data,
   metadata,
+  case,
   correct = c("Sex", "Age"),
   correct_type = c("factor", "numeric"),
   wide = TRUE,
@@ -26,6 +27,8 @@ do_limma(
 \item{olink_data}{A tibble with the Olink data in wide format.}
 
 \item{metadata}{A tibble with the metadata.}
+
+\item{case}{The case group.}
 
 \item{correct}{The variables to correct the results with. Default c("Sex", "Age").}
 
@@ -72,11 +75,11 @@ For sex-specific diseases, there will be no correction for Sex.
 This is performed automatically by the function.
 }
 \examples{
-de_results <- do_limma(example_data, example_metadata, wide = FALSE)
+de_results <- do_limma(example_data, example_metadata, "AML", wide = FALSE)
 
 # Results for AML
-de_results$de_results$AML
+de_results$de_results
 
 # Volcano plot for AML
-de_results$volcano_plots$AML
+de_results$volcano_plot
 }

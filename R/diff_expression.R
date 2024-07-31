@@ -350,6 +350,7 @@ plot_volcano <- function(de_result,
 #'
 #' @param olink_data A tibble with the Olink data in wide format.
 #' @param metadata A tibble with the metadata.
+#' @param case The case group.
 #' @param correct The variables to correct the results with. Default c("Sex", "Age").
 #' @param correct_type The type of the variables to correct the results with. Default c("factor", "numeric", "numeric").
 #' @param wide If the data is in wide format. Default is TRUE.
@@ -373,15 +374,16 @@ plot_volcano <- function(de_result,
 #' This is performed automatically by the function.
 #'
 #' @examples
-#' de_results <- do_limma(example_data, example_metadata, wide = FALSE)
+#' de_results <- do_limma(example_data, example_metadata, "AML", wide = FALSE)
 #'
 #' # Results for AML
-#' de_results$de_results$AML
+#' de_results$de_results
 #'
 #' # Volcano plot for AML
-#' de_results$volcano_plots$AML
+#' de_results$volcano_plot
 do_limma <- function(olink_data,
                      metadata,
+                     case,
                      correct = c("Sex", "Age"),
                      correct_type = c("factor", "numeric"),
                      wide = TRUE,
@@ -413,40 +415,35 @@ do_limma <- function(olink_data,
   # Run differential expression analysis
   levels <- unique(join_data$Disease)
 
-  de_results <- lapply(levels,
-                       function(disease) do_limma_de(join_data,
-                                                     disease,
-                                                     correct,
-                                                     correct_type,
-                                                     only_female,
-                                                     only_male,
-                                                     pval_lim,
-                                                     logfc_lim))
-
-
-  names(de_results) <- levels
+  de_results <- do_limma_de(join_data,
+                            case,
+                            correct,
+                            correct_type,
+                            only_female,
+                            only_male,
+                            pval_lim,
+                            logfc_lim)
 
   # Generate (and save) volcano plots
   if (volcano) {
 
-    volcano_plots <- lapply(levels,
-                            function(disease) plot_volcano(de_results[[disease]],
-                                                           pval_lim,
-                                                           logfc_lim,
-                                                           top_up_prot,
-                                                           top_down_prot,
-                                                           palette,
-                                                           disease,
-                                                           subtitle))
-    names(volcano_plots) <- levels
+    volcano_plot <- plot_volcano(de_results,
+                                 pval_lim,
+                                 logfc_lim,
+                                 top_up_prot,
+                                 top_down_prot,
+                                 palette,
+                                 case,
+                                 subtitle)
 
     if (isTRUE(save)) {
       dir_name <- create_dir("results/volcano_plots", date = T)
-      for (i in 1:length(levels)) {
-        ggplot2::ggsave(volcano_plots[[i]], filename = paste0(dir_name, "/", levels[i], "_volcano.png"), width = 10, height = 8)
-      }
+      ggplot2::ggsave(volcano_plot,
+                      filename = paste0(dir_name, "/", case, "_volcano.png"),
+                      width = 10,
+                      height = 8)
     }
-    return(list("de_results" = de_results, "volcano_plots" = volcano_plots))
+    return(list("de_results" = de_results, "volcano_plot" = volcano_plot))
   }
   return(de_results)
 }
@@ -548,6 +545,7 @@ do_limma_continuous <- function(olink_data,
 #'
 #' @param olink_data A tibble with the Olink data in wide format.
 #' @param metadata A tibble with the metadata.
+#' @param case The case group.
 #' @param wide If the data is in wide format. Default is TRUE.
 #' @param only_female The female specific diseases. Default is NULL.
 #' @param only_male The male specific diseases. Default is NULL.
@@ -566,15 +564,16 @@ do_limma_continuous <- function(olink_data,
 #' @export
 #'
 #' @examples
-#' de_results <- do_ttest(example_data, example_metadata, wide = FALSE)
+#' de_results <- do_ttest(example_data, example_metadata, "AML", wide = FALSE)
 #'
 #' # Results for AML
-#' de_results$de_results$AML
+#' de_results$de_results
 #'
 #' # Volcano plot for AML
-#' de_results$volcano_plots$AML
+#' de_results$volcano_plot
 do_ttest <- function(olink_data,
                      metadata,
+                     case,
                      wide = TRUE,
                      only_female = NULL,
                      only_male = NULL,
@@ -602,8 +601,6 @@ do_ttest <- function(olink_data,
   }
 
   # Run differential expression analysis
-  levels <- unique(join_data$Disease)
-
   long_data <- join_data |>
     dplyr::select(-dplyr::any_of(c("Age", "BMI"))) |>
     tidyr::pivot_longer(!c("DAid", "Disease", "Sex"), names_to = "Assay", values_to = "NPX")
@@ -616,42 +613,34 @@ do_ttest <- function(olink_data,
   ) |>
     dplyr::pull(is_normal)
 
-  de_results <- lapply(levels, function(disease) {
-
-    de_res <- do_ttest_de(long_data,
-                          disease,
-                          assays,
-                          normality_res,
-                          only_female,
-                          only_male,
-                          pval_lim,
-                          logfc_lim)
-
-  })
-
-  names(de_results) <- levels
+  de_results <- do_ttest_de(long_data,
+                            case,
+                            assays,
+                            normality_res,
+                            only_female,
+                            only_male,
+                            pval_lim,
+                            logfc_lim)
 
   # Generate (and save) volcano plots
   if (volcano) {
-
-    volcano_plots <- lapply(levels,
-                            function(disease) plot_volcano(de_results[[disease]],
-                                                           pval_lim,
-                                                           logfc_lim,
-                                                           top_up_prot,
-                                                           top_down_prot,
-                                                           palette,
-                                                           disease,
-                                                           subtitle))
-    names(volcano_plots) <- levels
+    volcano_plot <- plot_volcano(de_results,
+                                 pval_lim,
+                                 logfc_lim,
+                                 top_up_prot,
+                                 top_down_prot,
+                                 palette,
+                                 case,
+                                 subtitle)
 
     if (isTRUE(save)) {
       dir_name <- create_dir("results/volcano_plots", date = T)
-      for (i in 1:length(levels)) {
-        ggplot2::ggsave(volcano_plots[[i]], filename = paste0(dir_name, "/", levels[i], "_volcano.png"), width = 10, height = 8)
-      }
+      ggplot2::ggsave(volcano_plot,
+                      filename = paste0(dir_name, "/", case, "_volcano.png"),
+                      width = 10,
+                      height = 8)
     }
-    return(list("de_results" = de_results, "volcano_plots" = volcano_plots))
+    return(list("de_results" = de_results, "volcano_plot" = volcano_plot))
   }
   return(de_results)
 }
@@ -674,15 +663,45 @@ do_ttest <- function(olink_data,
 #' @export
 #'
 #' @examples
-#' # Run differential expression analysis
-#' de_results <- do_limma(example_data, example_metadata, wide = FALSE)
+#' # Run differential expression analysis for 3 different cases
+#' de_results_aml <- do_limma(example_data,
+#'                            example_metadata,
+#'                            "AML",
+#'                            wide = FALSE,
+#'                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                            only_male = "PRC")
+#'
+#' de_results_brc <- do_limma(example_data,
+#'                            example_metadata,
+#'                            "BRC",
+#'                            wide = FALSE,
+#'                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                            only_male = "PRC")
+#'
+#' de_results_prc <- do_limma(example_data,
+#'                            example_metadata,
+#'                            "PRC",
+#'                            wide = FALSE,
+#'                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                            only_male = "PRC")
+#'
+#' # Combine the results
+#' res <- list("AML" = de_results_aml,
+#'             "BRC" = de_results_brc,
+#'             "PRC" = de_results_prc)
 #'
 #' # Plot summary visualizations
-#' plot_de_summary(de_results)
+#' plot_de_summary(res)
 plot_de_summary <- function(de_results,
                             disease_palette = NULL,
                             diff_exp_palette = "diff_exp") {
-  barplot_data <- de_results$de_results |>
+  de_res_list <- list()
+  for (i in 1:length(de_results)) {
+    de_res_list[[i]] <- de_results[[i]]$de_results |>
+      dplyr::mutate(Disease = de_results[[i]]$de_results$Disease)
+  }
+
+  barplot_data <- de_res_list |>
     dplyr::bind_rows() |>
     dplyr::mutate(sig = factor(sig, levels = c("not significant", "significant down", "significant up"))) |>
     dplyr::group_by(Disease, sig) |>
@@ -703,25 +722,26 @@ plot_de_summary <- function(de_results,
     de_barplot <- de_barplot + ggplot2::scale_fill_manual(values = diff_exp_palette)
   }
 
-  significant_proteins_up <- lapply(names(de_results$de_results), function(disease) {
-    significant_proteins_up <- de_results$de_results[[disease]] |>
+  significant_proteins_up <- lapply(names(de_results), function(disease) {
+    significant_proteins_up <- de_results[[disease]]$de_results |>
       dplyr::filter(sig == "significant up") |>
       dplyr::pull(Assay)
 
   })
-  names(significant_proteins_up) <- names(de_results$de_results)
+  names(significant_proteins_up) <- names(de_results)
 
-  significant_proteins_down <- lapply(names(de_results$de_results), function(disease) {
+  significant_proteins_down <- lapply(names(de_results), function(disease) {
 
-    significant_proteins_down <- de_results$de_results[[disease]] |>
+    significant_proteins_down <- de_results[[disease]]$de_results |>
       dplyr::filter(sig == "significant down") |>
       dplyr::pull(Assay)
 
   })
-  names(significant_proteins_down) <- names(de_results$de_results)
+  names(significant_proteins_down) <- names(de_results)
 
   significant_proteins <- list("up" = significant_proteins_up, "down" = significant_proteins_down)
 
+  # Prepare palettes
   if (is.null(names(disease_palette)) && !is.null(disease_palette)) {
     pal <- get_hpa_palettes()[[disease_palette]]
   } else if (!is.null(disease_palette)) {
@@ -729,16 +749,24 @@ plot_de_summary <- function(de_results,
   } else {
     pal <- "black"
   }
+  de_names <- names(significant_proteins_up)
+  ordered_colors <- pal[de_names]
+  frequencies_up <- sapply(significant_proteins_up, length)
+  ordered_names_up <- names(sort(frequencies_up, decreasing = TRUE))
+  ordered_colors_up <- ordered_colors[ordered_names_up]
+  frequencies_down <- sapply(significant_proteins_down, length)
+  ordered_names_down <- names(sort(frequencies_down, decreasing = TRUE))
+  ordered_colors_down <- ordered_colors[ordered_names_down]
 
-  upset_plot_up <- UpSetR::upset(UpSetR::fromList(significant_proteins$up),
+  upset_plot_up <- UpSetR::upset(UpSetR::fromList(significant_proteins_up),
                                  order.by = "freq",
-                                 nsets = length(names(de_results$de_results)),
-                                 sets.bar.color = pal)
+                                 nsets = length(names(de_results)),
+                                 sets.bar.color = ordered_colors_up)
 
-  upset_plot_down <- UpSetR::upset(UpSetR::fromList(significant_proteins$down),
+  upset_plot_down <- UpSetR::upset(UpSetR::fromList(significant_proteins_down),
                                    order.by = "freq",
-                                   nsets = length(names(de_results$de_results)),
-                                   sets.bar.color = pal)
+                                   nsets = length(names(de_results)),
+                                   sets.bar.color = ordered_colors_down)
 
   return(list("de_barplot" = de_barplot,
               "upset_plot_up" = upset_plot_up,

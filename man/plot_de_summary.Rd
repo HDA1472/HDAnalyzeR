@@ -31,9 +31,33 @@ It plots a barplot with the number of significant proteins for each disease.
 It also creates upset plots both for the significant up and down regulated proteins for each disease.
 }
 \examples{
-# Run differential expression analysis
-de_results <- do_limma(example_data, example_metadata, wide = FALSE)
+# Run differential expression analysis for 3 different cases
+de_results_aml <- do_limma(example_data,
+                           example_metadata,
+                           "AML",
+                           wide = FALSE,
+                           only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                           only_male = "PRC")
+
+de_results_brc <- do_limma(example_data,
+                           example_metadata,
+                           "BRC",
+                           wide = FALSE,
+                           only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                           only_male = "PRC")
+
+de_results_prc <- do_limma(example_data,
+                           example_metadata,
+                           "PRC",
+                           wide = FALSE,
+                           only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                           only_male = "PRC")
+
+# Combine the results
+res <- list("AML" = de_results_aml,
+            "BRC" = de_results_brc,
+            "PRC" = de_results_prc)
 
 # Plot summary visualizations
-plot_de_summary(de_results)
+plot_de_summary(res)
 }
