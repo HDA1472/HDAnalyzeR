@@ -108,8 +108,8 @@ do_ora <- function(gene_list,
 #' When Reactome is used, background functionality is not available.
 #' @examples
 #' # Run Differential Expression Analysis and extract results
-#' de_res <- do_limma(example_data, example_metadata, wide = FALSE)
-#' de_results <- de_res$de_results$AML
+#' de_res <- do_limma(example_data, example_metadata, "AML", wide = FALSE)
+#' de_results <- de_res$de_results
 #'
 #' # Run GSEA with Reactome database
 #' do_gsea(de_results,
