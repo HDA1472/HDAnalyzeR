@@ -300,15 +300,15 @@ plot_features_summary(lasso_res, disease_palette = "cancers12")
 
 ## One step further
 
-The final step involves performing an Over-Representation Analysis for the up-regulated proteins from differential expression, that are also identified as features by the ML model. In this example, we will use the Gene Ontology (GO) database.
+The final step involves performing an Over-Representation Analysis for the up-regulated proteins from differential expression, that are also identified as features by the ML model. In this example, we will use the Gene Ontology (GO) database and show the results only for AML.
 
 ```{r}
 # Extract the proteins identified by both DE and Lasso
-de_proteins <- de_res$de_results$AML |> 
+de_proteins <- de_res_aml$de_results |> 
   dplyr::filter(sig == "significant up") |> 
   dplyr::pull(Assay)
 
-lasso_proteins <- lasso_res$AML$var_imp_res$features |> 
+lasso_proteins <- lasso_res_aml$var_imp_res$features |> 
   dplyr::filter(Scaled_Importance > 0) |> 
   dplyr::pull(Variable)
 
