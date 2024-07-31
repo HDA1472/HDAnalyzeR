@@ -75,25 +75,13 @@ test_that("make_groups creates groups properly", {
     protein1 = c(1, 1, 1.6, 2, 1, 1, 1.6, 2, 1, 2, 1, 2),
     protein2 = c(0.8, 0.6, 0.5, 0.3, 0.8, 0.6, 0.5, 0.3, 0.1, 0.2, 0.1, 0.2)
   )
-  result <- make_groups(test_data, c("A", "B", "C"))
+  result <- make_groups(test_data, "A", c("A", "B", "C"))
   exp_a <- tibble::tibble(
     Disease = c("A", "A", "A", "A", "A", "B", "B", "B", "C", "C", "C"),
     protein1 = c(1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 2),
     protein2 = c(0.8, 0.6, 0.3, 0.8, 0.6, 0.3, 0.3, 0.3, 0.2, 0.1, 0.2)
   )
-  exp_b <- tibble::tibble(
-    Disease = c("B", "B", "B", "A", "A", "C", "C"),
-    protein1 = c(1.6, 1.6, 2, 1, 2, 1, 2),
-    protein2 = c(0.5, 0.5, 0.3, 0.6, 0.3, 0.1, 0.2)
-  )
-  exp_c <- tibble::tibble(
-    Disease = c("C", "C", "C", "C", "A", "A", "B", "B"),
-    protein1 = c(1, 2, 1, 2, 1, 1, 2, 1.6),
-    protein2 = c(0.1, 0.2, 0.1, 0.2, 0.8, 0.6, 0.3, 0.5)
-  )
-  expect_equal(result$A, exp_a)
-  expect_equal(result$B, exp_b)
-  expect_equal(result$C, exp_c)
+  expect_equal(result, exp_a)
 })
 
 
@@ -104,28 +92,14 @@ test_that("make_groups creates groups and filters sex specific groups properly",
     protein1 = c(1, 1, 1.6, 2, 1, 1, 1.6, 2, 1, 2, 1, 2),
     protein2 = c(0.8, 0.6, 0.5, 0.3, 0.8, 0.6, 0.5, 0.3, 0.1, 0.2, 0.1, 0.2)
   )
-  result <- make_groups(test_data, c("A", "B", "C"), only_female = "B")
-  exp_a <- tibble::tibble(
-    Disease = c("A", "A", "A", "A", "A", "B", "B", "B", "C", "C", "C"),
-    Sex = c("F", "M", "M", "F", "M", "F", "F", "F", "F", "M", "F"),
-    protein1 = c(1, 1, 2, 1, 1, 2, 2, 2, 2, 1, 2),
-    protein2 = c(0.8, 0.6, 0.3, 0.8, 0.6, 0.3, 0.3, 0.3, 0.2, 0.1, 0.2)
-  )
+  result <- make_groups(test_data, "B", c("A", "B", "C"), only_female = "B")
   exp_b <- tibble::tibble(
     Disease = c("B", "B", "B", "A", "A", "C", "C"),
     Sex = c("F", "F", "F", "F", "F", "F", "F"),
     protein1 = c(1.6, 1.6, 2, 1, 1, 2, 2),
     protein2 = c(0.5, 0.5, 0.3, 0.8, 0.8, 0.2, 0.2)
   )
-  exp_c <- tibble::tibble(
-    Disease = c("C", "C", "C", "C", "A", "A", "B", "B"),
-    Sex = c("M", "F", "M", "F", "F", "F", "F", "F"),
-    protein1 = c(1, 2, 1, 2, 1, 1, 1.6, 2),
-    protein2 = c(0.1, 0.2, 0.1, 0.2, 0.8, 0.8, 0.5, 0.3)
-  )
-  expect_equal(result$A, exp_a)
-  expect_equal(result$B, exp_b)
-  expect_equal(result$C, exp_c)
+  expect_equal(result, exp_b)
 })
 
 
@@ -144,131 +118,118 @@ test_that("split_data splits data properly", {
 
 # Test do_elnet ----------------------------------------------------------------
 test_that("AML Classification Results Test", {
-
-  unique_samples <- unique(example_data$Sample)
-  filtered_data <- example_data |>
-    dplyr::filter(Sample %in% unique_samples[1:148])
-
-  res <- do_elnet(filtered_data,
+  res <- do_elnet(example_data,
                   example_metadata,
+                  "AML",
                   wide = FALSE,
                   palette = "cancers12",
                   cv_sets = 2,
                   grid_size = 1,
                   ncores = 1)
 
-  # Test if the `res` object has the `AML` component
-  expect_true("AML" %in% names(res), info = "Check if 'AML' component exists in res")
-
   # Test if the `AML` component has the expected structure
-  expect_true(is.list(res$AML), info = "Check if 'AML' component is a list")
+  expect_true(is.list(res), info = "Check if 'AML' component is a list")
 
   # Test if the AML results contain 'hypopt_res' component
-  expect_true("hypopt_res" %in% names(res$AML), info = "Check if 'hypopt_res' exists in AML results")
+  expect_true("hypopt_res" %in% names(res), info = "Check if 'hypopt_res' exists in AML results")
 
   # Test if the AML results contain 'hypopt_res$elnet_tune' component
-  expect_true("elnet_tune" %in% names(res$AML$hypopt_res), info = "Check if 'elnet' exists in AML results")
+  expect_true("elnet_tune" %in% names(res$hypopt_res), info = "Check if 'elnet' exists in AML results")
 
   # Test if elnet_tune has expected structure and content
-  expect_true(is.data.frame(res$AML$hypopt_res$elnet_tune), info = "Check if elnet_tune is a data frame")
-  expect_true(nrow(res$AML$hypopt_res$elnet_tune) == 2, info = "Check if elnet_tune has rows")
-  expect_true(ncol(res$AML$hypopt_res$elnet_tune) == 5, info = "Check if elnet_tune has rows")
+  expect_true(is.data.frame(res$hypopt_res$elnet_tune), info = "Check if elnet_tune is a data frame")
+  expect_true(nrow(res$hypopt_res$elnet_tune) == 2, info = "Check if elnet_tune has rows")
+  expect_true(ncol(res$hypopt_res$elnet_tune) == 5, info = "Check if elnet_tune has rows")
 
   # Test if AML results contain 'finalfit_res' component
-  expect_true("finalfit_res" %in% names(res$AML), info = "Check if 'finalfit_res' exists in AML results")
+  expect_true("finalfit_res" %in% names(res), info = "Check if 'finalfit_res' exists in AML results")
 
   # Test if finalfit_res has expected structure and content
-  expect_true(is.list(res$AML$finalfit_res), info = "Check if finalfit_res is a list")
+  expect_true(is.list(res$finalfit_res), info = "Check if finalfit_res is a list")
 
   # Test if finalfit_res contains 'metrics' component
-  expect_true("metrics" %in% names(res$AML$testfit_res), info = "Check if 'metrics' exists in finalfit_res")
+  expect_true("metrics" %in% names(res$testfit_res), info = "Check if 'metrics' exists in finalfit_res")
 
   # Test if metrics contains accuracy, sensitivity, specificity, auc, and conf_matrix
-  expect_true("accuracy" %in% names(res$AML$testfit_res$metrics), info = "Check if 'accuracy' exists in metrics")
-  expect_true(is.numeric(res$AML$testfit_res$metrics$accuracy), info = "Check if 'accuracy' is numeric")
-  expect_true("sensitivity" %in% names(res$AML$testfit_res$metrics), info = "Check if 'sensitivity' exists in metrics")
-  expect_true(is.numeric(res$AML$testfit_res$metrics$sensitivity), info = "Check if 'sensitivity' is numeric")
-  expect_true("specificity" %in% names(res$AML$testfit_res$metrics), info = "Check if 'specificity' exists in metrics")
-  expect_true(is.numeric(res$AML$testfit_res$metrics$specificity), info = "Check if 'specificity' is numeric")
-  expect_true("auc" %in% names(res$AML$testfit_res$metrics), info = "Check if 'auc' exists in metrics")
-  expect_true(is.numeric(res$AML$testfit_res$metrics$auc), info = "Check if 'auc' is numeric")
-  expect_true("conf_matrix" %in% names(res$AML$testfit_res$metrics), info = "Check if 'conf_matrix' exists in metrics")
+  expect_true("accuracy" %in% names(res$testfit_res$metrics), info = "Check if 'accuracy' exists in metrics")
+  expect_true(is.numeric(res$testfit_res$metrics$accuracy), info = "Check if 'accuracy' is numeric")
+  expect_true("sensitivity" %in% names(res$testfit_res$metrics), info = "Check if 'sensitivity' exists in metrics")
+  expect_true(is.numeric(res$testfit_res$metrics$sensitivity), info = "Check if 'sensitivity' is numeric")
+  expect_true("specificity" %in% names(res$testfit_res$metrics), info = "Check if 'specificity' exists in metrics")
+  expect_true(is.numeric(res$testfit_res$metrics$specificity), info = "Check if 'specificity' is numeric")
+  expect_true("auc" %in% names(res$testfit_res$metrics), info = "Check if 'auc' exists in metrics")
+  expect_true(is.numeric(res$testfit_res$metrics$auc), info = "Check if 'auc' is numeric")
+  expect_true("conf_matrix" %in% names(res$testfit_res$metrics), info = "Check if 'conf_matrix' exists in metrics")
 
   # Test if AML results contain 'var_imp_res' component
-  expect_true("var_imp_res" %in% names(res$AML), info = "Check if 'var_imp_res' exists in AML results")
+  expect_true("var_imp_res" %in% names(res), info = "Check if 'var_imp_res' exists in AML results")
 
   # Test if var_imp_res has expected structure and content
-  expect_true(is.list(res$AML$var_imp_res), info = "Check if var_imp_res is a list")
+  expect_true(is.list(res$var_imp_res), info = "Check if var_imp_res is a list")
 
   # Test if var_imp_res contains 'features' component
-  expect_true("features" %in% names(res$AML$var_imp_res), info = "Check if 'features' exists in var_imp_res")
+  expect_true("features" %in% names(res$var_imp_res), info = "Check if 'features' exists in var_imp_res")
 
   # Test if features has expected structure and content
-  expect_true(is.data.frame(res$AML$var_imp_res$features), info = "Check if features is a data frame")
+  expect_true(is.data.frame(res$var_imp_res$features), info = "Check if features is a data frame")
 })
 
 
 # Test do_rf -------------------------------------------------------------------
 test_that("AML Classification Results Test", {
-
-  unique_samples <- unique(example_data$Sample)
-  filtered_data <- example_data |>
-    dplyr::filter(Sample %in% unique_samples[1:148])
-
-  res <- do_rf(filtered_data,
+  res <- do_rf(example_data,
                example_metadata,
+               "AML",
                wide = FALSE,
                palette = "cancers12",
                cv_sets = 2,
                grid_size = 1,
                ncores = 1)
 
-  # Test if the `res` object has the `AML` component
-  expect_true("AML" %in% names(res), info = "Check if 'AML' component exists in res")
 
   # Test if the `AML` component has the expected structure
-  expect_true(is.list(res$AML), info = "Check if 'AML' component is a list")
+  expect_true(is.list(res), info = "Check if 'AML' component is a list")
 
   # Test if the AML results contain 'hypopt_res' component
-  expect_true("hypopt_res" %in% names(res$AML), info = "Check if 'hypopt_res' exists in AML results")
+  expect_true("hypopt_res" %in% names(res), info = "Check if 'hypopt_res' exists in AML results")
 
   # Test if the AML results contain 'hypopt_res$rf_tune' component
-  expect_true("rf_tune" %in% names(res$AML$hypopt_res), info = "Check if 'rf_tune' exists in AML results")
+  expect_true("rf_tune" %in% names(res$hypopt_res), info = "Check if 'rf_tune' exists in AML results")
 
   # Test if rf_tune has expected structure and content
-  expect_true(is.data.frame(res$AML$hypopt_res$rf_tune), info = "Check if rf_tune is a data frame")
-  expect_true(nrow(res$AML$hypopt_res$rf_tune) == 2, info = "Check if rf_tune has rows")
-  expect_true(ncol(res$AML$hypopt_res$rf_tune) == 5, info = "Check if rf_tune has rows")
+  expect_true(is.data.frame(res$hypopt_res$rf_tune), info = "Check if rf_tune is a data frame")
+  expect_true(nrow(res$hypopt_res$rf_tune) == 2, info = "Check if rf_tune has rows")
+  expect_true(ncol(res$hypopt_res$rf_tune) == 5, info = "Check if rf_tune has rows")
 
   # Test if AML results contain 'finalfit_res' component
-  expect_true("finalfit_res" %in% names(res$AML), info = "Check if 'finalfit_res' exists in AML results")
+  expect_true("finalfit_res" %in% names(res), info = "Check if 'finalfit_res' exists in AML results")
 
   # Test if finalfit_res has expected structure and content
-  expect_true(is.list(res$AML$finalfit_res), info = "Check if finalfit_res is a list")
+  expect_true(is.list(res$finalfit_res), info = "Check if finalfit_res is a list")
 
   # Test if finalfit_res contains 'metrics' component
-  expect_true("metrics" %in% names(res$AML$testfit_res), info = "Check if 'metrics' exists in finalfit_res")
+  expect_true("metrics" %in% names(res$testfit_res), info = "Check if 'metrics' exists in finalfit_res")
 
   # Test if metrics contains accuracy, sensitivity, specificity, auc, and conf_matrix
-  expect_true("accuracy" %in% names(res$AML$testfit_res$metrics), info = "Check if 'accuracy' exists in metrics")
-  expect_true(is.numeric(res$AML$testfit_res$metrics$accuracy), info = "Check if 'accuracy' is numeric")
-  expect_true("sensitivity" %in% names(res$AML$testfit_res$metrics), info = "Check if 'sensitivity' exists in metrics")
-  expect_true(is.numeric(res$AML$testfit_res$metrics$sensitivity), info = "Check if 'sensitivity' is numeric")
-  expect_true("specificity" %in% names(res$AML$testfit_res$metrics), info = "Check if 'specificity' exists in metrics")
-  expect_true(is.numeric(res$AML$testfit_res$metrics$specificity), info = "Check if 'specificity' is numeric")
-  expect_true("auc" %in% names(res$AML$testfit_res$metrics), info = "Check if 'auc' exists in metrics")
-  expect_true(is.numeric(res$AML$testfit_res$metrics$auc), info = "Check if 'auc' is numeric")
-  expect_true("conf_matrix" %in% names(res$AML$testfit_res$metrics), info = "Check if 'conf_matrix' exists in metrics")
+  expect_true("accuracy" %in% names(res$testfit_res$metrics), info = "Check if 'accuracy' exists in metrics")
+  expect_true(is.numeric(res$testfit_res$metrics$accuracy), info = "Check if 'accuracy' is numeric")
+  expect_true("sensitivity" %in% names(res$testfit_res$metrics), info = "Check if 'sensitivity' exists in metrics")
+  expect_true(is.numeric(res$testfit_res$metrics$sensitivity), info = "Check if 'sensitivity' is numeric")
+  expect_true("specificity" %in% names(res$testfit_res$metrics), info = "Check if 'specificity' exists in metrics")
+  expect_true(is.numeric(res$testfit_res$metrics$specificity), info = "Check if 'specificity' is numeric")
+  expect_true("auc" %in% names(res$testfit_res$metrics), info = "Check if 'auc' exists in metrics")
+  expect_true(is.numeric(res$testfit_res$metrics$auc), info = "Check if 'auc' is numeric")
+  expect_true("conf_matrix" %in% names(res$testfit_res$metrics), info = "Check if 'conf_matrix' exists in metrics")
 
   # Test if AML results contain 'var_imp_res' component
-  expect_true("var_imp_res" %in% names(res$AML), info = "Check if 'var_imp_res' exists in AML results")
+  expect_true("var_imp_res" %in% names(res), info = "Check if 'var_imp_res' exists in AML results")
 
   # Test if var_imp_res has expected structure and content
-  expect_true(is.list(res$AML$var_imp_res), info = "Check if var_imp_res is a list")
+  expect_true(is.list(res$var_imp_res), info = "Check if var_imp_res is a list")
 
   # Test if var_imp_res contains 'features' component
-  expect_true("features" %in% names(res$AML$var_imp_res), info = "Check if 'features' exists in var_imp_res")
+  expect_true("features" %in% names(res$var_imp_res), info = "Check if 'features' exists in var_imp_res")
 
   # Test if features has expected structure and content
-  expect_true(is.data.frame(res$AML$var_imp_res$features), info = "Check if features is a data frame")
+  expect_true(is.data.frame(res$var_imp_res$features), info = "Check if features is a data frame")
 })

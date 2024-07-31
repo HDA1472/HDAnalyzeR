@@ -74,6 +74,7 @@ filter_sex_specific_disease <- function(control_data,
 #' It also filters the control data of sex specific diseases.
 #'
 #' @param join_data Olink data in wide format joined with metadata.
+#' @param disease Disease to predict.
 #' @param diseases Diseases.
 #' @param only_female Diseases that are female specific.
 #' @param only_male Diseases that are male specific.
@@ -82,46 +83,42 @@ filter_sex_specific_disease <- function(control_data,
 #' @return A list with combined, class-balanced control-case groups for each disease.
 #' @keywords internal
 make_groups <- function(join_data,
+                        disease,
                         diseases,
                         only_female = NULL,
                         only_male = NULL,
                         seed = 123) {
 
   set.seed(seed)
-  group_list <- list()
 
   # Separate data in control and case groups
-  for (disease in diseases) {
-    case_data <- join_data |> dplyr::filter(Disease == disease)
-    control_data <- join_data |> dplyr::filter(Disease != disease)
+  case_data <- join_data |> dplyr::filter(Disease == disease)
+  control_data <- join_data |> dplyr::filter(Disease != disease)
 
-    # Filter for gender if disease is gender specific
-    filtered_results <- filter_sex_specific_disease(control_data,
-                                                    disease,
-                                                    diseases,
-                                                    only_female,
-                                                    only_male)
+  # Filter for gender if disease is gender specific
+  filtered_results <- filter_sex_specific_disease(control_data,
+                                                  disease,
+                                                  diseases,
+                                                  only_female,
+                                                  only_male)
 
-    control_data <- filtered_results$control_data
-    diseases_subset <- filtered_results$diseases_subset  # Keep only diseases that we will pick samples from
+  control_data <- filtered_results$control_data
+  diseases_subset <- filtered_results$diseases_subset  # Keep only diseases that we will pick samples from
 
-    # Calculate amount of data from each disease in control group
-    case_sample_num <- nrow(case_data)
-    samples_per_disease <- ceiling(case_sample_num/(length(unique(diseases_subset))-1))
+  # Calculate amount of data from each disease in control group
+  case_sample_num <- nrow(case_data)
+  samples_per_disease <- ceiling(case_sample_num/(length(unique(diseases_subset))-1))
 
-    # Loop over control group, randomly select the number of each control class samples
-    group <- case_data
-    for (control_class in diseases_subset[diseases_subset != disease]) {
-      control_class_data <- control_data |>
-        dplyr::filter(Disease == control_class) |>
-        dplyr::sample_n(size = samples_per_disease, replace = TRUE)
-      group <- rbind(group, control_class_data)
-    }
-
-    group_list[[disease]] <- group
+  # Loop over control group, randomly select the number of each control class samples
+  group <- case_data
+  for (control_class in diseases_subset[diseases_subset != disease]) {
+    control_class_data <- control_data |>
+      dplyr::filter(Disease == control_class) |>
+      dplyr::sample_n(size = samples_per_disease, replace = TRUE)
+    group <- rbind(group, control_class_data)
   }
 
-  return(group_list)
+  return(group)
 }
 
 
@@ -204,13 +201,13 @@ elnet_hypopt <- function(train_data,
   }
 
   # Prepare train data and create cross-validation sets with binary classifier
-  train_set <- train_data[[disease]] |>
+  train_set <- train_data |>
     dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
     dplyr::mutate(Disease = as.factor(Disease)) |>
     dplyr::select(-dplyr::any_of(exclude_cols))
   train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
 
-  test_set <- test_data[[disease]] |>
+  test_set <- test_data |>
     dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
     dplyr::mutate(Disease = as.factor(Disease)) |>
     dplyr::select(-dplyr::any_of(exclude_cols))
@@ -323,7 +320,7 @@ rf_hypopt <- function(train_data,
   }
 
   # Prepare train data and create cross-validation sets with binary classifier
-  train_set <- train_data[[disease]] |>
+  train_set <- train_data |>
     dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
     dplyr::mutate(Disease = as.factor(Disease)) |>
     dplyr::select(-dplyr::any_of(exclude_cols)) |>
@@ -331,7 +328,7 @@ rf_hypopt <- function(train_data,
 
   train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
 
-  test_set <- test_data[[disease]] |>
+  test_set <- test_data |>
     dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
     dplyr::mutate(Disease = as.factor(Disease)) |>
     dplyr::select(-dplyr::any_of(exclude_cols)) |>
@@ -694,7 +691,9 @@ plot_var_imp <- function (finalfit_res,
 #'
 #' @param olink_data Olink data.
 #' @param metadata Metadata.
+#' @param case Disease to predict.
 #' @param wide Whether the data is wide format. Default is TRUE.
+#' @param balance_groups Whether to balance the groups. Default is TRUE.
 #' @param only_female Vector of diseases that are female specific. Default is NULL.
 #' @param only_male Vector of diseases that are male specific. Default is NULL.
 #' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is "Sex".
@@ -719,26 +718,21 @@ plot_var_imp <- function (finalfit_res,
 #' @export
 #'
 #' @examples
-#' # Create subset of example_data
-#' unique_samples <- unique(example_data$Sample)
-#' filtered_data <- example_data |>
-#'  dplyr::filter(Sample %in% unique_samples[1:148])
-#'
-#' # Run the elastic net model pipeline
-#' res <- do_elnet(filtered_data,
-#'                 example_metadata,
-#'                 wide = FALSE,
-#'                 type = "elnet",
-#'                 palette = "cancers12",
-#'                 cv_sets = 5,
-#'                 grid_size = 20,
-#'                 ncores = 1)
-#'
-#' # Results for AML
-#' res$AML
+#' do_elnet(example_data,
+#'          example_metadata,
+#'          "AML",
+#'          balance_groups = TRUE,
+#'          wide = FALSE,
+#'          type = "elnet",
+#'          palette = "cancers12",
+#'          cv_sets = 5,
+#'          grid_size = 20,
+#'          ncores = 1)
 do_elnet <- function(olink_data,
                      metadata,
+                     case,
                      wide = TRUE,
+                     balance_groups = TRUE,
                      only_female = NULL,
                      only_male = NULL,
                      exclude_cols = "Sex",
@@ -773,82 +767,81 @@ do_elnet <- function(olink_data,
 
   # Prepare sets and groups
   data_split <- split_data(join_data, ratio, seed)
-  diseases <- unique(join_data$Disease)
-  train_list <- make_groups(data_split$train_set,
-                            diseases,
-                            only_female,
-                            only_male,
-                            seed)
-  test_list <- make_groups(data_split$test_set,
-                           diseases,
-                           only_female,
-                           only_male,
-                           seed)
-
+  if (isTRUE(balance_groups)) {
+    train_list <- make_groups(data_split$train_set,
+                              case,
+                              diseases,
+                              only_female,
+                              only_male,
+                              seed)
+    test_list <- make_groups(data_split$test_set,
+                             case,
+                             diseases,
+                             only_female,
+                             only_male,
+                             seed)
+  } else {
+    train_list <- data_split$train_set
+    test_list <- data_split$test_set
+  }
   message("Sets and groups are ready. Model fitting is starting...")
 
   # Run model
-  elnet_results <- lapply(diseases, function(disease) {
-    message(paste0("Classification model for ", disease, " is starting..."))
-    hypopt_res <- elnet_hypopt(train_list,
-                               test_list,
-                               disease,
-                               type,
-                               cv_sets,
-                               grid_size,
-                               ncores,
-                               hypopt_vis,
-                               exclude_cols,
-                               seed)
-
-    finalfit_res <- finalfit(hypopt_res$train_set,
-                             hypopt_res$elnet_tune,
-                             hypopt_res$elnet_wf,
+  message(paste0("Classification model for ", case, " as case is starting..."))
+  hypopt_res <- elnet_hypopt(train_list,
+                             test_list,
+                             case,
+                             type,
+                             cv_sets,
+                             grid_size,
+                             ncores,
+                             hypopt_vis,
+                             exclude_cols,
                              seed)
 
-    testfit_res <- testfit(hypopt_res$train_set,
-                           hypopt_res$test_set,
-                           disease,
-                           finalfit_res,
-                           exclude_cols,
-                           type,
-                           seed,
-                           palette)
+  finalfit_res <- finalfit(hypopt_res$train_set,
+                           hypopt_res$elnet_tune,
+                           hypopt_res$elnet_wf,
+                           seed)
 
-    var_imp_res <- plot_var_imp(finalfit_res,
-                                disease,
-                                testfit_res$metrics$accuracy,
-                                testfit_res$metrics$sensitivity,
-                                testfit_res$metrics$specificity,
-                                testfit_res$metrics$auc,
-                                testfit_res$mixture,
-                                palette = palette,
-                                vline = vline,
-                                subtitle)
+  testfit_res <- testfit(hypopt_res$train_set,
+                         hypopt_res$test_set,
+                         case,
+                         finalfit_res,
+                         exclude_cols,
+                         type,
+                         seed,
+                         palette)
 
-    top_features <- var_imp_res$features |>
-      dplyr::arrange(dplyr::desc(Scaled_Importance)) |>
-      dplyr::select(Variable) |>
-      dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
-      utils::head(nfeatures)
-    proteins <- top_features[['Variable']]
+  var_imp_res <- plot_var_imp(finalfit_res,
+                              case,
+                              testfit_res$metrics$accuracy,
+                              testfit_res$metrics$sensitivity,
+                              testfit_res$metrics$specificity,
+                              testfit_res$metrics$auc,
+                              testfit_res$mixture,
+                              palette = palette,
+                              vline = vline,
+                              subtitle)
 
-    boxplot_res <- plot_protein_boxplot(join_data,
-                                        proteins,
-                                        disease,
-                                        points,
-                                        palette)
+  top_features <- var_imp_res$features |>
+    dplyr::arrange(dplyr::desc(Scaled_Importance)) |>
+    dplyr::select(Variable) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    utils::head(nfeatures)
+  proteins <- top_features[['Variable']]
 
-    return(list("hypopt_res" = hypopt_res,
-                "finalfit_res" = finalfit_res,
-                "testfit_res" = testfit_res,
-                "var_imp_res" = var_imp_res,
-                "boxplot_res" = boxplot_res))
-  })
+  boxplot_res <- plot_protein_boxplot(join_data,
+                                      proteins,
+                                      case,
+                                      points,
+                                      palette)
 
-  names(elnet_results) <- diseases
-
-  return(elnet_results)
+  return(list("hypopt_res" = hypopt_res,
+              "finalfit_res" = finalfit_res,
+              "testfit_res" = testfit_res,
+              "var_imp_res" = var_imp_res,
+              "boxplot_res" = boxplot_res))
 }
 
 
@@ -861,7 +854,9 @@ do_elnet <- function(olink_data,
 #'
 #' @param olink_data Olink data.
 #' @param metadata Metadata.
+#' @param case Disease to predict.
 #' @param wide Whether the data is wide format. Default is TRUE.
+#' @param balance_groups Whether to balance the groups. Default is TRUE.
 #' @param only_female Vector of diseases that are female specific. Default is NULL.
 #' @param only_male Vector of diseases that are male specific. Default is NULL.
 #' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is "Sex".
@@ -885,25 +880,20 @@ do_elnet <- function(olink_data,
 #' @export
 #'
 #' @examples
-#' # Create subset of example_data
-#' unique_samples <- unique(example_data$Sample)
-#' filtered_data <- example_data |>
-#'  dplyr::filter(Sample %in% unique_samples[1:148])
-#'
-#' # Run the random forest model pipeline
-#' res <- do_rf(filtered_data,
-#'              example_metadata,
-#'              wide = FALSE,
-#'              palette = "cancers12",
-#'              cv_sets = 5,
-#'              grid_size = 10,
-#'              ncores = 1)
-#'
-#' # Results for AML
-#' res$AML
+#' do_rf(example_data,
+#'       example_metadata,
+#'       "AML",
+#'       balance_groups = TRUE,
+#'       wide = FALSE,
+#'       palette = "cancers12",
+#'       cv_sets = 5,
+#'       grid_size = 20,
+#'       ncores = 1)
 do_rf <- function(olink_data,
                   metadata,
+                  case,
                   wide = TRUE,
+                  balance_groups = TRUE,
                   only_female = NULL,
                   only_male = NULL,
                   exclude_cols = "Sex",
@@ -936,81 +926,81 @@ do_rf <- function(olink_data,
 
   # Prepare sets and groups
   data_split <- split_data(join_data, ratio, seed)
-  diseases <- unique(join_data$Disease)
-  train_list <- make_groups(data_split$train_set,
-                            diseases,
-                            only_female,
-                            only_male,
-                            seed)
-  test_list <- make_groups(data_split$test_set,
-                           diseases,
-                           only_female,
-                           only_male,
-                           seed)
+  if (isTRUE(balance_groups)) {
+    train_list <- make_groups(data_split$train_set,
+                              case,
+                              diseases,
+                              only_female,
+                              only_male,
+                              seed)
+    test_list <- make_groups(data_split$test_set,
+                             case,
+                             diseases,
+                             only_female,
+                             only_male,
+                             seed)
+  } else {
+    train_list <- data_split$train_set
+    test_list <- data_split$test_set
+  }
 
   message("Sets and groups are ready. Model fitting is starting...")
 
   # Run model
-  rf_results <- lapply(diseases, function(disease) {
-    message(paste0("Classification model for ", disease, " is starting..."))
-    hypopt_res <- rf_hypopt(train_list,
-                            test_list,
-                            disease,
-                            cv_sets,
-                            grid_size,
-                            ncores,
-                            hypopt_vis,
-                            exclude_cols,
-                            seed)
+  message(paste0("Classification model for ", case, " as case is starting..."))
+  hypopt_res <- rf_hypopt(train_list,
+                          test_list,
+                          case,
+                          cv_sets,
+                          grid_size,
+                          ncores,
+                          hypopt_vis,
+                          exclude_cols,
+                          seed)
 
-    finalfit_res <- finalfit(hypopt_res$train_set,
-                             hypopt_res$rf_tune,
-                             hypopt_res$rf_wf,
-                             seed)
+  finalfit_res <- finalfit(hypopt_res$train_set,
+                           hypopt_res$rf_tune,
+                           hypopt_res$rf_wf,
+                           seed)
 
-    testfit_res <- testfit(hypopt_res$train_set,
-                           hypopt_res$test_set,
-                           disease,
-                           finalfit_res,
-                           exclude_cols,
-                           type = "other",
-                           seed,
-                           palette)
+  testfit_res <- testfit(hypopt_res$train_set,
+                         hypopt_res$test_set,
+                         case,
+                         finalfit_res,
+                         exclude_cols,
+                         type = "other",
+                         seed,
+                         palette)
 
-    var_imp_res <- plot_var_imp(finalfit_res,
-                                disease,
-                                testfit_res$metrics$accuracy,
-                                testfit_res$metrics$sensitivity,
-                                testfit_res$metrics$specificity,
-                                testfit_res$metrics$auc,
-                                testfit_res$mixture,
-                                palette = palette,
-                                vline = vline,
-                                subtitle)
+  var_imp_res <- plot_var_imp(finalfit_res,
+                              case,
+                              testfit_res$metrics$accuracy,
+                              testfit_res$metrics$sensitivity,
+                              testfit_res$metrics$specificity,
+                              testfit_res$metrics$auc,
+                              testfit_res$mixture,
+                              palette = palette,
+                              vline = vline,
+                              subtitle)
 
-    top_features <- var_imp_res$features |>
-      dplyr::arrange(dplyr::desc(Scaled_Importance)) |>
-      dplyr::select(Variable) |>
-      dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
-      utils::head(nfeatures)
-    proteins <- top_features[['Variable']]
+  top_features <- var_imp_res$features |>
+    dplyr::arrange(dplyr::desc(Scaled_Importance)) |>
+    dplyr::select(Variable) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    utils::head(nfeatures)
+  proteins <- top_features[['Variable']]
 
-    boxplot_res <- plot_protein_boxplot(join_data,
-                                        proteins,
-                                        disease,
-                                        points,
-                                        palette)
+  boxplot_res <- plot_protein_boxplot(join_data,
+                                      proteins,
+                                      case,
+                                      points,
+                                      palette)
 
-    return(list("hypopt_res" = hypopt_res,
-                "finalfit_res" = finalfit_res,
-                "testfit_res" = testfit_res,
-                "var_imp_res" = var_imp_res,
-                "boxplot_res" = boxplot_res))
-  })
-
-  names(rf_results) <- diseases
-
-  return(rf_results)
+  return(list("hypopt_res" = hypopt_res,
+              "finalfit_res" = finalfit_res,
+              "testfit_res" = testfit_res,
+              "var_imp_res" = var_imp_res,
+              "boxplot_res" = boxplot_res))
 }
 
 
@@ -1032,26 +1022,47 @@ do_rf <- function(olink_data,
 #' @export
 #'
 #' @examples
-#' # Create subset of example_data
-#' unique_samples <- unique(example_data$Sample)
-#' filtered_data <- example_data |>
-#'  dplyr::filter(Sample %in% unique_samples[1:148])
+#' # Run the elastic net model pipeline for 3 different cases
+#' res_aml <- do_elnet(example_data,
+#'                     example_metadata,
+#'                     "AML",
+#'                     wide = FALSE,
+#'                     cv_sets = 2,
+#'                     grid_size = 1,
+#'                     ncores = 1)
 #'
-#' # Run the elastic net model pipeline
-#' res <- do_elnet(filtered_data,
-#'                 example_metadata,
-#'                 wide = FALSE,
-#'                 cv_sets = 2,
-#'                 grid_size = 1,
-#'                 ncores = 1)
+#' res_brc <- do_elnet(example_data,
+#'                     example_metadata,
+#'                     "BRC",
+#'                     wide = FALSE,
+#'                     only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                     only_male = "PRC",
+#'                     cv_sets = 2,
+#'                     grid_size = 1,
+#'                     ncores = 1)
+#' res_prc <- do_elnet(example_data,
+#'                     example_metadata,
+#'                     "PRC",
+#'                     wide = FALSE,
+#'                     only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                     only_male = "PRC",
+#'                     cv_sets = 2,
+#'                     grid_size = 1,
+#'                     ncores = 1)
 #'
-#' # Plot features summary
+#' # Combine the results
+#' res <- list("AML" = res_aml,
+#'             "BRC" = res_brc,
+#'             "PRC" = res_prc)
+#'
+#' # Plot features summary visualizations
 #' plot_features_summary(res)
 plot_features_summary <- function(ml_results,
                                   importance = 50,
                                   upset_top_features = FALSE,
                                   disease_palette = NULL,
-                                  feature_type_palette = c("all-features" = "pink", "top-features" = "darkblue")) {
+                                  feature_type_palette = c("all-features" = "pink",
+                                                           "top-features" = "darkblue")) {
 
   barplot_data <- lapply(names(ml_results), function(disease) {
 
@@ -1107,6 +1118,7 @@ plot_features_summary <- function(ml_results,
   })
   names(upset_features) <- names(ml_results)
 
+  # Prepare palettes
   if (is.null(names(disease_palette)) && !is.null(disease_palette)) {
     pal <- get_hpa_palettes()[[disease_palette]]
   } else if (!is.null(disease_palette)) {
@@ -1114,11 +1126,16 @@ plot_features_summary <- function(ml_results,
   } else {
     pal <- "black"
   }
+  feature_names <- names(ml_results)
+  ordered_colors <- pal[feature_names]
+  frequencies <- sapply(upset_features, length)
+  ordered_feature_names <- names(sort(frequencies, decreasing = TRUE))
+  ordered_colors <- ordered_colors[ordered_feature_names]
 
   upset_plot_features <- UpSetR::upset(UpSetR::fromList(upset_features),
                                  order.by = "freq",
                                  nsets = length(names(ml_results)),
-                                 sets.bar.color = pal)
+                                 sets.bar.color = ordered_colors)
 
 
   return(list("features_barplot" = features_barplot, "upset_plot_features" = upset_plot_features))

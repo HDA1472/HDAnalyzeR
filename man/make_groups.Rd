@@ -6,6 +6,7 @@
 \usage{
 make_groups(
   join_data,
+  disease,
   diseases,
   only_female = NULL,
   only_male = NULL,
@@ -14,6 +15,8 @@ make_groups(
 }
 \arguments{
 \item{join_data}{Olink data in wide format joined with metadata.}
+
+\item{disease}{Disease to predict.}
 
 \item{diseases}{Diseases.}
 
