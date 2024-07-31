@@ -19,7 +19,7 @@ utils::globalVariables(c("ENTREZID"))
 #' de_res <- do_limma(example_data, example_metadata, "AML", wide = FALSE)
 #'
 #' # Extract the up-regulated proteins for AML
-#' sig_up_proteins_aml <- de_res$de_results$AML |>
+#' sig_up_proteins_aml <- de_res$de_results |>
 #'   dplyr::filter(sig == "significant up") |>
 #'   dplyr::pull(Assay)
 #'
