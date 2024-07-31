@@ -70,7 +70,9 @@ model, tests it, and plots useful the feature variable importance.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">do_rf</span><span class="op">(</span></span>
 <span>  <span class="va">olink_data</span>,</span>
 <span>  <span class="va">metadata</span>,</span>
+<span>  <span class="va">case</span>,</span>
 <span>  wide <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  balance_groups <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  only_female <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  only_male <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  exclude_cols <span class="op">=</span> <span class="st">"Sex"</span>,</span>
@@ -101,8 +103,16 @@ model, tests it, and plots useful the feature variable importance.</p>
 <dd><p>Metadata.</p></dd>
 
 
+<dt id="arg-case">case<a class="anchor" aria-label="anchor" href="#arg-case"></a></dt>
+<dd><p>Disease to predict.</p></dd>
+
+
 <dt id="arg-wide">wide<a class="anchor" aria-label="anchor" href="#arg-wide"></a></dt>
 <dd><p>Whether the data is wide format. Default is TRUE.</p></dd>
+
+
+<dt id="arg-balance-groups">balance_groups<a class="anchor" aria-label="anchor" href="#arg-balance-groups"></a></dt>
+<dd><p>Whether to balance the groups. Default is TRUE.</p></dd>
 
 
 <dt id="arg-only-female">only_female<a class="anchor" aria-label="anchor" href="#arg-only-female"></a></dt>
@@ -171,27 +181,20 @@ model, tests it, and plots useful the feature variable importance.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create subset of example_data</span></span></span>
-<span class="r-in"><span><span class="va">unique_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">example_data</span><span class="op">$</span><span class="va">Sample</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">filtered_data</span> <span class="op">&lt;-</span> <span class="va">example_data</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">unique_samples</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">148</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Run the random forest model pipeline</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">do_rf</span><span class="op">(</span><span class="va">filtered_data</span>,</span></span>
-<span class="r-in"><span>             <span class="va">example_metadata</span>,</span></span>
-<span class="r-in"><span>             wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>             palette <span class="op">=</span> <span class="st">"cancers12"</span>,</span></span>
-<span class="r-in"><span>             cv_sets <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>             grid_size <span class="op">=</span> <span class="fl">10</span>,</span></span>
-<span class="r-in"><span>             ncores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">do_rf</span><span class="op">(</span><span class="va">example_data</span>,</span></span>
+<span class="r-in"><span>      <span class="va">example_metadata</span>,</span></span>
+<span class="r-in"><span>      <span class="st">"AML"</span>,</span></span>
+<span class="r-in"><span>      balance_groups <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>      wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>      palette <span class="op">=</span> <span class="st">"cancers12"</span>,</span></span>
+<span class="r-in"><span>      cv_sets <span class="op">=</span> <span class="fl">5</span>,</span></span>
+<span class="r-in"><span>      grid_size <span class="op">=</span> <span class="fl">20</span>,</span></span>
+<span class="r-in"><span>      ncores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(DAid)`</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Too little data to stratify.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Resampling will be unstratified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Sets and groups are ready. Model fitting is starting...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Classification model for AML is starting...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Classification model for BRC is starting...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Classification model for CLL is starting...</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Results for AML</span></span></span>
-<span class="r-in"><span><span class="va">res</span><span class="op">$</span><span class="va">AML</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Classification model for AML as case is starting...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$rf_tune</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # Tuning results</span>
@@ -199,11 +202,11 @@ model, tests it, and plots useful the feature variable importance.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   splits          id    .metrics          .notes           .predictions      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [59/16]&gt;</span> Fold1 <span style="color: #949494;">&lt;tibble [10 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [160 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;split [59/16]&gt;</span> Fold2 <span style="color: #949494;">&lt;tibble [10 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [160 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;split [60/15]&gt;</span> Fold3 <span style="color: #949494;">&lt;tibble [10 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [150 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">&lt;split [61/14]&gt;</span> Fold4 <span style="color: #949494;">&lt;tibble [10 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [140 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> <span style="color: #949494;">&lt;split [61/14]&gt;</span> Fold5 <span style="color: #949494;">&lt;tibble [10 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [140 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [65/17]&gt;</span> Fold1 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [340 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;split [65/17]&gt;</span> Fold2 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [340 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;split [65/17]&gt;</span> Fold3 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [340 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">&lt;split [66/16]&gt;</span> Fold4 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [320 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> <span style="color: #949494;">&lt;split [67/15]&gt;</span> Fold5 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [300 × 7]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$rf_wf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Workflow ════════════════════════════════════════════════════════════════════</span>
@@ -233,20 +236,20 @@ model, tests it, and plots useful the feature variable importance.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$train_set</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 75 × 102</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 82 × 102</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    DAid    AARSD1   ABL1  ACAA1   ACAN    ACE2  ACOX1    ACP5    ACP6  ACTA2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DA00003  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>      0.989 <span style="color: #BB0000;">NA</span>       0.330  1.37   <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DA00004   3.41  3.38   1.69  <span style="color: #BB0000;">NA</span>      1.52   <span style="color: #BB0000;">NA</span>      0.841   0.582   1.70 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DA00005   5.01  5.05   0.128  0.401 -<span style="color: #BB0000;">0.933</span>  -<span style="color: #BB0000;">0.584</span>  0.026<span style="text-decoration: underline;">5</span>  1.16    2.73 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DA00007  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      3.96   0.682  3.14    2.62   1.47    2.25    2.01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DA00008   2.78  0.812 -<span style="color: #BB0000;">0.552</span>  0.982 -<span style="color: #BB0000;">0.101</span>  -<span style="color: #BB0000;">0.304</span>  0.376  -<span style="color: #BB0000;">0.826</span>   1.52 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DA00009   4.39  3.34  -<span style="color: #BB0000;">0.452</span> -<span style="color: #BB0000;">0.868</span>  0.395   1.71   1.49   -<span style="color: #BB0000;">0.028</span><span style="color: #BB0000; text-decoration: underline;">5</span>  0.200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DA00006   6.83  1.18  -<span style="color: #BB0000;">1.74</span>  -<span style="color: #BB0000;">0.156</span>  1.53   -<span style="color: #BB0000;">0.721</span>  0.620   0.527   0.772</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DA00007  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      3.96   0.682  3.14    2.62   1.47    2.25    2.01 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DA00008   2.78  0.812 -<span style="color: #BB0000;">0.552</span>  0.982 -<span style="color: #BB0000;">0.101</span>  -<span style="color: #BB0000;">0.304</span>  0.376  -<span style="color: #BB0000;">0.826</span>   1.52 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DA00010   1.83  1.21  -<span style="color: #BB0000;">0.912</span> -<span style="color: #BB0000;">1.04</span>  -<span style="color: #BB0000;">0.091</span><span style="color: #BB0000; text-decoration: underline;">8</span> -<span style="color: #BB0000;">0.304</span>  1.69    0.092<span style="text-decoration: underline;">0</span>  2.04 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DA00011   3.48  4.96   3.50  -<span style="color: #BB0000;">0.338</span>  4.48    1.26   2.18    1.62    1.79 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DA00012   4.31  0.710 -<span style="color: #BB0000;">1.44</span>  -<span style="color: #BB0000;">0.218</span> -<span style="color: #BB0000;">0.469</span>  -<span style="color: #BB0000;">0.361</span> -<span style="color: #BB0000;">0.071</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">1.30</span>    2.86 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DA00013   1.31  2.52   1.11   0.997  4.56   -<span style="color: #BB0000;">1.35</span>   0.833   2.33    3.57 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 65 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 72 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 92 more variables: ACTN4 &lt;dbl&gt;, ACY1 &lt;dbl&gt;, ADA &lt;dbl&gt;, ADA2 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAM15 &lt;dbl&gt;, ADAM23 &lt;dbl&gt;, ADAM8 &lt;dbl&gt;, ADAMTS13 &lt;dbl&gt;, ADAMTS15 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAMTS16 &lt;dbl&gt;, ADAMTS8 &lt;dbl&gt;, ADCYAP1R1 &lt;dbl&gt;, ADGRE2 &lt;dbl&gt;, ADGRE5 &lt;dbl&gt;,</span></span>
@@ -255,26 +258,26 @@ model, tests it, and plots useful the feature variable importance.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AIF1 &lt;dbl&gt;, AIFM1 &lt;dbl&gt;, AK1 &lt;dbl&gt;, AKR1B1 &lt;dbl&gt;, AKR1C4 &lt;dbl&gt;, …</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$test_set</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 27 × 102</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    DAid    AARSD1       ABL1  ACAA1    ACAN  ACE2   ACOX1   ACP5  ACP6 ACTA2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DA00001   3.39  2.76       1.71   0.033<span style="text-decoration: underline;">3</span> 1.76  -<span style="color: #BB0000;">0.919</span>   1.54  2.15  2.81 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DA00002   1.42  1.25      -<span style="color: #BB0000;">0.816</span> -<span style="color: #BB0000;">0.459</span>  0.826 -<span style="color: #BB0000;">0.902</span>   0.647 1.30  0.798</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DA00006   6.83  1.18      -<span style="color: #BB0000;">1.74</span>  -<span style="color: #BB0000;">0.156</span>  1.53  -<span style="color: #BB0000;">0.721</span>   0.620 0.527 0.772</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DA00016   1.79  1.36       0.106 -<span style="color: #BB0000;">0.372</span>  3.40  -<span style="color: #BB0000;">1.19</span>    1.77  1.07  2.00 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DA00022   7.07  5.67       3.68  -<span style="color: #BB0000;">0.458</span>  3.09   0.690   0.649 2.17  1.83 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DA00023   2.92 -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">070</span><span style="color: #BB0000;">6</span>  0.602  1.59   0.198  1.61    0.283 2.35  2.11 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DA00034   3.45  2.91       1.31   0.423  0.647  1.40    0.691 0.720 1.95 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DA00035   4.39  3.31       0.454  0.290  2.68   0.116  -<span style="color: #BB0000;">1.32</span>  0.945 2.14 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DA00038   2.23  1.42       0.484  1.72   1.46   0.074<span style="text-decoration: underline;">7</span>  1.82  0.109 4.27 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DA00039   4.26  0.572     -<span style="color: #BB0000;">1.97</span>  -<span style="color: #BB0000;">0.433</span>  0.208  0.790  -<span style="color: #BB0000;">0.236</span> 1.52  0.652</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 17 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 92 more variables: ACTN4 &lt;dbl&gt;, ACY1 &lt;dbl&gt;, ADA &lt;dbl&gt;, ADA2 &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAM15 &lt;dbl&gt;, ADAM23 &lt;dbl&gt;, ADAM8 &lt;dbl&gt;, ADAMTS13 &lt;dbl&gt;, ADAMTS15 &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAMTS16 &lt;dbl&gt;, ADAMTS8 &lt;dbl&gt;, ADCYAP1R1 &lt;dbl&gt;, ADGRE2 &lt;dbl&gt;, ADGRE5 &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADGRG1 &lt;dbl&gt;, ADGRG2 &lt;dbl&gt;, ADH4 &lt;dbl&gt;, ADM &lt;dbl&gt;, AGER &lt;dbl&gt;, AGR2 &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AGR3 &lt;dbl&gt;, AGRN &lt;dbl&gt;, AGRP &lt;dbl&gt;, AGXT &lt;dbl&gt;, AHCY &lt;dbl&gt;, AHSP &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AIF1 &lt;dbl&gt;, AIFM1 &lt;dbl&gt;, AK1 &lt;dbl&gt;, AKR1B1 &lt;dbl&gt;, AKR1C4 &lt;dbl&gt;, …</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 34 × 102</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    DAid  AARSD1  ABL1  ACAA1    ACAN  ACE2   ACOX1   ACP5    ACP6 ACTA2    ACTN4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DA00…  3.39  2.76   1.71   0.033<span style="text-decoration: underline;">3</span> 1.76  -<span style="color: #BB0000;">0.919</span>   1.54   2.15   2.81   0.742  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DA00…  1.42  1.25  -<span style="color: #BB0000;">0.816</span> -<span style="color: #BB0000;">0.459</span>  0.826 -<span style="color: #BB0000;">0.902</span>   0.647  1.30   0.798 -<span style="color: #BB0000;">0.065</span><span style="color: #BB0000; text-decoration: underline;">9</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DA00…  4.39  3.34  -<span style="color: #BB0000;">0.452</span> -<span style="color: #BB0000;">0.868</span>  0.395  1.71    1.49  -<span style="color: #BB0000;">0.028</span><span style="color: #BB0000; text-decoration: underline;">5</span> 0.200 -<span style="color: #BB0000;">0.532</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DA00…  3.31  1.90  <span style="color: #BB0000;">NA</span>     -<span style="color: #BB0000;">0.926</span>  0.408  0.687   1.03   0.612  2.19   0.258  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DA00…  1.46  0.832 -<span style="color: #BB0000;">2.73</span>  -<span style="color: #BB0000;">0.371</span>  2.27   0.023<span style="text-decoration: underline;">4</span>  0.144  0.826  1.98  -<span style="color: #BB0000;">0.280</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DA00…  2.62  2.48   0.537 -<span style="color: #BB0000;">0.215</span>  1.82   0.290   1.27   1.11   0.206  1.23   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DA00…  2.47  2.16  -<span style="color: #BB0000;">0.486</span> <span style="color: #BB0000;">NA</span>      0.386 <span style="color: #BB0000;">NA</span>       1.38   0.536  1.86   0.009<span style="text-decoration: underline;">82</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DA00…  3.62  3.06  -<span style="color: #BB0000;">1.34</span>   0.965  1.05   1.53    0.152 -<span style="color: #BB0000;">0.124</span>  2.81   0.285  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DA00…  4.39  3.31   0.454  0.290  2.68   0.116  -<span style="color: #BB0000;">1.32</span>   0.945  2.14  -<span style="color: #BB0000;">0.008</span><span style="color: #BB0000; text-decoration: underline;">81</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DA00…  0.964 2.94   1.55   1.67   2.50   0.164   1.83   1.46   3.03   0.449  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 24 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more variables: ACY1 &lt;dbl&gt;, ADA &lt;dbl&gt;, ADA2 &lt;dbl&gt;, ADAM15 &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAM23 &lt;dbl&gt;, ADAM8 &lt;dbl&gt;, ADAMTS13 &lt;dbl&gt;, ADAMTS15 &lt;dbl&gt;, ADAMTS16 &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAMTS8 &lt;dbl&gt;, ADCYAP1R1 &lt;dbl&gt;, ADGRE2 &lt;dbl&gt;, ADGRE5 &lt;dbl&gt;, ADGRG1 &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADGRG2 &lt;dbl&gt;, ADH4 &lt;dbl&gt;, ADM &lt;dbl&gt;, AGER &lt;dbl&gt;, AGR2 &lt;dbl&gt;, AGR3 &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AGRN &lt;dbl&gt;, AGRP &lt;dbl&gt;, AGXT &lt;dbl&gt;, AHCY &lt;dbl&gt;, AHSP &lt;dbl&gt;, AIF1 &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AIFM1 &lt;dbl&gt;, AK1 &lt;dbl&gt;, AKR1B1 &lt;dbl&gt;, AKR1C4 &lt;dbl&gt;, AKT1S1 &lt;dbl&gt;, …</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$hypopt_vis</span>
 <span class="r-plt img"><img src="do_rf-1.png" alt="" width="700" height="433"></span>
@@ -298,23 +301,23 @@ model, tests it, and plots useful the feature variable importance.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Ranger result</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ranger::ranger(x = maybe_data_frame(x), y = y, mtry = min_cols(~58L,      x), num.trees = ~1000, min.node.size = min_rows(~16L, x),      importance = ~"permutation", num.threads = 1, verbose = FALSE,      seed = sample.int(10^5, 1), probability = TRUE) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ranger::ranger(x = maybe_data_frame(x), y = y, mtry = min_cols(~76L,      x), num.trees = ~1000, min.node.size = min_rows(~24L, x),      importance = ~"permutation", num.threads = 1, verbose = FALSE,      seed = sample.int(10^5, 1), probability = TRUE) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Type:                             Probability estimation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of trees:                  1000 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Sample size:                      75 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sample size:                      82 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of independent variables:  100 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mtry:                             58 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Target node size:                 16 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mtry:                             76 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Target node size:                 24 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variable importance mode:         permutation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Splitrule:                        gini </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> OOB prediction error (Brier s.):  0.08626851 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> OOB prediction error (Brier s.):  0.1474815 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $finalfit_res$best</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    mtry min_n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    58    16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    76    24</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $finalfit_res$final_wf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Workflow ════════════════════════════════════════════════════════════════════</span>
@@ -333,9 +336,9 @@ model, tests it, and plots useful the feature variable importance.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest Model Specification (classification)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Main Arguments:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mtry = 58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   mtry = 76</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   trees = 1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   min_n = 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   min_n = 24</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Engine-Specific Arguments:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   importance = permutation</span>
@@ -347,22 +350,22 @@ model, tests it, and plots useful the feature variable importance.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$accuracy</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.82</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$sensitivity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.82</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$specificity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.62</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.83</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$auc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.96</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$conf_matrix</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Truth</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Prediction  0  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          0 10  5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          1  4  8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          0 18  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          1  4 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$roc_curve</span>
 <span class="r-plt img"><img src="do_rf-2.png" alt="" width="700" height="433"></span>
@@ -377,16 +380,16 @@ model, tests it, and plots useful the feature variable importance.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 99 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Variable Importance Scaled_Importance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ADA         0.179             100    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AZU1        0.033<span style="text-decoration: underline;">8</span>             18.8  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ADGRG2      0.026<span style="text-decoration: underline;">4</span>             14.7  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ADAMTS13    0.006<span style="text-decoration: underline;">60</span>             3.68 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ACTA2       0.004<span style="text-decoration: underline;">17</span>             2.32 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ADAM8       0.004<span style="text-decoration: underline;">11</span>             2.29 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ANGPT1      0.003<span style="text-decoration: underline;">68</span>             2.05 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ALPP        0.002<span style="text-decoration: underline;">75</span>             1.53 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AMN         0.002<span style="text-decoration: underline;">30</span>             1.28 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ANXA11      0.001<span style="text-decoration: underline;">44</span>             0.802</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ADA         0.060<span style="text-decoration: underline;">2</span>             100   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ANGPT1      0.026<span style="text-decoration: underline;">4</span>              43.9 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AZU1        0.015<span style="text-decoration: underline;">9</span>              26.3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ATG4A       0.014<span style="text-decoration: underline;">8</span>              24.6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ADGRG1      0.011<span style="text-decoration: underline;">2</span>              18.6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AOC3        0.010<span style="text-decoration: underline;">0</span>              16.6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ANGPT2      0.008<span style="text-decoration: underline;">70</span>             14.4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AIF1        0.004<span style="text-decoration: underline;">48</span>              7.44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ANXA3       0.003<span style="text-decoration: underline;">43</span>              5.69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ADGRG2      0.002<span style="text-decoration: underline;">63</span>              4.36</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 89 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res$var_imp_plot</span>
@@ -394,13 +397,13 @@ model, tests it, and plots useful the feature variable importance.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $boxplot_res</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 38 rows containing non-finite outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 161 rows containing non-finite outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_boxplot()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 11 rows containing non-finite outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 13 rows containing non-finite outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_boxplot()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 27 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 148 rows containing missing values or values outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 11 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 13 rows containing missing values or values outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
 <span class="r-plt img"><img src="do_rf-4.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

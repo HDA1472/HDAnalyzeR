@@ -96,11 +96,37 @@ It also creates upset plots both for the significant up and down regulated prote
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Run differential expression analysis</span></span></span>
-<span class="r-in"><span><span class="va">de_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">example_data</span>, <span class="va">example_metadata</span>, wide <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Run differential expression analysis for 3 different cases</span></span></span>
+<span class="r-in"><span><span class="va">de_results_aml</span> <span class="op">&lt;-</span> <span class="fu"><a href="do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">example_data</span>,</span></span>
+<span class="r-in"><span>                           <span class="va">example_metadata</span>,</span></span>
+<span class="r-in"><span>                           <span class="st">"AML"</span>,</span></span>
+<span class="r-in"><span>                           wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                           only_female <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BRC"</span>, <span class="st">"OVC"</span>, <span class="st">"CVX"</span>, <span class="st">"ENDC"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">de_results_brc</span> <span class="op">&lt;-</span> <span class="fu"><a href="do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">example_data</span>,</span></span>
+<span class="r-in"><span>                           <span class="va">example_metadata</span>,</span></span>
+<span class="r-in"><span>                           <span class="st">"BRC"</span>,</span></span>
+<span class="r-in"><span>                           wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                           only_female <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BRC"</span>, <span class="st">"OVC"</span>, <span class="st">"CVX"</span>, <span class="st">"ENDC"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">de_results_prc</span> <span class="op">&lt;-</span> <span class="fu"><a href="do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">example_data</span>,</span></span>
+<span class="r-in"><span>                           <span class="va">example_metadata</span>,</span></span>
+<span class="r-in"><span>                           <span class="st">"PRC"</span>,</span></span>
+<span class="r-in"><span>                           wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                           only_female <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BRC"</span>, <span class="st">"OVC"</span>, <span class="st">"CVX"</span>, <span class="st">"ENDC"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Combine the results</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"AML"</span> <span class="op">=</span> <span class="va">de_results_aml</span>,</span></span>
+<span class="r-in"><span>            <span class="st">"BRC"</span> <span class="op">=</span> <span class="va">de_results_brc</span>,</span></span>
+<span class="r-in"><span>            <span class="st">"PRC"</span> <span class="op">=</span> <span class="va">de_results_prc</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot summary visualizations</span></span></span>
-<span class="r-in"><span><span class="fu">plot_de_summary</span><span class="op">(</span><span class="va">de_results</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_de_summary</span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_line()`: Each group consists of only one observation.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Do you need to adjust the <span style="color: #00BB00;">group</span> aesthetic?</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $de_barplot</span>
 <span class="r-plt img"><img src="plot_de_summary-1.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
