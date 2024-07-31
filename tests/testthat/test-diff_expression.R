@@ -246,8 +246,8 @@ test_that("do_limma performs DE properly", {
     dplyr::select(DAid, Assay, NPX) |>
     dplyr::filter(Assay %in% first_10_unique_assays)
 
-  result <- do_limma(test_data, example_metadata, correct = NULL, wide = F, volcano = F)
-  result <- result$AML |>
+  result <- do_limma(test_data, example_metadata, "AML", correct = NULL, wide = F, volcano = F)
+  result <- result |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -280,8 +280,8 @@ test_that("do_ttest_de performs DE properly", {
     dplyr::select(DAid, Assay, NPX) |>
     dplyr::filter(Assay %in% first_10_unique_assays)
 
-  result <- do_ttest(test_data, example_metadata, wide = F, volcano = F)
-  result <- result$AML |>
+  result <- do_ttest(test_data, example_metadata, "AML", wide = F, volcano = F)
+  result <- result |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
   expected <- tibble::tibble(
       Assay = c("ABL1", "ACAN", "ACTA2", "ACE2", "ACP6", "AARSD1", "ACAA1", "ACTN4", "ACP5", "ACOX1"),
