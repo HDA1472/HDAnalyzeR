@@ -36,19 +36,39 @@ proteins for each disease in a barplot. It also plots the upset plot of the
 top or all protein features.
 }
 \examples{
-# Create subset of example_data
-unique_samples <- unique(example_data$Sample)
-filtered_data <- example_data |>
- dplyr::filter(Sample \%in\% unique_samples[1:148])
+# Run the elastic net model pipeline for 3 different cases
+res_aml <- do_elnet(example_data,
+                    example_metadata,
+                    "AML",
+                    wide = FALSE,
+                    cv_sets = 2,
+                    grid_size = 1,
+                    ncores = 1)
 
-# Run the elastic net model pipeline
-res <- do_elnet(filtered_data,
-                example_metadata,
-                wide = FALSE,
-                cv_sets = 2,
-                grid_size = 1,
-                ncores = 1)
+res_brc <- do_elnet(example_data,
+                    example_metadata,
+                    "BRC",
+                    wide = FALSE,
+                    only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                    only_male = "PRC",
+                    cv_sets = 2,
+                    grid_size = 1,
+                    ncores = 1)
+res_prc <- do_elnet(example_data,
+                    example_metadata,
+                    "PRC",
+                    wide = FALSE,
+                    only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                    only_male = "PRC",
+                    cv_sets = 2,
+                    grid_size = 1,
+                    ncores = 1)
 
-# Plot features summary
+# Combine the results
+res <- list("AML" = res_aml,
+            "BRC" = res_brc,
+            "PRC" = res_prc)
+
+# Plot features summary visualizations
 plot_features_summary(res)
 }

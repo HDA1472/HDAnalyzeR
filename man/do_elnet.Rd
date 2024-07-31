@@ -7,7 +7,9 @@
 do_elnet(
   olink_data,
   metadata,
+  case,
   wide = TRUE,
+  balance_groups = TRUE,
   only_female = NULL,
   only_male = NULL,
   exclude_cols = "Sex",
@@ -31,7 +33,11 @@ do_elnet(
 
 \item{metadata}{Metadata.}
 
+\item{case}{Disease to predict.}
+
 \item{wide}{Whether the data is wide format. Default is TRUE.}
+
+\item{balance_groups}{Whether to balance the groups. Default is TRUE.}
 
 \item{only_female}{Vector of diseases that are female specific. Default is NULL.}
 
@@ -79,21 +85,14 @@ and fits the model. It also performs hyperparameter optimization, fits the best
 model, tests it, and plots useful the feature variable importance.
 }
 \examples{
-# Create subset of example_data
-unique_samples <- unique(example_data$Sample)
-filtered_data <- example_data |>
- dplyr::filter(Sample \%in\% unique_samples[1:148])
-
-# Run the elastic net model pipeline
-res <- do_elnet(filtered_data,
-                example_metadata,
-                wide = FALSE,
-                type = "elnet",
-                palette = "cancers12",
-                cv_sets = 5,
-                grid_size = 20,
-                ncores = 1)
-
-# Results for AML
-res$AML
+do_elnet(example_data,
+         example_metadata,
+         "AML",
+         balance_groups = TRUE,
+         wide = FALSE,
+         type = "elnet",
+         palette = "cancers12",
+         cv_sets = 5,
+         grid_size = 20,
+         ncores = 1)
 }
