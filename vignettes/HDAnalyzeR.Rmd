@@ -20,7 +20,7 @@ HDAnalyzeR is an R package developed to streamline and enhance proteomics analys
 library(HDAnalyzeR)
 ```
 
-This document introduces you to HDAnalyzeR's basic set of tools, and shows you how to analyze and identify biomarkers in a dataset of cancer blood plasma samples. 
+This document introduces you to HDAnalyzeR's basic set of tools, and shows you how to analyze and identify biomarkers in a dataset of cancer blood plasma samples.
 
 ## Loading the Data
 
@@ -33,7 +33,8 @@ head(example_data)
 ```{r}
 head(example_metadata)
 ```
->📓 In real-world scenarios, you would load your own data and metadata files instead of using the example dataset. In order to run the package without issues, make sure that your data include the following columns: DAid, Assay and, NPX, while your metadata include the following columns: DAid and Disease. Also, if you have a Sex column in your metadata, the data should be encoded as M and F.
+
+> 📓 In real-world scenarios, you would load your own data and metadata files instead of using the example dataset. In order to run the package without issues, make sure that your data include the following columns: DAid, Assay and, NPX, while your metadata include the following columns: DAid and Disease. Also, if you have a Sex column in your metadata, the data should be encoded as M and F.
 
 ## Quality Control (QC)
 
@@ -58,7 +59,7 @@ qc_summary_metadata(example_metadata, disease_palette = "cancers12")
 
 ### Data Cleaning
 
-As we saw from the QC results, the data contains NAs and other issues that need to be addressed. `clean_data()` preprocesses the dataset by filtering out rows based on specified criteria. In this case we will keep only the data which Assay_Warning is "PASS" and only DAid, Assay and NPX columns. 
+As we saw from the QC results, the data contains NAs and other issues that need to be addressed. `clean_data()` preprocesses the dataset by filtering out rows based on specified criteria. In this case we will keep only the data which Assay_Warning is "PASS" and only DAid, Assay and NPX columns.
 
 ```{r}
 clean_data <- clean_data(example_data, 
@@ -94,11 +95,11 @@ join_data <- dfs$join_data
 head(join_data)
 ```
 
->📓 While HDAnalyzeR can work with long format data, most functions will transform it into a wide format, which can slightly slow down the pipeline. Thus, starting with tidy data is advisable.
+> 📓 While HDAnalyzeR can work with long format data, most functions will transform it into a wide format, which can slightly slow down the pipeline. Thus, starting with tidy data is advisable.
 
 ## Imputation and Dimensionality Reduction
 
-Next, we will impute missing values using K-nearest neighbors (KNN) with 3 neighbors via `impute_knn()`. 
+Next, we will impute missing values using K-nearest neighbors (KNN) with 3 neighbors via `impute_knn()`.
 
 ```{r}
 imputed_data <- impute_knn(wide_data, 
@@ -108,7 +109,7 @@ imputed_data <- impute_knn(wide_data,
 head(imputed_data)
 ```
 
-After imputation, we will run Principal Component Analysis (PCA) via `do_pca()` and Uniform Manifold Approximation and Projection (UMAP) via `do_umap()` to check for outliers, batch effects, and other potential issues. 
+After imputation, we will run Principal Component Analysis (PCA) via `do_pca()` and Uniform Manifold Approximation and Projection (UMAP) via `do_umap()` to check for outliers, batch effects, and other potential issues.
 
 ```{r}
 do_pca(imputed_data, 
@@ -221,4 +222,4 @@ intersect_proteins <- intersect(de_proteins, lasso_proteins)
 do_ora(intersect_proteins, database = "GO", ncateg = 5)
 ```
 
->📓 Remember that these data are a dummy-dataset with fake data.
+> 📓 Remember that these data are a dummy-dataset with fake data.

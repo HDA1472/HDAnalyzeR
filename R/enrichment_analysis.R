@@ -114,7 +114,9 @@ do_ora <- function(gene_list,
 #' # Run GSEA with Reactome database
 #' do_gsea(de_results,
 #'         database = "GO",
-#'         pval_lim = 0.9)  # Remember that the data is artificial
+#'         pval_lim = 0.9,  # Remember that the data is artificial
+#'         ncateg = 7,
+#'         fontsize = 7)
 do_gsea <- function(de_results,
                     database = c("KEGG", "GO", "Reactome"),
                     background = NULL,
@@ -195,8 +197,11 @@ do_gsea <- function(de_results,
                                       split=".sign") +
     ggplot2::facet_grid(.~.sign)
 
-  ridgeplot <- clusterProfiler::ridgeplot(enrichment) +
-    ggplot2::labs(x = "enrichment distribution")
+  ridgeplot <- clusterProfiler::ridgeplot(enrichment, showCategory = ncateg) +
+    ggplot2::labs(x = "enrichment distribution") +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(size = fontsize),
+                   axis.text.y = ggplot2::element_text(size = fontsize),
+                   text = ggplot2::element_text(size = fontsize))
 
   gseaplot <- clusterProfiler::gseaplot(enrichment,
                                         by = "all",
