@@ -28,12 +28,14 @@ A list with two elements:
 \itemize{
 \item features_barplot: Barplot of the number of proteins and top proteins for each disease.
 \item upset_plot_features: Upset plot of the top or all proteins.
+\item metrics_barplot: Barplot of the model metrics for each disease.
 }
 }
 \description{
 \code{plot_features_summary()} plots the number of proteins and the number of top
 proteins for each disease in a barplot. It also plots the upset plot of the
-top or all protein features.
+top or all protein features, as well as a summary line plot of the model
+performance metrics.
 }
 \examples{
 # Run the elastic net model pipeline for 3 different cases
