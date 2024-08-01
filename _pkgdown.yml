@@ -70,7 +70,9 @@ reference:
   contents:
   - literature_search
   - do_ora
+  - plot_ora
   - do_gsea
+  - plot_gsea
 - title: Generic Utilities
   desc: |
     Functions that perform general tasks.
