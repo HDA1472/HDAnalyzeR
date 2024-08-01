@@ -1,12 +1,13 @@
 # HDAnalyzeR <img src="man/figures/logo.png" align="right" height="200" alt="" />
 [![R-CMD-check](https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml)
 
-HDAnalyzeR is an R package developed by the Human Disease Blood Atlas project, designed to facilitate proteomics analysis for biomarker selection from blood plasma samples. It offers ready-to-use functions for common proteomics tasks such as protein differential expression analysis, classification models, imputation methods, dimensionality reduction, and data visualization, aiming to streamline workflows and enhance the standardization and efficiency of biomarker discovery in disease research.
+HDAnalyzeR is an R package developed by the Human Disease Blood Atlas project, designed to facilitate proteomics analysis for biomarker selection from blood plasma samples. It is optimized to work with Olink proteomics data, but it can be adapted to other proteomics platforms. In order to use the package without issues the data should have these three necessary columns: `DAid` with the Sample IDs, `Assay` with the protein names, and `NPX` with the protein expression data. The metadata should contain the `DAid` and the `Disease` columns, where the `Disease` column should contain the different class names (Healthy, Disease, etc.).
+
+HDAnalyzeR offers ready-to-use functions for common proteomics tasks such as protein differential expression analysis, classification models, imputation methods, dimensionality reduction, and data visualization, aiming to streamline workflows and enhance the standardization and efficiency of biomarker discovery in disease research.
 
 ## Installation
 
-> [!CAUTION]
-> We recommend to install it in a toy environment as it is currently under development.
+> ⚠️ We recommend to install it in a toy environment as it is currently under development.
 
 You can install the latest version of HDAnalyzeR from GitHub:
 
@@ -18,8 +19,26 @@ install.packages("devtools")
 devtools::install_github("HDA1472/DA_RPackage")
 ```
 
+## Example
+
+The following example showcases how to perform a differential expression analysis. It is one of the many features of `HDAnalyzeR`. A complete guide is available through [package's documentation](hda1472.github.io/DA_RPackage/).
+
+```r
+library(HDAnalyzeR)
+
+# Prepare data
+wide_data <- widen_data(example_data)
+
+# Run differential expression analysis
+de_results <- do_limma(wide_data, example_metadata, case = "AML")
+
+# DE results and volcano plot for AML
+de_results$de_results
+de_results$volcano_plot
+```
+
 ## Issues and Support
-If you encounter any bugs, please open a new issue on our GitHub repository.
+If you encounter any bugs or you want to recommend new features and changes to existing ones, please open a new issue on our GitHub repository.
 
 ## Contact
-For any questions or further information, please contact us at [konstantinos.antonopoulos@scilifelab.se].
+For any questions or further information, please contact us at konstantinos.antonopoulos@scilifelab.se.

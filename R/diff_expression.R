@@ -1,5 +1,5 @@
 utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "Sex",
-                         "Disease", "case", "control", "is_normal", "Count"))
+                         "Disease", "case", "control", "is_normal", "Count", ":="))
 #' Differential expression analysis with limma
 #'
 #' `do_limma_de()` performs differential expression analysis using limma package.
@@ -8,7 +8,8 @@ utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "S
 #' The function removes the NAs from the columns that are used to correct for.
 #'
 #' @param join_data A tibble with the Olink data in wide format joined with metadata.
-#' @param disease The disease of interest.
+#' @param variable The variable of interest that includes the case and control groups.
+#' @param case The disease of interest.
 #' @param correct The variables to correct the results with. Default c("Sex", "Age").
 #' @param correct_type The type of the variables to correct the results with. Default c("factor", "numeric").
 #' @param only_female The female specific diseases. Default is NULL.
@@ -19,38 +20,42 @@ utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "S
 #' @return A tibble with the differential expression results.
 #' @keywords internal
 do_limma_de <- function(join_data,
-                        disease,
+                        variable = "Disease",
+                        case,
                         correct = c("Sex", "Age"),
                         correct_type = c("factor", "numeric", "numeric"),
                         only_female = NULL,
                         only_male = NULL,
                         pval_lim = 0.05,
                         logfc_lim = 0) {
+  Variable <- rlang::sym(variable)
 
-  sex_specific <- FALSE
-  # Filter for Sex if disease is Sex specific
-  if(!is.null(only_female) & disease %in% only_female) {
-    join_data <- join_data |>
-      dplyr::filter(Sex == "F")
-    sex_specific <- TRUE
-  } else {
-    join_data <- join_data
-  }
+  if (variable == "Disease") {
+    sex_specific <- FALSE
+    # Filter for Sex if disease is Sex specific
+    if(!is.null(only_female) & case %in% only_female) {
+      join_data <- join_data |>
+        dplyr::filter(Sex == "F")
+      sex_specific <- TRUE
+    } else {
+      join_data <- join_data
+    }
 
-  if(!is.null(only_male) & disease %in% only_male) {
-    join_data <- join_data |>
-      dplyr::filter(Sex == "M")
-    sex_specific <- TRUE
-  } else {
-    join_data <- join_data
+    if(!is.null(only_male) & case %in% only_male) {
+      join_data <- join_data |>
+        dplyr::filter(Sex == "M")
+      sex_specific <- TRUE
+    } else {
+      join_data <- join_data
+    }
   }
 
   join_data <- join_data |>
-    dplyr::filter(!dplyr::if_any(dplyr::all_of(c("Disease", "Sex", correct)), is.na)) |>  # Remove NAs from columns in formula
-    dplyr::mutate(Disease = ifelse(Disease == disease, "1_Case", "0_Control"))
+    dplyr::filter(!dplyr::if_any(dplyr::all_of(c(variable, "Sex", correct)), is.na)) |>  # Remove NAs from columns in formula
+    dplyr::mutate(!!Variable := ifelse(!!Variable == case, "1_Case", "0_Control"))
 
-  # Design a model - add Disease, and Sex, Age, BMI
-  formula <- "~0 + as.factor(Disease)"
+  # Design a model
+  formula <- paste("~0 + as.factor(", variable, ")")
 
   if (!is.null(correct)) {
     for (i in 1:length(correct)) {
@@ -82,7 +87,7 @@ do_limma_de <- function(join_data,
 
   # Fit linear model to each protein assay
   data_fit <- join_data |>
-    dplyr::select(-dplyr::any_of(c("Disease", "Sex", "Age", "BMI", correct))) |>
+    dplyr::select(-dplyr::any_of(c(variable, "Sex", correct))) |>
     tibble::column_to_rownames("DAid") |>
     t()
 
@@ -100,7 +105,7 @@ do_limma_de <- function(join_data,
 
   de_res <- de_results |>
     tibble::as_tibble(rownames = "Assay") |>
-    dplyr::mutate(Disease = disease) |>
+    dplyr::mutate(!!Variable := case) |>
     dplyr::mutate(sig = dplyr::case_when(
       adj.P.Val < pval_lim & logFC < -logfc_lim ~ "significant down",
       adj.P.Val < pval_lim & logFC > logfc_lim ~ "significant up",
@@ -191,7 +196,8 @@ do_limma_continuous_de <- function(join_data,
 #' perform a t-test or Wilcoxon test respectively. It also performs p value FDR adjustment.
 #'
 #' @param long_data A tibble with the Olink data in long format and the Sex column from metadata.
-#' @param disease The disease of interest.
+#' @param variable The variable of interest that includes the case and control groups.
+#' @param case The disease of interest.
 #' @param assays The assays to run the differential expression analysis on.
 #' @param only_female The female specific diseases. Default is NULL.
 #' @param only_male The male specific diseases. Default is NULL.
@@ -201,7 +207,8 @@ do_limma_continuous_de <- function(join_data,
 #' @return A tibble with the differential expression results.
 #' @keywords internal
 do_ttest_de <- function(long_data,
-                        disease,
+                        variable = "Disease",
+                        case,
                         assays,
                         normality_res,
                         only_female = NULL,
@@ -209,14 +216,15 @@ do_ttest_de <- function(long_data,
                         pval_lim = 0.05,
                         logfc_lim = 0) {
 
+  Variable <- rlang::sym(variable)
   de_res <- matrix(nrow=0, ncol=4)
-  colnames(de_res) <- c("Assay", "P.Value", "logFC", "Disease")
+  colnames(de_res) <- c("Assay", "P.Value", "logFC", variable)
 
-  # Filter for Sex if disease is Sex specific
-  if(!is.null(only_female) & disease %in% only_female) {
+  # Filter for Sex if case is Sex specific
+  if(!is.null(only_female) & case %in% only_female) {
     long_data <- long_data |>
       dplyr::filter(Sex == "F")
-  } else if(!is.null(only_male) & disease %in% only_male) {
+  } else if(!is.null(only_male) & case %in% only_male) {
     long_data <- long_data |>
       dplyr::filter(Sex == "M")
   } else {
@@ -228,11 +236,11 @@ do_ttest_de <- function(long_data,
   de_res_list <- lapply(assays, function(assay) {
     i <<- i + 1
     case_group <- long_data |>
-      dplyr::filter(Disease == disease, Assay == assay) |>
+      dplyr::filter(!!Variable == case, Assay == assay) |>
       dplyr::pull(NPX)
 
     control_group <- long_data |>
-      dplyr::filter(Disease != disease, Assay == assay) |>
+      dplyr::filter(!!Variable != case, Assay == assay) |>
       dplyr::pull(NPX)
 
     if (normality_res[i] == T) {
@@ -244,7 +252,7 @@ do_ttest_de <- function(long_data,
     p.val <- test_res$p.value
     difference <- mean(case_group, na.rm = T) - mean(control_group, na.rm = T)
 
-    de_res <- rbind(de_res, c(assay, p.val, difference, disease))
+    de_res <- rbind(de_res, c(assay, p.val, difference, case))
 
   })
 
@@ -350,6 +358,7 @@ plot_volcano <- function(de_result,
 #'
 #' @param olink_data A tibble with the Olink data in wide format.
 #' @param metadata A tibble with the metadata.
+#' @param variable The variable of interest that includes the case and control groups.
 #' @param case The case group.
 #' @param correct The variables to correct the results with. Default c("Sex", "Age").
 #' @param correct_type The type of the variables to correct the results with. Default c("factor", "numeric", "numeric").
@@ -374,7 +383,7 @@ plot_volcano <- function(de_result,
 #' This is performed automatically by the function.
 #'
 #' @examples
-#' de_results <- do_limma(example_data, example_metadata, "AML", wide = FALSE)
+#' de_results <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
 #'
 #' # Results for AML
 #' de_results$de_results
@@ -383,6 +392,7 @@ plot_volcano <- function(de_result,
 #' de_results$volcano_plot
 do_limma <- function(olink_data,
                      metadata,
+                     variable = "Disease",
                      case,
                      correct = c("Sex", "Age"),
                      correct_type = c("factor", "numeric"),
@@ -398,24 +408,25 @@ do_limma <- function(olink_data,
                      subtitle = TRUE,
                      save = FALSE) {
 
+  Variable <- rlang::sym(variable)
   # Prepare Olink data and merge them with metadata
   if (isFALSE(wide)) {
     join_data <- olink_data |>
       dplyr::select(DAid, Assay, NPX) |>
       tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
       dplyr::left_join(
-        metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", correct))),
-        by = "DAid")
+        metadata |> dplyr::select(dplyr::any_of(c("DAid", variable, "Sex", correct))),
+        by = "DAid") |>
+      dplyr::filter(!is.na(!!Variable))
   } else {
     join_data <- olink_data |> dplyr::left_join(
-      metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", correct))),
+      metadata |> dplyr::select(dplyr::any_of(c("DAid", variable, "Sex", correct))),
       by = "DAid")
   }
 
   # Run differential expression analysis
-  levels <- unique(join_data$Disease)
-
   de_results <- do_limma_de(join_data,
+                            variable,
                             case,
                             correct,
                             correct_type,
@@ -545,6 +556,7 @@ do_limma_continuous <- function(olink_data,
 #'
 #' @param olink_data A tibble with the Olink data in wide format.
 #' @param metadata A tibble with the metadata.
+#' @param variable The variable of interest that includes the case and control groups.
 #' @param case The case group.
 #' @param wide If the data is in wide format. Default is TRUE.
 #' @param only_female The female specific diseases. Default is NULL.
@@ -564,7 +576,7 @@ do_limma_continuous <- function(olink_data,
 #' @export
 #'
 #' @examples
-#' de_results <- do_ttest(example_data, example_metadata, "AML", wide = FALSE)
+#' de_results <- do_ttest(example_data, example_metadata, case = "AML", wide = FALSE)
 #'
 #' # Results for AML
 #' de_results$de_results
@@ -573,6 +585,7 @@ do_limma_continuous <- function(olink_data,
 #' de_results$volcano_plot
 do_ttest <- function(olink_data,
                      metadata,
+                     variable = "Disease",
                      case,
                      wide = TRUE,
                      only_female = NULL,
@@ -592,28 +605,29 @@ do_ttest <- function(olink_data,
       dplyr::select(DAid, Assay, NPX) |>
       tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
       dplyr::left_join(
-        metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", "Age", "BMI"))),
+        metadata |> dplyr::select(dplyr::any_of(c(variable, "DAid", "Disease", "Sex", "Age", "BMI"))),
         by = "DAid")
   } else {
     join_data <- olink_data |> dplyr::left_join(
-      metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", "Age", "BMI"))),
+      metadata |> dplyr::select(dplyr::any_of(c(variable, "DAid", "Disease", "Sex", "Age", "BMI"))),
       by = "DAid")
   }
 
   # Run differential expression analysis
   long_data <- join_data |>
     dplyr::select(-dplyr::any_of(c("Age", "BMI"))) |>
-    tidyr::pivot_longer(!c("DAid", "Disease", "Sex"), names_to = "Assay", values_to = "NPX")
+    tidyr::pivot_longer(!dplyr::any_of(c(variable, "DAid", "Disease", "Sex")), names_to = "Assay", values_to = "NPX")
 
   assays <- unique(long_data$Assay)
 
   normality_res <- check_normality(
     join_data |>
-      dplyr::select(-dplyr::any_of(c("DAid", "Disease", "Sex", "Age", "BMI")))
+      dplyr::select(-dplyr::any_of(c(variable, "DAid", "Disease", "Sex", "Age", "BMI")))
   ) |>
     dplyr::pull(is_normal)
 
   de_results <- do_ttest_de(long_data,
+                            variable,
                             case,
                             assays,
                             normality_res,
@@ -666,21 +680,21 @@ do_ttest <- function(olink_data,
 #' # Run differential expression analysis for 3 different cases
 #' de_results_aml <- do_limma(example_data,
 #'                            example_metadata,
-#'                            "AML",
+#'                            case = "AML",
 #'                            wide = FALSE,
 #'                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
 #'                            only_male = "PRC")
 #'
 #' de_results_brc <- do_limma(example_data,
 #'                            example_metadata,
-#'                            "BRC",
+#'                            case = "BRC",
 #'                            wide = FALSE,
 #'                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
 #'                            only_male = "PRC")
 #'
 #' de_results_prc <- do_limma(example_data,
 #'                            example_metadata,
-#'                            "PRC",
+#'                            case = "PRC",
 #'                            wide = FALSE,
 #'                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
 #'                            only_male = "PRC")

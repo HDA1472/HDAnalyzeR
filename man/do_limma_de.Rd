@@ -6,7 +6,8 @@
 \usage{
 do_limma_de(
   join_data,
-  disease,
+  variable = "Disease",
+  case,
   correct = c("Sex", "Age"),
   correct_type = c("factor", "numeric", "numeric"),
   only_female = NULL,
@@ -18,7 +19,9 @@ do_limma_de(
 \arguments{
 \item{join_data}{A tibble with the Olink data in wide format joined with metadata.}
 
-\item{disease}{The disease of interest.}
+\item{variable}{The variable of interest that includes the case and control groups.}
+
+\item{case}{The disease of interest.}
 
 \item{correct}{The variables to correct the results with. Default c("Sex", "Age").}
 

@@ -6,7 +6,8 @@
 \usage{
 do_ttest_de(
   long_data,
-  disease,
+  variable = "Disease",
+  case,
   assays,
   normality_res,
   only_female = NULL,
@@ -18,7 +19,9 @@ do_ttest_de(
 \arguments{
 \item{long_data}{A tibble with the Olink data in long format and the Sex column from metadata.}
 
-\item{disease}{The disease of interest.}
+\item{variable}{The variable of interest that includes the case and control groups.}
+
+\item{case}{The disease of interest.}
 
 \item{assays}{The assays to run the differential expression analysis on.}
 

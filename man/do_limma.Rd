@@ -7,6 +7,7 @@
 do_limma(
   olink_data,
   metadata,
+  variable = "Disease",
   case,
   correct = c("Sex", "Age"),
   correct_type = c("factor", "numeric"),
@@ -27,6 +28,8 @@ do_limma(
 \item{olink_data}{A tibble with the Olink data in wide format.}
 
 \item{metadata}{A tibble with the metadata.}
+
+\item{variable}{The variable of interest that includes the case and control groups.}
 
 \item{case}{The case group.}
 
@@ -75,7 +78,7 @@ For sex-specific diseases, there will be no correction for Sex.
 This is performed automatically by the function.
 }
 \examples{
-de_results <- do_limma(example_data, example_metadata, "AML", wide = FALSE)
+de_results <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
 
 # Results for AML
 de_results$de_results

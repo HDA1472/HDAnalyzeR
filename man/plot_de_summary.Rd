@@ -34,21 +34,21 @@ It also creates upset plots both for the significant up and down regulated prote
 # Run differential expression analysis for 3 different cases
 de_results_aml <- do_limma(example_data,
                            example_metadata,
-                           "AML",
+                           case = "AML",
                            wide = FALSE,
                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
                            only_male = "PRC")
 
 de_results_brc <- do_limma(example_data,
                            example_metadata,
-                           "BRC",
+                           case = "BRC",
                            wide = FALSE,
                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
                            only_male = "PRC")
 
 de_results_prc <- do_limma(example_data,
                            example_metadata,
-                           "PRC",
+                           case = "PRC",
                            wide = FALSE,
                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
                            only_male = "PRC")
