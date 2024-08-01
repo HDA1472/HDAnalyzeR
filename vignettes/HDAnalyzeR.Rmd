@@ -148,7 +148,7 @@ We will run a differential expression analysis to identify potential biomarkers.
 ```{r}
 de_res_aml <- do_limma(imputed_data, 
                        clean_metadata,
-                       "AML",
+                       case = "AML",
                        correct = c("Sex", "Age"),
                        correct_type = c("factor", "numeric"),
                        only_female = c("BRC", "OVC", "CVX", "ENDC"),
@@ -162,7 +162,7 @@ de_res_aml$volcano_plot
 ```{r}
 de_res_brc <- do_limma(imputed_data, 
                        clean_metadata,
-                       "BRC",
+                       case = "BRC",
                        correct = c("Sex", "Age"),
                        correct_type = c("factor", "numeric"),
                        only_female = c("BRC", "OVC", "CVX", "ENDC"),
@@ -176,7 +176,7 @@ de_res_brc$volcano_plot
 ```{r}
 de_res_prc <- do_limma(imputed_data, 
                        clean_metadata,
-                       "PRC",
+                       case = "PRC",
                        correct = c("Sex", "Age"),
                        correct_type = c("factor", "numeric"),
                        only_female = c("BRC", "OVC", "CVX", "ENDC"),
@@ -191,8 +191,8 @@ We can also summarize the results via `plot_de_summary()`.  In order to use this
 
 ```{r}
 de_res <- list("AML" = de_res_aml, 
-                  "BRC" = de_res_brc, 
-                  "PRC" = de_res_prc)
+               "BRC" = de_res_brc, 
+               "PRC" = de_res_prc)
 
 plot_de_summary(de_res, disease_palette = "cancers12")
 ```
@@ -204,7 +204,7 @@ In addition to differential expression analysis, we will use a Lasso machine lea
 ```{r}
 lasso_res_aml <- do_elnet(imputed_data, 
                           clean_metadata, 
-                          "AML",
+                          case = "AML",
                           only_female = c("BRC", "OVC", "CVX", "ENDC"),
                           only_male = "PRC",
                           exclude_cols = c("Sex", "Age"),
@@ -233,7 +233,7 @@ lasso_res_aml$boxplot_res
 ```{r}
 lasso_res_brc <- do_elnet(imputed_data, 
                           clean_metadata, 
-                          "BRC",
+                          case = "BRC",
                           only_female = c("BRC", "OVC", "CVX", "ENDC"),
                           only_male = "PRC",
                           exclude_cols = c("Sex", "Age"),
@@ -262,7 +262,7 @@ lasso_res_brc$boxplot_res
 ```{r}
 lasso_res_prc <- do_elnet(imputed_data, 
                           clean_metadata, 
-                          "PRC",
+                          case = "PRC",
                           only_female = c("BRC", "OVC", "CVX", "ENDC"),
                           only_male = "PRC",
                           exclude_cols = c("Sex", "Age"),
@@ -302,6 +302,8 @@ plot_features_summary(lasso_res, disease_palette = "cancers12")
 
 The final step involves performing an Over-Representation Analysis for the up-regulated proteins from differential expression, that are also identified as features by the ML model. In this example, we will use the Gene Ontology (GO) database and show the results only for AML.
 
+> 📓 Remember that these data are a dummy-dataset with fake data.
+
 ```{r}
 # Extract the proteins identified by both DE and Lasso
 de_proteins <- de_res_aml$de_results |> 
@@ -314,8 +316,7 @@ lasso_proteins <- lasso_res_aml$var_imp_res$features |>
 
 intersect_proteins <- intersect(de_proteins, lasso_proteins)
 
-# Perform ORA with GO database
-do_ora(intersect_proteins, database = "GO", ncateg = 5)
+# Perform ORA with GO database and visualize results
+enrichment <- do_ora(intersect_proteins, database = "GO")
+plot_ora(enrichment, intersect_proteins, ncateg = 5)
 ```
-
-> 📓 Remember that these data are a dummy-dataset with fake data.

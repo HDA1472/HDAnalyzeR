@@ -8,9 +8,7 @@ do_gsea(
   de_results,
   database = c("KEGG", "GO", "Reactome"),
   background = NULL,
-  pval_lim = 0.05,
-  ncateg = 10,
-  fontsize = 10
+  pval_lim = 0.05
 )
 }
 \arguments{
@@ -21,17 +19,12 @@ do_gsea(
 \item{background}{A character vector containing the background genes.}
 
 \item{pval_lim}{The p-value threshold to consider a term as significant.}
-
-\item{ncateg}{The number of categories to show in the plots.}
-
-\item{fontsize}{The font size for the plots.}
 }
 \value{
 A list containing the results of the GSEA.
 }
 \description{
 This function performs gene set enrichment analysis (GSEA) using the clusterProfiler package.
-It also produces useful plots to visualize the results.
 }
 \details{
 The ontology option used when database = "GO" is "ALL".
@@ -39,13 +32,12 @@ When Reactome is used, background functionality is not available.
 }
 \examples{
 # Run Differential Expression Analysis and extract results
-de_res <- do_limma(example_data, example_metadata, "AML", wide = FALSE)
+de_res <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
 de_results <- de_res$de_results
 
 # Run GSEA with Reactome database
 do_gsea(de_results,
         database = "GO",
-        pval_lim = 0.9,  # Remember that the data is artificial
-        ncateg = 7,
-        fontsize = 7)
+        pval_lim = 0.9)
+# Remember that the data is artificial, this is why we use an absurdly high p-value cutoff
 }

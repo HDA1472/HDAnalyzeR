@@ -4,11 +4,11 @@ test_that("do_limma_de performs DE properly", {
     dplyr::select(DAid, Assay, NPX) |>
     tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
     dplyr::left_join(example_metadata |>
-                       dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", "Age", "BMI"))),
+                       dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex"))),
                      by = "DAid") |>
-    dplyr::select(DAid, Disease, Sex, Age, BMI, 2:11)
+    dplyr::select(DAid, Disease, Sex, 2:11)
 
-  result <- do_limma_de(test_data, "AML", correct = NULL) |>
+  result <- do_limma_de(test_data, case = "AML", correct = NULL) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -35,11 +35,11 @@ test_that("do_limma_de corrects for Sex", {
     dplyr::select(DAid, Assay, NPX) |>
     tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
     dplyr::left_join(example_metadata |>
-                       dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", "Age", "BMI"))),
+                       dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex"))),
                      by = "DAid") |>
-    dplyr::select(DAid, Disease, Sex, Age, BMI, 2:11)
+    dplyr::select(DAid, Disease, Sex, 2:11)
 
-  result <- do_limma_de(test_data, "AML", correct = "Sex", correct_type = "factor") |>
+  result <- do_limma_de(test_data, case = "AML", correct = "Sex", correct_type = "factor") |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -66,11 +66,11 @@ test_that("do_limma_de changes limits of significance", {
     dplyr::select(DAid, Assay, NPX) |>
     tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
     dplyr::left_join(example_metadata |>
-                       dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", "Age", "BMI"))),
+                       dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex"))),
                      by = "DAid") |>
-    dplyr::select(DAid, Disease, Sex, Age, BMI, 2:11)
+    dplyr::select(DAid, Disease, Sex, 2:11)
 
-  result <- do_limma_de(test_data, "AML", correct = NULL, pval_lim = 0.01, logfc_lim = 0.5) |>
+  result <- do_limma_de(test_data, case = "AML", correct = NULL, pval_lim = 0.01, logfc_lim = 0.5) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -114,7 +114,7 @@ test_that("do_ttest_de performs DE properly", {
   ) |>
     dplyr::pull(is_normal)
 
-  result <- do_ttest_de(long_data, "AML", assays, normality_res) |>
+  result <- do_ttest_de(long_data, case = "AML", assays = assays, normality_res = normality_res) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -152,7 +152,7 @@ test_that("do_ttest_de changes limits of significance", {
   ) |>
     dplyr::pull(is_normal)
 
-  result <- do_ttest_de(long_data, "AML", assays, normality_res, pval_lim = 0.01, logfc_lim = 0.5) |>
+  result <- do_ttest_de(long_data, case = "AML", assays = assays, normality_res = normality_res, pval_lim = 0.01, logfc_lim = 0.5) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -246,7 +246,7 @@ test_that("do_limma performs DE properly", {
     dplyr::select(DAid, Assay, NPX) |>
     dplyr::filter(Assay %in% first_10_unique_assays)
 
-  result <- do_limma(test_data, example_metadata, "AML", correct = NULL, wide = F, volcano = F)
+  result <- do_limma(test_data, example_metadata, case = "AML", correct = NULL, wide = F, volcano = F)
   result <- result |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
@@ -280,7 +280,7 @@ test_that("do_ttest_de performs DE properly", {
     dplyr::select(DAid, Assay, NPX) |>
     dplyr::filter(Assay %in% first_10_unique_assays)
 
-  result <- do_ttest(test_data, example_metadata, "AML", wide = F, volcano = F)
+  result <- do_ttest(test_data, example_metadata, case = "AML", wide = F, volcano = F)
   result <- result |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
   expected <- tibble::tibble(

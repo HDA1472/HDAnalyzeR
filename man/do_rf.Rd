@@ -81,6 +81,12 @@ data into training and test sets, creates class-balanced case-control groups,
 and fits the model. It also performs hyperparameter optimization, fits the best
 model, tests it, and plots useful the feature variable importance.
 }
+\details{
+The metadata should contain only the samples included in the case
+and control groups. For example, if the data include group 1, 2, and 3, 1 is the
+case and 2 is the control group, the 3 should be filtered out. If the data are
+not imputed, KNN imputation will be applied.
+}
 \examples{
 do_rf(example_data,
       example_metadata,
