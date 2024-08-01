@@ -82,12 +82,13 @@
 </h1>
 </div>
 <p><a href="https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></p>
-<p>HDAnalyzeR is an R package developed by the Human Disease Blood Atlas project, designed to facilitate proteomics analysis for biomarker selection from blood plasma samples. It offers ready-to-use functions for common proteomics tasks such as protein differential expression analysis, classification models, imputation methods, dimensionality reduction, and data visualization, aiming to streamline workflows and enhance the standardization and efficiency of biomarker discovery in disease research.</p>
+<p>HDAnalyzeR is an R package developed by the Human Disease Blood Atlas project, designed to facilitate proteomics analysis for biomarker selection from blood plasma samples. It is optimized to work with Olink proteomics data, but it can be adapted to other proteomics platforms. In order to use the package without issues the data should have these three necessary columns: <code>DAid</code> with the Sample IDs, <code>Assay</code> with the protein names, and <code>NPX</code> with the protein expression data. The metadata should contain the <code>DAid</code> and the <code>Disease</code> columns, where the <code>Disease</code> column should contain the different class names (Healthy, Disease, etc.).</p>
+<p>HDAnalyzeR offers ready-to-use functions for common proteomics tasks such as protein differential expression analysis, classification models, imputation methods, dimensionality reduction, and data visualization, aiming to streamline workflows and enhance the standardization and efficiency of biomarker discovery in disease research.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <blockquote>
-<p>[!CAUTION] We recommend to install it in a toy environment as it is currently under development.</p>
+<p>⚠️ We recommend to install it in a toy environment as it is currently under development.</p>
 </blockquote>
 <p>You can install the latest version of HDAnalyzeR from GitHub:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -98,14 +99,31 @@
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"HDA1472/DA_RPackage"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<p>The following example showcases how to perform a differential expression analysis. It is one of the many features of <code>HDAnalyzeR</code>. A complete guide is available through <a href="https://hda1472.github.io/DA_RPackage/">package’s documentation</a>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hda1472.github.io/DA_RPackage/">HDAnalyzeR</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Prepare data</span></span>
+<span><span class="va">wide_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/widen_data.html">widen_data</a></span><span class="op">(</span><span class="va">example_data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run differential expression analysis</span></span>
+<span><span class="va">de_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">example_metadata</span>, case <span class="op">=</span> <span class="st">"AML"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># DE results and volcano plot for AML</span></span>
+<span><span class="va">de_results</span><span class="op">$</span><span class="va">de_results</span></span>
+<span><span class="va">de_results</span><span class="op">$</span><span class="va">volcano_plot</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="issues-and-support">Issues and Support<a class="anchor" aria-label="anchor" href="#issues-and-support"></a>
 </h2>
-<p>If you encounter any bugs, please open a new issue on our GitHub repository.</p>
+<p>If you encounter any bugs or you want to recommend new features and changes to existing ones, please open a new issue on our GitHub repository.</p>
 </div>
 <div class="section level2">
 <h2 id="contact">Contact<a class="anchor" aria-label="anchor" href="#contact"></a>
 </h2>
-<p>For any questions or further information, please contact us at [<a href="mailto:konstantinos.antonopoulos@scilifelab.se" class="email">konstantinos.antonopoulos@scilifelab.se</a>].</p>
+<p>For any questions or further information, please contact us at <a href="mailto:konstantinos.antonopoulos@scilifelab.se" class="email">konstantinos.antonopoulos@scilifelab.se</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
