@@ -1133,7 +1133,7 @@ plot_features_summary <- function(ml_results,
 
   metrics_data <- do.call(rbind, metrics_data)
 
-  metrics_lineplot <- metrics_data %>%
+  metrics_lineplot <- metrics_data |>
     ggplot2::ggplot(ggplot2::aes(x = Disease,
                                  y = value,
                                  color = metric,
