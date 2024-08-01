@@ -1020,7 +1020,8 @@ do_rf <- function(olink_data,
 #'
 #' `plot_features_summary()` plots the number of proteins and the number of top
 #' proteins for each disease in a barplot. It also plots the upset plot of the
-#' top or all protein features.
+#' top or all protein features, as well as a summary line plot of the model
+#' performance metrics.
 #'
 #' @param ml_results Results from `do_elnet()` or `do_rf()`.
 #' @param importance Importance threshold for top features. Default is 50.
@@ -1031,6 +1032,7 @@ do_rf <- function(olink_data,
 #' @return A list with two elements:
 #'   - features_barplot: Barplot of the number of proteins and top proteins for each disease.
 #'   - upset_plot_features: Upset plot of the top or all proteins.
+#'   - metrics_barplot: Barplot of the model metrics for each disease.
 #' @export
 #'
 #' @examples
@@ -1099,7 +1101,7 @@ plot_features_summary <- function(ml_results,
       dplyr::ungroup() |>
       dplyr::mutate(Type = "top-features")
 
-    barplot_data <- rbind(features, top_features)
+    features_data <- rbind(features, top_features)
   })
 
   barplot_data <- do.call(rbind, barplot_data)
@@ -1117,6 +1119,35 @@ plot_features_summary <- function(ml_results,
   } else if (!is.null(feature_type_palette)) {
     features_barplot <- features_barplot + ggplot2::scale_fill_manual(values = feature_type_palette)
   }
+
+  metrics_data <- lapply(names(ml_results), function(disease) {
+    metrics <- tibble::tibble(
+      metric = c("Accuracy", "Sensitivity", "Specificity", "AUC"),
+      value = c(ml_results[[disease]]$testfit_res$metrics$accuracy,
+                ml_results[[disease]]$testfit_res$metrics$sensitivity,
+                ml_results[[disease]]$testfit_res$metrics$specificity,
+                ml_results[[disease]]$testfit_res$metrics$auc)
+    ) |>
+      dplyr::mutate(Disease = disease)
+  })
+
+  metrics_data <- do.call(rbind, metrics_data)
+
+  metrics_lineplot <- metrics_data %>%
+    ggplot2::ggplot(ggplot2::aes(x = Disease,
+                                 y = value,
+                                 color = metric,
+                                 group = metric)) +
+    ggplot2::geom_line() +
+    ggplot2::geom_point(size = 2) +
+    ggplot2::labs(x = "", y = "Value", color = "Metric") +
+    theme_hpa(angled = TRUE) +
+    ggplot2::theme(legend.position = "top",
+                   legend.title = ggplot2::element_text(face = "bold")) +
+    ggplot2::scale_color_manual(values = c("Accuracy" = "darkred",
+                                           "Sensitivity" = "darkblue",
+                                           "Specificity" = "darkgreen",
+                                           "AUC" = "purple3"))
 
   upset_features <- lapply(names(ml_results), function(disease) {
 
@@ -1152,5 +1183,7 @@ plot_features_summary <- function(ml_results,
                                  sets.bar.color = ordered_colors)
 
 
-  return(list("features_barplot" = features_barplot, "upset_plot_features" = upset_plot_features))
+  return(list("features_barplot" = features_barplot,
+              "upset_plot_features" = upset_plot_features,
+              "metrics_lineplot" = metrics_lineplot))
 }
