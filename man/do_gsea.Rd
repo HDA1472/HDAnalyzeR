@@ -4,19 +4,12 @@
 \alias{do_gsea}
 \title{Perform gene set enrichment analysis}
 \usage{
-do_gsea(
-  de_results,
-  database = c("KEGG", "GO", "Reactome"),
-  background = NULL,
-  pval_lim = 0.05
-)
+do_gsea(de_results, database = c("KEGG", "GO", "Reactome"), pval_lim = 0.05)
 }
 \arguments{
 \item{de_results}{A tibble containing the results of a differential expression analysis.}
 
 \item{database}{The database to perform the GSEA. It can be either "KEGG", "GO", or "Reactome".}
-
-\item{background}{A character vector containing the background genes.}
 
 \item{pval_lim}{The p-value threshold to consider a term as significant.}
 }
@@ -28,7 +21,6 @@ This function performs gene set enrichment analysis (GSEA) using the clusterProf
 }
 \details{
 The ontology option used when database = "GO" is "ALL".
-When Reactome is used, background functionality is not available.
 }
 \examples{
 # Run Differential Expression Analysis and extract results
