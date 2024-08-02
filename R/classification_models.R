@@ -1,5 +1,6 @@
 utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled_Importance",
-                         "Importance", "Variable", "std_err", "Type", "metric"))
+                         "Importance", "Variable", "std_err", "Type", "metric",
+                         'specificity', 'sensitivity', '.level', '.estimate'))
 #' Split dataset into training and test sets
 #'
 #' `split_data()` splits the dataset into training and test sets based on user defined ratio.
@@ -167,8 +168,8 @@ vis_hypopt <- function(tune_res,
 #' both penalty and mixture (Elastic Regression). For the hyperparameter optimization, it uses the
 #' `grid_latin_hypercube()` function from the dials package.
 #'
-#' @param train_data List of training data sets from `make_groups()`.
-#' @param test_data List of testing data sets from `make_groups()`.
+#' @param train_data Training data set from `make_groups()`.
+#' @param test_data Testing data set from `make_groups()`.
 #' @param disease Disease to predict.
 #' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
 #' @param cv_sets Number of cross-validation sets. Default is 5.
@@ -288,8 +289,8 @@ elnet_hypopt <- function(train_data,
 #' required for the node to be split further. For the hyperparameter optimization,
 #' it uses the `grid_latin_hypercube()` function from the dials package.
 #'
-#' @param train_data List of training data sets from `make_groups()`.
-#' @param test_data List of testing data sets from `make_groups()`.
+#' @param train_data Training data set from `make_groups()`.
+#' @param test_data Testing data set from `make_groups()`.
 #' @param disease Disease to predict.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
 #' @param grid_size Size of the grid for hyperparameter optimization. Default is 10.
@@ -374,6 +375,228 @@ rf_hypopt <- function(train_data,
 
   if (hypopt_vis) {
     hypopt_plot <- vis_hypopt(rf_tune, "min_n", "mtry", disease)
+
+    return(list("rf_tune" = rf_tune,
+                "rf_wf" = rf_wf,
+                "train_set" = train_set,
+                "test_set" = test_set,
+                "hypopt_vis" = hypopt_plot))
+  }
+
+  return(list("rf_tune" = rf_tune,
+              "rf_wf" = rf_wf,
+              "train_set" = train_set,
+              "test_set" = test_set))
+}
+
+
+#' Hyperparameter optimization for elastic net multiclassification model
+#'
+#' `elnet_hypopt_multi()` tunes an elastic net model and performs hyperparameter optimization.
+#' It uses the glmnet engine for multinomial regression and tunes either only penalty (Lasso or Ridge) or
+#' both penalty and mixture (Elastic Regression). For the hyperparameter optimization, it
+#' uses the `grid_latin_hypercube()` function from the dials package.
+#'
+#' @param train_data Training data set from `make_groups()`.
+#' @param test_data Testing data set from `make_groups()`.
+#' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is NULL.
+#' @param seed Seed for reproducibility. Default is 123.
+#'
+#' @return A list with five elements:
+#'  - elnet_tune: Hyperparameter optimization results.
+#'  - elnet_wf: Workflow object.
+#'  - train_set: Training set.
+#'  - test_set: Testing set.
+#'  - hyperopt_vis: Hyperparameter optimization plot.
+#'
+#' @keywords internal
+elnet_hypopt_multi <- function(train_data,
+                               test_data,
+                               type = "lasso",
+                               cv_sets = 5,
+                               grid_size = 10,
+                               ncores = 4,
+                               hypopt_vis = TRUE,
+                               exclude_cols = NULL,
+                               seed = 123) {
+
+  if (ncores > 1) {
+    doParallel::registerDoParallel(cores = ncores)
+  }
+
+  # Prepare train data and create cross-validation sets with binary classifier
+  train_set <- train_data |>
+    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols))
+  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
+
+  test_set <- test_data |>
+    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols))
+
+  elnet_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
+    recipes::update_role(DAid, new_role = "id") |>
+    recipes::step_normalize(recipes::all_numeric()) |>
+    recipes::step_nzv(recipes::all_numeric()) |>
+    recipes::step_corr(recipes::all_numeric()) |>
+    recipes::step_impute_knn(recipes::all_numeric())
+
+  if (type == "elnet") {
+    elnet_spec <- parsnip::multinom_reg(
+      penalty = tune::tune(),  # lambda
+      mixture = tune::tune()  # alpha
+    ) |>
+      parsnip::set_engine("glmnet")
+  } else if (type == "lasso") {
+    elnet_spec <- parsnip::multinom_reg(
+      penalty = tune::tune(),
+      mixture = 1
+    ) |>
+      parsnip::set_engine("glmnet")
+  } else if (type == "ridge") {
+    elnet_spec <- parsnip::multinom_reg(
+      penalty = tune::tune(),
+      mixture = 0
+    ) |>
+      parsnip::set_engine("glmnet")
+  }
+
+  elnet_wf <- workflows::workflow() |>
+    workflows::add_model(elnet_spec) |>
+    workflows::add_recipe(elnet_rec)
+
+  elnet_grid <- elnet_wf |>
+    workflows::extract_parameter_set_dials() |>
+    dials::grid_latin_hypercube(size = grid_size)
+
+  roc_res <- yardstick::metric_set(yardstick::roc_auc)
+
+  set.seed(seed)
+  ctrl <- tune::control_grid(save_pred = TRUE, parallel_over = "everything")
+  elnet_tune <- elnet_wf |>
+    tune::tune_grid(
+      train_folds,
+      grid = elnet_grid,
+      control = ctrl,
+      metrics = roc_res
+    )
+
+  if (hypopt_vis) {
+    if (type == "elnet") {
+      hypopt_plot <- vis_hypopt(elnet_tune, "penalty", "mixture", "Multiclass")
+    } else {
+      hypopt_plot <- vis_hypopt(elnet_tune, "penalty", NULL, "Multiclass")
+    }
+    return(list("elnet_tune" = elnet_tune,
+                "elnet_wf" = elnet_wf,
+                "train_set" = train_set,
+                "test_set" = test_set,
+                "hypopt_vis" = hypopt_plot))
+  }
+
+  return(list("elnet_tune" = elnet_tune,
+              "elnet_wf" = elnet_wf,
+              "train_set" = train_set,
+              "test_set" = test_set))
+}
+
+
+#' Hyperparameter optimization for random forest multiclassification model
+#'
+#' `rf_hypopt_multi()` performs hyperparameter optimization for random forest models.
+#' It uses the ranger engine for multinomial regression and tunes the number of
+#' predictors that will be randomly sampled at each split when creating the
+#' tree models, as well as the minimum number of data points in a node that are
+#' required for the node to be split further. For the hyperparameter optimization,
+#' it uses the `grid_latin_hypercube()` function from the dials package.
+#'
+#' @param train_data Training data set from `make_groups()`.
+#' @param test_data Testing data set from `make_groups()`.
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the grid for hyperparameter optimization. Default is 10.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is NULL.
+#' @param seed Seed for reproducibility. Default is 123.
+#'
+#' @return A list with five elements:
+#'  - rf_tune: Hyperparameter optimization results.
+#'  - rf_wf: Workflow object.
+#'  - train_set: Training set.
+#'  - test_set: Testing set.
+#'  - hyperopt_vis: Hyperparameter optimization plot.
+#' @keywords internal
+rf_hypopt_multi <- function(train_data,
+                            test_data,
+                            cv_sets = 5,
+                            grid_size = 10,
+                            ncores = 4,
+                            hypopt_vis = TRUE,
+                            exclude_cols = NULL,
+                            seed = 123) {
+
+  if (ncores > 1) {
+    doParallel::registerDoParallel(cores = ncores)
+  }
+
+  # Prepare train data and create cross-validation sets with binary classifier
+  train_set <- train_data |>
+    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols)) |>
+    dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))  # Solve bug of Gower distance function
+
+  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
+
+  test_set <- test_data |>
+    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols)) |>
+    dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))
+
+  rf_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
+    recipes::update_role(DAid, new_role = "id") |>
+    recipes::step_normalize(recipes::all_numeric()) |>
+    recipes::step_nzv(recipes::all_numeric()) |>
+    recipes::step_corr(recipes::all_numeric()) |>
+    recipes::step_impute_knn(recipes::all_numeric())
+
+  rf_spec <- parsnip::rand_forest(
+    trees = 1000,
+    mtry = tune::tune(),
+    min_n = tune::tune()
+  ) |>
+    parsnip::set_mode("classification") |>
+    parsnip::set_engine("ranger", importance = "permutation")
+
+  disease_pred <- train_set |> dplyr::select(-dplyr::any_of(c("Disease", "DAid", "Sex", "Age", "BMI")))
+
+  rf_wf <- workflows::workflow() |>
+    workflows::add_model(rf_spec) |>
+    workflows::add_recipe(rf_rec)
+
+  rf_grid <- rf_wf |>
+    workflows::extract_parameter_set_dials() |>
+    dials::finalize(disease_pred) |>
+    dials::grid_latin_hypercube(size = grid_size)
+
+  roc_res <- yardstick::metric_set(yardstick::roc_auc)
+
+  set.seed(seed)
+  ctrl <- tune::control_grid(save_pred = TRUE, parallel_over = "everything")
+  rf_tune <- rf_wf |>
+    tune::tune_grid(
+      train_folds,
+      grid = rf_grid,
+      control = ctrl,
+      metrics = roc_res
+    )
+
+  if (hypopt_vis) {
+    hypopt_plot <- vis_hypopt(rf_tune, "min_n", "mtry", "Multiclass")
 
     return(list("rf_tune" = rf_tune,
                 "rf_wf" = rf_wf,
@@ -719,8 +942,8 @@ plot_var_imp <- function (finalfit_res,
 #'
 #' @details The metadata should contain only the samples included in the case
 #' and control groups. For example, if the data include group 1, 2, and 3, 1 is the
-#' case and 2 is the control group, the 3 should be filtered out. If the data are
-#' not imputed, KNN imputation will be applied.
+#' case and 2 is the control group, the 3 should be filtered out. If the data contain
+#' missing values, KNN imputation will be applied.
 #'
 #' @examples
 #' do_elnet(example_data,
@@ -887,8 +1110,8 @@ do_elnet <- function(olink_data,
 #'
 #' @details The metadata should contain only the samples included in the case
 #' and control groups. For example, if the data include group 1, 2, and 3, 1 is the
-#' case and 2 is the control group, the 3 should be filtered out. If the data are
-#' not imputed, KNN imputation will be applied.
+#' case and 2 is the control group, the 3 should be filtered out. If the data contain
+#' missing values, KNN imputation will be applied.
 #'
 #' @examples
 #' do_rf(example_data,
@@ -1186,4 +1409,304 @@ plot_features_summary <- function(ml_results,
   return(list("features_barplot" = features_barplot,
               "upset_plot_features" = upset_plot_features,
               "metrics_lineplot" = metrics_lineplot))
+}
+
+
+#' Elastic net multiclassification model pipeline
+#'
+#' `do_elnet_multi()` runs the elastic net multiclassification model pipeline. It splits the
+#' data into training and test sets, creates class-balanced case-control groups,
+#' and fits the model. It performs hyperparameter optimization and fits the best
+#' model. It also plots the ROC curve and the AUC barplot for each class.
+#'
+#' @param olink_data Olink data.
+#' @param metadata Metadata.
+#' @param wide Whether the data is wide format. Default is TRUE.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned.
+#' @param ratio Ratio of training data to test data. Default is 0.75.
+#' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param seed Seed for reproducibility. Default is 123.
+#'
+#' @return A list with the following elements:
+#' - hypopt_res: Hyperparameter optimization results.
+#' - finalfit_res: Final model fitting results.
+#' - roc_curve: ROC curve plot.
+#' - auc: AUC values for each class.
+#' - auc_barplot: AUC barplot.
+#' @export
+#'
+#' @details If the data contain missing values, KNN imputation will be applied.
+#' @examples
+#' do_elnet_multi(example_data,
+#'                example_metadata,
+#'                wide = FALSE,
+#'                palette = "cancers12",
+#'                cv_sets = 5,
+#'                grid_size = 5,
+#'                ncores = 1)
+do_elnet_multi <- function(olink_data,
+                           metadata,
+                           wide = TRUE,
+                           exclude_cols = "Sex",
+                           ratio = 0.75,
+                           type = "lasso",
+                           cv_sets = 5,
+                           grid_size = 10,
+                           ncores = 4,
+                           hypopt_vis = TRUE,
+                           palette = NULL,
+                           seed = 123) {
+
+  # Prepare datasets
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
+  }
+  join_data <- wide_data |>
+    dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
+    dplyr::filter(!is.na(Disease))
+  diseases <- unique(metadata$Disease)
+
+  # Prepare sets and groups
+  data_split <- split_data(join_data, ratio, seed)
+  train_list <- data_split$train_set
+  test_list <- data_split$test_set
+
+  message("Sets are ready. Multiclassification model fitting is starting...")
+
+  # Run model
+  hypopt_res <- elnet_hypopt_multi(train_list,
+                                   test_list,
+                                   type,
+                                   cv_sets,
+                                   grid_size,
+                                   ncores,
+                                   hypopt_vis,
+                                   exclude_cols,
+                                   seed)
+
+  finalfit_res <- finalfit(hypopt_res$train_set,
+                           hypopt_res$elnet_tune,
+                           hypopt_res$elnet_wf,
+                           seed)
+
+  splits <- rsample::make_splits(hypopt_res$train_set, hypopt_res$test_set)
+  last_fit <- tune::last_fit(finalfit_res$final_wf,
+                             splits,
+                             metrics = yardstick::metric_set(yardstick::roc_auc))
+
+  preds <- last_fit |> tune::collect_predictions()
+  unique_classes <- preds |>
+    dplyr::pull(Disease) |>
+    unique()
+  pred_cols <- paste0(".pred_", unique_classes)
+
+  roc_curve <- preds |>
+    yardstick::roc_curve(truth = Disease,
+                         !!!rlang::syms(pred_cols)) |>
+    ggplot2::ggplot(ggplot2::aes(x = 1 - specificity,
+                                 y = sensitivity,
+                                 color = .level)) +
+    ggplot2::geom_path(linewidth = 1) +
+    ggplot2::geom_abline(lty = 3) +
+    ggplot2::coord_equal() +
+    ggplot2::facet_wrap(~ .level) +
+    theme_hpa() +
+    ggplot2::theme(legend.position = "none",
+                   axis.text = ggplot2::element_text(size = 10))
+
+  auc_df <- tibble::tibble()
+  for (i in 1:length(diseases)) {
+    col <- paste0(".pred_", diseases[[i]])
+    auc_ind <- preds |>
+      dplyr::mutate(Disease = factor(dplyr::if_else(Disease == diseases[[i]],
+                                                    diseases[[i]],
+                                                    "ZZZ")))
+    auc_ind <- auc_ind |>
+      yardstick::roc_auc(truth = Disease, col) |>
+      dplyr::mutate(Disease = diseases[[i]])
+    auc_df <- rbind(auc_df, auc_ind)
+  }
+
+  barplot <- ggplot2::ggplot(auc_df, ggplot2::aes(x = Disease, y = .estimate, fill = Disease)) +
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::labs(x = "", y = "AUC") +
+    theme_hpa(angled = T) +
+    ggplot2::theme(legend.position = "none")
+
+  # Prepare palettes
+  if (!is.null(palette) && is.null(names(palette))) {
+    roc_curve <- roc_curve + scale_color_hpa(palette)
+    barplot <- barplot + scale_fill_hpa(palette)
+  } else if (!is.null(palette)) {
+    roc_curve <- roc_curve + ggplot2::scale_color_manual(values = palette)
+    barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
+  } else {
+    palette <- rep("black", length(diseases))
+    roc_curve <- roc_curve + ggplot2::scale_color_manual(values = palette)
+    barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
+  }
+
+  auc_df <- auc_df |>
+    dplyr::select(Disease, .estimate) |>
+    dplyr::rename(AUC = .estimate)
+
+  return(list("hypopt_res" = hypopt_res,
+              "finalfit_res" = finalfit_res,
+              "roc_curve" = roc_curve,
+              "auc" = auc_df,
+              "auc_barplot" = barplot))
+}
+
+
+#' Random forest multiclassification model pipeline
+#'
+#' `do_rf_multi()` runs the random forest multiclassification model pipeline. It splits the
+#' data into training and test sets, creates class-balanced case-control groups,
+#' and fits the model. It performs hyperparameter optimization and fits the best
+#' model. It also plots the ROC curve and the AUC barplot for each class.
+#'
+#' @param olink_data Olink data.
+#' @param metadata Metadata.
+#' @param wide Whether the data is wide format. Default is TRUE.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned.
+#' @param ratio Ratio of training data to test data. Default is 0.75.
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param seed Seed for reproducibility. Default is 123.
+#'
+#' @return A list with the following elements:
+#' - hypopt_res: Hyperparameter optimization results.
+#' - finalfit_res: Final model fitting results.
+#' - roc_curve: ROC curve plot.
+#' - auc: AUC values for each class.
+#' - auc_barplot: AUC barplot.
+#' @export
+#'
+#' @details If the data contain missing values, KNN imputation will be applied.
+#' @examples
+#' do_rf_multi(example_data,
+#'             example_metadata,
+#'             wide = FALSE,
+#'             palette = "cancers12")
+do_rf_multi <- function(olink_data,
+                        metadata,
+                        wide = TRUE,
+                        exclude_cols = "Sex",
+                        ratio = 0.75,
+                        cv_sets = 5,
+                        grid_size = 10,
+                        ncores = 4,
+                        hypopt_vis = TRUE,
+                        palette = NULL,
+                        seed = 123) {
+
+  # Prepare datasets
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
+  }
+  join_data <- wide_data |>
+    dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
+    dplyr::filter(!is.na(Disease))
+  diseases <- unique(metadata$Disease)
+
+  # Prepare sets and groups
+  data_split <- split_data(join_data, ratio, seed)
+  train_list <- data_split$train_set
+  test_list <- data_split$test_set
+
+  message("Sets are ready. Multiclassification model fitting is starting...")
+
+  # Run model
+  hypopt_res <- rf_hypopt_multi(train_list,
+                                test_list,
+                                cv_sets,
+                                grid_size,
+                                ncores,
+                                hypopt_vis,
+                                exclude_cols,
+                                seed)
+
+  finalfit_res <- finalfit(hypopt_res$train_set,
+                           hypopt_res$rf_tune,
+                           hypopt_res$rf_wf,
+                           seed)
+
+  splits <- rsample::make_splits(hypopt_res$train_set, hypopt_res$test_set)
+  last_fit <- tune::last_fit(finalfit_res$final_wf,
+                             splits,
+                             metrics = yardstick::metric_set(yardstick::roc_auc))
+
+  preds <- last_fit |> tune::collect_predictions()
+  unique_classes <- preds |>
+    dplyr::pull(Disease) |>
+    unique()
+  pred_cols <- paste0(".pred_", unique_classes)
+
+  roc_curve <- preds |>
+    yardstick::roc_curve(truth = Disease,
+                         !!!rlang::syms(pred_cols)) |>
+    ggplot2::ggplot(ggplot2::aes(x = 1 - specificity,
+                                 y = sensitivity,
+                                 color = .level)) +
+    ggplot2::geom_path(linewidth = 1) +
+    ggplot2::geom_abline(lty = 3) +
+    ggplot2::coord_equal() +
+    ggplot2::facet_wrap(~ .level) +
+    theme_hpa() +
+    ggplot2::theme(legend.position = "none",
+                   axis.text = ggplot2::element_text(size = 10))
+
+  auc_df <- tibble::tibble()
+  for (i in 1:length(diseases)) {
+    col <- paste0(".pred_", diseases[[i]])
+    auc_ind <- preds |>
+      dplyr::mutate(Disease = factor(dplyr::if_else(Disease == diseases[[i]],
+                                                    diseases[[i]],
+                                                    "ZZZ")))
+    auc_ind <- auc_ind |>
+      yardstick::roc_auc(truth = Disease, col) |>
+      dplyr::mutate(Disease = diseases[[i]])
+    auc_df <- rbind(auc_df, auc_ind)
+  }
+
+  barplot <- ggplot2::ggplot(auc_df, ggplot2::aes(x = Disease, y = .estimate, fill = Disease)) +
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::labs(x = "", y = "AUC") +
+    theme_hpa(angled = T) +
+    ggplot2::theme(legend.position = "none")
+
+  # Prepare palettes
+  if (!is.null(palette) && is.null(names(palette))) {
+    roc_curve <- roc_curve + scale_color_hpa(palette)
+    barplot <- barplot + scale_fill_hpa(palette)
+  } else if (!is.null(palette)) {
+    roc_curve <- roc_curve + ggplot2::scale_color_manual(values = palette)
+    barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
+  } else {
+    palette <- rep("black", length(diseases))
+    roc_curve <- roc_curve + ggplot2::scale_color_manual(values = palette)
+    barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
+  }
+
+  auc_df <- auc_df |>
+    dplyr::select(Disease, .estimate) |>
+    dplyr::rename(AUC = .estimate)
+
+  return(list("hypopt_res" = hypopt_res,
+              "finalfit_res" = finalfit_res,
+              "roc_curve" = roc_curve,
+              "auc" = auc_df,
+              "auc_barplot" = barplot))
 }
