@@ -64,5 +64,8 @@ If the data contain missing values, KNN imputation will be applied.
 do_rf_multi(example_data,
             example_metadata,
             wide = FALSE,
-            palette = "cancers12")
+            palette = "cancers12",
+            cv_sets = 5,
+            grid_size = 5,
+            ncores = 1)
 }
