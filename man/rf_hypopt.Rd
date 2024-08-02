@@ -17,9 +17,9 @@ rf_hypopt(
 )
 }
 \arguments{
-\item{train_data}{List of training data sets from \code{make_groups()}.}
+\item{train_data}{Training data set from \code{make_groups()}.}
 
-\item{test_data}{List of testing data sets from \code{make_groups()}.}
+\item{test_data}{Testing data set from \code{make_groups()}.}
 
 \item{disease}{Disease to predict.}
 

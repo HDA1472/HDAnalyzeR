@@ -87,8 +87,8 @@ model, tests it, and plots useful the feature variable importance.
 \details{
 The metadata should contain only the samples included in the case
 and control groups. For example, if the data include group 1, 2, and 3, 1 is the
-case and 2 is the control group, the 3 should be filtered out. If the data are
-not imputed, KNN imputation will be applied.
+case and 2 is the control group, the 3 should be filtered out. If the data contain
+missing values, KNN imputation will be applied.
 }
 \examples{
 do_elnet(example_data,
