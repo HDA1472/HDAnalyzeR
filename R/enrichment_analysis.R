@@ -5,12 +5,15 @@ utils::globalVariables(c("ENTREZID"))
 #'
 #' @param protein_list A character vector containing the protein names.
 #' @param database The database to perform the ORA. It can be either "KEGG", "GO", or "Reactome".
+#' @param background A character vector containing the background genes.
 #' @param pval_lim The p-value threshold to consider a term as significant.
 #'
 #' @return A list containing the results of the ORA.
 #' @export
 #'
 #' @details The ontology option used when database = "GO" is "BP" (Biological Process).
+#' When Olink data is used, it is recommended to provide a protein list as background.
+#'
 #' @examples
 #' # Perform Differential Expression Analysis
 #' de_res <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
@@ -24,8 +27,13 @@ utils::globalVariables(c("ENTREZID"))
 #' do_ora(sig_up_proteins_aml, database = "GO")
 do_ora <- function(protein_list,
                    database = c("KEGG", "GO", "Reactome"),
+                   background = NULL,
                    pval_lim = 0.05) {
   database <- match.arg(database)
+
+  if (is.null(background)) {
+    message("No background provided. When working with Olink data it is recommended to use background.")
+  }
 
   # From gene name to ENTREZID
   protein_conversion <- clusterProfiler::bitr(protein_list,
@@ -35,19 +43,34 @@ do_ora <- function(protein_list,
 
   protein_list <- protein_conversion |> dplyr::pull(ENTREZID) |> unique()
 
+  if (!is.null(background)) {
+    background <- clusterProfiler::bitr(background,
+                                        fromType = "SYMBOL",
+                                        toType = "ENTREZID",
+                                        OrgDb = org.Hs.eg.db::org.Hs.eg.db)
+
+    background <- background |> dplyr::pull(ENTREZID) |> unique()
+  }
+
   if (database == "KEGG") {
     # Perform KEGG enrichment analysis
-    enrichment <- clusterProfiler::enrichKEGG(gene = protein_list, organism = "hsa")
+    enrichment <- clusterProfiler::enrichKEGG(gene = protein_list,
+                                              organism = "hsa",
+                                              pvalueCutoff = pval_lim,
+                                              universe = background)
   } else if (database == "GO") {
     # Perform GO enrichment analysis
     enrichment <- clusterProfiler::enrichGO(gene = protein_list,
                                             OrgDb = org.Hs.eg.db::org.Hs.eg.db,
-                                            ont = "BP")
+                                            ont = "BP",
+                                            pvalueCutoff = pval_lim,
+                                            universe = background)
   } else if (database == "Reactome") {
     # Perform Reactome enrichment analysis
     enrichment <- ReactomePA::enrichPathway(gene = protein_list,
                                             organism = "human",
-                                            pvalueCutoff = pval_lim)
+                                            pvalueCutoff = pval_lim,
+                                            universe = background)
   }
 
   if (!any(enrichment@result$p.adjust < pval_lim)) {
@@ -135,14 +158,12 @@ plot_ora <- function(enrichment,
 #'
 #' @param de_results A tibble containing the results of a differential expression analysis.
 #' @param database The database to perform the GSEA. It can be either "KEGG", "GO", or "Reactome".
-#' @param background A character vector containing the background genes.
 #' @param pval_lim The p-value threshold to consider a term as significant.
 #'
 #' @return A list containing the results of the GSEA.
 #' @export
 #'
 #' @details The ontology option used when database = "GO" is "ALL".
-#' When Reactome is used, background functionality is not available.
 #'
 #' @examples
 #' # Run Differential Expression Analysis and extract results
@@ -156,12 +177,8 @@ plot_ora <- function(enrichment,
 #' # Remember that the data is artificial, this is why we use an absurdly high p-value cutoff
 do_gsea <- function(de_results,
                     database = c("KEGG", "GO", "Reactome"),
-                    background = NULL,
                     pval_lim = 0.05) {
 
-  if (is.null(background)) {
-    message("No background provided. When working with Olink data it is recommended to use background.")
-  }
   database <- match.arg(database)
 
   # Prepare sorted_protein_list
@@ -179,42 +196,21 @@ do_gsea <- function(de_results,
 
   if (database == "KEGG") {
     # Perform GSEA for KEGG
-    if (!is.null(background)) {
-      enrichment <- clusterProfiler::gseKEGG(geneList = protein_list,
-                                             organism = "hsa",
-                                             pvalueCutoff = pval_lim,
-                                             pAdjustMethod = "BH",
-                                             universe = background,
-                                             minGSSize = 10,
-                                             maxGSSize = 500)
-    } else {
-      enrichment <- clusterProfiler::gseKEGG(geneList = protein_list,
-                                             organism = "hsa",
-                                             pvalueCutoff = pval_lim,
-                                             pAdjustMethod = "BH",
-                                             minGSSize = 10,
-                                             maxGSSize = 500)
-    }
+    enrichment <- clusterProfiler::gseKEGG(geneList = protein_list,
+                                           organism = "hsa",
+                                           pvalueCutoff = pval_lim,
+                                           pAdjustMethod = "BH",
+                                           minGSSize = 10,
+                                           maxGSSize = 500)
   } else if (database == "GO") {
     # Perform GSEA for GO
-    if (!is.null(background)) {
-      enrichment <- clusterProfiler::gseGO(geneList = protein_list,
-                                         OrgDb = org.Hs.eg.db::org.Hs.eg.db,
-                                         ont = "BP",
-                                         pvalueCutoff = pval_lim,
-                                         pAdjustMethod = "BH",
-                                         universe = background,
-                                         minGSSize = 10,
-                                         maxGSSize = 500)
-    } else {
-      enrichment <- clusterProfiler::gseGO(geneList = protein_list,
+    enrichment <- clusterProfiler::gseGO(geneList = protein_list,
                                          OrgDb = org.Hs.eg.db::org.Hs.eg.db,
                                          ont = "BP",
                                          pvalueCutoff = pval_lim,
                                          pAdjustMethod = "BH",
                                          minGSSize = 10,
                                          maxGSSize = 500)
-    }
   } else if (database == "Reactome") {
     # Perform GSEA for Reactome
     enrichment <- ReactomePA::gsePathway(protein_list,

@@ -4,12 +4,19 @@
 \alias{do_ora}
 \title{Perform over-representation analysis}
 \usage{
-do_ora(protein_list, database = c("KEGG", "GO", "Reactome"), pval_lim = 0.05)
+do_ora(
+  protein_list,
+  database = c("KEGG", "GO", "Reactome"),
+  background = NULL,
+  pval_lim = 0.05
+)
 }
 \arguments{
 \item{protein_list}{A character vector containing the protein names.}
 
 \item{database}{The database to perform the ORA. It can be either "KEGG", "GO", or "Reactome".}
+
+\item{background}{A character vector containing the background genes.}
 
 \item{pval_lim}{The p-value threshold to consider a term as significant.}
 }
@@ -21,6 +28,7 @@ A list containing the results of the ORA.
 }
 \details{
 The ontology option used when database = "GO" is "BP" (Biological Process).
+When Olink data is used, it is recommended to provide a protein list as background.
 }
 \examples{
 # Perform Differential Expression Analysis

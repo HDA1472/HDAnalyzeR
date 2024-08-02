@@ -67,4 +67,3 @@ Depends:
     R (>= 2.10)
 LazyData: true
 URL: https://hda1472.github.io/DA_RPackage/, https://github.com/HDA1472/DA_RPackage
-VignetteBuilder: knitr
