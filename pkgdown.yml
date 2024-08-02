@@ -3,7 +3,7 @@ pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   HDAnalyzeR: HDAnalyzeR.html
-last_built: 2024-08-02T17:06Z
+last_built: 2024-08-02T18:48Z
 urls:
   reference: https://hda1472.github.io/DA_RPackage/reference
   article: https://hda1472.github.io/DA_RPackage/articles
