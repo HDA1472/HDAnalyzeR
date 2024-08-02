@@ -16,12 +16,13 @@ You can install the latest version of HDAnalyzeR from GitHub:
 install.packages("devtools")
 
 # Install HDAnalyzeR
+options(timeout = 1200)  # Set timeout to 20 minutes to avoid timeout errors
 devtools::install_github("HDA1472/DA_RPackage")
 ```
 
 ## Example
 
-The following example showcases how to perform a differential expression analysis. It is one of the many features of `HDAnalyzeR`. A complete guide is available through [package's documentation](https://hda1472.github.io/DA_RPackage/).
+The following example showcases how to perform a differential expression analysis. It is one of the many features of HDAnalyzeR. A complete guide is available through [package's documentation](https://hda1472.github.io/DA_RPackage/).
 
 ```r
 library(HDAnalyzeR)
