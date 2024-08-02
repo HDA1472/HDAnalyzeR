@@ -1,5 +1,5 @@
 utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled_Importance",
-                         "Importance", "Variable", "std_err", "Type"))
+                         "Importance", "Variable", "std_err", "Type", "metric"))
 #' Split dataset into training and test sets
 #'
 #' `split_data()` splits the dataset into training and test sets based on user defined ratio.
