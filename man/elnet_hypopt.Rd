@@ -52,6 +52,6 @@ A list with five elements:
 \code{elnet_hypopt()} tunes an elastic net model and performs hyperparameter optimization.
 It uses the glmnet engine for logistic regression and tunes either only penalty (Lasso or Ridge) or
 both penalty and mixture (Elastic Regression). For the hyperparameter optimization, it uses the
-\code{grid_latin_hypercube()} function from the dials package.
+\code{grid_space_filling()} function from the dials package.
 }
 \keyword{internal}

@@ -48,6 +48,6 @@ It uses the ranger engine for multinomial regression and tunes the number of
 predictors that will be randomly sampled at each split when creating the
 tree models, as well as the minimum number of data points in a node that are
 required for the node to be split further. For the hyperparameter optimization,
-it uses the \code{grid_latin_hypercube()} function from the dials package.
+it uses the \code{grid_space_filling()} function from the dials package.
 }
 \keyword{internal}
