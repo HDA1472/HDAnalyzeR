@@ -1521,6 +1521,7 @@ do_elnet_multi <- function(olink_data,
     ggplot2::theme(legend.position = "none",
                    axis.text = ggplot2::element_text(size = 10))
 
+  # Extract AUC values by comparing each class to the rest
   auc_df <- tibble::tibble()
   for (i in 1:length(diseases)) {
     col <- paste0(".pred_", diseases[[i]])
@@ -1597,7 +1598,10 @@ do_elnet_multi <- function(olink_data,
 #' do_rf_multi(example_data,
 #'             example_metadata,
 #'             wide = FALSE,
-#'             palette = "cancers12")
+#'             palette = "cancers12",
+#'             cv_sets = 5,
+#'             grid_size = 5,
+#'             ncores = 1)
 do_rf_multi <- function(olink_data,
                         metadata,
                         wide = TRUE,
@@ -1668,6 +1672,7 @@ do_rf_multi <- function(olink_data,
     ggplot2::theme(legend.position = "none",
                    axis.text = ggplot2::element_text(size = 10))
 
+  # Extract AUC values by comparing each class to the rest
   auc_df <- tibble::tibble()
   for (i in 1:length(diseases)) {
     col <- paste0(".pred_", diseases[[i]])
