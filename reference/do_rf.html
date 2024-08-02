@@ -182,8 +182,8 @@ model, tests it, and plots useful the feature variable importance.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The metadata should contain only the samples included in the case
 and control groups. For example, if the data include group 1, 2, and 3, 1 is the
-case and 2 is the control group, the 3 should be filtered out. If the data are
-not imputed, KNN imputation will be applied.</p>
+case and 2 is the control group, the 3 should be filtered out. If the data contain
+missing values, KNN imputation will be applied.</p>
     </div>
 
     <div class="section level2">
@@ -308,23 +308,23 @@ not imputed, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Ranger result</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ranger::ranger(x = maybe_data_frame(x), y = y, mtry = min_cols(~76L,      x), num.trees = ~1000, min.node.size = min_rows(~24L, x),      importance = ~"permutation", num.threads = 1, verbose = FALSE,      seed = sample.int(10^5, 1), probability = TRUE) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ranger::ranger(x = maybe_data_frame(x), y = y, mtry = min_cols(~73L,      x), num.trees = ~1000, min.node.size = min_rows(~26L, x),      importance = ~"permutation", num.threads = 1, verbose = FALSE,      seed = sample.int(10^5, 1), probability = TRUE) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Type:                             Probability estimation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of trees:                  1000 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample size:                      82 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of independent variables:  100 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mtry:                             76 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Target node size:                 24 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mtry:                             73 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Target node size:                 26 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variable importance mode:         permutation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Splitrule:                        gini </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> OOB prediction error (Brier s.):  0.1474815 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> OOB prediction error (Brier s.):  0.1474095 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $finalfit_res$best</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    mtry min_n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    76    24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    73    26</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $finalfit_res$final_wf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Workflow ════════════════════════════════════════════════════════════════════</span>
@@ -343,9 +343,9 @@ not imputed, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest Model Specification (classification)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Main Arguments:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mtry = 76</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   mtry = 73</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   trees = 1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   min_n = 24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   min_n = 26</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Engine-Specific Arguments:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   importance = permutation</span>
@@ -357,10 +357,10 @@ not imputed, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$accuracy</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.82</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.85</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$sensitivity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.82</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.86</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$specificity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.83</span>
@@ -371,8 +371,8 @@ not imputed, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$conf_matrix</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Truth</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Prediction  0  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          0 18  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          1  4 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          0 19  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          1  3 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$roc_curve</span>
 <span class="r-plt img"><img src="do_rf-2.png" alt="" width="700" height="433"></span>
@@ -387,16 +387,16 @@ not imputed, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 99 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Variable Importance Scaled_Importance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ADA         0.060<span style="text-decoration: underline;">2</span>             100   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ANGPT1      0.026<span style="text-decoration: underline;">4</span>              43.9 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AZU1        0.015<span style="text-decoration: underline;">9</span>              26.3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ATG4A       0.014<span style="text-decoration: underline;">8</span>              24.6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ADGRG1      0.011<span style="text-decoration: underline;">2</span>              18.6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AOC3        0.010<span style="text-decoration: underline;">0</span>              16.6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ANGPT2      0.008<span style="text-decoration: underline;">70</span>             14.4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AIF1        0.004<span style="text-decoration: underline;">48</span>              7.44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ANXA3       0.003<span style="text-decoration: underline;">43</span>              5.69</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ADGRG2      0.002<span style="text-decoration: underline;">63</span>              4.36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ADA         0.063<span style="text-decoration: underline;">3</span>             100   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ANGPT1      0.022<span style="text-decoration: underline;">8</span>              36.0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ATG4A       0.016<span style="text-decoration: underline;">8</span>              26.6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AZU1        0.015<span style="text-decoration: underline;">9</span>              25.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ADGRG1      0.009<span style="text-decoration: underline;">63</span>             15.2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AOC3        0.009<span style="text-decoration: underline;">38</span>             14.8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ANGPT2      0.008<span style="text-decoration: underline;">35</span>             13.2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AIF1        0.003<span style="text-decoration: underline;">82</span>              6.02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ANXA3       0.003<span style="text-decoration: underline;">08</span>              4.85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ARTN        0.002<span style="text-decoration: underline;">39</span>              3.77</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 89 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res$var_imp_plot</span>
