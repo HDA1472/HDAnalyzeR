@@ -166,7 +166,7 @@ vis_hypopt <- function(tune_res,
 #' `elnet_hypopt()` tunes an elastic net model and performs hyperparameter optimization.
 #' It uses the glmnet engine for logistic regression and tunes either only penalty (Lasso or Ridge) or
 #' both penalty and mixture (Elastic Regression). For the hyperparameter optimization, it uses the
-#' `grid_latin_hypercube()` function from the dials package.
+#' `grid_space_filling()` function from the dials package.
 #'
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
@@ -246,7 +246,7 @@ elnet_hypopt <- function(train_data,
 
   elnet_grid <- elnet_wf |>
     workflows::extract_parameter_set_dials() |>
-    dials::grid_latin_hypercube(size = grid_size)
+    dials::grid_space_filling(size = grid_size)
 
   roc_res <- yardstick::metric_set(yardstick::roc_auc)
 
@@ -287,7 +287,7 @@ elnet_hypopt <- function(train_data,
 #' predictors that will be randomly sampled at each split when creating the
 #' tree models, as well as the minimum number of data points in a node that are
 #' required for the node to be split further. For the hyperparameter optimization,
-#' it uses the `grid_latin_hypercube()` function from the dials package.
+#' it uses the `grid_space_filling()` function from the dials package.
 #'
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
@@ -359,7 +359,7 @@ rf_hypopt <- function(train_data,
   rf_grid <- rf_wf |>
     workflows::extract_parameter_set_dials() |>
     dials::finalize(disease_pred) |>
-    dials::grid_latin_hypercube(size = grid_size)
+    dials::grid_space_filling(size = grid_size)
 
   roc_res <- yardstick::metric_set(yardstick::roc_auc)
 
@@ -395,7 +395,7 @@ rf_hypopt <- function(train_data,
 #' `elnet_hypopt_multi()` tunes an elastic net model and performs hyperparameter optimization.
 #' It uses the glmnet engine for multinomial regression and tunes either only penalty (Lasso or Ridge) or
 #' both penalty and mixture (Elastic Regression). For the hyperparameter optimization, it
-#' uses the `grid_latin_hypercube()` function from the dials package.
+#' uses the `grid_space_filling()` function from the dials package.
 #'
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
@@ -472,7 +472,7 @@ elnet_hypopt_multi <- function(train_data,
 
   elnet_grid <- elnet_wf |>
     workflows::extract_parameter_set_dials() |>
-    dials::grid_latin_hypercube(size = grid_size)
+    dials::grid_space_filling(size = grid_size)
 
   roc_res <- yardstick::metric_set(yardstick::roc_auc)
 
@@ -513,7 +513,7 @@ elnet_hypopt_multi <- function(train_data,
 #' predictors that will be randomly sampled at each split when creating the
 #' tree models, as well as the minimum number of data points in a node that are
 #' required for the node to be split further. For the hyperparameter optimization,
-#' it uses the `grid_latin_hypercube()` function from the dials package.
+#' it uses the `grid_space_filling()` function from the dials package.
 #'
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
@@ -581,7 +581,7 @@ rf_hypopt_multi <- function(train_data,
   rf_grid <- rf_wf |>
     workflows::extract_parameter_set_dials() |>
     dials::finalize(disease_pred) |>
-    dials::grid_latin_hypercube(size = grid_size)
+    dials::grid_space_filling(size = grid_size)
 
   roc_res <- yardstick::metric_set(yardstick::roc_auc)
 
