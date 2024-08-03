@@ -9,7 +9,8 @@ utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "S
 #'
 #' @param join_data A tibble with the Olink data in wide format joined with metadata.
 #' @param variable The variable of interest that includes the case and control groups.
-#' @param case The disease of interest.
+#' @param case The case group.
+#' @param control The control groups.
 #' @param correct The variables to correct the results with. Default c("Sex", "Age").
 #' @param correct_type The type of the variables to correct the results with. Default c("factor", "numeric").
 #' @param only_female The female specific diseases. Default is NULL.
@@ -22,6 +23,7 @@ utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "S
 do_limma_de <- function(join_data,
                         variable = "Disease",
                         case,
+                        control,
                         correct = c("Sex", "Age"),
                         correct_type = c("factor", "numeric", "numeric"),
                         only_female = NULL,
@@ -52,6 +54,7 @@ do_limma_de <- function(join_data,
 
   join_data <- join_data |>
     dplyr::filter(!dplyr::if_any(dplyr::all_of(c(variable, "Sex", correct)), is.na)) |>  # Remove NAs from columns in formula
+    dplyr::filter(!!Variable %in% c(case, control)) |>
     dplyr::mutate(!!Variable := ifelse(!!Variable == case, "1_Case", "0_Control"))
 
   # Design a model
@@ -197,7 +200,8 @@ do_limma_continuous_de <- function(join_data,
 #'
 #' @param long_data A tibble with the Olink data in long format and the Sex column from metadata.
 #' @param variable The variable of interest that includes the case and control groups.
-#' @param case The disease of interest.
+#' @param case The case group.
+#' @param control The control groups.
 #' @param assays The assays to run the differential expression analysis on.
 #' @param only_female The female specific diseases. Default is NULL.
 #' @param only_male The male specific diseases. Default is NULL.
@@ -209,6 +213,7 @@ do_limma_continuous_de <- function(join_data,
 do_ttest_de <- function(long_data,
                         variable = "Disease",
                         case,
+                        control,
                         assays,
                         normality_res,
                         only_female = NULL,
@@ -240,7 +245,7 @@ do_ttest_de <- function(long_data,
       dplyr::pull(NPX)
 
     control_group <- long_data |>
-      dplyr::filter(!!Variable != case, Assay == assay) |>
+      dplyr::filter(!!Variable %in% control, Assay == assay) |>
       dplyr::pull(NPX)
 
     if (normality_res[i] == T) {
@@ -360,6 +365,7 @@ plot_volcano <- function(de_result,
 #' @param metadata A tibble with the metadata.
 #' @param variable The variable of interest that includes the case and control groups.
 #' @param case The case group.
+#' @param control The control groups.
 #' @param correct The variables to correct the results with. Default c("Sex", "Age").
 #' @param correct_type The type of the variables to correct the results with. Default c("factor", "numeric", "numeric").
 #' @param wide If the data is in wide format. Default is TRUE.
@@ -383,7 +389,11 @@ plot_volcano <- function(de_result,
 #' This is performed automatically by the function.
 #'
 #' @examples
-#' de_results <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
+#' de_results <- do_limma(example_data,
+#'                        example_metadata,
+#'                        case = "AML",
+#'                        control = c("CLL", "MYEL"),
+#'                        wide = FALSE)
 #'
 #' # Results for AML
 #' de_results$de_results
@@ -394,6 +404,7 @@ do_limma <- function(olink_data,
                      metadata,
                      variable = "Disease",
                      case,
+                     control,
                      correct = c("Sex", "Age"),
                      correct_type = c("factor", "numeric"),
                      wide = TRUE,
@@ -408,6 +419,7 @@ do_limma <- function(olink_data,
                      subtitle = TRUE,
                      save = FALSE) {
 
+  message(paste0("Comparing ", case, " with ", paste(control, collapse = ", "), "."))
   Variable <- rlang::sym(variable)
   # Prepare Olink data and merge them with metadata
   if (isFALSE(wide)) {
@@ -428,6 +440,7 @@ do_limma <- function(olink_data,
   de_results <- do_limma_de(join_data,
                             variable,
                             case,
+                            control,
                             correct,
                             correct_type,
                             only_female,
@@ -558,6 +571,7 @@ do_limma_continuous <- function(olink_data,
 #' @param metadata A tibble with the metadata.
 #' @param variable The variable of interest that includes the case and control groups.
 #' @param case The case group.
+#' @param control The control groups.
 #' @param wide If the data is in wide format. Default is TRUE.
 #' @param only_female The female specific diseases. Default is NULL.
 #' @param only_male The male specific diseases. Default is NULL.
@@ -576,7 +590,11 @@ do_limma_continuous <- function(olink_data,
 #' @export
 #'
 #' @examples
-#' de_results <- do_ttest(example_data, example_metadata, case = "AML", wide = FALSE)
+#' de_results <- do_ttest(example_data,
+#'                        example_metadata,
+#'                        case = "AML",
+#'                        control = c("CLL", "MYEL"),
+#'                        wide = FALSE)
 #'
 #' # Results for AML
 #' de_results$de_results
@@ -587,6 +605,7 @@ do_ttest <- function(olink_data,
                      metadata,
                      variable = "Disease",
                      case,
+                     control,
                      wide = TRUE,
                      only_female = NULL,
                      only_male = NULL,
@@ -629,6 +648,7 @@ do_ttest <- function(olink_data,
   de_results <- do_ttest_de(long_data,
                             variable,
                             case,
+                            control,
                             assays,
                             normality_res,
                             only_female,
@@ -681,22 +701,25 @@ do_ttest <- function(olink_data,
 #' de_results_aml <- do_limma(example_data,
 #'                            example_metadata,
 #'                            case = "AML",
+#'                            control = c("BRC", "PRC"),
 #'                            wide = FALSE,
-#'                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                            only_female = "BRC",
 #'                            only_male = "PRC")
 #'
 #' de_results_brc <- do_limma(example_data,
 #'                            example_metadata,
 #'                            case = "BRC",
+#'                            control = c("AML", "PRC"),
 #'                            wide = FALSE,
-#'                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                            only_female = "BRC",
 #'                            only_male = "PRC")
 #'
 #' de_results_prc <- do_limma(example_data,
 #'                            example_metadata,
 #'                            case = "PRC",
+#'                            control = c("AML", "BRC"),
 #'                            wide = FALSE,
-#'                            only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                            only_female = "BRC",
 #'                            only_male = "PRC")
 #'
 #' # Combine the results
@@ -761,7 +784,8 @@ plot_de_summary <- function(de_results,
   } else if (!is.null(disease_palette)) {
     pal <- disease_palette
   } else {
-    pal <- "black"
+    pal <- rep("black", length(names(de_results)))
+    names(pal) <- names(de_results)
   }
   de_names <- names(significant_proteins_up)
   ordered_colors <- pal[de_names]

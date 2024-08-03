@@ -26,7 +26,12 @@ over-representation analysis.
 }
 \examples{
 # Perform Differential Expression Analysis
-de_res <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
+control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC")
+de_res <- do_limma(example_data,
+                   example_metadata,
+                   case = "AML",
+                   control = control,
+                   wide = FALSE)
 
 # Extract the up-regulated proteins for AML
 sig_up_proteins_aml <- de_res$de_results |>

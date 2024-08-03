@@ -8,7 +8,7 @@ test_that("do_limma_de performs DE properly", {
                      by = "DAid") |>
     dplyr::select(DAid, Disease, Sex, 2:11)
 
-  result <- do_limma_de(test_data, case = "AML", correct = NULL) |>
+  result <- do_limma_de(test_data, case = "AML", control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC"), correct = NULL) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -39,7 +39,7 @@ test_that("do_limma_de corrects for Sex", {
                      by = "DAid") |>
     dplyr::select(DAid, Disease, Sex, 2:11)
 
-  result <- do_limma_de(test_data, case = "AML", correct = "Sex", correct_type = "factor") |>
+  result <- do_limma_de(test_data, case = "AML", control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC"), correct = "Sex", correct_type = "factor") |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -70,7 +70,7 @@ test_that("do_limma_de changes limits of significance", {
                      by = "DAid") |>
     dplyr::select(DAid, Disease, Sex, 2:11)
 
-  result <- do_limma_de(test_data, case = "AML", correct = NULL, pval_lim = 0.01, logfc_lim = 0.5) |>
+  result <- do_limma_de(test_data, case = "AML", control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC"), correct = NULL, pval_lim = 0.01, logfc_lim = 0.5) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -114,7 +114,7 @@ test_that("do_ttest_de performs DE properly", {
   ) |>
     dplyr::pull(is_normal)
 
-  result <- do_ttest_de(long_data, case = "AML", assays = assays, normality_res = normality_res) |>
+  result <- do_ttest_de(long_data, case = "AML", control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC"), assays = assays, normality_res = normality_res) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -152,7 +152,7 @@ test_that("do_ttest_de changes limits of significance", {
   ) |>
     dplyr::pull(is_normal)
 
-  result <- do_ttest_de(long_data, case = "AML", assays = assays, normality_res = normality_res, pval_lim = 0.01, logfc_lim = 0.5) |>
+  result <- do_ttest_de(long_data, case = "AML", control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC"), assays = assays, normality_res = normality_res, pval_lim = 0.01, logfc_lim = 0.5) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
   expected <- tibble::tibble(
@@ -246,7 +246,7 @@ test_that("do_limma performs DE properly", {
     dplyr::select(DAid, Assay, NPX) |>
     dplyr::filter(Assay %in% first_10_unique_assays)
 
-  result <- do_limma(test_data, example_metadata, case = "AML", correct = NULL, wide = F, volcano = F)
+  result <- do_limma(test_data, example_metadata, case = "AML", control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC"), correct = NULL, wide = F, volcano = F)
   result <- result |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
 
@@ -280,7 +280,7 @@ test_that("do_ttest_de performs DE properly", {
     dplyr::select(DAid, Assay, NPX) |>
     dplyr::filter(Assay %in% first_10_unique_assays)
 
-  result <- do_ttest(test_data, example_metadata, case = "AML", wide = F, volcano = F)
+  result <- do_ttest(test_data, example_metadata, case = "AML", control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC"), wide = F, volcano = F)
   result <- result |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2)))
   expected <- tibble::tibble(
