@@ -118,8 +118,15 @@ check_normality <- function(df) {
 #'
 #' @return NULL
 #' @keywords internal
-print_summary <- function(sample_n, var_n, class_summary, na_percentage_col, na_percentage_row,
-                          normality_results = F, cor_results = F, heatmap = F,  threshold = F) {
+print_summary <- function(sample_n,
+                          var_n,
+                          class_summary,
+                          na_percentage_col,
+                          na_percentage_row,
+                          normality_results = F,
+                          cor_results = F,
+                          heatmap = F,
+                          threshold = F) {
 
   print("Summary:")
   print("Note: In case of long output, only the first 10 rows are shown. To see the rest display the object with view()")
@@ -164,71 +171,61 @@ print_summary <- function(sample_n, var_n, class_summary, na_percentage_col, na_
 #'
 #' @param metadata The metadata dataframe.
 #' @param disease_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
-#' @param sex_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "sex_hpa".
+#' @param categ_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "sex_hpa".
 #'
-#' @return A list containing the following elements:
-#'  - sex_barplot: A bar plot for the number of samples per sex.
-#'  - age_dist_plot: A ridge plot for the age distributions.
-#'  - bmi_dist_plot: A ridge plot for the BMI distributions.
+#' @return A list containing plots and sample counts.
 #' @keywords internal
-plot_metadata_summary <- function(metadata, disease_palette = NULL, sex_palette = "sex_hpa") {
+plot_metadata_summary <- function(metadata,
+                                  categorical = "Sex",
+                                  numeric = "Age",
+                                  disease_palette = NULL,
+                                  categ_palette = "sex_hpa") {
 
   plot_list <- list()
+  counts_list <- list()
 
-  # Ridge plot for age distributions
-  if ("Age" %in% names(metadata)) {
-    age_dist_plot <- metadata |>
-      ggplot2::ggplot(ggplot2::aes(x = Age, y = Disease, fill = Disease)) +
+  for (col in numeric) {
+    Variable <- rlang::sym(col)
+    dist_plot <- metadata |>
+      ggplot2::ggplot(ggplot2::aes(x = !!Variable, y = Disease, fill = Disease)) +
       ggridges::geom_density_ridges(alpha = 0.7, scale = 0.9) +
-      ggplot2::labs(x = "Age", y = "Disease") +
+      ggplot2::labs(x = col, y = "Disease") +
       theme_hpa() +
       ggplot2::theme(legend.position = "none")
 
     if (is.null(names(disease_palette)) && !is.null(disease_palette)) {
-      age_dist_plot <- age_dist_plot + scale_fill_hpa(disease_palette)
+      dist_plot <- dist_plot + scale_fill_hpa(disease_palette)
     } else if (!is.null(disease_palette)) {
-      age_dist_plot <- age_dist_plot + ggplot2::scale_fill_manual(values = disease_palette)
+      dist_plot <- dist_plot + ggplot2::scale_fill_manual(values = disease_palette)
     }
 
-    plot_list$age_dist_plot <- age_dist_plot
+    plot_list[[paste0("distplot_", col)]] <- dist_plot
   }
 
-  # Ridge plot for BMI distributions
-  if ("BMI" %in% names(metadata)) {
-    bmi_dist_plot <- metadata |>
-      ggplot2::ggplot(ggplot2::aes(x = BMI, y = Disease, fill = Disease)) +
-      ggridges::geom_density_ridges(alpha = 0.7, scale = 0.9) +
-      ggplot2::labs(x = "BMI", y = "Disease") +
-      theme_hpa() +
-      ggplot2::theme(legend.position = "none")
-
-    if (is.null(names(disease_palette)) && !is.null(disease_palette)) {
-      bmi_dist_plot <- bmi_dist_plot + scale_fill_hpa(disease_palette)
-    } else if (!is.null(disease_palette)) {
-      bmi_dist_plot <- bmi_dist_plot + ggplot2::scale_fill_manual(values = disease_palette)
-    }
-
-    plot_list$bmi_dist_plot <- bmi_dist_plot
-  }
-
-  # Bar plot for the number of samples
-  if ("Sex" %in% names(metadata)) {
-    sex_barplot <- metadata |>
-      dplyr::count(Disease, Sex) |>
-      ggplot2::ggplot(ggplot2::aes(x = n, y = Disease, fill = Sex)) +
+  for (col in categorical) {
+    Variable <- rlang::sym(col)
+    counts <- metadata |>
+      dplyr::count(Disease, !!Variable)
+    message(paste0(col, " contains:"))
+    print(counts)
+    barplot <- counts |>
+      ggplot2::ggplot(ggplot2::aes(x = n, y = Disease, fill = !!Variable)) +
       ggplot2::geom_bar(stat = "identity", position = "stack") +
       ggplot2::labs(x = "Number of samples", y = "") +
       theme_hpa()
 
-    if (is.null(names(sex_palette)) && !is.null(sex_palette)) {
-      sex_barplot <- sex_barplot + scale_fill_hpa(sex_palette)
-    } else if (!is.null(sex_palette)) {
-      sex_barplot <- sex_barplot + ggplot2::scale_fill_manual(values = sex_palette)
+    if (is.null(names(categ_palette)) && !is.null(categ_palette)) {
+      barplot <- barplot + scale_fill_hpa(categ_palette)
+    } else if (!is.null(categ_palette)) {
+      barplot <- barplot + ggplot2::scale_fill_manual(values = categ_palette)
     }
 
-    plot_list$sex_barplot <- sex_barplot
+    counts_list[[paste0("count_", col)]] <- counts
+    plot_list[[paste0("barplot_", col)]] <- barplot
   }
-  return(plot_list)
+
+  res_list <- c(plot_list, counts_list)
+  return(res_list)
 }
 
 
@@ -287,16 +284,12 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
                   threshold)
   }
 
-  return(
-    list(
-      "na_percentage_col" = na_percentage_col,
-      "na_percentage_row" = na_percentage_row,
-      "normality_results" = normality_results,
-      "cor_matrix" = cor_matrix,
-      "cor_results" = cor_results,
-      "heatmap" = p
-      )
-    )
+  return(list("na_percentage_col" = na_percentage_col,
+              "na_percentage_row" = na_percentage_row,
+              "normality_results" = normality_results,
+              "cor_matrix" = cor_matrix,
+              "cor_results" = cor_results,
+              "heatmap" = p))
 }
 
 
@@ -304,19 +297,17 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 #'
 #' `qc_summary_metadata()` summarizes the quality control results of the metadata dataframe.
 #' It checks the column types, calculates the percentage of NAs in each column and row,
-#' and creates summary visualizations for Sex, Age and BMI.
+#' and creates summary visualizations for user selected categorical and numeric variables.
 #'
 #' @param metadata The metadata dataframe.
-#' @param disease_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
-#' @param sex_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "sex_hpa".
+#' @param disease_palette The color palette for the different diseases. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
+#' @param categ_palette The categorical color palette. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "sex_hpa".
 #' @param report Whether to print the summary. Default is TRUE.
 #'
 #' @return A list containing the following elements:
 #'   - na_percentage_col: A tibble with the column names and the percentage of NAs in each column.
 #'   - na_percentage_row: A tibble with the DAids and the percentage of NAs in each row.
-#'   - sex_barplot: A bar plot for the number of samples per sex.
-#'   - age_dist_plot: A ridge plot for the age distributions.
-#'   - bmi_dist_plot: A ridge plot for the BMI distributions.
+#'   - Several distribution and barplots, as well as the counts of samples.
 #' @export
 #'
 #' @examples
@@ -326,7 +317,7 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 #' qc_res$sex_barplot
 #' qc_res$age_dist_plot
 #' qc_res$bmi_dist_plot
-qc_summary_metadata <- function(metadata, disease_palette = NULL, sex_palette = "sex_hpa", report = T) {
+qc_summary_metadata <- function(metadata, categorical = "Sex", numeric = "Age", disease_palette = NULL, categ_palette = "sex_hpa", report = T) {
 
   sample_n <- nrow(metadata)
   var_n <- ncol(metadata) - 1
@@ -338,15 +329,16 @@ qc_summary_metadata <- function(metadata, disease_palette = NULL, sex_palette = 
     print_summary(sample_n, var_n, class_summary, na_percentage_col, na_percentage_row)
   }
 
-  metadata_plot <- plot_metadata_summary(metadata, disease_palette, sex_palette)
+  metadata_plot <- plot_metadata_summary(metadata,
+                                         categorical,
+                                         numeric,
+                                         disease_palette,
+                                         categ_palette)
 
-  return(
-    list(
-      "na_percentage_col" = na_percentage_col,
-      "na_percentage_row" = na_percentage_row,
-      "sex_barplot" = metadata_plot$sex_barplot,
-      "age_dist_plot" = metadata_plot$age_dist_plot,
-      "bmi_dist_plot" = metadata_plot$bmi_dist_plot
-    )
-  )
+  na_list <- list("na_percentage_col" = na_percentage_col,
+                  "na_percentage_row" = na_percentage_row)
+
+  res_list <- c(na_list, metadata_plot)
+
+  return(res_list)
 }
