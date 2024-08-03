@@ -52,7 +52,9 @@ qc_data$heatmap
 `qc_summary_metadata()` summarizes quality control results of the metadata dataframe. It checks the column types, calculates the percentage of NAs in each column and row exactly as `qc_summary_data()`, and creates summary visualizations for key metadata variables such as Sex, Age, and BMI.
 
 ```{r}
-qc_summary_metadata(example_metadata, disease_palette = "cancers12")
+qc_metadata <- qc_summary_metadata(example_metadata, disease_palette = "cancers12")
+qc_metadata$barplot_Sex
+qc_metadata$distplot_Age
 ```
 
 ## Data Cleaning
@@ -136,7 +138,9 @@ qc_data$heatmap
 ```
 
 ```{r}
-qc_summary_metadata(clean_metadata, disease_palette = "cancers12")
+qc_metadata <- qc_summary_metadata(clean_metadata, disease_palette = "cancers12")
+qc_metadata$barplot_Sex
+qc_metadata$distplot_Age
 ```
 
 ## Biomarker Identification
