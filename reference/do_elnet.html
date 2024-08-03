@@ -71,6 +71,7 @@ model, tests it, and plots useful the feature variable importance.</p>
 <span>  <span class="va">olink_data</span>,</span>
 <span>  <span class="va">metadata</span>,</span>
 <span>  <span class="va">case</span>,</span>
+<span>  <span class="va">control</span>,</span>
 <span>  wide <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  balance_groups <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  only_female <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -105,7 +106,11 @@ model, tests it, and plots useful the feature variable importance.</p>
 
 
 <dt id="arg-case">case<a class="anchor" aria-label="anchor" href="#arg-case"></a></dt>
-<dd><p>Disease to predict.</p></dd>
+<dd><p>The case group.</p></dd>
+
+
+<dt id="arg-control">control<a class="anchor" aria-label="anchor" href="#arg-control"></a></dt>
+<dd><p>The control groups.</p></dd>
 
 
 <dt id="arg-wide">wide<a class="anchor" aria-label="anchor" href="#arg-wide"></a></dt>
@@ -196,6 +201,7 @@ missing values, KNN imputation will be applied.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">do_elnet</span><span class="op">(</span><span class="va">example_data</span>,</span></span>
 <span class="r-in"><span>         <span class="va">example_metadata</span>,</span></span>
 <span class="r-in"><span>         <span class="st">"AML"</span>,</span></span>
+<span class="r-in"><span>         <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>         balance_groups <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>         wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>         type <span class="op">=</span> <span class="st">"elnet"</span>,</span></span>
@@ -204,8 +210,6 @@ missing values, KNN imputation will be applied.</p>
 <span class="r-in"><span>         grid_size <span class="op">=</span> <span class="fl">20</span>,</span></span>
 <span class="r-in"><span>         ncores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(DAid)`</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Too little data to stratify.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Resampling will be unstratified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Sets and groups are ready. Model fitting is starting...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Classification model for AML as case is starting...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res</span>
@@ -215,11 +219,11 @@ missing values, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   splits          id    .metrics          .notes           .predictions      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [65/17]&gt;</span> Fold1 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [340 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;split [65/17]&gt;</span> Fold2 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [340 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;split [65/17]&gt;</span> Fold3 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [340 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">&lt;split [66/16]&gt;</span> Fold4 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [320 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> <span style="color: #949494;">&lt;split [67/15]&gt;</span> Fold5 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [300 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [59/16]&gt;</span> Fold1 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [320 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;split [59/16]&gt;</span> Fold2 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [320 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;split [60/15]&gt;</span> Fold3 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [300 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">&lt;split [61/14]&gt;</span> Fold4 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [280 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> <span style="color: #949494;">&lt;split [61/14]&gt;</span> Fold5 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [280 × 7]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$elnet_wf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Workflow ════════════════════════════════════════════════════════════════════</span>
@@ -245,20 +249,20 @@ missing values, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$train_set</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 82 × 102</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 75 × 102</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    DAid    AARSD1   ABL1  ACAA1   ACAN    ACE2  ACOX1    ACP5    ACP6  ACTA2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DA00003  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>      0.989 <span style="color: #BB0000;">NA</span>       0.330  1.37   <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DA00004   3.41  3.38   1.69  <span style="color: #BB0000;">NA</span>      1.52   <span style="color: #BB0000;">NA</span>      0.841   0.582   1.70 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DA00005   5.01  5.05   0.128  0.401 -<span style="color: #BB0000;">0.933</span>  -<span style="color: #BB0000;">0.584</span>  0.026<span style="text-decoration: underline;">5</span>  1.16    2.73 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DA00006   6.83  1.18  -<span style="color: #BB0000;">1.74</span>  -<span style="color: #BB0000;">0.156</span>  1.53   -<span style="color: #BB0000;">0.721</span>  0.620   0.527   0.772</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DA00007  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      3.96   0.682  3.14    2.62   1.47    2.25    2.01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DA00008   2.78  0.812 -<span style="color: #BB0000;">0.552</span>  0.982 -<span style="color: #BB0000;">0.101</span>  -<span style="color: #BB0000;">0.304</span>  0.376  -<span style="color: #BB0000;">0.826</span>   1.52 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DA00007  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      3.96   0.682  3.14    2.62   1.47    2.25    2.01 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DA00008   2.78  0.812 -<span style="color: #BB0000;">0.552</span>  0.982 -<span style="color: #BB0000;">0.101</span>  -<span style="color: #BB0000;">0.304</span>  0.376  -<span style="color: #BB0000;">0.826</span>   1.52 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DA00009   4.39  3.34  -<span style="color: #BB0000;">0.452</span> -<span style="color: #BB0000;">0.868</span>  0.395   1.71   1.49   -<span style="color: #BB0000;">0.028</span><span style="color: #BB0000; text-decoration: underline;">5</span>  0.200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DA00010   1.83  1.21  -<span style="color: #BB0000;">0.912</span> -<span style="color: #BB0000;">1.04</span>  -<span style="color: #BB0000;">0.091</span><span style="color: #BB0000; text-decoration: underline;">8</span> -<span style="color: #BB0000;">0.304</span>  1.69    0.092<span style="text-decoration: underline;">0</span>  2.04 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DA00011   3.48  4.96   3.50  -<span style="color: #BB0000;">0.338</span>  4.48    1.26   2.18    1.62    1.79 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DA00012   4.31  0.710 -<span style="color: #BB0000;">1.44</span>  -<span style="color: #BB0000;">0.218</span> -<span style="color: #BB0000;">0.469</span>  -<span style="color: #BB0000;">0.361</span> -<span style="color: #BB0000;">0.071</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">1.30</span>    2.86 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DA00013   1.31  2.52   1.11   0.997  4.56   -<span style="color: #BB0000;">1.35</span>   0.833   2.33    3.57 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 72 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 65 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 92 more variables: ACTN4 &lt;dbl&gt;, ACY1 &lt;dbl&gt;, ADA &lt;dbl&gt;, ADA2 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAM15 &lt;dbl&gt;, ADAM23 &lt;dbl&gt;, ADAM8 &lt;dbl&gt;, ADAMTS13 &lt;dbl&gt;, ADAMTS15 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAMTS16 &lt;dbl&gt;, ADAMTS8 &lt;dbl&gt;, ADCYAP1R1 &lt;dbl&gt;, ADGRE2 &lt;dbl&gt;, ADGRE5 &lt;dbl&gt;,</span></span>
@@ -267,26 +271,26 @@ missing values, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AIF1 &lt;dbl&gt;, AIFM1 &lt;dbl&gt;, AK1 &lt;dbl&gt;, AKR1B1 &lt;dbl&gt;, AKR1C4 &lt;dbl&gt;, …</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$test_set</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 34 × 102</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    DAid  AARSD1  ABL1  ACAA1    ACAN  ACE2   ACOX1   ACP5    ACP6 ACTA2    ACTN4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DA00…  3.39  2.76   1.71   0.033<span style="text-decoration: underline;">3</span> 1.76  -<span style="color: #BB0000;">0.919</span>   1.54   2.15   2.81   0.742  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DA00…  1.42  1.25  -<span style="color: #BB0000;">0.816</span> -<span style="color: #BB0000;">0.459</span>  0.826 -<span style="color: #BB0000;">0.902</span>   0.647  1.30   0.798 -<span style="color: #BB0000;">0.065</span><span style="color: #BB0000; text-decoration: underline;">9</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DA00…  4.39  3.34  -<span style="color: #BB0000;">0.452</span> -<span style="color: #BB0000;">0.868</span>  0.395  1.71    1.49  -<span style="color: #BB0000;">0.028</span><span style="color: #BB0000; text-decoration: underline;">5</span> 0.200 -<span style="color: #BB0000;">0.532</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DA00…  3.31  1.90  <span style="color: #BB0000;">NA</span>     -<span style="color: #BB0000;">0.926</span>  0.408  0.687   1.03   0.612  2.19   0.258  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DA00…  1.46  0.832 -<span style="color: #BB0000;">2.73</span>  -<span style="color: #BB0000;">0.371</span>  2.27   0.023<span style="text-decoration: underline;">4</span>  0.144  0.826  1.98  -<span style="color: #BB0000;">0.280</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DA00…  2.62  2.48   0.537 -<span style="color: #BB0000;">0.215</span>  1.82   0.290   1.27   1.11   0.206  1.23   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DA00…  2.47  2.16  -<span style="color: #BB0000;">0.486</span> <span style="color: #BB0000;">NA</span>      0.386 <span style="color: #BB0000;">NA</span>       1.38   0.536  1.86   0.009<span style="text-decoration: underline;">82</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DA00…  3.62  3.06  -<span style="color: #BB0000;">1.34</span>   0.965  1.05   1.53    0.152 -<span style="color: #BB0000;">0.124</span>  2.81   0.285  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DA00…  4.39  3.31   0.454  0.290  2.68   0.116  -<span style="color: #BB0000;">1.32</span>   0.945  2.14  -<span style="color: #BB0000;">0.008</span><span style="color: #BB0000; text-decoration: underline;">81</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DA00…  0.964 2.94   1.55   1.67   2.50   0.164   1.83   1.46   3.03   0.449  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 24 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more variables: ACY1 &lt;dbl&gt;, ADA &lt;dbl&gt;, ADA2 &lt;dbl&gt;, ADAM15 &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAM23 &lt;dbl&gt;, ADAM8 &lt;dbl&gt;, ADAMTS13 &lt;dbl&gt;, ADAMTS15 &lt;dbl&gt;, ADAMTS16 &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAMTS8 &lt;dbl&gt;, ADCYAP1R1 &lt;dbl&gt;, ADGRE2 &lt;dbl&gt;, ADGRE5 &lt;dbl&gt;, ADGRG1 &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADGRG2 &lt;dbl&gt;, ADH4 &lt;dbl&gt;, ADM &lt;dbl&gt;, AGER &lt;dbl&gt;, AGR2 &lt;dbl&gt;, AGR3 &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AGRN &lt;dbl&gt;, AGRP &lt;dbl&gt;, AGXT &lt;dbl&gt;, AHCY &lt;dbl&gt;, AHSP &lt;dbl&gt;, AIF1 &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AIFM1 &lt;dbl&gt;, AK1 &lt;dbl&gt;, AKR1B1 &lt;dbl&gt;, AKR1C4 &lt;dbl&gt;, AKT1S1 &lt;dbl&gt;, …</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 27 × 102</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    DAid    AARSD1       ABL1  ACAA1    ACAN  ACE2   ACOX1   ACP5  ACP6 ACTA2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DA00001   3.39  2.76       1.71   0.033<span style="text-decoration: underline;">3</span> 1.76  -<span style="color: #BB0000;">0.919</span>   1.54  2.15  2.81 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DA00002   1.42  1.25      -<span style="color: #BB0000;">0.816</span> -<span style="color: #BB0000;">0.459</span>  0.826 -<span style="color: #BB0000;">0.902</span>   0.647 1.30  0.798</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DA00006   6.83  1.18      -<span style="color: #BB0000;">1.74</span>  -<span style="color: #BB0000;">0.156</span>  1.53  -<span style="color: #BB0000;">0.721</span>   0.620 0.527 0.772</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DA00016   1.79  1.36       0.106 -<span style="color: #BB0000;">0.372</span>  3.40  -<span style="color: #BB0000;">1.19</span>    1.77  1.07  2.00 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DA00022   7.07  5.67       3.68  -<span style="color: #BB0000;">0.458</span>  3.09   0.690   0.649 2.17  1.83 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DA00023   2.92 -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">070</span><span style="color: #BB0000;">6</span>  0.602  1.59   0.198  1.61    0.283 2.35  2.11 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DA00034   3.45  2.91       1.31   0.423  0.647  1.40    0.691 0.720 1.95 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DA00035   4.39  3.31       0.454  0.290  2.68   0.116  -<span style="color: #BB0000;">1.32</span>  0.945 2.14 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DA00038   2.23  1.42       0.484  1.72   1.46   0.074<span style="text-decoration: underline;">7</span>  1.82  0.109 4.27 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DA00039   4.26  0.572     -<span style="color: #BB0000;">1.97</span>  -<span style="color: #BB0000;">0.433</span>  0.208  0.790  -<span style="color: #BB0000;">0.236</span> 1.52  0.652</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 17 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 92 more variables: ACTN4 &lt;dbl&gt;, ACY1 &lt;dbl&gt;, ADA &lt;dbl&gt;, ADA2 &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAM15 &lt;dbl&gt;, ADAM23 &lt;dbl&gt;, ADAM8 &lt;dbl&gt;, ADAMTS13 &lt;dbl&gt;, ADAMTS15 &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADAMTS16 &lt;dbl&gt;, ADAMTS8 &lt;dbl&gt;, ADCYAP1R1 &lt;dbl&gt;, ADGRE2 &lt;dbl&gt;, ADGRE5 &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADGRG1 &lt;dbl&gt;, ADGRG2 &lt;dbl&gt;, ADH4 &lt;dbl&gt;, ADM &lt;dbl&gt;, AGER &lt;dbl&gt;, AGR2 &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AGR3 &lt;dbl&gt;, AGRN &lt;dbl&gt;, AGRP &lt;dbl&gt;, AGXT &lt;dbl&gt;, AHCY &lt;dbl&gt;, AHSP &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AIF1 &lt;dbl&gt;, AIFM1 &lt;dbl&gt;, AK1 &lt;dbl&gt;, AKR1B1 &lt;dbl&gt;, AKR1C4 &lt;dbl&gt;, …</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$hypopt_vis</span>
 <span class="r-plt img"><img src="do_elnet-1.png" alt="" width="700" height="433"></span>
@@ -308,55 +312,55 @@ missing values, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ── Model ───────────────────────────────────────────────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Call:  glmnet::glmnet(x = maybe_matrix(x), y = y, family = "binomial",      alpha = ~0.25) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:  glmnet::glmnet(x = maybe_matrix(x), y = y, family = "binomial",      alpha = ~0.1) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Df  %Dev  Lambda</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    0  0.00 1.00300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2  0.56 0.95710</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    2  1.32 0.91360</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    3  2.18 0.87210</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    4  3.43 0.83240</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    4  4.68 0.79460</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    4  5.91 0.75850</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    4  7.12 0.72400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9    5  8.41 0.69110</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   6  9.87 0.65970</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   6 11.36 0.62970</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   8 12.91 0.60110</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13  10 14.59 0.57380</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14  10 16.30 0.54770</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15  10 17.96 0.52280</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16  11 19.59 0.49900</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17  12 21.25 0.47630</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18  14 22.91 0.45470</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19  14 24.63 0.43400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20  14 26.29 0.41430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21  15 27.96 0.39550</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22  15 29.58 0.37750</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23  16 31.18 0.36030</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24  16 32.75 0.34400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25  17 34.27 0.32830</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26  18 35.79 0.31340</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27  20 37.28 0.29920</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28  20 38.73 0.28560</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29  21 40.14 0.27260</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30  21 41.51 0.26020</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31  22 42.85 0.24840</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32  22 44.14 0.23710</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33  22 45.39 0.22630</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34  22 46.61 0.21600</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35  23 47.79 0.20620</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36  24 48.95 0.19680</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37  24 50.09 0.18790</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38  25 51.19 0.17930</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39  25 52.31 0.17120</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40  25 53.40 0.16340</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41  25 54.45 0.15600</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42  26 55.48 0.14890</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43  27 56.48 0.14210</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44  28 57.51 0.13570</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45  28 58.53 0.12950</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46  31 59.55 0.12360</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    0  0.00 2.53800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    3  0.39 2.42300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3  0.86 2.31300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    3  1.35 2.20800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    3  1.84 2.10700</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    4  2.46 2.01100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    4  3.10 1.92000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    9  3.87 1.83300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   10  4.96 1.74900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  13  6.24 1.67000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  13  7.57 1.59400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  14  8.95 1.52200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  14 10.33 1.45200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  14 11.70 1.38600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  14 13.06 1.32300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  16 14.44 1.26300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17  18 15.88 1.20600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  18 17.35 1.15100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19  19 18.80 1.09900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20  21 20.27 1.04900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21  23 21.79 1.00100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22  24 23.32 0.95560</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23  25 24.84 0.91220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24  27 26.35 0.87070</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25  31 27.91 0.83110</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26  32 29.48 0.79340</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27  33 31.04 0.75730</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28  35 32.60 0.72290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29  38 34.14 0.69000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30  38 35.66 0.65870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31  38 37.14 0.62870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32  39 38.59 0.60010</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33  40 40.02 0.57290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34  40 41.42 0.54680</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35  40 42.78 0.52200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36  41 44.11 0.49820</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37  43 45.43 0.47560</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38  43 46.73 0.45400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39  43 48.00 0.43340</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40  45 49.25 0.41370</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41  45 50.47 0.39490</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42  46 51.67 0.37690</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43  46 52.84 0.35980</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44  49 54.01 0.34340</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45  49 55.15 0.32780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46  50 56.27 0.31290</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> and 54 more lines.</span>
@@ -365,7 +369,7 @@ missing values, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   penalty mixture</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>   0.298    0.25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 0.007<span style="text-decoration: underline;">85</span>     0.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $finalfit_res$final_wf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Workflow ════════════════════════════════════════════════════════════════════</span>
@@ -384,8 +388,8 @@ missing values, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Logistic Regression Model Specification (classification)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Main Arguments:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   penalty = 0.297635144163131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mixture = 0.25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   penalty = 0.00784759970351461</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   mixture = 0.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Computational engine: glmnet </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -394,60 +398,60 @@ missing values, KNN imputation will be applied.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$accuracy</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.94</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.74</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$sensitivity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.64</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$specificity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.92</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.85</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$auc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.82</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$conf_matrix</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Truth</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Prediction  0  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          0 21  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          1  1 11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          0  9  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          1  5 11</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$roc_curve</span>
 <span class="r-plt img"><img src="do_elnet-2.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$mixture</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res$features</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 64 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 78 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Variable Importance Sign  Scaled_Importance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ANGPT1        1.25  NEG               100  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ADGRG1        1.19  POS                95.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ADA           0.675 POS                54.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ADAM8         0.675 NEG                54.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ADAMTS16      0.624 NEG                50.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ARNT          0.599 POS                47.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ARTN          0.556 POS                44.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AHCY          0.555 POS                44.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ARSB          0.539 POS                43.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ACAN          0.533 NEG                42.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 54 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AZU1          0.525 POS               100  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ADA           0.501 POS                95.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ATP5PO        0.494 NEG                94.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ANGPTL2       0.455 POS                86.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ARID4B        0.424 NEG                80.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ANG           0.424 NEG                80.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ATOX1         0.416 NEG                79.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ACP6          0.416 NEG                79.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ADAM8         0.409 NEG                77.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ANGPTL7       0.401 NEG                76.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 68 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res$var_imp_plot</span>
 <span class="r-plt img"><img src="do_elnet-3.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $boxplot_res</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 227 rows containing non-finite outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 62 rows containing non-finite outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_boxplot()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 17 rows containing non-finite outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 11 rows containing non-finite outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_boxplot()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 210 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 51 rows containing missing values or values outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 17 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 11 rows containing missing values or values outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
 <span class="r-plt img"><img src="do_elnet-4.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

@@ -72,6 +72,7 @@ It can generate and save volcano plots.</p>
 <span>  <span class="va">metadata</span>,</span>
 <span>  variable <span class="op">=</span> <span class="st">"Disease"</span>,</span>
 <span>  <span class="va">case</span>,</span>
+<span>  <span class="va">control</span>,</span>
 <span>  wide <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  only_female <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  only_male <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -104,6 +105,10 @@ It can generate and save volcano plots.</p>
 
 <dt id="arg-case">case<a class="anchor" aria-label="anchor" href="#arg-case"></a></dt>
 <dd><p>The case group.</p></dd>
+
+
+<dt id="arg-control">control<a class="anchor" aria-label="anchor" href="#arg-control"></a></dt>
+<dd><p>The control groups.</p></dd>
 
 
 <dt id="arg-wide">wide<a class="anchor" aria-label="anchor" href="#arg-wide"></a></dt>
@@ -158,23 +163,27 @@ It can generate and save volcano plots.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">de_results</span> <span class="op">&lt;-</span> <span class="fu">do_ttest</span><span class="op">(</span><span class="va">example_data</span>, <span class="va">example_metadata</span>, case <span class="op">=</span> <span class="st">"AML"</span>, wide <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">de_results</span> <span class="op">&lt;-</span> <span class="fu">do_ttest</span><span class="op">(</span><span class="va">example_data</span>,</span></span>
+<span class="r-in"><span>                       <span class="va">example_metadata</span>,</span></span>
+<span class="r-in"><span>                       case <span class="op">=</span> <span class="st">"AML"</span>,</span></span>
+<span class="r-in"><span>                       control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       wide <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Results for AML</span></span></span>
 <span class="r-in"><span><span class="va">de_results</span><span class="op">$</span><span class="va">de_results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 100 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Assay    P.Value  logFC Disease     adj.P.Val sig             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ADA     2.52<span style="color: #949494;">e</span><span style="color: #BB0000;">-11</span>  1.46  AML     0.000<span style="text-decoration: underline;">000</span>002<span style="text-decoration: underline;">52</span> significant up  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ANGPT1  6.18<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span> -<span style="color: #BB0000;">1.70</span>  AML     0.000<span style="text-decoration: underline;">000</span>241   significant down</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ANGPT2  7.24<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span>  0.795 AML     0.000<span style="text-decoration: underline;">000</span>241   significant up  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> APEX1   2.04<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  1.30  AML     0.000<span style="text-decoration: underline;">005</span>11    significant up  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ADGRG1  7.43<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  1.27  AML     0.000<span style="text-decoration: underline;">014</span>9     significant up  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> APBB1IP 2.58<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  1.16  AML     0.000<span style="text-decoration: underline;">039</span>0     significant up  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> APP     2.73<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span> -<span style="color: #BB0000;">0.764</span> AML     0.000<span style="text-decoration: underline;">039</span>0     significant down</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AZU1    1.54<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  1.64  AML     0.000<span style="text-decoration: underline;">193</span>      significant up  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AGRP    2.68<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  0.827 AML     0.000<span style="text-decoration: underline;">297</span>      significant up  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ARTN    6.99<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  1.09  AML     0.000<span style="text-decoration: underline;">699</span>      significant up  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Assay        P.Value  logFC Disease adj.P.Val sig             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ANGPT1   0.000<span style="text-decoration: underline;">000</span>328 -<span style="color: #BB0000;">1.76</span>  AML     0.000<span style="text-decoration: underline;">032</span>8 significant down</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ADA      0.000<span style="text-decoration: underline;">001</span>21   1.29  AML     0.000<span style="text-decoration: underline;">060</span>5 significant up  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AZU1     0.000<span style="text-decoration: underline;">004</span>85   1.79  AML     0.000<span style="text-decoration: underline;">162</span>  significant up  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ACP6     0.000<span style="text-decoration: underline;">014</span>1   -<span style="color: #BB0000;">0.910</span> AML     0.000<span style="text-decoration: underline;">351</span>  significant down</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> APP      0.000<span style="text-decoration: underline;">021</span>3   -<span style="color: #BB0000;">0.784</span> AML     0.000<span style="text-decoration: underline;">425</span>  significant down</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ACAN     0.000<span style="text-decoration: underline;">058</span>3   -<span style="color: #BB0000;">0.581</span> AML     0.000<span style="text-decoration: underline;">971</span>  significant down</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ATOX1    0.000<span style="text-decoration: underline;">133</span>    -<span style="color: #BB0000;">0.921</span> AML     0.001<span style="text-decoration: underline;">90</span>   significant down</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ANXA11   0.000<span style="text-decoration: underline;">320</span>    -<span style="color: #BB0000;">0.833</span> AML     0.004<span style="text-decoration: underline;">01</span>   significant down</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AGR2     0.000<span style="text-decoration: underline;">433</span>    -<span style="color: #BB0000;">1.20</span>  AML     0.004<span style="text-decoration: underline;">81</span>   significant down</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ARHGEF12 0.000<span style="text-decoration: underline;">585</span>    -<span style="color: #BB0000;">1.13</span>  AML     0.005<span style="text-decoration: underline;">85</span>   significant down</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 90 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Volcano plot for AML</span></span></span>

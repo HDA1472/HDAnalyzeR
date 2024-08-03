@@ -92,6 +92,8 @@ It also creates upset plots both for the significant up and down regulated prote
     <p>A list containing the following plots:</p><ul><li><p>de_barplot: A barplot with the number of significant proteins for each disease.</p></li>
 <li><p>upset_plot_up: An upset plot with the significant up regulated proteins for each disease.</p></li>
 <li><p>upset_plot_down: An upset plot with the significant down regulated proteins for each disease.</p></li>
+<li><p>proteins_list_up: A list with the significant up regulated proteins for each combination of diseases. Created with <code><a href="https://rdrr.io/pkg/UpSetR/man/fromList.html" class="external-link">UpSetR::fromList()</a></code>.</p></li>
+<li><p>proteins_list_down: A list with the significant down regulated proteins for each combination of diseases. Created with <code><a href="https://rdrr.io/pkg/UpSetR/man/fromList.html" class="external-link">UpSetR::fromList()</a></code>.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -100,23 +102,29 @@ It also creates upset plots both for the significant up and down regulated prote
 <span class="r-in"><span><span class="va">de_results_aml</span> <span class="op">&lt;-</span> <span class="fu"><a href="do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">example_data</span>,</span></span>
 <span class="r-in"><span>                           <span class="va">example_metadata</span>,</span></span>
 <span class="r-in"><span>                           case <span class="op">=</span> <span class="st">"AML"</span>,</span></span>
+<span class="r-in"><span>                           control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BRC"</span>, <span class="st">"PRC"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                           wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>                           only_female <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BRC"</span>, <span class="st">"OVC"</span>, <span class="st">"CVX"</span>, <span class="st">"ENDC"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           only_female <span class="op">=</span> <span class="st">"BRC"</span>,</span></span>
 <span class="r-in"><span>                           only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Comparing AML with BRC, PRC.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">de_results_brc</span> <span class="op">&lt;-</span> <span class="fu"><a href="do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">example_data</span>,</span></span>
 <span class="r-in"><span>                           <span class="va">example_metadata</span>,</span></span>
 <span class="r-in"><span>                           case <span class="op">=</span> <span class="st">"BRC"</span>,</span></span>
+<span class="r-in"><span>                           control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AML"</span>, <span class="st">"PRC"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                           wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>                           only_female <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BRC"</span>, <span class="st">"OVC"</span>, <span class="st">"CVX"</span>, <span class="st">"ENDC"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           only_female <span class="op">=</span> <span class="st">"BRC"</span>,</span></span>
 <span class="r-in"><span>                           only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Comparing BRC with AML, PRC.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">de_results_prc</span> <span class="op">&lt;-</span> <span class="fu"><a href="do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">example_data</span>,</span></span>
 <span class="r-in"><span>                           <span class="va">example_metadata</span>,</span></span>
 <span class="r-in"><span>                           case <span class="op">=</span> <span class="st">"PRC"</span>,</span></span>
+<span class="r-in"><span>                           control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AML"</span>, <span class="st">"BRC"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                           wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>                           only_female <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BRC"</span>, <span class="st">"OVC"</span>, <span class="st">"CVX"</span>, <span class="st">"ENDC"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           only_female <span class="op">=</span> <span class="st">"BRC"</span>,</span></span>
 <span class="r-in"><span>                           only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Comparing PRC with AML, BRC.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Combine the results</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"AML"</span> <span class="op">=</span> <span class="va">de_results_aml</span>,</span></span>
@@ -125,8 +133,6 @@ It also creates upset plots both for the significant up and down regulated prote
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot summary visualizations</span></span></span>
 <span class="r-in"><span><span class="fu">plot_de_summary</span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_line()`: Each group consists of only one observation.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Do you need to adjust the <span style="color: #00BB00;">group</span> aesthetic?</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $de_barplot</span>
 <span class="r-plt img"><img src="plot_de_summary-1.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -135,6 +141,45 @@ It also creates upset plots both for the significant up and down regulated prote
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $upset_plot_down</span>
 <span class="r-plt img"><img src="plot_de_summary-3.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_up</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_up$AML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADA"      "APEX1"    "AZU1"     "ANGPT2"   "APBB1IP"  "ARTN"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ACTA2"    "ADGRG1"   "AGRP"     "AHCY"     "B4GALT1"  "ARID4B"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ABL1"     "ATP6AP2"  "ATP6V1F"  "AMFR"     "ANGPTL4"  "ADM"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "ACE2"     "AREG"     "ATF2"     "ADA2"     "AIF1"     "ARHGAP25"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_up$`BRC&amp;PRC`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ANGPT1"  "ADGRG2"  "ADAMTS8"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_up$BRC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ANGPT1"   "ADGRG2"   "AOC1"     "ARHGEF12" "ADAMTS8"  "ART3"     "ADAMTS13"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_up$PRC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ATG4A"   "APOM"    "ANGPT1"  "ADAMTS8" "ADGRG2"  "AMY2B"   "ALDH1A1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "ALPP"    "ACAN"    "ANXA4"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_down</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_down$AML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ANGPT1"   "ADAMTS8"  "ADGRG2"   "ATG4A"    "APOM"     "APP"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ADAMTS13" "ARHGEF12" "ALPP"     "ACAN"     "ANGPTL7"  "ANXA11"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "AMY2B"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_down$`BRC&amp;PRC`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "AZU1"    "ADA"     "APEX1"   "APBB1IP" "AHCY"    "ACTA2"   "ARTN"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "ANGPT2"  "ARID4B"  "AGRP"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_down$BRC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "AZU1"     "ADA"      "APEX1"    "APBB1IP"  "AHCY"     "ACTA2"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ARTN"     "B4GALT1"  "ANGPT2"   "ARID4B"   "ABL1"     "ARHGAP25"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ACE2"     "AGRP"     "ADA2"     "AMFR"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_down$PRC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADGRG1"  "ADA"     "AZU1"    "APEX1"   "ATP6AP2" "ANGPT2"  "ARTN"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "ARID4B"  "ADM"     "AGRP"    "AREG"    "AIF1"    "ACTA2"   "APBB1IP"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "AHCY"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
