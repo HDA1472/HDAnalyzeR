@@ -6,17 +6,19 @@
 \usage{
 qc_summary_metadata(
   metadata,
+  categorical = "Sex",
+  numeric = "Age",
   disease_palette = NULL,
-  sex_palette = "sex_hpa",
+  categ_palette = "sex_hpa",
   report = T
 )
 }
 \arguments{
 \item{metadata}{The metadata dataframe.}
 
-\item{disease_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}.}
+\item{disease_palette}{The color palette for the different diseases. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}.}
 
-\item{sex_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "sex_hpa".}
+\item{categ_palette}{The categorical color palette. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "sex_hpa".}
 
 \item{report}{Whether to print the summary. Default is TRUE.}
 }
@@ -25,15 +27,13 @@ A list containing the following elements:
 \itemize{
 \item na_percentage_col: A tibble with the column names and the percentage of NAs in each column.
 \item na_percentage_row: A tibble with the DAids and the percentage of NAs in each row.
-\item sex_barplot: A bar plot for the number of samples per sex.
-\item age_dist_plot: A ridge plot for the age distributions.
-\item bmi_dist_plot: A ridge plot for the BMI distributions.
+\item Several distribution and barplots, as well as the counts of samples.
 }
 }
 \description{
 \code{qc_summary_metadata()} summarizes the quality control results of the metadata dataframe.
 It checks the column types, calculates the percentage of NAs in each column and row,
-and creates summary visualizations for Sex, Age and BMI.
+and creates summary visualizations for user selected categorical and numeric variables.
 }
 \examples{
 qc_res <- qc_summary_metadata(example_metadata, disease_palette = "cancers12")

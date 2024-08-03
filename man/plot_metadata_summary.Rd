@@ -6,8 +6,10 @@
 \usage{
 plot_metadata_summary(
   metadata,
+  categorical = "Sex",
+  numeric = "Age",
   disease_palette = NULL,
-  sex_palette = "sex_hpa"
+  categ_palette = "sex_hpa"
 )
 }
 \arguments{
@@ -15,15 +17,10 @@ plot_metadata_summary(
 
 \item{disease_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}.}
 
-\item{sex_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "sex_hpa".}
+\item{categ_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "sex_hpa".}
 }
 \value{
-A list containing the following elements:
-\itemize{
-\item sex_barplot: A bar plot for the number of samples per sex.
-\item age_dist_plot: A ridge plot for the age distributions.
-\item bmi_dist_plot: A ridge plot for the BMI distributions.
-}
+A list containing plots and sample counts.
 }
 \description{
 \code{plot_metadata_summary()} creates three plots:
