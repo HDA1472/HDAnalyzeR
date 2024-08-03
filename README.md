@@ -1,5 +1,6 @@
-# HDAnalyzeR <img src="man/figures/logo.png" align="right" height="200" alt="" />
-[![R-CMD-check](https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml)
+# HDAnalyzeR <img src="man/figures/logo.png" align="right" height="200"/>
+
+[![R-CMD-check](https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml) [![Version](https://img.shields.io/badge/Version-0.1.0-blue)](https://github.com/HDA1472/DA_RPackage) [![License](https://img.shields.io/badge/license-Apache2.0-yellow)](https://github.com/HDA1472/DA_RPackage/blob/main/LICENSE.md)
 
 HDAnalyzeR is an R package developed by the Human Disease Blood Atlas project, designed to facilitate proteomics analysis for biomarker selection from blood plasma samples. It is optimized to work with Olink proteomics data, but it can be adapted to other proteomics platforms. In order to use the package without issues the data should have these three necessary columns: `DAid` with the Sample IDs, `Assay` with the protein names, and `NPX` with the protein expression data. The metadata should contain the `DAid`, `Disease`, and `Sex` columns, where the `Disease` column should contain the different class names (Healthy, Disease, etc.), while in the `Sex` column the data should be encoded as M (males) and F (females).
 
@@ -11,7 +12,7 @@ HDAnalyzeR offers ready-to-use functions for common proteomics tasks such as pro
 
 You can install the latest version of HDAnalyzeR from GitHub:
 
-```r
+``` r
 # Install devtools if you haven't already
 install.packages("devtools")
 
@@ -24,7 +25,7 @@ devtools::install_github("HDA1472/DA_RPackage")
 
 The following example showcases how to perform a differential expression analysis. It is one of the many features of HDAnalyzeR. A complete guide is available through [package's documentation](https://hda1472.github.io/DA_RPackage/).
 
-```r
+``` r
 library(HDAnalyzeR)
 
 # Prepare data
@@ -39,7 +40,9 @@ de_results$volcano_plot
 ```
 
 ## Issues and Support
+
 If you encounter any bugs or you want to recommend new features and changes to existing ones, please open a new issue on our GitHub repository.
 
 ## Contact
-For any questions or further information, please contact us at konstantinos.antonopoulos@scilifelab.se.
+
+For any questions or further information, please contact us at [konstantinos.antonopoulos\@scilifelab.se](mailto:konstantinos.antonopoulos@scilifelab.se){.email}.
