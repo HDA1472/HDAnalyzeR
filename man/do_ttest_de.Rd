@@ -8,6 +8,7 @@ do_ttest_de(
   long_data,
   variable = "Disease",
   case,
+  control,
   assays,
   normality_res,
   only_female = NULL,
@@ -21,7 +22,9 @@ do_ttest_de(
 
 \item{variable}{The variable of interest that includes the case and control groups.}
 
-\item{case}{The disease of interest.}
+\item{case}{The case group.}
+
+\item{control}{The control groups.}
 
 \item{assays}{The assays to run the differential expression analysis on.}
 

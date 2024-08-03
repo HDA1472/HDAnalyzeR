@@ -24,7 +24,12 @@ The ontology option used when database = "GO" is "ALL".
 }
 \examples{
 # Run Differential Expression Analysis and extract results
-de_res <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
+control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC")
+de_res <- do_limma(example_data,
+                   example_metadata,
+                   case = "AML",
+                   control = control,
+                   wide = FALSE)
 de_results <- de_res$de_results
 
 # Run GSEA with Reactome database

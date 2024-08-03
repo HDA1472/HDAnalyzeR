@@ -9,6 +9,7 @@ do_limma(
   metadata,
   variable = "Disease",
   case,
+  control,
   correct = c("Sex", "Age"),
   correct_type = c("factor", "numeric"),
   wide = TRUE,
@@ -32,6 +33,8 @@ do_limma(
 \item{variable}{The variable of interest that includes the case and control groups.}
 
 \item{case}{The case group.}
+
+\item{control}{The control groups.}
 
 \item{correct}{The variables to correct the results with. Default c("Sex", "Age").}
 
@@ -78,7 +81,11 @@ For sex-specific diseases, there will be no correction for Sex.
 This is performed automatically by the function.
 }
 \examples{
-de_results <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
+de_results <- do_limma(example_data,
+                       example_metadata,
+                       case = "AML",
+                       control = c("CLL", "MYEL"),
+                       wide = FALSE)
 
 # Results for AML
 de_results$de_results

@@ -16,7 +16,12 @@ utils::globalVariables(c("ENTREZID"))
 #'
 #' @examples
 #' # Perform Differential Expression Analysis
-#' de_res <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
+#' control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC")
+#' de_res <- do_limma(example_data,
+#'                    example_metadata,
+#'                    case = "AML",
+#'                    control = control,
+#'                    wide = FALSE)
 #'
 #' # Extract the up-regulated proteins for AML
 #' sig_up_proteins_aml <- de_res$de_results |>
@@ -98,7 +103,12 @@ do_ora <- function(protein_list,
 #'
 #' @examples
 #' # Perform Differential Expression Analysis
-#' de_res <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
+#' control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC")
+#' de_res <- do_limma(example_data,
+#'                    example_metadata,
+#'                    case = "AML",
+#'                    control = control,
+#'                    wide = FALSE)
 #'
 #' # Extract the up-regulated proteins for AML
 #' sig_up_proteins_aml <- de_res$de_results |>
@@ -167,7 +177,12 @@ plot_ora <- function(enrichment,
 #'
 #' @examples
 #' # Run Differential Expression Analysis and extract results
-#' de_res <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
+#' control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC")
+#' de_res <- do_limma(example_data,
+#'                    example_metadata,
+#'                    case = "AML",
+#'                    control = control,
+#'                    wide = FALSE)
 #' de_results <- de_res$de_results
 #'
 #' # Run GSEA with Reactome database
@@ -245,7 +260,12 @@ do_gsea <- function(de_results,
 #'
 #' @examples
 #' # Perform Differential Expression Analysis
-#' de_res <- do_limma(example_data, example_metadata, case = "AML", wide = FALSE)
+#' control = c("BRC", "CLL", "CRC", "CVX", "ENDC", "GLIOM", "LUNGC", "LYMPH", "MYEL", "OVC", "PRC")
+#' de_res <- do_limma(example_data,
+#'                    example_metadata,
+#'                    case = "AML",
+#'                    control = control,
+#'                    wide = FALSE)
 #' de_results <- de_res$de_results
 #'
 #' # Run GSEA with Reactome database

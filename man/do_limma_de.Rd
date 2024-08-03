@@ -8,6 +8,7 @@ do_limma_de(
   join_data,
   variable = "Disease",
   case,
+  control,
   correct = c("Sex", "Age"),
   correct_type = c("factor", "numeric", "numeric"),
   only_female = NULL,
@@ -21,7 +22,9 @@ do_limma_de(
 
 \item{variable}{The variable of interest that includes the case and control groups.}
 
-\item{case}{The disease of interest.}
+\item{case}{The case group.}
+
+\item{control}{The control groups.}
 
 \item{correct}{The variables to correct the results with. Default c("Sex", "Age").}
 

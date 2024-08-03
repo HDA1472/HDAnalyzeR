@@ -9,6 +9,7 @@ do_ttest(
   metadata,
   variable = "Disease",
   case,
+  control,
   wide = TRUE,
   only_female = NULL,
   only_male = NULL,
@@ -30,6 +31,8 @@ do_ttest(
 \item{variable}{The variable of interest that includes the case and control groups.}
 
 \item{case}{The case group.}
+
+\item{control}{The control groups.}
 
 \item{wide}{If the data is in wide format. Default is TRUE.}
 
@@ -67,7 +70,11 @@ perform a t-test or Wilcoxon test respectively. It also performs p value FDR adj
 It can generate and save volcano plots.
 }
 \examples{
-de_results <- do_ttest(example_data, example_metadata, case = "AML", wide = FALSE)
+de_results <- do_ttest(example_data,
+                       example_metadata,
+                       case = "AML",
+                       control = c("CLL", "MYEL"),
+                       wide = FALSE)
 
 # Results for AML
 de_results$de_results
