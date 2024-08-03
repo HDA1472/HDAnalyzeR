@@ -680,6 +680,32 @@ do_ttest <- function(olink_data,
 }
 
 
+#' Extract protein lists from the upset data
+#'
+#' `extract_protein_list()` extracts the protein lists from the upset data.
+#' It creates a list with the proteins for each combination of diseases.
+#'
+#' @param upset_data A tibble with the upset data.
+#' @param protein_lists A list with the protein lists for each disease.
+#'
+#' @return A list with the proteins for each combination of diseases.
+#' @keywords internal
+extract_protein_list <- function(upset_data, protein_lists) {
+  combinations <- as.data.frame(upset_data)
+  proteins <- list()
+
+  for (i in 1:nrow(combinations)) {
+    combo <- combinations[i, ]
+    set_names <- names(combo)[combo == 1]
+    set_name <- paste(set_names, collapse = "&")
+    protein_set <- Reduce(intersect, protein_lists[set_names])
+    proteins[[set_name]] <- protein_set
+  }
+
+  return(proteins)
+}
+
+
 #' Plot summary visualizations for the differential expression results
 #'
 #' `plot_de_summary()` creates summary visualizations for the differential expression results.
@@ -694,6 +720,9 @@ do_ttest <- function(olink_data,
 #'   - de_barplot: A barplot with the number of significant proteins for each disease.
 #'   - upset_plot_up: An upset plot with the significant up regulated proteins for each disease.
 #'   - upset_plot_down: An upset plot with the significant down regulated proteins for each disease.
+#'   - proteins_list_up: A list with the significant up regulated proteins for each combination of diseases. Created with `UpSetR::fromList()`.
+#'   - proteins_list_down: A list with the significant down regulated proteins for each combination of diseases. Created with `UpSetR::fromList()`.
+#'
 #' @export
 #'
 #' @examples
@@ -796,17 +825,26 @@ plot_de_summary <- function(de_results,
   ordered_names_down <- names(sort(frequencies_down, decreasing = TRUE))
   ordered_colors_down <- ordered_colors[ordered_names_down]
 
-  upset_plot_up <- UpSetR::upset(UpSetR::fromList(significant_proteins_up),
+  # Create upset data and extract protein lists
+  upset_up <- UpSetR::fromList(significant_proteins_up)
+  upset_down <- UpSetR::fromList(significant_proteins_down)
+  proteins_list_up <- extract_protein_list(upset_up, significant_proteins_up)
+  proteins_list_down <- extract_protein_list(upset_down, significant_proteins_down)
+
+  # Create upset plots
+  upset_plot_up <- UpSetR::upset(upset_up,
                                  order.by = "freq",
                                  nsets = length(names(de_results)),
                                  sets.bar.color = ordered_colors_up)
 
-  upset_plot_down <- UpSetR::upset(UpSetR::fromList(significant_proteins_down),
+  upset_plot_down <- UpSetR::upset(upset_down,
                                    order.by = "freq",
                                    nsets = length(names(de_results)),
                                    sets.bar.color = ordered_colors_down)
 
   return(list("de_barplot" = de_barplot,
               "upset_plot_up" = upset_plot_up,
-              "upset_plot_down" = upset_plot_down))
+              "upset_plot_down" = upset_plot_down,
+              "proteins_list_up" = proteins_list_up,
+              "proteins_list_down" = proteins_list_down))
 }

@@ -23,6 +23,8 @@ A list containing the following plots:
 \item de_barplot: A barplot with the number of significant proteins for each disease.
 \item upset_plot_up: An upset plot with the significant up regulated proteins for each disease.
 \item upset_plot_down: An upset plot with the significant down regulated proteins for each disease.
+\item proteins_list_up: A list with the significant up regulated proteins for each combination of diseases. Created with \code{UpSetR::fromList()}.
+\item proteins_list_down: A list with the significant down regulated proteins for each combination of diseases. Created with \code{UpSetR::fromList()}.
 }
 }
 \description{
