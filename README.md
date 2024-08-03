@@ -31,7 +31,7 @@ library(HDAnalyzeR)
 wide_data <- widen_data(example_data)
 
 # Run differential expression analysis
-de_results <- do_limma(wide_data, example_metadata, case = "AML")
+de_results <- do_limma(wide_data, example_metadata, case = "AML", control = c("CLL", "MYEL"))
 
 # DE results and volcano plot for AML
 de_results$de_results
