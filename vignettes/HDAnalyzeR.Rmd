@@ -149,9 +149,10 @@ We will run a differential expression analysis to identify potential biomarkers.
 de_res_aml <- do_limma(imputed_data, 
                        clean_metadata,
                        case = "AML",
+                       control = c("BRC", "PRC"),
                        correct = c("Sex", "Age"),
                        correct_type = c("factor", "numeric"),
-                       only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                       only_female = "BRC",
                        only_male = "PRC")
 
 de_res_aml$de_results
@@ -163,9 +164,10 @@ de_res_aml$volcano_plot
 de_res_brc <- do_limma(imputed_data, 
                        clean_metadata,
                        case = "BRC",
+                       control = c("AML", "PRC"),
                        correct = c("Sex", "Age"),
                        correct_type = c("factor", "numeric"),
-                       only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                       only_female = "BRC",
                        only_male = "PRC")
 
 de_res_brc$de_results
@@ -177,9 +179,10 @@ de_res_brc$volcano_plot
 de_res_prc <- do_limma(imputed_data, 
                        clean_metadata,
                        case = "PRC",
+                       control = c("BRC", "AML"),
                        correct = c("Sex", "Age"),
                        correct_type = c("factor", "numeric"),
-                       only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                       only_female = "BRC",
                        only_male = "PRC")
 
 de_res_prc$de_results
@@ -205,7 +208,8 @@ In addition to differential expression analysis, we will use a Lasso machine lea
 lasso_res_aml <- do_elnet(imputed_data, 
                           clean_metadata, 
                           case = "AML",
-                          only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                          control = c("BRC", "PRC"),
+                          only_female = "BRC",
                           only_male = "PRC",
                           exclude_cols = c("Sex", "Age"),
                           type = "lasso",
@@ -234,7 +238,8 @@ lasso_res_aml$boxplot_res
 lasso_res_brc <- do_elnet(imputed_data, 
                           clean_metadata, 
                           case = "BRC",
-                          only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                          control = c("AML", "PRC"),
+                          only_female = "BRC",
                           only_male = "PRC",
                           exclude_cols = c("Sex", "Age"),
                           type = "lasso",
@@ -263,7 +268,8 @@ lasso_res_brc$boxplot_res
 lasso_res_prc <- do_elnet(imputed_data, 
                           clean_metadata, 
                           case = "PRC",
-                          only_female = c("BRC", "OVC", "CVX", "ENDC"),
+                          control = c("BRC", "AML"),
+                          only_female = "BRC",
                           only_male = "PRC",
                           exclude_cols = c("Sex", "Age"),
                           type = "lasso",
