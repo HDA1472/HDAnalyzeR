@@ -914,7 +914,8 @@ plot_var_imp <- function (finalfit_res,
 #'
 #' @param olink_data Olink data.
 #' @param metadata Metadata.
-#' @param case Disease to predict.
+#' @param case The case group.
+#' @param control The control groups.
 #' @param wide Whether the data is wide format. Default is TRUE.
 #' @param balance_groups Whether to balance the groups. Default is TRUE.
 #' @param only_female Vector of diseases that are female specific. Default is NULL.
@@ -949,6 +950,7 @@ plot_var_imp <- function (finalfit_res,
 #' do_elnet(example_data,
 #'          example_metadata,
 #'          "AML",
+#'          c("CLL", "MYEL"),
 #'          balance_groups = TRUE,
 #'          wide = FALSE,
 #'          type = "elnet",
@@ -959,6 +961,7 @@ plot_var_imp <- function (finalfit_res,
 do_elnet <- function(olink_data,
                      metadata,
                      case,
+                     control,
                      wide = TRUE,
                      balance_groups = TRUE,
                      only_female = NULL,
@@ -991,21 +994,21 @@ do_elnet <- function(olink_data,
   }
   join_data <- wide_data |>
     dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
-    dplyr::filter(!is.na(Disease))
-  diseases <- unique(metadata$Disease)
+    dplyr::filter(!is.na(Disease)) |>
+    dplyr::filter(Disease %in% c(case, control))
 
   # Prepare sets and groups
   data_split <- split_data(join_data, ratio, seed)
   if (isTRUE(balance_groups)) {
     train_list <- make_groups(data_split$train_set,
                               case,
-                              diseases,
+                              c(case, control),
                               only_female,
                               only_male,
                               seed)
     test_list <- make_groups(data_split$test_set,
                              case,
-                             diseases,
+                             c(case, control),
                              only_female,
                              only_male,
                              seed)
@@ -1083,7 +1086,8 @@ do_elnet <- function(olink_data,
 #'
 #' @param olink_data Olink data.
 #' @param metadata Metadata.
-#' @param case Disease to predict.
+#' @param case The case group.
+#' @param control The control groups.
 #' @param wide Whether the data is wide format. Default is TRUE.
 #' @param balance_groups Whether to balance the groups. Default is TRUE.
 #' @param only_female Vector of diseases that are female specific. Default is NULL.
@@ -1117,6 +1121,7 @@ do_elnet <- function(olink_data,
 #' do_rf(example_data,
 #'       example_metadata,
 #'       "AML",
+#'       c("CLL", "MYEL"),
 #'       balance_groups = TRUE,
 #'       wide = FALSE,
 #'       palette = "cancers12",
@@ -1126,6 +1131,7 @@ do_elnet <- function(olink_data,
 do_rf <- function(olink_data,
                   metadata,
                   case,
+                  control,
                   wide = TRUE,
                   balance_groups = TRUE,
                   only_female = NULL,
@@ -1156,21 +1162,21 @@ do_rf <- function(olink_data,
   }
   join_data <- wide_data |>
     dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
-    dplyr::filter(!is.na(Disease))
-  diseases <- unique(metadata$Disease)
+    dplyr::filter(!is.na(Disease)) |>
+    dplyr::filter(Disease %in% c(case, control))
 
   # Prepare sets and groups
   data_split <- split_data(join_data, ratio, seed)
   if (isTRUE(balance_groups)) {
     train_list <- make_groups(data_split$train_set,
                               case,
-                              diseases,
+                              c(case, control),
                               only_female,
                               only_male,
                               seed)
     test_list <- make_groups(data_split$test_set,
                              case,
-                             diseases,
+                             c(case, control),
                              only_female,
                              only_male,
                              seed)
@@ -1263,8 +1269,9 @@ do_rf <- function(olink_data,
 #' res_aml <- do_elnet(example_data,
 #'                     example_metadata,
 #'                     "AML",
+#'                     c("BRC", "PRC"),
 #'                     wide = FALSE,
-#'                     only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                     only_female = "BRC",
 #'                     only_male = "PRC",
 #'                     cv_sets = 2,
 #'                     grid_size = 1,
@@ -1273,8 +1280,9 @@ do_rf <- function(olink_data,
 #' res_brc <- do_elnet(example_data,
 #'                     example_metadata,
 #'                     "BRC",
+#'                     c("BRC", "AML"),
 #'                     wide = FALSE,
-#'                     only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                     only_female = "BRC",
 #'                     only_male = "PRC",
 #'                     cv_sets = 2,
 #'                     grid_size = 1,
@@ -1282,8 +1290,9 @@ do_rf <- function(olink_data,
 #' res_prc <- do_elnet(example_data,
 #'                     example_metadata,
 #'                     "PRC",
+#'                     c("BRC", "AML"),
 #'                     wide = FALSE,
-#'                     only_female = c("BRC", "OVC", "CVX", "ENDC"),
+#'                     only_female = "BRC",
 #'                     only_male = "PRC",
 #'                     cv_sets = 2,
 #'                     grid_size = 1,
@@ -1392,7 +1401,8 @@ plot_features_summary <- function(ml_results,
   } else if (!is.null(disease_palette)) {
     pal <- disease_palette
   } else {
-    pal <- "black"
+    pal <- rep("black", length(names(ml_results)))
+    names(pal) <- names(ml_results)
   }
   feature_names <- names(ml_results)
   ordered_colors <- pal[feature_names]

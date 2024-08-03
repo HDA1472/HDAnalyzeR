@@ -8,6 +8,7 @@ do_elnet(
   olink_data,
   metadata,
   case,
+  control,
   wide = TRUE,
   balance_groups = TRUE,
   only_female = NULL,
@@ -33,7 +34,9 @@ do_elnet(
 
 \item{metadata}{Metadata.}
 
-\item{case}{Disease to predict.}
+\item{case}{The case group.}
+
+\item{control}{The control groups.}
 
 \item{wide}{Whether the data is wide format. Default is TRUE.}
 
@@ -94,6 +97,7 @@ missing values, KNN imputation will be applied.
 do_elnet(example_data,
          example_metadata,
          "AML",
+         c("CLL", "MYEL"),
          balance_groups = TRUE,
          wide = FALSE,
          type = "elnet",

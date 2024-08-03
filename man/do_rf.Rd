@@ -8,6 +8,7 @@ do_rf(
   olink_data,
   metadata,
   case,
+  control,
   wide = TRUE,
   balance_groups = TRUE,
   only_female = NULL,
@@ -32,7 +33,9 @@ do_rf(
 
 \item{metadata}{Metadata.}
 
-\item{case}{Disease to predict.}
+\item{case}{The case group.}
+
+\item{control}{The control groups.}
 
 \item{wide}{Whether the data is wide format. Default is TRUE.}
 
@@ -91,6 +94,7 @@ missing values, KNN imputation will be applied.
 do_rf(example_data,
       example_metadata,
       "AML",
+      c("CLL", "MYEL"),
       balance_groups = TRUE,
       wide = FALSE,
       palette = "cancers12",
