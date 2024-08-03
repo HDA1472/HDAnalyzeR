@@ -204,7 +204,7 @@ test_that("qc_summary_metadata calculates NA percentages in cols", {
     C = c(7, 10, 25, 74, 49),
     D = c(14, 0, 5, 9, 20)
   )
-  result <- qc_summary_metadata(test_metadata, report = FALSE)
+  result <- qc_summary_metadata(test_metadata, categorical = NULL, numeric = NULL, report = FALSE)
   result <- result$na_percentage_col
   expected <- tibble::tibble(
     column = c("A", "B"),
@@ -222,7 +222,7 @@ test_that("qc_summary_metadata calculates NA percentages in rows", {
     C = c(7, 10, 25, 74, 49),
     D = c(14, 0, 5, 9, 20)
   )
-  result <- qc_summary_metadata(test_metadata, report = FALSE)
+  result <- qc_summary_metadata(test_metadata, categorical = NULL, numeric = NULL, report = FALSE)
   result <- result$na_percentage_row
   expected <- tibble::tibble(
     DAid = c("2", "3"),
