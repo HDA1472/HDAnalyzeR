@@ -170,6 +170,8 @@ print_summary <- function(sample_n,
 #'    - A bar plot for the number of samples per Sex.
 #'
 #' @param metadata The metadata dataframe.
+#' @param categorical The categorical variables to summarize. Default is "Sex".
+#' @param numeric The numeric variables to summarize. Default is "Age".
 #' @param disease_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
 #' @param categ_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "sex_hpa".
 #'
@@ -300,6 +302,8 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 #' and creates summary visualizations for user selected categorical and numeric variables.
 #'
 #' @param metadata The metadata dataframe.
+#' @param categorical The categorical variables to summarize. Default is "Sex".
+#' @param numeric The numeric variables to summarize. Default is "Age".
 #' @param disease_palette The color palette for the different diseases. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
 #' @param categ_palette The categorical color palette. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "sex_hpa".
 #' @param report Whether to print the summary. Default is TRUE.

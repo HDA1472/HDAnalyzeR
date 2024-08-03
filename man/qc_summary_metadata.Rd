@@ -16,6 +16,10 @@ qc_summary_metadata(
 \arguments{
 \item{metadata}{The metadata dataframe.}
 
+\item{categorical}{The categorical variables to summarize. Default is "Sex".}
+
+\item{numeric}{The numeric variables to summarize. Default is "Age".}
+
 \item{disease_palette}{The color palette for the different diseases. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}.}
 
 \item{categ_palette}{The categorical color palette. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "sex_hpa".}
