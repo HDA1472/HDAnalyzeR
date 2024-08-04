@@ -108,8 +108,8 @@ It saves them in the data/processed/data_metadata directory in RDA format.</p>
 <span class="r-in"><span>                                 keep_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DAid"</span>, <span class="st">"Disease"</span>, <span class="st">"Sex"</span>, <span class="st">"Age"</span>, <span class="st">"BMI"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create wide and join dataframes</span></span></span>
-<span class="r-in"><span><span class="va">result_df</span> <span class="op">&lt;-</span> <span class="fu">generate_df</span><span class="op">(</span><span class="va">clean_data</span>, <span class="va">clean_metadata</span>, save <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">result_df</span><span class="op">$</span><span class="va">wide_data</span></span></span>
+<span class="r-in"><span><span class="fu">generate_df</span><span class="op">(</span><span class="va">clean_data</span>, <span class="va">clean_metadata</span>, save <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $wide_data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 586 × 101</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    DAid    AARSD1   ABL1  ACAA1    ACAN    ACE2  ACOX1   ACP5    ACP6  ACTA2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -130,7 +130,8 @@ It saves them in the data/processed/data_metadata directory in RDA format.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADGRG1 &lt;dbl&gt;, ADGRG2 &lt;dbl&gt;, ADH4 &lt;dbl&gt;, ADM &lt;dbl&gt;, AGER &lt;dbl&gt;, AGR2 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AGR3 &lt;dbl&gt;, AGRN &lt;dbl&gt;, AGRP &lt;dbl&gt;, AGXT &lt;dbl&gt;, AHCY &lt;dbl&gt;, AHSP &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AIF1 &lt;dbl&gt;, AIFM1 &lt;dbl&gt;, AK1 &lt;dbl&gt;, AKR1B1 &lt;dbl&gt;, AKR1C4 &lt;dbl&gt;, …</span></span>
-<span class="r-in"><span><span class="va">result_df</span><span class="op">$</span><span class="va">join_data</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $join_data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 586 × 105</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    DAid    Disease Sex     Age   BMI AARSD1   ABL1  ACAA1    ACAN    ACE2  ACOX1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -151,6 +152,7 @@ It saves them in the data/processed/data_metadata directory in RDA format.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADCYAP1R1 &lt;dbl&gt;, ADGRE2 &lt;dbl&gt;, ADGRE5 &lt;dbl&gt;, ADGRG1 &lt;dbl&gt;, ADGRG2 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ADH4 &lt;dbl&gt;, ADM &lt;dbl&gt;, AGER &lt;dbl&gt;, AGR2 &lt;dbl&gt;, AGR3 &lt;dbl&gt;, AGRN &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AGRP &lt;dbl&gt;, AGXT &lt;dbl&gt;, AHCY &lt;dbl&gt;, AHSP &lt;dbl&gt;, AIF1 &lt;dbl&gt;, AIFM1 &lt;dbl&gt;, …</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
