@@ -41,7 +41,5 @@ clean_metadata <- clean_metadata(example_metadata,
                                  keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"))
 
 # Create wide and join dataframes
-result_df <- generate_df(clean_data, clean_metadata, save = FALSE)
-result_df$wide_data
-result_df$join_data
+generate_df(clean_data, clean_metadata, save = FALSE)
 }

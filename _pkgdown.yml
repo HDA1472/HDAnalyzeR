@@ -28,21 +28,26 @@ reference:
   - impute_knn
   - impute_missForest
   - impute_mice
-- subtitle: Data Quality Control
+- title: Data Quality Control
+- subtitle: Quality Control
   desc: |
-    Functions that perform quality control check and dimensionality reduction on your data.
+    Functions that perform quality control check on your data.
   contents:
   - qc_summary_data
   - qc_summary_metadata
-  - do_pca
-  - do_umap
-- title: Main Proteomics Analysis
 - subtitle: Correlation and Clustering
   desc: |
     Functions that perform protein-protein correlation and can order data based on their hierarchical clustering.
   contents:
   - create_corr_heatmap
   - cluster_data
+- subtitle: Dimensionality Reduction
+  desc: |
+    Functions that perform dimensionality reduction on your data.
+  contents:
+  - do_pca
+  - do_umap
+- title: Main Proteomics Analysis
 - subtitle: Differential Expression Analysis
   desc: |
     Functions that perform protein differential expression analysis.

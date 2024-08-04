@@ -35,7 +35,7 @@ cluster_data(
 }
 }
 \description{
-\code{cluster_data()} takes in a dataset and returns a the same dataset ordered
+\code{cluster_data()} takes a dataset and returns the same dataset ordered
 according to the hierarchical clustering of the rows and columns. This data
 can be used to plot a heatmap with ggplot2 that is not having clustering functionality.
 }

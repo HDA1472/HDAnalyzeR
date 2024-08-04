@@ -10,10 +10,10 @@ print_summary(
   class_summary,
   na_percentage_col,
   na_percentage_row,
-  normality_results = F,
-  cor_results = F,
-  heatmap = F,
-  threshold = F
+  normality_results = FALSE,
+  cor_results = FALSE,
+  heatmap = FALSE,
+  threshold = FALSE
 )
 }
 \arguments{

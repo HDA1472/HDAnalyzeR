@@ -123,10 +123,10 @@ print_summary <- function(sample_n,
                           class_summary,
                           na_percentage_col,
                           na_percentage_row,
-                          normality_results = F,
-                          cor_results = F,
-                          heatmap = F,
-                          threshold = F) {
+                          normality_results = FALSE,
+                          cor_results = FALSE,
+                          heatmap = FALSE,
+                          threshold = FALSE) {
 
   print("Summary:")
   print("Note: In case of long output, only the first 10 rows are shown. To see the rest display the object with view()")
@@ -255,7 +255,7 @@ plot_metadata_summary <- function(metadata,
 #'
 #' @examples
 #' qc_res <- qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
-qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
+qc_summary_data <- function(df, wide = TRUE, threshold = 0.8, report = TRUE) {
 
   if (isFALSE(wide)) {
     wide_data <- widen_data(df)
@@ -321,7 +321,12 @@ qc_summary_data <- function(df, wide = T, threshold = 0.8, report = T) {
 #' qc_res$sex_barplot
 #' qc_res$age_dist_plot
 #' qc_res$bmi_dist_plot
-qc_summary_metadata <- function(metadata, categorical = "Sex", numeric = "Age", disease_palette = NULL, categ_palette = "sex_hpa", report = T) {
+qc_summary_metadata <- function(metadata,
+                                categorical = "Sex",
+                                numeric = "Age",
+                                disease_palette = NULL,
+                                categ_palette = "sex_hpa",
+                                report = TRUE) {
 
   sample_n <- nrow(metadata)
   var_n <- ncol(metadata) - 1

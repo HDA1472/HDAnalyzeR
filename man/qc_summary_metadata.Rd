@@ -10,7 +10,7 @@ qc_summary_metadata(
   numeric = "Age",
   disease_palette = NULL,
   categ_palette = "sex_hpa",
-  report = T
+  report = TRUE
 )
 }
 \arguments{

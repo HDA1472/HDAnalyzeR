@@ -4,7 +4,7 @@
 \alias{qc_summary_data}
 \title{Summarize the quality control results of Olink data}
 \usage{
-qc_summary_data(df, wide = T, threshold = 0.8, report = T)
+qc_summary_data(df, wide = TRUE, threshold = 0.8, report = TRUE)
 }
 \arguments{
 \item{df}{The input dataset.}
