@@ -2,8 +2,11 @@
 #'
 #' `get_hpa_palettes()` returns a list of color palettes used by the Human Protein Atlas (HPA) project.
 #'
-#' @return A list of color palettes.
-#' @keywords internal
+#' @return List of HPA color palettes.
+#' @export
+#'
+#' @examples
+#' get_hpa_palettes()
 get_hpa_palettes <- function() {
 
   palettes <- list(
