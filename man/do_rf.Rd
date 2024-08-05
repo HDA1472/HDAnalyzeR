@@ -23,6 +23,7 @@ do_rf(
   vline = TRUE,
   subtitle = c("accuracy", "sensitivity", "specificity", "auc", "features",
     "top-features"),
+  varimp_yaxis_names = FALSE,
   nfeatures = 9,
   points = T,
   boxplot_xaxis_names = FALSE,
@@ -63,6 +64,8 @@ do_rf(
 \item{vline}{Whether to add a vertical line at 50\% importance. Default is TRUE.}
 
 \item{subtitle}{Vector of subtitle elements to include in the plot. Default is a list with all.}
+
+\item{varimp_yaxis_names}{Whether to add y-axis names to the plot. Default is FALSE.}
 
 \item{nfeatures}{Number of top features to include in the boxplot. Default is 9.}
 

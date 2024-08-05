@@ -15,7 +15,8 @@ plot_var_imp(
   palette = NULL,
   vline = T,
   subtitle = c("accuracy", "sensitivity", "specificity", "auc", "features",
-    "top-features", "mixture")
+    "top-features", "mixture"),
+  yaxis_names = FALSE
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ plot_var_imp(
 \item{vline}{Whether to add a vertical line at 50\% importance. Default is TRUE.}
 
 \item{subtitle}{Vector of subtitle elements to include in the plot.}
+
+\item{yaxis_names}{Whether to add y-axis names to the plot. Default is FALSE.}
 }
 \value{
 A list with two elements:

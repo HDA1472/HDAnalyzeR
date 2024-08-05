@@ -832,6 +832,7 @@ generate_subtitle <- function(features,
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
 #' @param vline Whether to add a vertical line at 50% importance. Default is TRUE.
 #' @param subtitle Vector of subtitle elements to include in the plot.
+#' @param yaxis_names Whether to add y-axis names to the plot. Default is FALSE.
 #'
 #' @return A list with two elements:
 #'  - features: A tibble with features and their model importance.
@@ -852,7 +853,8 @@ plot_var_imp <- function (finalfit_res,
                                        "auc",
                                        "features",
                                        "top-features",
-                                       "mixture")) {
+                                       "mixture"),
+                          yaxis_names = FALSE) {
 
   features <- finalfit_res$final |>
     workflows::extract_fit_parsnip() |>
@@ -891,9 +893,13 @@ plot_var_imp <- function (finalfit_res,
     ggplot2::xlab('Importance') +
     ggplot2::ylab('Features') +
     ggplot2::theme_classic() +
-    ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                   axis.ticks.y = ggplot2::element_blank(),
-                   legend.position = "none")
+    ggplot2::theme(legend.position = "none")
+
+  if (isFALSE(yaxis_names)) {
+    var_imp_plot <- var_imp_plot +
+      ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                     axis.ticks.y = ggplot2::element_blank())
+  }
 
   if (isTRUE(vline)) {
     var_imp_plot <- var_imp_plot +
@@ -930,6 +936,7 @@ plot_var_imp <- function (finalfit_res,
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
 #' @param vline Whether to add a vertical line at 50% importance. Default is TRUE.
 #' @param subtitle Vector of subtitle elements to include in the plot. Default is a list with all.
+#' @param varimp_yaxis_names Whether to add y-axis names to the variable importance plot. Default is FALSE.
 #' @param nfeatures Number of top features to include in the boxplot. Default is 9.
 #' @param points Whether to add points to the boxplot. Default is TRUE.
 #' @param boxplot_xaxis_names Whether to add x-axis names to the boxplot. Default is FALSE.
@@ -983,6 +990,7 @@ do_rreg <- function(olink_data,
                                  "features",
                                  "top-features",
                                  "mixture"),
+                    varimp_yaxis_names = FALSE,
                     nfeatures = 9,
                     points = T,
                     boxplot_xaxis_names = FALSE,
@@ -1056,7 +1064,8 @@ do_rreg <- function(olink_data,
                               testfit_res$mixture,
                               palette = palette,
                               vline = vline,
-                              subtitle)
+                              subtitle = subtitle,
+                              yaxis_names = varimp_yaxis_names)
 
   top_features <- var_imp_res$features |>
     dplyr::arrange(dplyr::desc(Scaled_Importance)) |>
@@ -1104,6 +1113,7 @@ do_rreg <- function(olink_data,
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
 #' @param vline Whether to add a vertical line at 50% importance. Default is TRUE.
 #' @param subtitle Vector of subtitle elements to include in the plot. Default is a list with all.
+#' @param varimp_yaxis_names Whether to add y-axis names to the plot. Default is FALSE.
 #' @param nfeatures Number of top features to include in the boxplot. Default is 9.
 #' @param points Whether to add points to the boxplot. Default is TRUE.
 #' @param boxplot_xaxis_names Whether to add x-axis names to the boxplot. Default is FALSE.
@@ -1154,6 +1164,7 @@ do_rf <- function(olink_data,
                                "auc",
                                "features",
                                "top-features"),
+                  varimp_yaxis_names = FALSE,
                   nfeatures = 9,
                   points = T,
                   boxplot_xaxis_names = FALSE,
@@ -1227,7 +1238,8 @@ do_rf <- function(olink_data,
                               testfit_res$mixture,
                               palette = palette,
                               vline = vline,
-                              subtitle)
+                              subtitle = subtitle,
+                              yaxis_names = varimp_yaxis_names)
 
   top_features <- var_imp_res$features |>
     dplyr::arrange(dplyr::desc(Scaled_Importance)) |>
