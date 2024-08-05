@@ -7,12 +7,13 @@
 do_pca(
   olink_data,
   metadata = NULL,
+  pcs = 5,
   color = "Disease",
   palette = NULL,
   wide = TRUE,
   impute = TRUE,
   plots = TRUE,
-  pcs = 4,
+  npcs = 4,
   nproteins = 8,
   save = FALSE
 )
@@ -21,6 +22,8 @@ do_pca(
 \item{olink_data}{A tibble with the data to be used in the PCA analysis.}
 
 \item{metadata}{A tibble with metadata information to be used in the PCA plots. Default is NULL.}
+
+\item{pcs}{The number of PCs to be calculated. Default is 5.}
 
 \item{color}{The name of the column in \code{metadata} that contains the variable.
 to be used to plot the points color. Default is "Disease".}
@@ -33,7 +36,7 @@ to be used to plot the points color. Default is "Disease".}
 
 \item{plots}{If TRUE, the function creates plots of the PCA results. Default is TRUE.}
 
-\item{pcs}{The number of PCs to be plotted. Default is 4.}
+\item{npcs}{The number of PCs to be plotted. Default is 4.}
 
 \item{nproteins}{The number of proteins to be plotted. Default is 8.}
 
@@ -57,6 +60,7 @@ and the explained variance. It can also save the plots in the results directory.
 \examples{
 do_pca(example_data,
        metadata = example_metadata,
+       pcs = 10,
        wide = FALSE,
        color = "Disease",
        palette = "cancers12")
