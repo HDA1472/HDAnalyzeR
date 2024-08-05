@@ -6,15 +6,15 @@ utils::globalVariables(c("terms", "value", "component", "positive"))
 #' is indicated by the color of the bars.
 #'
 #' @param tidied_res A tibble with the results of the PCA analysis.
-#' @param pcs The number of PCs to be plotted. Default is 4.
+#' @param npcs The number of PCs to be plotted. Default is 4.
 #' @param nproteins The number of proteins to be plotted. Default is 8.
 #'
 #' @return A PCA loadings ggplot object.
 #' @keywords internal
-plot_loadings <- function(tidied_res, pcs = 4, nproteins = 8) {
+plot_loadings <- function(tidied_res, npcs = 4, nproteins = 8) {
 
   p <- tidied_res |>
-    dplyr::filter(component %in% paste0("PC", 1:pcs)) |>
+    dplyr::filter(component %in% paste0("PC", 1:npcs)) |>
     dplyr::group_by(component) |>
     dplyr::top_n(nproteins, abs(value)) |>
     dplyr::ungroup() |>
@@ -108,13 +108,14 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
 #'
 #' @param olink_data A tibble with the data to be used in the PCA analysis.
 #' @param metadata A tibble with metadata information to be used in the PCA plots. Default is NULL.
+#' @param pcs The number of PCs to be calculated. Default is 5.
 #' @param color The name of the column in `metadata` that contains the variable.
 #' to be used to plot the points color. Default is "Disease".
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
 #' @param wide If TRUE, the data is assumed to be in wide format. Default is TRUE.
 #' @param impute If TRUE, the data is imputed before the PCA analysis. Default is TRUE.
 #' @param plots If TRUE, the function creates plots of the PCA results. Default is TRUE.
-#' @param pcs The number of PCs to be plotted. Default is 4.
+#' @param npcs The number of PCs to be plotted. Default is 4.
 #' @param nproteins The number of proteins to be plotted. Default is 8.
 #' @param save If TRUE, the plots are saved in the results directory. Default is FALSE.
 #'
@@ -129,17 +130,19 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
 #' @examples
 #' do_pca(example_data,
 #'        metadata = example_metadata,
+#'        pcs = 8,
 #'        wide = FALSE,
 #'        color = "Disease",
 #'        palette = "cancers12")
 do_pca <- function(olink_data,
                    metadata = NULL,
+                   pcs = 5,
                    color = "Disease",
                    palette = NULL,
                    wide = TRUE,
                    impute = TRUE,
                    plots = TRUE,
-                   pcs = 4,
+                   npcs = 4,
                    nproteins = 8,
                    save = FALSE) {
 
@@ -155,7 +158,7 @@ do_pca <- function(olink_data,
       recipes::update_role(DAid, new_role = "id")  |>
       recipes::step_normalize(recipes::all_predictors()) |>
       recipes::step_impute_knn(recipes::all_predictors(), neighbors = 5) |>
-      recipes::step_pca(recipes::all_predictors())
+      recipes::step_pca(recipes::all_predictors(), num_comp = pcs)
 
     pca_prep <- recipes::prep(pca_rec)
 
@@ -187,8 +190,10 @@ do_pca <- function(olink_data,
 
   # Visualize results
   if (isTRUE(plots)) {
-    pca_plot <- plot_dim_reduction(pca_res, "PC1", "PC2", metadata, color, palette)
-    loadings_plot <- plot_loadings(tidied_pca, pcs, nproteins)
+    comp1 <- names(pca_res)[2]
+    comp2 <- names(pca_res)[3]
+    pca_plot <- plot_dim_reduction(pca_res, comp1, comp2, metadata, color, palette)
+    loadings_plot <- plot_loadings(tidied_pca, npcs, nproteins)
     variance_plot <- plot_explained_variance(explained_variance)
 
     if (isTRUE(save)) {

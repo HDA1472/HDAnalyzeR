@@ -4,12 +4,12 @@
 \alias{plot_loadings}
 \title{Plot PCA loadings}
 \usage{
-plot_loadings(tidied_res, pcs = 4, nproteins = 8)
+plot_loadings(tidied_res, npcs = 4, nproteins = 8)
 }
 \arguments{
 \item{tidied_res}{A tibble with the results of the PCA analysis.}
 
-\item{pcs}{The number of PCs to be plotted. Default is 4.}
+\item{npcs}{The number of PCs to be plotted. Default is 4.}
 
 \item{nproteins}{The number of proteins to be plotted. Default is 8.}
 }
