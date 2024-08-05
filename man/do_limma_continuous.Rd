@@ -17,38 +17,41 @@ do_limma_continuous(
   top_up_prot = 40,
   top_down_prot = 10,
   palette = "diff_exp",
-  subtitle = TRUE,
+  report_nproteins = TRUE,
+  subtitle = NULL,
   save = FALSE
 )
 }
 \arguments{
-\item{olink_data}{(tibble). A tibble with the Olink data in wide format.}
+\item{olink_data}{A tibble with the Olink data in wide format.}
 
-\item{metadata}{(tibble). A tibble with the metadata.}
+\item{metadata}{A tibble with the metadata.}
 
-\item{variable}{(character). The variable of interest.}
+\item{variable}{The variable of interest.}
 
-\item{correct}{(character). The variables to correct the results with. Default is c("Sex").}
+\item{correct}{The variables to correct the results with. Default is c("Sex").}
 
-\item{correct_type}{(character). The type of the variables to correct the results with. Default is c("factor").}
+\item{correct_type}{The type of the variables to correct the results with. Default is c("factor").}
 
-\item{wide}{(logical). If the data is in wide format. Default is TRUE.}
+\item{wide}{If the data is in wide format. Default is TRUE.}
 
-\item{volcano}{(logical). Generate volcano plots. Default is TRUE.}
+\item{volcano}{Generate volcano plots. Default is TRUE.}
 
-\item{pval_lim}{(numeric). The p-value limit for significance. Default is 0.05.}
+\item{pval_lim}{The p-value limit for significance. Default is 0.05.}
 
-\item{logfc_lim}{(numeric). The logFC limit for significance. Default is 0.}
+\item{logfc_lim}{The logFC limit for significance. Default is 0.}
 
-\item{top_up_prot}{(numeric). The number of top up regulated proteins to label on the plot. Default is 40.}
+\item{top_up_prot}{The number of top up regulated proteins to label on the plot. Default is 40.}
 
-\item{top_down_prot}{(numeric). The number of top down regulated proteins to label on the plot. Default is 10.}
+\item{top_down_prot}{The number of top down regulated proteins to label on the plot. Default is 10.}
 
-\item{palette}{(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "diff_exp".}
+\item{palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "diff_exp".}
 
-\item{subtitle}{(logical). If the subtitle should be displayed. Default is TRUE.}
+\item{report_nproteins}{If the number of significant proteins should be reported in the subtitle. Default is TRUE.}
 
-\item{save}{(logical). Save the volcano plots. Default is FALSE.}
+\item{subtitle}{The subtitle of the plot or NULL for no subtitle.}
+
+\item{save}{Save the volcano plots. Default is FALSE.}
 }
 \value{
 A list with the differential expression results and volcano plots.
