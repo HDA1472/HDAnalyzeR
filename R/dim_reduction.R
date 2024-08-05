@@ -33,6 +33,29 @@ plot_loadings <- function(tidied_res, pcs = 4, nproteins = 8) {
 }
 
 
+#' Plot explained variance and cumulative explained variance
+#'
+#' `plot_explained_variance()` plots the explained variance and cumulative explained variance.
+#'
+#' @param explained_variance A tibble with the explained variance and cumulative explained variance.
+#'
+#' @return A ggplot object
+#' @keywords internal
+plot_explained_variance <- function(explained_variance) {
+
+  variance_plot <- ggplot2::ggplot(
+    explained_variance,
+    ggplot2::aes(x = factor(component, levels = component),
+                 y = explained_variance)
+    ) +
+    ggplot2::geom_bar(stat = "identity", fill = "darkblue") +
+    ggplot2::geom_line(ggplot2::aes(y = cumulative_variance, group = 1), color = "red3") +
+    ggplot2::geom_point(ggplot2::aes(y = cumulative_variance), color = "red3") +
+    ggplot2::labs(x = "Components", y = "Explained Variance") +
+    theme_hpa()
+
+  return(variance_plot)
+}
 #' Plot sample data points in a two-dimensional plane.
 #'
 #' `plot_dim_reduction()` plots the sample data points in a two-dimensional plane.
@@ -80,8 +103,8 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
 #' Run PCA analysis
 #'
 #' `do_pca()` runs a PCA analysis on the provided data. The function can visualize
-#' the sample points on the first and second PC plane as well as the PCA loadings.
-#' It can also save the plots in the results directory.
+#' the sample points on the first and second PC plane as well as the PCA loadings
+#' and the explained variance. It can also save the plots in the results directory.
 #'
 #' @param olink_data A tibble with the data to be used in the PCA analysis.
 #' @param metadata A tibble with metadata information to be used in the PCA plots. Default is NULL.
@@ -100,13 +123,11 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
 #'   - loadings: A tibble with the PCA loadings.
 #'   - pca_plot: A ggplot object with the data points on the 1st and 2nd PCs plane.
 #'   - loadings_plot: A PCA loadings ggplot object.
+#'   - variance_plot: A ggplot object with the explained variance and cumulative explained variance.
 #' @export
 #'
 #' @examples
-#' test_data <- example_data |> dplyr::select(DAid, Assay, NPX)
-#'
-#' # Run PCA analysis
-#' do_pca(test_data,
+#' do_pca(example_data,
 #'        metadata = example_metadata,
 #'        wide = FALSE,
 #'        color = "Disease",
@@ -156,23 +177,31 @@ do_pca <- function(olink_data,
 
   pca_res <-  recipes::juice(pca_prep)
 
+  # Extract the explained variance and calculate cumulative explained variance
+  explained_variance <- pca_res |>
+    dplyr::summarise(dplyr::across(dplyr::starts_with("PC"), var)) |>
+    tidyr::pivot_longer(cols = dplyr::everything(), names_to = "component", values_to = "explained_variance")
+
+  explained_variance <- explained_variance |>
+    dplyr::mutate(cumulative_variance = cumsum(explained_variance))
+
+  # Visualize results
   if (isTRUE(plots)) {
     pca_plot <- plot_dim_reduction(pca_res, "PC1", "PC2", metadata, color, palette)
     loadings_plot <- plot_loadings(tidied_pca, pcs, nproteins)
+    variance_plot <- plot_explained_variance(explained_variance)
 
     if (isTRUE(save)) {
       dir_name <- create_dir("results/pca_plots", date = T)
       ggplot2::ggsave(pca_plot, filename = paste0(dir_name, "/pca_plot.png"), width = 10, height = 8)
       ggplot2::ggsave(loadings_plot, filename = paste0(dir_name, "/loadings_plot.png"), width = 10, height = 8)
+      ggplot2::ggsave(variance_plot, filename = paste0(dir_name, "/variance_plot.png"), width = 10, height = 8)
     }
-    return(
-      list(
-        "pca_res" = pca_res,
-        "loadings" = loadings_data,
-        "pca_plot" = pca_plot,
-        "loadings_plot" = loadings_plot
-      )
-    )
+    return(list("pca_res" = pca_res,
+                "loadings" = loadings_data,
+                "pca_plot" = pca_plot,
+                "loadings_plot" = loadings_plot,
+                "variance_plot" = variance_plot))
   } else {
     return(list("pca_res" = pca_res, "loadings" = loadings_data))
   }
@@ -201,10 +230,7 @@ do_pca <- function(olink_data,
 #' @export
 #'
 #' @examples
-#' test_data <- example_data |> dplyr::select(DAid, Assay, NPX)
-#'
-#' # Run UMAP analysis
-#' do_umap(test_data,
+#' do_umap(example_data,
 #'        metadata = example_metadata,
 #'        wide = FALSE,
 #'        color = "Sex",
