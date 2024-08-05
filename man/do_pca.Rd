@@ -60,7 +60,7 @@ and the explained variance. It can also save the plots in the results directory.
 \examples{
 do_pca(example_data,
        metadata = example_metadata,
-       pcs = 10,
+       pcs = 8,
        wide = FALSE,
        color = "Disease",
        palette = "cancers12")
