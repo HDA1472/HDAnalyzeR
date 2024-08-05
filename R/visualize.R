@@ -9,6 +9,7 @@ utils::globalVariables(c("Value"))
 #' @param proteins The proteins to include in the boxplot.
 #' @param disease The disease to annotate.
 #' @param points Whether to add points to the boxplot.
+#' @param xaxis_names Whether to show the x-axis names. Default is FALSE.
 #' @param palette The color palette to use. Default is "red3" for the annotated disease.
 #'
 #' @return The boxplot panel with the selected proteins.
@@ -25,7 +26,8 @@ utils::globalVariables(c("Value"))
 plot_protein_boxplot <- function(join_data,
                                  proteins,
                                  disease,
-                                 points = T,
+                                 points = TRUE,
+                                 xaxis_names = FALSE,
                                  palette = NULL) {
 
   # Prepare palettes
@@ -41,13 +43,13 @@ plot_protein_boxplot <- function(join_data,
 
   long_data <- join_data |>
     dplyr::select(Disease, dplyr::all_of(proteins)) |>
-    tidyr::pivot_longer(cols = !Disease, names_to = "Protein", values_to = "Value")
+    tidyr::pivot_longer(cols = !Disease, names_to = "Protein", values_to = "NPX")
 
   long_data$Protein <- factor(long_data$Protein, levels = proteins, labels = proteins)
 
   # Create boxplot
   boxplot <- long_data |>
-    ggplot2::ggplot(ggplot2::aes(x = Disease, y = Value)) +
+    ggplot2::ggplot(ggplot2::aes(x = Disease, y = NPX)) +
     ggplot2::geom_boxplot(outlier.shape = NA) +
     ggplot2::geom_boxplot(data = subset(long_data, Disease == disease),
                           ggplot2::aes(fill = Disease),
@@ -86,7 +88,14 @@ plot_protein_boxplot <- function(join_data,
     ggplot2::scale_fill_manual(values = pal) +
     ggplot2::xlab('') +
     ggplot2::theme_classic() +
-    ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90))
+
+  if (isFALSE(xaxis_names)) {
+    boxplot_panel <- boxplot_panel +
+      ggplot2::theme(axis.text.x = ggplot2::element_blank())
+  }
+
+  boxplot_panel <- boxplot_panel +
     ggplot2::facet_wrap(~ Protein, scale="free_y")
 
   return(boxplot_panel)
