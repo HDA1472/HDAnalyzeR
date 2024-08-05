@@ -85,7 +85,6 @@ do_limma_de <- function(join_data,
   cols <- c("control", "case", correct)
   cols <- cols[!is.null(cols)]
   colnames(design) <- paste(cols)
-
   contrast <- limma::makeContrasts(Diff = case - control, levels = design)
 
   # Fit linear model to each protein assay
@@ -292,7 +291,8 @@ do_ttest_de <- function(long_data,
 #' @param top_down_prot The number of top down regulated proteins to label on the plot. Default is 10.
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
 #' @param title The title of the plot or NULL for no title.
-#' @param subtitle If the subtitle should be displayed. Default is TRUE.
+#' @param report_nproteins If the number of significant proteins should be reported in the subtitle. Default is TRUE.
+#' @param subtitle The subtitle of the plot or NULL for no subtitle.
 #'
 #' @return A ggplot object with the volcano plot.
 #' @keywords internal
@@ -303,7 +303,8 @@ plot_volcano <- function(de_result,
                          top_down_prot = 10,
                          palette = "diff_exp",
                          title = NULL,
-                         subtitle = TRUE) {
+                         report_nproteins = TRUE,
+                         subtitle = NULL) {
 
   top.sig.down <- de_result |>
     dplyr::filter(adj.P.Val < pval_lim & logFC < -logfc_lim) |>
@@ -338,10 +339,24 @@ plot_volcano <- function(de_result,
     if (!is.null(title)) {
       p <- p + ggplot2::ggtitle(label = paste0(title, ""))
     }
-    if (isTRUE(subtitle)) {
+  subtitle_text <- ""
+    if (isTRUE(report_nproteins)) {
+
+    subtitle_text = paste0("Num significant up = ", num.sig.up,
+                           "\nNum significant down = ", num.sig.down)
+    }
+    if (!is.null(subtitle)) {
+      if (subtitle_text != "") {
+        subtitle_text = paste0(subtitle_text, "\n", subtitle)
+      } else {
+        subtitle_text = subtitle
+      }
       p <- p + ggplot2::ggtitle(label = paste0(title, ""),
                                 subtitle = paste0("Num significant up = ", num.sig.up,
                                                   "\nNum significant down = ", num.sig.down))
+    }
+    if (subtitle_text != "") {
+      p <- p + ggplot2::ggtitle(label = paste0(title, ""), subtitle = subtitle_text)
     }
     if (is.null(names(palette))) {
       p <- p + scale_color_hpa(palette)
@@ -377,7 +392,8 @@ plot_volcano <- function(de_result,
 #' @param top_up_prot The number of top up regulated proteins to label on the plot. Default is 40.
 #' @param top_down_prot The number of top down regulated proteins to label on the plot. Default is 10.
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
-#' @param subtitle If the subtitle should be displayed. Default is TRUE.
+#' @param report_nproteins If the number of significant proteins should be reported in the subtitle. Default is TRUE.
+#' @param subtitle The subtitle of the plot or NULL for no subtitle.
 #' @param save Save the volcano plots. Default is FALSE.
 #'
 #' @return A list with the differential expression results and volcano plots.
@@ -416,7 +432,8 @@ do_limma <- function(olink_data,
                      top_up_prot = 40,
                      top_down_prot = 10,
                      palette = "diff_exp",
-                     subtitle = TRUE,
+                     report_nproteins = TRUE,
+                     subtitle = NULL,
                      save = FALSE) {
 
   message(paste0("Comparing ", case, " with ", paste(control, collapse = ", "), "."))
@@ -458,6 +475,7 @@ do_limma <- function(olink_data,
                                  top_down_prot,
                                  palette,
                                  case,
+                                 report_nproteins,
                                  subtitle)
 
     if (isTRUE(save)) {
@@ -478,20 +496,21 @@ do_limma <- function(olink_data,
 #' This function runs differential expression analysis using limma for a continuous variable.
 #' It can generate and save volcano plots.
 #'
-#' @param olink_data (tibble). A tibble with the Olink data in wide format.
-#' @param metadata (tibble). A tibble with the metadata.
-#' @param variable (character). The variable of interest.
-#' @param correct (character). The variables to correct the results with. Default is c("Sex").
-#' @param correct_type (character). The type of the variables to correct the results with. Default is c("factor").
-#' @param wide (logical). If the data is in wide format. Default is TRUE.
-#' @param volcano (logical). Generate volcano plots. Default is TRUE.
-#' @param pval_lim (numeric). The p-value limit for significance. Default is 0.05.
-#' @param logfc_lim (numeric). The logFC limit for significance. Default is 0.
-#' @param top_up_prot (numeric). The number of top up regulated proteins to label on the plot. Default is 40.
-#' @param top_down_prot (numeric). The number of top down regulated proteins to label on the plot. Default is 10.
-#' @param palette (character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
-#' @param subtitle (logical). If the subtitle should be displayed. Default is TRUE.
-#' @param save (logical). Save the volcano plots. Default is FALSE.
+#' @param olink_data A tibble with the Olink data in wide format.
+#' @param metadata A tibble with the metadata.
+#' @param variable The variable of interest.
+#' @param correct The variables to correct the results with. Default is c("Sex").
+#' @param correct_type The type of the variables to correct the results with. Default is c("factor").
+#' @param wide If the data is in wide format. Default is TRUE.
+#' @param volcano Generate volcano plots. Default is TRUE.
+#' @param pval_lim The p-value limit for significance. Default is 0.05.
+#' @param logfc_lim The logFC limit for significance. Default is 0.
+#' @param top_up_prot The number of top up regulated proteins to label on the plot. Default is 40.
+#' @param top_down_prot The number of top down regulated proteins to label on the plot. Default is 10.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
+#' @param report_nproteins If the number of significant proteins should be reported in the subtitle. Default is TRUE.
+#' @param subtitle The subtitle of the plot or NULL for no subtitle.
+#' @param save Save the volcano plots. Default is FALSE.
 #'
 #' @return A list with the differential expression results and volcano plots.
 #'   - de_results: A list with the differential expression results.
@@ -512,7 +531,8 @@ do_limma_continuous <- function(olink_data,
                                 top_up_prot = 40,
                                 top_down_prot = 10,
                                 palette = "diff_exp",
-                                subtitle = TRUE,
+                                report_nproteins = TRUE,
+                                subtitle = NULL,
                                 save = FALSE) {
 
   # Prepare Olink data and merge them with metadata
@@ -546,6 +566,7 @@ do_limma_continuous <- function(olink_data,
                                   top_down_prot,
                                   palette,
                                   variable,
+                                  report_nproteins,
                                   subtitle)
 
     if (isTRUE(save)) {
@@ -581,7 +602,8 @@ do_limma_continuous <- function(olink_data,
 #' @param top_up_prot The number of top up regulated proteins to label on the plot. Default is 40.
 #' @param top_down_prot The number of top down regulated proteins to label on the plot. Default is 10.
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
-#' @param subtitle If the subtitle should be displayed. Default is TRUE.
+#' @param report_nproteins If the number of significant proteins should be reported in the subtitle. Default is TRUE.
+#' @param subtitle The subtitle of the plot or NULL for no subtitle.
 #' @param save Save the volcano plots. Default is FALSE.
 #'
 #' @return A list with the differential expression results and volcano plots.
@@ -615,7 +637,8 @@ do_ttest <- function(olink_data,
                      top_up_prot = 40,
                      top_down_prot = 10,
                      palette = "diff_exp",
-                     subtitle = TRUE,
+                     report_nproteins = TRUE,
+                     subtitle = NULL,
                      save = FALSE) {
 
   # Prepare Olink data and merge them with metadata
@@ -665,6 +688,7 @@ do_ttest <- function(olink_data,
                                  top_down_prot,
                                  palette,
                                  case,
+                                 report_nproteins,
                                  subtitle)
 
     if (isTRUE(save)) {

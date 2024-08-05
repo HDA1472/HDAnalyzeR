@@ -21,7 +21,8 @@ do_limma(
   top_up_prot = 40,
   top_down_prot = 10,
   palette = "diff_exp",
-  subtitle = TRUE,
+  report_nproteins = TRUE,
+  subtitle = NULL,
   save = FALSE
 )
 }
@@ -58,7 +59,9 @@ do_limma(
 
 \item{palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "diff_exp".}
 
-\item{subtitle}{If the subtitle should be displayed. Default is TRUE.}
+\item{report_nproteins}{If the number of significant proteins should be reported in the subtitle. Default is TRUE.}
+
+\item{subtitle}{The subtitle of the plot or NULL for no subtitle.}
 
 \item{save}{Save the volcano plots. Default is FALSE.}
 }

@@ -12,7 +12,8 @@ plot_volcano(
   top_down_prot = 10,
   palette = "diff_exp",
   title = NULL,
-  subtitle = TRUE
+  report_nproteins = TRUE,
+  subtitle = NULL
 )
 }
 \arguments{
@@ -30,7 +31,9 @@ plot_volcano(
 
 \item{title}{The title of the plot or NULL for no title.}
 
-\item{subtitle}{If the subtitle should be displayed. Default is TRUE.}
+\item{report_nproteins}{If the number of significant proteins should be reported in the subtitle. Default is TRUE.}
+
+\item{subtitle}{The subtitle of the plot or NULL for no subtitle.}
 }
 \value{
 A ggplot object with the volcano plot.
