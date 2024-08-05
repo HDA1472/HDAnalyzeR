@@ -46,10 +46,7 @@ the sample points on the first and second UMAP plane. It can also save the plots
 in the results directory.
 }
 \examples{
-test_data <- example_data |> dplyr::select(DAid, Assay, NPX)
-
-# Run UMAP analysis
-do_umap(test_data,
+do_umap(example_data,
        metadata = example_metadata,
        wide = FALSE,
        color = "Sex",

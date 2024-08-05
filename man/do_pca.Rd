@@ -46,18 +46,16 @@ A list with the PCA results and, if requested, the PCA plots.
 \item loadings: A tibble with the PCA loadings.
 \item pca_plot: A ggplot object with the data points on the 1st and 2nd PCs plane.
 \item loadings_plot: A PCA loadings ggplot object.
+\item variance_plot: A ggplot object with the explained variance and cumulative explained variance.
 }
 }
 \description{
 \code{do_pca()} runs a PCA analysis on the provided data. The function can visualize
-the sample points on the first and second PC plane as well as the PCA loadings.
-It can also save the plots in the results directory.
+the sample points on the first and second PC plane as well as the PCA loadings
+and the explained variance. It can also save the plots in the results directory.
 }
 \examples{
-test_data <- example_data |> dplyr::select(DAid, Assay, NPX)
-
-# Run PCA analysis
-do_pca(test_data,
+do_pca(example_data,
        metadata = example_metadata,
        wide = FALSE,
        color = "Disease",
