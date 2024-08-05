@@ -59,9 +59,9 @@ reference:
   desc: |
     Functions that run Machine Learning classification model pipelines.
   contents:
-  - do_elnet
+  - do_rreg
   - do_rf
-  - do_elnet_multi
+  - do_rreg_multi
   - do_rf_multi
 - subtitle: Visualize Results
   desc: |
