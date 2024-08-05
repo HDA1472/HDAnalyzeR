@@ -905,9 +905,9 @@ plot_var_imp <- function (finalfit_res,
 }
 
 
-#' Elastic net classification model pipeline
+#' Regularized classification model pipeline
 #'
-#' `do_elnet()` runs the elastic net classification model pipeline. It splits the
+#' `do_rreg()` runs the regularized classification model pipeline. It splits the
 #' data into training and test sets, creates class-balanced case-control groups,
 #' and fits the model. It also performs hyperparameter optimization, fits the best
 #' model, tests it, and plots useful the feature variable importance.
@@ -947,44 +947,44 @@ plot_var_imp <- function (finalfit_res,
 #' missing values, KNN imputation will be applied.
 #'
 #' @examples
-#' do_elnet(example_data,
-#'          example_metadata,
-#'          "AML",
-#'          c("CLL", "MYEL"),
-#'          balance_groups = TRUE,
-#'          wide = FALSE,
-#'          type = "elnet",
-#'          palette = "cancers12",
-#'          cv_sets = 5,
-#'          grid_size = 20,
-#'          ncores = 1)
-do_elnet <- function(olink_data,
-                     metadata,
-                     case,
-                     control,
-                     wide = TRUE,
-                     balance_groups = TRUE,
-                     only_female = NULL,
-                     only_male = NULL,
-                     exclude_cols = "Sex",
-                     ratio = 0.75,
-                     type = "lasso",
-                     cv_sets = 5,
-                     grid_size = 10,
-                     ncores = 4,
-                     hypopt_vis = TRUE,
-                     palette = NULL,
-                     vline = TRUE,
-                     subtitle = c("accuracy",
-                                  "sensitivity",
-                                  "specificity",
-                                  "auc",
-                                  "features",
-                                  "top-features",
-                                  "mixture"),
-                     nfeatures = 9,
-                     points = T,
-                     seed = 123) {
+#' do_rreg(example_data,
+#'         example_metadata,
+#'         "AML",
+#'         c("CLL", "MYEL"),
+#'         balance_groups = TRUE,
+#'         wide = FALSE,
+#'         type = "elnet",
+#'         palette = "cancers12",
+#'         cv_sets = 5,
+#'         grid_size = 20,
+#'         ncores = 1)
+do_rreg <- function(olink_data,
+                    metadata,
+                    case,
+                    control,
+                    wide = TRUE,
+                    balance_groups = TRUE,
+                    only_female = NULL,
+                    only_male = NULL,
+                    exclude_cols = "Sex",
+                    ratio = 0.75,
+                    type = "lasso",
+                    cv_sets = 5,
+                    grid_size = 10,
+                    ncores = 4,
+                    hypopt_vis = TRUE,
+                    palette = NULL,
+                    vline = TRUE,
+                    subtitle = c("accuracy",
+                                 "sensitivity",
+                                 "specificity",
+                                 "auc",
+                                 "features",
+                                 "top-features",
+                                 "mixture"),
+                    nfeatures = 9,
+                    points = T,
+                    seed = 123) {
 
   # Prepare datasets
   if (isFALSE(wide)) {
@@ -1252,7 +1252,7 @@ do_rf <- function(olink_data,
 #' top or all protein features, as well as a summary line plot of the model
 #' performance metrics.
 #'
-#' @param ml_results Results from `do_elnet()` or `do_rf()`.
+#' @param ml_results Results from `do_rreg()` or `do_rf()`.
 #' @param importance Importance threshold for top features. Default is 50.
 #' @param upset_top_features Whether to plot the upset plot for the top features. Default is FALSE.
 #' @param disease_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
@@ -1266,37 +1266,38 @@ do_rf <- function(olink_data,
 #'
 #' @examples
 #' # Run the elastic net model pipeline for 3 different cases
-#' res_aml <- do_elnet(example_data,
-#'                     example_metadata,
-#'                     "AML",
-#'                     c("BRC", "PRC"),
-#'                     wide = FALSE,
-#'                     only_female = "BRC",
-#'                     only_male = "PRC",
-#'                     cv_sets = 2,
-#'                     grid_size = 1,
-#'                     ncores = 1)
+#' res_aml <- do_rreg(example_data,
+#'                    example_metadata,
+#'                    "AML",
+#'                    c("BRC", "PRC"),
+#'                    wide = FALSE,
+#'                    only_female = "BRC",
+#'                    only_male = "PRC",
+#'                    cv_sets = 2,
+#'                    grid_size = 1,
+#'                    ncores = 1)
 #'
-#' res_brc <- do_elnet(example_data,
-#'                     example_metadata,
-#'                     "BRC",
-#'                     c("BRC", "AML"),
-#'                     wide = FALSE,
-#'                     only_female = "BRC",
-#'                     only_male = "PRC",
-#'                     cv_sets = 2,
-#'                     grid_size = 1,
-#'                     ncores = 1)
-#' res_prc <- do_elnet(example_data,
-#'                     example_metadata,
-#'                     "PRC",
-#'                     c("BRC", "AML"),
-#'                     wide = FALSE,
-#'                     only_female = "BRC",
-#'                     only_male = "PRC",
-#'                     cv_sets = 2,
-#'                     grid_size = 1,
-#'                     ncores = 1)
+#' res_brc <- do_rreg(example_data,
+#'                    example_metadata,
+#'                    "BRC",
+#'                    c("BRC", "AML"),
+#'                    wide = FALSE,
+#'                    only_female = "BRC",
+#'                    only_male = "PRC",
+#'                    cv_sets = 2,
+#'                    grid_size = 1,
+#'                    ncores = 1)
+#'
+#' res_prc <- do_rreg(example_data,
+#'                    example_metadata,
+#'                    "PRC",
+#'                    c("BRC", "AML"),
+#'                    wide = FALSE,
+#'                    only_female = "BRC",
+#'                    only_male = "PRC",
+#'                    cv_sets = 2,
+#'                    grid_size = 1,
+#'                    ncores = 1)
 #'
 #' # Combine the results
 #' res <- list("AML" = res_aml,
@@ -1422,9 +1423,9 @@ plot_features_summary <- function(ml_results,
 }
 
 
-#' Elastic net multiclassification model pipeline
+#' Regularized multiclassification model pipeline
 #'
-#' `do_elnet_multi()` runs the elastic net multiclassification model pipeline. It splits the
+#' `do_rreg_multi()` runs the regularized multiclassification model pipeline. It splits the
 #' data into training and test sets, creates class-balanced case-control groups,
 #' and fits the model. It performs hyperparameter optimization and fits the best
 #' model. It also plots the ROC curve and the AUC barplot for each class.
@@ -1452,25 +1453,25 @@ plot_features_summary <- function(ml_results,
 #'
 #' @details If the data contain missing values, KNN imputation will be applied.
 #' @examples
-#' do_elnet_multi(example_data,
-#'                example_metadata,
-#'                wide = FALSE,
-#'                palette = "cancers12",
-#'                cv_sets = 5,
-#'                grid_size = 5,
-#'                ncores = 1)
-do_elnet_multi <- function(olink_data,
-                           metadata,
-                           wide = TRUE,
-                           exclude_cols = "Sex",
-                           ratio = 0.75,
-                           type = "lasso",
-                           cv_sets = 5,
-                           grid_size = 10,
-                           ncores = 4,
-                           hypopt_vis = TRUE,
-                           palette = NULL,
-                           seed = 123) {
+#' do_rreg_multi(example_data,
+#'               example_metadata,
+#'               wide = FALSE,
+#'               palette = "cancers12",
+#'               cv_sets = 5,
+#'               grid_size = 5,
+#'               ncores = 1)
+do_rreg_multi <- function(olink_data,
+                          metadata,
+                          wide = TRUE,
+                          exclude_cols = "Sex",
+                          ratio = 0.75,
+                          type = "lasso",
+                          cv_sets = 5,
+                          grid_size = 10,
+                          ncores = 4,
+                          hypopt_vis = TRUE,
+                          palette = NULL,
+                          seed = 123) {
 
   # Prepare datasets
   if (isFALSE(wide)) {

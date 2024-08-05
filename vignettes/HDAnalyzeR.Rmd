@@ -209,23 +209,23 @@ plot_de_summary(de_res, disease_palette = "cancers12")
 In addition to differential expression analysis, we will use a Lasso machine learning classification model to identify significant features. This model will help us understand which proteins are most predictive of the conditions being studied. Once again, we will present only the results for AML, BRC and, PRC.
 
 ```{r}
-lasso_res_aml <- do_elnet(imputed_data, 
-                          clean_metadata, 
-                          case = "AML",
-                          control = c("BRC", "PRC"),
-                          only_female = "BRC",
-                          only_male = "PRC",
-                          exclude_cols = c("Sex", "Age"),
-                          type = "lasso",
-                          palette = "cancers12",
-                          subtitle = c("accuracy", 
-                                       "sensitivity", 
-                                       "specificity", 
-                                       "auc", 
-                                       "features",
-                                       "top-features"),
-                          nfeatures = 12,
-                          points = FALSE)
+lasso_res_aml <- do_rreg(imputed_data, 
+                         clean_metadata, 
+                         case = "AML",
+                         control = c("BRC", "PRC"),
+                         only_female = "BRC",
+                         only_male = "PRC",
+                         exclude_cols = c("Sex", "Age"),
+                         type = "lasso",
+                         palette = "cancers12",
+                         subtitle = c("accuracy", 
+                                      "sensitivity", 
+                                      "specificity", 
+                                      "auc", 
+                                      "features",
+                                      "top-features"),
+                         nfeatures = 12,
+                         points = FALSE)
 
 lasso_res_aml$hypopt_res$hypopt_vis
 
@@ -239,23 +239,23 @@ lasso_res_aml$boxplot_res
 ```
 
 ```{r}
-lasso_res_brc <- do_elnet(imputed_data, 
-                          clean_metadata, 
-                          case = "BRC",
-                          control = c("AML", "PRC"),
-                          only_female = "BRC",
-                          only_male = "PRC",
-                          exclude_cols = c("Sex", "Age"),
-                          type = "lasso",
-                          palette = "cancers12",
-                          subtitle = c("accuracy", 
-                                       "sensitivity", 
-                                       "specificity", 
-                                       "auc", 
-                                       "features",
-                                       "top-features"),
-                          nfeatures = 12,
-                          points = FALSE)
+lasso_res_brc <- do_rreg(imputed_data, 
+                         clean_metadata, 
+                         case = "BRC",
+                         control = c("AML", "PRC"),
+                         only_female = "BRC",
+                         only_male = "PRC",
+                         exclude_cols = c("Sex", "Age"),
+                         type = "lasso",
+                         palette = "cancers12",
+                         subtitle = c("accuracy", 
+                                      "sensitivity", 
+                                      "specificity", 
+                                      "auc", 
+                                      "features",
+                                      "top-features"),
+                         nfeatures = 12,
+                         points = FALSE)
 
 lasso_res_brc$hypopt_res$hypopt_vis
 
@@ -269,23 +269,23 @@ lasso_res_brc$boxplot_res
 ```
 
 ```{r}
-lasso_res_prc <- do_elnet(imputed_data, 
-                          clean_metadata, 
-                          case = "PRC",
-                          control = c("BRC", "AML"),
-                          only_female = "BRC",
-                          only_male = "PRC",
-                          exclude_cols = c("Sex", "Age"),
-                          type = "lasso",
-                          palette = "cancers12",
-                          subtitle = c("accuracy", 
-                                       "sensitivity", 
-                                       "specificity", 
-                                       "auc", 
-                                       "features",
-                                       "top-features"),
-                          nfeatures = 12,
-                          points = FALSE)
+lasso_res_prc <- do_rreg(imputed_data, 
+                         clean_metadata, 
+                         case = "PRC",
+                         control = c("BRC", "AML"),
+                         only_female = "BRC",
+                         only_male = "PRC",
+                         exclude_cols = c("Sex", "Age"),
+                         type = "lasso",
+                         palette = "cancers12",
+                         subtitle = c("accuracy", 
+                                      "sensitivity", 
+                                      "specificity", 
+                                      "auc", 
+                                      "features",
+                                      "top-features"),
+                         nfeatures = 12,
+                         points = FALSE)
 
 lasso_res_prc$hypopt_res$hypopt_vis
 

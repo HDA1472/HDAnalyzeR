@@ -13,7 +13,7 @@ plot_features_summary(
 )
 }
 \arguments{
-\item{ml_results}{Results from \code{do_elnet()} or \code{do_rf()}.}
+\item{ml_results}{Results from \code{do_rreg()} or \code{do_rf()}.}
 
 \item{importance}{Importance threshold for top features. Default is 50.}
 
@@ -39,37 +39,38 @@ performance metrics.
 }
 \examples{
 # Run the elastic net model pipeline for 3 different cases
-res_aml <- do_elnet(example_data,
-                    example_metadata,
-                    "AML",
-                    c("BRC", "PRC"),
-                    wide = FALSE,
-                    only_female = "BRC",
-                    only_male = "PRC",
-                    cv_sets = 2,
-                    grid_size = 1,
-                    ncores = 1)
+res_aml <- do_rreg(example_data,
+                   example_metadata,
+                   "AML",
+                   c("BRC", "PRC"),
+                   wide = FALSE,
+                   only_female = "BRC",
+                   only_male = "PRC",
+                   cv_sets = 2,
+                   grid_size = 1,
+                   ncores = 1)
 
-res_brc <- do_elnet(example_data,
-                    example_metadata,
-                    "BRC",
-                    c("BRC", "AML"),
-                    wide = FALSE,
-                    only_female = "BRC",
-                    only_male = "PRC",
-                    cv_sets = 2,
-                    grid_size = 1,
-                    ncores = 1)
-res_prc <- do_elnet(example_data,
-                    example_metadata,
-                    "PRC",
-                    c("BRC", "AML"),
-                    wide = FALSE,
-                    only_female = "BRC",
-                    only_male = "PRC",
-                    cv_sets = 2,
-                    grid_size = 1,
-                    ncores = 1)
+res_brc <- do_rreg(example_data,
+                   example_metadata,
+                   "BRC",
+                   c("BRC", "AML"),
+                   wide = FALSE,
+                   only_female = "BRC",
+                   only_male = "PRC",
+                   cv_sets = 2,
+                   grid_size = 1,
+                   ncores = 1)
+
+res_prc <- do_rreg(example_data,
+                   example_metadata,
+                   "PRC",
+                   c("BRC", "AML"),
+                   wide = FALSE,
+                   only_female = "BRC",
+                   only_male = "PRC",
+                   cv_sets = 2,
+                   grid_size = 1,
+                   ncores = 1)
 
 # Combine the results
 res <- list("AML" = res_aml,
