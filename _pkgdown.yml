@@ -92,6 +92,7 @@ reference:
   desc: |
     Functions that customize the appearance of your plots.
   contents:
+  - get_hpa_palettes
   - scale_color_hpa
   - scale_fill_hpa
   - theme_hpa
