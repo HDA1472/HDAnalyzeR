@@ -4,7 +4,14 @@
 \alias{plot_protein_boxplot}
 \title{Plot protein boxplots}
 \usage{
-plot_protein_boxplot(join_data, proteins, disease, points = T, palette = NULL)
+plot_protein_boxplot(
+  join_data,
+  proteins,
+  disease,
+  points = TRUE,
+  xaxis_names = FALSE,
+  palette = NULL
+)
 }
 \arguments{
 \item{join_data}{The dataset with the wide Olink data joined with the metadata.}
@@ -14,6 +21,8 @@ plot_protein_boxplot(join_data, proteins, disease, points = T, palette = NULL)
 \item{disease}{The disease to annotate.}
 
 \item{points}{Whether to add points to the boxplot.}
+
+\item{xaxis_names}{Whether to show the x-axis names. Default is FALSE.}
 
 \item{palette}{The color palette to use. Default is "red3" for the annotated disease.}
 }

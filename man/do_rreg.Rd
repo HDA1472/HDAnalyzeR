@@ -26,6 +26,7 @@ do_rreg(
     "top-features", "mixture"),
   nfeatures = 9,
   points = T,
+  boxplot_xaxis_names = FALSE,
   seed = 123
 )
 }
@@ -69,6 +70,8 @@ do_rreg(
 \item{nfeatures}{Number of top features to include in the boxplot. Default is 9.}
 
 \item{points}{Whether to add points to the boxplot. Default is TRUE.}
+
+\item{boxplot_xaxis_names}{Whether to add x-axis names to the boxplot. Default is FALSE.}
 
 \item{seed}{Seed for reproducibility. Default is 123.}
 }

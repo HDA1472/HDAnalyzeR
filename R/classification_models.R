@@ -932,6 +932,7 @@ plot_var_imp <- function (finalfit_res,
 #' @param subtitle Vector of subtitle elements to include in the plot. Default is a list with all.
 #' @param nfeatures Number of top features to include in the boxplot. Default is 9.
 #' @param points Whether to add points to the boxplot. Default is TRUE.
+#' @param boxplot_xaxis_names Whether to add x-axis names to the boxplot. Default is FALSE.
 #' @param seed Seed for reproducibility. Default is 123.
 #'
 #' @return A list with results for each disease. The list contains:
@@ -984,6 +985,7 @@ do_rreg <- function(olink_data,
                                  "mixture"),
                     nfeatures = 9,
                     points = T,
+                    boxplot_xaxis_names = FALSE,
                     seed = 123) {
 
   # Prepare datasets
@@ -1067,6 +1069,7 @@ do_rreg <- function(olink_data,
                                       proteins,
                                       case,
                                       points,
+                                      xaxis_names = boxplot_xaxis_names,
                                       palette)
 
   return(list("hypopt_res" = hypopt_res,
@@ -1103,6 +1106,7 @@ do_rreg <- function(olink_data,
 #' @param subtitle Vector of subtitle elements to include in the plot. Default is a list with all.
 #' @param nfeatures Number of top features to include in the boxplot. Default is 9.
 #' @param points Whether to add points to the boxplot. Default is TRUE.
+#' @param boxplot_xaxis_names Whether to add x-axis names to the boxplot. Default is FALSE.
 #' @param seed Seed for reproducibility. Default is 123.
 #'
 #' @return A list with results for each disease. The list contains:
@@ -1152,6 +1156,7 @@ do_rf <- function(olink_data,
                                "top-features"),
                   nfeatures = 9,
                   points = T,
+                  boxplot_xaxis_names = FALSE,
                   seed = 123) {
 
   # Prepare datasets
@@ -1235,6 +1240,7 @@ do_rf <- function(olink_data,
                                       proteins,
                                       case,
                                       points,
+                                      xaxis_names = boxplot_xaxis_names,
                                       palette)
 
   return(list("hypopt_res" = hypopt_res,
