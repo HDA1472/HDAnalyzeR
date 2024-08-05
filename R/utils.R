@@ -53,9 +53,9 @@ create_dir <- function(dir_name, date = FALSE) {
 }
 
 
-#' Save tibble as CSV, TSV, or RDA file
+#' Save tibble as CSV, TSV, Excel or RDA file
 #'
-#' `save_df()` saves a dataframe in the specified format (CSV, TSV, or RDA) in a
+#' `save_df()` saves a dataframe in the specified format (csv, tsv, rda, or xlsx) in a
 #' specified directory. If the directory does not exist, it will be created.
 #' The recommended file type is RDA.
 #'
@@ -63,7 +63,7 @@ create_dir <- function(dir_name, date = FALSE) {
 #' @param file_name The name of the file to save.
 #' @param dir_name The directory where the file will be saved.
 #' @param date If TRUE, a directory with the current date as name will be created in the directory with `dir_name`.
-#' @param file_type The type of file to save the dataframe as. Options are "csv", "tsv", or "rda".
+#' @param file_type The type of file to save the dataframe as. Options are "csv", "tsv", "rda", or "xlsx".
 #'
 #' @return NULL
 #' @export
@@ -74,9 +74,9 @@ create_dir <- function(dir_name, date = FALSE) {
 #'
 #' file.exists("my_data/metadata.rda")  # Check if the file exists
 #' unlink("my_data", recursive = TRUE)  # Clean up the created directory
-save_df <- function(df, file_name, dir_name, date = FALSE, file_type = c("csv", "tsv", "rda")) {
+save_df <- function(df, file_name, dir_name, date = FALSE, file_type = c("csv", "tsv", "rda", "xlsx")) {
 
-  valid_file_types <- c("csv", "tsv", "rda")
+  valid_file_types <- c("csv", "tsv", "rda", "xlsx")
 
   if (!file_type %in% valid_file_types) {
     stop("Unsupported file type: ", file_type)
@@ -93,6 +93,8 @@ save_df <- function(df, file_name, dir_name, date = FALSE, file_type = c("csv", 
     utils::write.table(df, file_path, sep = "\t", row.names = FALSE, col.names = TRUE)
   } else if (file_type == "rda") {
     save(df, file = file_path)
+  } else if (file_type == "xlsx") {
+    writexl::write_xlsx(df, file_path)
   }
 
   invisible(NULL)
