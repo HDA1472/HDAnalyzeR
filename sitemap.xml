@@ -15,8 +15,6 @@
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/correlate.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/create_corr_heatmap.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/create_dir.html</loc></url>
-<url><loc>https://hda1472.github.io/DA_RPackage/reference/do_elnet.html</loc></url>
-<url><loc>https://hda1472.github.io/DA_RPackage/reference/do_elnet_multi.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/do_gsea.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/do_limma.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/do_limma_continuous.html</loc></url>
@@ -26,6 +24,8 @@
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/do_pca.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/do_rf.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/do_rf_multi.html</loc></url>
+<url><loc>https://hda1472.github.io/DA_RPackage/reference/do_rreg.html</loc></url>
+<url><loc>https://hda1472.github.io/DA_RPackage/reference/do_rreg_multi.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/do_ttest.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/do_ttest_de.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/do_umap.html</loc></url>
@@ -50,6 +50,7 @@
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/normalize_data.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_de_summary.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_dim_reduction.html</loc></url>
+<url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_explained_variance.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_features_summary.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_gsea.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_loadings.html</loc></url>

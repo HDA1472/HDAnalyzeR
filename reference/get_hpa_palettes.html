@@ -63,9 +63,62 @@
 
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list of color palettes.</p>
+    <p>List of HPA color palettes.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">get_hpa_palettes</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $sex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      F      M </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  "red" "blue" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $sex_hpa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         F         M </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "#8a72be" "#A9D0EF" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $diff_exp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  not significant significant down   significant up </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           "grey"           "blue"            "red" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cancers12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       AML       CLL     LYMPH      MYEL       CRC     LUNGC     GLIOM       BRC </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "#A6CEE3" "#2271B5" "#08585A" "#66C2A5" "#B89B74" "#ADC74F" "#FFD321" "#E8A29A" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       CVX      ENDC       OVC       PRC </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "#9E0142" "#B195AE" "#603479" "#E7662B" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cancers15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       AML       CLL     LYMPH      MYEL       CRC     LUNGC     GLIOM       BRC </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "#A6CEE3" "#2271B5" "#08585A" "#66C2A5" "#B89B74" "#ADC74F" "#FFD321" "#E8A29A" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       CVX      ENDC       OVC       PRC      MENI    SI-NET   PIT-NET </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "#9E0142" "#B195AE" "#603479" "#E7662B" "#FFFF80" "#504538" "#FFFF00" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $secreted</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      Secreted to blood                      Secreted in brain </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              "#B30000"                              "#FFDD00" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Secreted to digestive system   Secreted in male reproductive system </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              "#1280C4"                              "#95D4F5" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Secreted in female reproductive system       Secreted to extracellular matrix </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              "#F8BDD7"                              "#7F6A9C" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Secreted in other tissues            Secreted - unknown location </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              "#FFD480"                              "#A1A8AA" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             Intracellular and membrane                                Unknown </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              "#F9A266"                               "grey80" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $specificity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Tissue enriched         Group enriched        Tissue enhanced </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              "#e41a1c"              "#FF9D00"              "#984ea3" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Low tissue specificity          not detected  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               "grey40"                 "grey" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $class</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Healthy Cardiovascular      Metabolic         Cancer    Psychiatric </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      "#B3B3B3"      "#FC8D62"      "#E5C494"      "#8DA0CB"      "#66C2A5" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Autoimmune      Infection      Pediatric </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      "#E78AC3"      "#FFD92F"      "#A6D854" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

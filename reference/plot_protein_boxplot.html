@@ -64,7 +64,14 @@ It is also possible to add points to the boxplot.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_protein_boxplot</span><span class="op">(</span><span class="va">join_data</span>, <span class="va">proteins</span>, <span class="va">disease</span>, points <span class="op">=</span> <span class="cn">T</span>, palette <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_protein_boxplot</span><span class="op">(</span></span>
+<span>  <span class="va">join_data</span>,</span>
+<span>  <span class="va">proteins</span>,</span>
+<span>  <span class="va">disease</span>,</span>
+<span>  points <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  xaxis_names <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  palette <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -85,6 +92,10 @@ It is also possible to add points to the boxplot.</p>
 
 <dt id="arg-points">points<a class="anchor" aria-label="anchor" href="#arg-points"></a></dt>
 <dd><p>Whether to add points to the boxplot.</p></dd>
+
+
+<dt id="arg-xaxis-names">xaxis_names<a class="anchor" aria-label="anchor" href="#arg-xaxis-names"></a></dt>
+<dd><p>Whether to show the x-axis names. Default is FALSE.</p></dd>
 
 
 <dt id="arg-palette">palette<a class="anchor" aria-label="anchor" href="#arg-palette"></a></dt>

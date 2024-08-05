@@ -74,7 +74,8 @@ It can generate and save volcano plots.</p>
 <span>  top_up_prot <span class="op">=</span> <span class="fl">40</span>,</span>
 <span>  top_down_prot <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  palette <span class="op">=</span> <span class="st">"diff_exp"</span>,</span>
-<span>  subtitle <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  report_nproteins <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  subtitle <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  save <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -84,59 +85,63 @@ It can generate and save volcano plots.</p>
 
 
 <dl><dt id="arg-olink-data">olink_data<a class="anchor" aria-label="anchor" href="#arg-olink-data"></a></dt>
-<dd><p>(tibble). A tibble with the Olink data in wide format.</p></dd>
+<dd><p>A tibble with the Olink data in wide format.</p></dd>
 
 
 <dt id="arg-metadata">metadata<a class="anchor" aria-label="anchor" href="#arg-metadata"></a></dt>
-<dd><p>(tibble). A tibble with the metadata.</p></dd>
+<dd><p>A tibble with the metadata.</p></dd>
 
 
 <dt id="arg-variable">variable<a class="anchor" aria-label="anchor" href="#arg-variable"></a></dt>
-<dd><p>(character). The variable of interest.</p></dd>
+<dd><p>The variable of interest.</p></dd>
 
 
 <dt id="arg-correct">correct<a class="anchor" aria-label="anchor" href="#arg-correct"></a></dt>
-<dd><p>(character). The variables to correct the results with. Default is c("Sex").</p></dd>
+<dd><p>The variables to correct the results with. Default is c("Sex").</p></dd>
 
 
 <dt id="arg-correct-type">correct_type<a class="anchor" aria-label="anchor" href="#arg-correct-type"></a></dt>
-<dd><p>(character). The type of the variables to correct the results with. Default is c("factor").</p></dd>
+<dd><p>The type of the variables to correct the results with. Default is c("factor").</p></dd>
 
 
 <dt id="arg-wide">wide<a class="anchor" aria-label="anchor" href="#arg-wide"></a></dt>
-<dd><p>(logical). If the data is in wide format. Default is TRUE.</p></dd>
+<dd><p>If the data is in wide format. Default is TRUE.</p></dd>
 
 
 <dt id="arg-volcano">volcano<a class="anchor" aria-label="anchor" href="#arg-volcano"></a></dt>
-<dd><p>(logical). Generate volcano plots. Default is TRUE.</p></dd>
+<dd><p>Generate volcano plots. Default is TRUE.</p></dd>
 
 
 <dt id="arg-pval-lim">pval_lim<a class="anchor" aria-label="anchor" href="#arg-pval-lim"></a></dt>
-<dd><p>(numeric). The p-value limit for significance. Default is 0.05.</p></dd>
+<dd><p>The p-value limit for significance. Default is 0.05.</p></dd>
 
 
 <dt id="arg-logfc-lim">logfc_lim<a class="anchor" aria-label="anchor" href="#arg-logfc-lim"></a></dt>
-<dd><p>(numeric). The logFC limit for significance. Default is 0.</p></dd>
+<dd><p>The logFC limit for significance. Default is 0.</p></dd>
 
 
 <dt id="arg-top-up-prot">top_up_prot<a class="anchor" aria-label="anchor" href="#arg-top-up-prot"></a></dt>
-<dd><p>(numeric). The number of top up regulated proteins to label on the plot. Default is 40.</p></dd>
+<dd><p>The number of top up regulated proteins to label on the plot. Default is 40.</p></dd>
 
 
 <dt id="arg-top-down-prot">top_down_prot<a class="anchor" aria-label="anchor" href="#arg-top-down-prot"></a></dt>
-<dd><p>(numeric). The number of top down regulated proteins to label on the plot. Default is 10.</p></dd>
+<dd><p>The number of top down regulated proteins to label on the plot. Default is 10.</p></dd>
 
 
 <dt id="arg-palette">palette<a class="anchor" aria-label="anchor" href="#arg-palette"></a></dt>
-<dd><p>(character or vector). The color palette for the plot. If it is a character, it should be one of the palettes from <code><a href="get_hpa_palettes.html">get_hpa_palettes()</a></code>. Default is "diff_exp".</p></dd>
+<dd><p>The color palette for the plot. If it is a character, it should be one of the palettes from <code><a href="get_hpa_palettes.html">get_hpa_palettes()</a></code>. Default is "diff_exp".</p></dd>
+
+
+<dt id="arg-report-nproteins">report_nproteins<a class="anchor" aria-label="anchor" href="#arg-report-nproteins"></a></dt>
+<dd><p>If the number of significant proteins should be reported in the subtitle. Default is TRUE.</p></dd>
 
 
 <dt id="arg-subtitle">subtitle<a class="anchor" aria-label="anchor" href="#arg-subtitle"></a></dt>
-<dd><p>(logical). If the subtitle should be displayed. Default is TRUE.</p></dd>
+<dd><p>The subtitle of the plot or NULL for no subtitle.</p></dd>
 
 
 <dt id="arg-save">save<a class="anchor" aria-label="anchor" href="#arg-save"></a></dt>
-<dd><p>(logical). Save the volcano plots. Default is FALSE.</p></dd>
+<dd><p>Save the volcano plots. Default is FALSE.</p></dd>
 
 </dl></div>
     <div class="section level2">
