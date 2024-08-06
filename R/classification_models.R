@@ -172,6 +172,7 @@ vis_hypopt <- function(tune_res,
 #' @param test_data Testing data set from `make_groups()`.
 #' @param disease Disease to predict.
 #' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
 #' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
 #' @param ncores Number of cores to use for parallel processing. Default is 4.
@@ -190,6 +191,7 @@ elnet_hypopt <- function(train_data,
                          test_data,
                          disease,
                          type = "lasso",
+                         cor_threshold = 0.9,
                          cv_sets = 5,
                          grid_size = 10,
                          ncores = 4,
@@ -217,7 +219,7 @@ elnet_hypopt <- function(train_data,
     recipes::update_role(DAid, new_role = "id") |>
     recipes::step_normalize(recipes::all_numeric()) |>
     recipes::step_nzv(recipes::all_numeric()) |>
-    recipes::step_corr(recipes::all_numeric()) |>
+    recipes::step_corr(recipes::all_numeric(), threshold = cor_threshold) |>
     recipes::step_impute_knn(recipes::all_numeric())
 
   if (type == "elnet") {
@@ -292,6 +294,8 @@ elnet_hypopt <- function(train_data,
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
 #' @param disease Disease to predict.
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
+#' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
 #' @param grid_size Size of the grid for hyperparameter optimization. Default is 10.
 #' @param ncores Number of cores to use for parallel processing. Default is 4.
@@ -309,6 +313,8 @@ elnet_hypopt <- function(train_data,
 rf_hypopt <- function(train_data,
                       test_data,
                       disease,
+                      cor_threshold = 0.9,
+                      normalize = TRUE,
                       cv_sets = 5,
                       grid_size = 10,
                       ncores = 4,
@@ -336,10 +342,15 @@ rf_hypopt <- function(train_data,
     dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))
 
   rf_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
-    recipes::update_role(DAid, new_role = "id") |>
-    recipes::step_normalize(recipes::all_numeric()) |>
+    recipes::update_role(DAid, new_role = "id")
+
+  if (isTRUE(normalize)) {
+    rf_rec <- rf_rec |> recipes::step_normalize(recipes::all_numeric())
+  }
+
+  rf_rec <- rf_rec |>
     recipes::step_nzv(recipes::all_numeric()) |>
-    recipes::step_corr(recipes::all_numeric()) |>
+    recipes::step_corr(recipes::all_numeric(), threshold = cor_threshold) |>
     recipes::step_impute_knn(recipes::all_numeric())
 
   rf_spec <- parsnip::rand_forest(
@@ -400,6 +411,7 @@ rf_hypopt <- function(train_data,
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
 #' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
 #' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
 #' @param ncores Number of cores to use for parallel processing. Default is 4.
@@ -418,6 +430,7 @@ rf_hypopt <- function(train_data,
 elnet_hypopt_multi <- function(train_data,
                                test_data,
                                type = "lasso",
+                               cor_threshold = 0.9,
                                cv_sets = 5,
                                grid_size = 10,
                                ncores = 4,
@@ -443,7 +456,7 @@ elnet_hypopt_multi <- function(train_data,
     recipes::update_role(DAid, new_role = "id") |>
     recipes::step_normalize(recipes::all_numeric()) |>
     recipes::step_nzv(recipes::all_numeric()) |>
-    recipes::step_corr(recipes::all_numeric()) |>
+    recipes::step_corr(recipes::all_numeric(), threshold = cor_threshold) |>
     recipes::step_impute_knn(recipes::all_numeric())
 
   if (type == "elnet") {
@@ -517,6 +530,8 @@ elnet_hypopt_multi <- function(train_data,
 #'
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
+#' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
 #' @param grid_size Size of the grid for hyperparameter optimization. Default is 10.
 #' @param ncores Number of cores to use for parallel processing. Default is 4.
@@ -533,6 +548,8 @@ elnet_hypopt_multi <- function(train_data,
 #' @keywords internal
 rf_hypopt_multi <- function(train_data,
                             test_data,
+                            cor_threshold = 0.9,
+                            normalize = TRUE,
                             cv_sets = 5,
                             grid_size = 10,
                             ncores = 4,
@@ -558,10 +575,15 @@ rf_hypopt_multi <- function(train_data,
     dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))
 
   rf_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
-    recipes::update_role(DAid, new_role = "id") |>
-    recipes::step_normalize(recipes::all_numeric()) |>
+    recipes::update_role(DAid, new_role = "id")
+
+  if (isTRUE(normalize)) {
+    rf_rec <- rf_rec |> recipes::step_normalize(recipes::all_numeric())
+  }
+
+  rf_rec <- rf_rec |>
     recipes::step_nzv(recipes::all_numeric()) |>
-    recipes::step_corr(recipes::all_numeric()) |>
+    recipes::step_corr(recipes::all_numeric(), threshold = cor_threshold) |>
     recipes::step_impute_knn(recipes::all_numeric())
 
   rf_spec <- parsnip::rand_forest(
@@ -929,6 +951,7 @@ plot_var_imp <- function (finalfit_res,
 #' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is "Sex".
 #' @param ratio Ratio of training data to test data. Default is 0.75.
 #' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
 #' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
 #' @param ncores Number of cores to use for parallel processing. Default is 4.
@@ -952,7 +975,8 @@ plot_var_imp <- function (finalfit_res,
 #' @details The metadata should contain only the samples included in the case
 #' and control groups. For example, if the data include group 1, 2, and 3, 1 is the
 #' case and 2 is the control group, the 3 should be filtered out. If the data contain
-#' missing values, KNN imputation will be applied.
+#' missing values, KNN imputation will be applied. If no check for feature correlation
+#' is preferred, set `cor_threshold` to 1.
 #'
 #' @examples
 #' do_rreg(example_data,
@@ -977,6 +1001,7 @@ do_rreg <- function(olink_data,
                     exclude_cols = "Sex",
                     ratio = 0.75,
                     type = "lasso",
+                    cor_threshold = 0.9,
                     cv_sets = 5,
                     grid_size = 10,
                     ncores = 4,
@@ -1034,6 +1059,7 @@ do_rreg <- function(olink_data,
                              test_list,
                              case,
                              type,
+                             cor_threshold,
                              cv_sets,
                              grid_size,
                              ncores,
@@ -1106,6 +1132,8 @@ do_rreg <- function(olink_data,
 #' @param only_male Vector of diseases that are male specific. Default is NULL.
 #' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is "Sex".
 #' @param ratio Ratio of training data to test data. Default is 0.75.
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
+#' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
 #' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
 #' @param ncores Number of cores to use for parallel processing. Default is 4.
@@ -1129,7 +1157,8 @@ do_rreg <- function(olink_data,
 #' @details The metadata should contain only the samples included in the case
 #' and control groups. For example, if the data include group 1, 2, and 3, 1 is the
 #' case and 2 is the control group, the 3 should be filtered out. If the data contain
-#' missing values, KNN imputation will be applied.
+#' missing values, KNN imputation will be applied. If no check for feature correlation
+#' is preferred, set `cor_threshold` to 1.
 #'
 #' @examples
 #' do_rf(example_data,
@@ -1152,6 +1181,8 @@ do_rf <- function(olink_data,
                   only_male = NULL,
                   exclude_cols = "Sex",
                   ratio = 0.75,
+                  cor_threshold = 0.9,
+                  normalize = TRUE,
                   cv_sets = 5,
                   grid_size = 10,
                   ncores = 4,
@@ -1208,6 +1239,8 @@ do_rf <- function(olink_data,
   hypopt_res <- rf_hypopt(train_list,
                           test_list,
                           case,
+                          cor_threshold,
+                          normalize,
                           cv_sets,
                           grid_size,
                           ncores,
@@ -1454,6 +1487,7 @@ plot_features_summary <- function(ml_results,
 #' @param exclude_cols Columns to exclude from the data before the model is tuned.
 #' @param ratio Ratio of training data to test data. Default is 0.75.
 #' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
 #' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
 #' @param ncores Number of cores to use for parallel processing. Default is 4.
@@ -1470,6 +1504,7 @@ plot_features_summary <- function(ml_results,
 #' @export
 #'
 #' @details If the data contain missing values, KNN imputation will be applied.
+#' If no check for feature correlation is preferred, set `cor_threshold` to 1.
 #' @examples
 #' do_rreg_multi(example_data,
 #'               example_metadata,
@@ -1484,6 +1519,7 @@ do_rreg_multi <- function(olink_data,
                           exclude_cols = "Sex",
                           ratio = 0.75,
                           type = "lasso",
+                          cor_threshold = 0.9,
                           cv_sets = 5,
                           grid_size = 10,
                           ncores = 4,
@@ -1513,6 +1549,7 @@ do_rreg_multi <- function(olink_data,
   hypopt_res <- elnet_hypopt_multi(train_list,
                                    test_list,
                                    type,
+                                   cor_threshold,
                                    cv_sets,
                                    grid_size,
                                    ncores,
@@ -1607,6 +1644,8 @@ do_rreg_multi <- function(olink_data,
 #' @param wide Whether the data is wide format. Default is TRUE.
 #' @param exclude_cols Columns to exclude from the data before the model is tuned.
 #' @param ratio Ratio of training data to test data. Default is 0.75.
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
+#' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
 #' @param grid_size Size of the hyperparameter optimization grid. Default is 10.
 #' @param ncores Number of cores to use for parallel processing. Default is 4.
@@ -1623,6 +1662,7 @@ do_rreg_multi <- function(olink_data,
 #' @export
 #'
 #' @details If the data contain missing values, KNN imputation will be applied.
+#' If no check for feature correlation is preferred, set `cor_threshold` to 1.
 #' @examples
 #' do_rf_multi(example_data,
 #'             example_metadata,
@@ -1636,6 +1676,8 @@ do_rf_multi <- function(olink_data,
                         wide = TRUE,
                         exclude_cols = "Sex",
                         ratio = 0.75,
+                        cor_threshold = 0.9,
+                        normalize = TRUE,
                         cv_sets = 5,
                         grid_size = 10,
                         ncores = 4,
@@ -1664,6 +1706,8 @@ do_rf_multi <- function(olink_data,
   # Run model
   hypopt_res <- rf_hypopt_multi(train_list,
                                 test_list,
+                                cor_threshold,
+                                normalize,
                                 cv_sets,
                                 grid_size,
                                 ncores,

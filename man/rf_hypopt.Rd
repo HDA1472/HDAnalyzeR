@@ -8,6 +8,8 @@ rf_hypopt(
   train_data,
   test_data,
   disease,
+  cor_threshold = 0.9,
+  normalize = TRUE,
   cv_sets = 5,
   grid_size = 10,
   ncores = 4,
@@ -22,6 +24,10 @@ rf_hypopt(
 \item{test_data}{Testing data set from \code{make_groups()}.}
 
 \item{disease}{Disease to predict.}
+
+\item{cor_threshold}{Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.}
+
+\item{normalize}{Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.}
 
 \item{cv_sets}{Number of cross-validation sets. Default is 5.}
 
