@@ -59,7 +59,7 @@ clean_data <- function(df_in,
                     TRUE
                   }) |>
     dplyr::filter(if ("Cohort" %in% colnames(df_in)) {
-                    isFALSE(cohort) | Cohort %in% cohort
+                    is.null(cohort) | Cohort %in% cohort
                   } else {
                     TRUE
                   }) |>
@@ -77,7 +77,8 @@ clean_data <- function(df_in,
 
     if (!is.null(remove_na_cols)) {
       rows_before <- nrow(df_out)
-      df_out <- stats::na.omit(df_out, target.colnames = remove_na_cols)
+      df_out <- df_out |>
+        dplyr::filter(dplyr::if_any(dplyr::all_of(remove_na_cols), ~!is.na(.)))
       rows_after <- nrow(df_out)
       if (rows_before != rows_after) {
         message("Removed ", rows_before - rows_after, " rows with NAs based on ", remove_na_cols)
@@ -122,8 +123,8 @@ clean_metadata <- function(df_in,
   }
 
   if (!is.null(remove_na_cols)) {
-    rows_before <- nrow(df_out)
-    df_out <- stats::na.omit(df_out, target.colnames = remove_na_cols)
+    rows_before <- nrow(df_out) |>
+      dplyr::filter(dplyr::if_any(dplyr::all_of(remove_na_cols), ~!is.na(.)))
     rows_after <- nrow(df_out)
     if (rows_before != rows_after) {
       message("Removed ", rows_before - rows_after, " rows with NAs based on ", remove_na_cols)
@@ -152,7 +153,7 @@ clean_metadata <- function(df_in,
 #'
 #' @examples
 #' # Preprocess data and metadata
-#' clean_data <- clean_data(example_data, keep_cols = c("DAid", "Assay", "NPX"))
+#' clean_data <- clean_data(example_data)
 #' clean_metadata <- clean_metadata(example_metadata,
 #'                                  keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"))
 #'
