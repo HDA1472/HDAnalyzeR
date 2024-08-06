@@ -50,8 +50,12 @@ example_data <- example_data |>
         grepl("_44$", Sample) | grepl("_45$", Sample) |
         grepl("_46$", Sample) | grepl("_47$", Sample) | grepl("_48$", Sample) |
         grepl("_49$", Sample) | grepl("_50$", Sample) ~ "Run005"
+    ),
+    Cohort = dplyr::case_when(
+        grepl("BRC_", Sample) | grepl("PRC_", Sample) | grepl("OVC_", Sample) |
+          grepl("CVX_", Sample) | grepl("ENDC_", Sample) ~ "Gender_specific",
+        grepl("AML_", Sample) | grepl("CLL_", Sample) | grepl("CRC_", Sample) |
+          grepl("GLIOM_", Sample) | grepl("LUNGC_", Sample) | grepl("MYEL_", Sample)
+          ~ "UCAN"
     )
   )
-
-# example_data <- example_data %>%
-#   dplyr::mutate(LOD = seq(-11.0, 5.0, length.out = dplyr::n()))

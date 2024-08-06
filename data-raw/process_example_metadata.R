@@ -12,10 +12,6 @@ example_metadata <- example_df |>
   dplyr::mutate(
     Age = round(runif(dplyr::n(), min = 40, max = 90)),
     BMI = round(runif(dplyr::n(), min = 20, max = 35), 1),
-    Cohort = dplyr::case_when(
-      GROUP %in% c("BRC", "CVX", "ENDC", "OVC", "PRC") ~ "Gender_specific",
-      TRUE ~ "UCAN"
-    ),
     Sex = dplyr::case_match(Sex, "Female" ~ "F", "Male" ~ "M", .default = Sex)
   ) |>
   dplyr::rename(Disease = GROUP)

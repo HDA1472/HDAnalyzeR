@@ -30,11 +30,9 @@ test_that("clean_data excludes specified plates", {
 
 test_that("clean_data filters by cohort", {
   # Add Cohort column to filter based on
-  example_data_cohort <- example_data |>
-    dplyr::mutate(Cohort = rep(c("A", "B"), length.out = dplyr::n()))
-  result <- clean_data(example_data_cohort, cohort = "A")
-  expected <- example_data_cohort |>
-    dplyr::filter(Cohort %in% "A") |>
+  result <- clean_data(example_data, cohort = "UCAN")
+  expected <- example_data |>
+    dplyr::filter(Cohort %in% "UCAN") |>
     dplyr::select(DAid, Assay, NPX)
   expect_equal(result, expected)
 })
@@ -62,12 +60,10 @@ test_that("clean_data handles non-existent columns gracefully", {
 
 test_that("clean_data handles all parameters together", {
   # Add Cohort column
-  example_data_cohort <- example_data |>
-    dplyr::mutate(Cohort = rep(c("A", "B"), length.out = dplyr::n()))
-  result <- clean_data(example_data_cohort, cohort = "A", filter_plates = "P2",
+  result <- clean_data(example_data, cohort = "UCAN", filter_plates = "P2",
                        filter_assay_warning = T)
-  expected <- example_data_cohort |>
-    dplyr::filter(Cohort %in% "A" & !(PlateID %in% "P2") & Assay_Warning == "PASS") |>
+  expected <- example_data |>
+    dplyr::filter(Cohort %in% "UCAN" & !(PlateID %in% "P2") & Assay_Warning == "PASS") |>
     dplyr::select(DAid, Assay, NPX)
   expect_equal(result, expected)
 })

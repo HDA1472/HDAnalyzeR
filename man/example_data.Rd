@@ -5,7 +5,7 @@
 \alias{example_data}
 \title{Cancer cohort Olink data}
 \format{
-A tibble with 56,142 rows and 10 columns:
+A tibble with 56,142 rows and 11 columns:
 \describe{
 \item{DAid}{The Disease Atlas sample ID}
 \item{Sample}{The Sample ID}
@@ -17,6 +17,7 @@ A tibble with 56,142 rows and 10 columns:
 \item{Assay_Warning}{The Assay warning status for the sample}
 \item{QC_Warning}{The QC warning status for the sample}
 \item{PlateID}{The ID of the plate where the sample was processed}
+\item{Cohort}{The cohort the patient belongs to}
 }
 }
 \source{
@@ -27,7 +28,7 @@ example_data
 }
 \description{
 A data subset from a synthetic cancer dataset keeping the first 100 Assays.
-DAid, Assay_Warning, QC_Warning, and PlateID have been added as extra columns.
+DAid, Assay_Warning, QC_Warning, PlateID, and Cohort have been added as extra columns.
 The original dataset was processed with the \code{process_example_data} script.
 }
 \examples{
