@@ -55,7 +55,7 @@ example_data <- example_data |>
         grepl("BRC_", Sample) | grepl("PRC_", Sample) | grepl("OVC_", Sample) |
           grepl("CVX_", Sample) | grepl("ENDC_", Sample) ~ "Gender_specific",
         grepl("AML_", Sample) | grepl("CLL_", Sample) | grepl("CRC_", Sample) |
-          grepl("GLIOM_", Sample) | grepl("LUNGC_", Sample) | grepl("MYEL_", Sample)
-          ~ "UCAN"
+          grepl("GLIOM_", Sample) | grepl("LUNGC_", Sample) | grepl("MYEL_", Sample) |
+          grepl("LYMPH_", Sample) ~ "UCAN"
     )
   )
