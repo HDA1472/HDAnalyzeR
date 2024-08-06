@@ -8,6 +8,7 @@ elnet_hypopt_multi(
   train_data,
   test_data,
   type = "lasso",
+  cor_threshold = 0.9,
   cv_sets = 5,
   grid_size = 10,
   ncores = 4,
@@ -22,6 +23,8 @@ elnet_hypopt_multi(
 \item{test_data}{Testing data set from \code{make_groups()}.}
 
 \item{type}{Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
+
+\item{cor_threshold}{Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.}
 
 \item{cv_sets}{Number of cross-validation sets. Default is 5.}
 

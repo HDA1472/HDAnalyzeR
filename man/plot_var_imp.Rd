@@ -13,7 +13,7 @@ plot_var_imp(
   auc,
   mixture,
   palette = NULL,
-  vline = T,
+  vline = TRUE,
   subtitle = c("accuracy", "sensitivity", "specificity", "auc", "features",
     "top-features", "mixture"),
   yaxis_names = FALSE

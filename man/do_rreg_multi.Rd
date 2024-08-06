@@ -11,6 +11,7 @@ do_rreg_multi(
   exclude_cols = "Sex",
   ratio = 0.75,
   type = "lasso",
+  cor_threshold = 0.9,
   cv_sets = 5,
   grid_size = 10,
   ncores = 4,
@@ -31,6 +32,8 @@ do_rreg_multi(
 \item{ratio}{Ratio of training data to test data. Default is 0.75.}
 
 \item{type}{Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
+
+\item{cor_threshold}{Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.}
 
 \item{cv_sets}{Number of cross-validation sets. Default is 5.}
 
@@ -62,6 +65,7 @@ model. It also plots the ROC curve and the AUC barplot for each class.
 }
 \details{
 If the data contain missing values, KNN imputation will be applied.
+If no check for feature correlation is preferred, set \code{cor_threshold} to 1.
 }
 \examples{
 do_rreg_multi(example_data,

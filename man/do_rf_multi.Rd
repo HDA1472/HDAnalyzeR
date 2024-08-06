@@ -10,6 +10,8 @@ do_rf_multi(
   wide = TRUE,
   exclude_cols = "Sex",
   ratio = 0.75,
+  cor_threshold = 0.9,
+  normalize = TRUE,
   cv_sets = 5,
   grid_size = 10,
   ncores = 4,
@@ -28,6 +30,10 @@ do_rf_multi(
 \item{exclude_cols}{Columns to exclude from the data before the model is tuned.}
 
 \item{ratio}{Ratio of training data to test data. Default is 0.75.}
+
+\item{cor_threshold}{Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.}
+
+\item{normalize}{Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.}
 
 \item{cv_sets}{Number of cross-validation sets. Default is 5.}
 
@@ -59,6 +65,7 @@ model. It also plots the ROC curve and the AUC barplot for each class.
 }
 \details{
 If the data contain missing values, KNN imputation will be applied.
+If no check for feature correlation is preferred, set \code{cor_threshold} to 1.
 }
 \examples{
 do_rf_multi(example_data,

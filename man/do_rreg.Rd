@@ -16,6 +16,7 @@ do_rreg(
   exclude_cols = "Sex",
   ratio = 0.75,
   type = "lasso",
+  cor_threshold = 0.9,
   cv_sets = 5,
   grid_size = 10,
   ncores = 4,
@@ -26,7 +27,7 @@ do_rreg(
     "top-features", "mixture"),
   varimp_yaxis_names = FALSE,
   nfeatures = 9,
-  points = T,
+  points = TRUE,
   boxplot_xaxis_names = FALSE,
   seed = 123
 )
@@ -53,6 +54,8 @@ do_rreg(
 \item{ratio}{Ratio of training data to test data. Default is 0.75.}
 
 \item{type}{Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
+
+\item{cor_threshold}{Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.}
 
 \item{cv_sets}{Number of cross-validation sets. Default is 5.}
 
@@ -97,7 +100,8 @@ model, tests it, and plots useful the feature variable importance.
 The metadata should contain only the samples included in the case
 and control groups. For example, if the data include group 1, 2, and 3, 1 is the
 case and 2 is the control group, the 3 should be filtered out. If the data contain
-missing values, KNN imputation will be applied.
+missing values, KNN imputation will be applied. If no check for feature correlation
+is preferred, set \code{cor_threshold} to 1.
 }
 \examples{
 do_rreg(example_data,
