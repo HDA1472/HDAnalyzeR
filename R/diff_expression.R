@@ -336,33 +336,37 @@ plot_volcano <- function(de_result,
     ggplot2::geom_vline(xintercept = -logfc_lim, linetype = 'dashed') +
     ggplot2::labs(color = "Significance")
 
-    if (!is.null(title)) {
-      p <- p + ggplot2::ggtitle(label = paste0(title, ""))
-    }
-  subtitle_text <- ""
-    if (isTRUE(report_nproteins)) {
+  # Title and subtitle
+  if (!is.null(title)) {
+    p <- p + ggplot2::ggtitle(label = paste0(title, ""))
+  }
 
-    subtitle_text = paste0("Num significant up = ", num.sig.up,
-                           "\nNum significant down = ", num.sig.down)
-    }
-    if (!is.null(subtitle)) {
-      if (subtitle_text != "") {
-        subtitle_text = paste0(subtitle_text, "\n", subtitle)
-      } else {
-        subtitle_text = subtitle
-      }
-      p <- p + ggplot2::ggtitle(label = paste0(title, ""),
-                                subtitle = paste0("Num significant up = ", num.sig.up,
-                                                  "\nNum significant down = ", num.sig.down))
-    }
+  subtitle_text <- ""
+  if (!is.null(subtitle)) {
+    subtitle_text = subtitle
+  }
+
+  if (isTRUE(report_nproteins)) {
     if (subtitle_text != "") {
-      p <- p + ggplot2::ggtitle(label = paste0(title, ""), subtitle = subtitle_text)
-    }
-    if (is.null(names(palette))) {
-      p <- p + scale_color_hpa(palette)
+      subtitle_text = paste0(subtitle_text,
+                             "\nNum significant up = ", num.sig.up,
+                             "\nNum significant down = ", num.sig.down)
     } else {
-      p <- p + ggplot2::scale_color_manual(values = palette)
+      subtitle_text = paste0("Num significant up = ", num.sig.up,
+                             "\nNum significant down = ", num.sig.down)
     }
+  }
+
+  if (subtitle_text != "") {
+    p <- p + ggplot2::ggtitle(label = paste0(title, ""), subtitle = subtitle_text)
+  }
+
+  # Set palette
+  if (is.null(names(palette))) {
+    p <- p + scale_color_hpa(palette)
+  } else {
+    p <- p + ggplot2::scale_color_manual(values = palette)
+  }
 
   return(p + theme_hpa() + ggplot2::theme(legend.position = "none"))
 }
@@ -716,6 +720,7 @@ do_ttest <- function(olink_data,
 #' @keywords internal
 extract_protein_list <- function(upset_data, protein_lists) {
   combinations <- as.data.frame(upset_data)
+  print(combinations)
   proteins <- list()
 
   for (i in 1:nrow(combinations)) {
