@@ -25,7 +25,7 @@ do_limma_de <- function(join_data,
                         case,
                         control,
                         correct = c("Sex", "Age"),
-                        correct_type = c("factor", "numeric", "numeric"),
+                        correct_type = c("factor", "numeric"),
                         only_female = NULL,
                         only_male = NULL,
                         pval_lim = 0.05,
@@ -52,10 +52,22 @@ do_limma_de <- function(join_data,
     }
   }
 
+  nrows_before <- nrow(join_data)
+
   join_data <- join_data |>
-    dplyr::filter(!dplyr::if_any(dplyr::all_of(c(variable, "Sex", correct)), is.na)) |>  # Remove NAs from columns in formula
+    dplyr::filter(!dplyr::if_any(dplyr::all_of(c(variable, correct)), is.na)) |>  # Remove NAs from columns in formula
     dplyr::filter(!!Variable %in% c(case, control)) |>
     dplyr::mutate(!!Variable := ifelse(!!Variable == case, "1_Case", "0_Control"))
+
+  nrows_after <- nrow(join_data)
+  if (nrows_before != nrows_after){
+    warning(paste0(nrows_before - nrows_after,
+                   " rows were removed because they contain NAs in ",
+                   variable,
+                   " or ",
+                   paste(correct, collapse = ", "),
+                   "!"))
+  }
 
   # Design a model
   formula <- paste("~0 + as.factor(", variable, ")")
@@ -140,9 +152,20 @@ do_limma_continuous_de <- function(join_data,
                                    correct_type = c("factor"),
                                    pval_lim = 0.05,
                                    logfc_lim = 0) {
+  nrows_before <- nrow(join_data)
 
   join_data <- join_data |>
     dplyr::filter(!dplyr::if_any(dplyr::all_of(c(variable, correct)), is.na))  # Remove NAs from columns in formula
+
+  nrows_after <- nrow(join_data)
+  if (nrows_before != nrows_after){
+    warning(paste0(nrows_before - nrows_after,
+                   " rows were removed because they contain NAs in ",
+                   variable,
+                   " or ",
+                   paste(correct, collapse = ", "),
+                   "!"))
+  }
 
   # Design a model
   formula <- paste("~0 +" , variable)
@@ -406,7 +429,9 @@ plot_volcano <- function(de_result,
 #' @export
 #'
 #' @details For sex-specific diseases, there will be no correction for Sex.
-#' This is performed automatically by the function.
+#' This is performed automatically by the function. It will also filter out
+#' rows with NA values in any of the columns that are used for correction,
+#' either the `variable` or in `correct`.
 #'
 #' @examples
 #' de_results <- do_limma(example_data,
@@ -444,17 +469,39 @@ do_limma <- function(olink_data,
   Variable <- rlang::sym(variable)
   # Prepare Olink data and merge them with metadata
   if (isFALSE(wide)) {
-    join_data <- olink_data |>
-      dplyr::select(DAid, Assay, NPX) |>
-      tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
+    wide_data <- widen_data(olink_data)
+
+    nrows_before <- nrow(wide_data)
+    join_data <- wide_data |>
       dplyr::left_join(
         metadata |> dplyr::select(dplyr::any_of(c("DAid", variable, "Sex", correct))),
         by = "DAid") |>
       dplyr::filter(!is.na(!!Variable))
+
+    nrows_after <- nrow(join_data)
+    if (nrows_before != nrows_after){
+      warning(paste0(nrows_before - nrows_after,
+                     " rows were removed because data did not match metadata and NAs were created in ",
+                     variable,
+                     "!"))
+    }
   } else {
-    join_data <- olink_data |> dplyr::left_join(
-      metadata |> dplyr::select(dplyr::any_of(c("DAid", variable, "Sex", correct))),
-      by = "DAid")
+    wide_data <- widen_data(olink_data)
+
+    nrows_before <- nrow(wide_data)
+    join_data <- olink_data |>
+      dplyr::left_join(metadata |>
+                         dplyr::select(dplyr::any_of(c("DAid", variable, "Sex", correct))),
+                       by = "DAid") |>
+      dplyr::filter(!is.na(!!Variable))
+
+    nrows_after <- nrow(join_data)
+    if (nrows_before != nrows_after){
+      warning(paste0(nrows_before - nrows_after,
+                     " rows were removed because data did not match metadata and NAs were created in ",
+                     variable,
+                     "!"))
+    }
   }
 
   # Run differential expression analysis
@@ -518,8 +565,12 @@ do_limma <- function(olink_data,
 #'
 #' @return A list with the differential expression results and volcano plots.
 #'   - de_results: A list with the differential expression results.
-#'   - volcano_plots: A list with the volcano plots.
+#'   - volcano_plot: A list with the volcano plots.
 #' @export
+#'
+#' @details
+#' It will filter out rows with NA values in any of the columns that are used for
+#' correction, either the `variable` or in `correct`.
 #'
 #' @examples
 #' do_limma_continuous(example_data, example_metadata, "Age", wide = FALSE)
@@ -539,18 +590,43 @@ do_limma_continuous <- function(olink_data,
                                 subtitle = NULL,
                                 save = FALSE) {
 
+  Variable <- rlang::sym(variable)
+
   # Prepare Olink data and merge them with metadata
   if (isFALSE(wide)) {
-    join_data <- olink_data |>
-      dplyr::select(DAid, Assay, NPX) |>
-      tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
+    wide_data <- widen_data(olink_data)
+
+    nrows_before <- nrow(wide_data)
+    join_data <- wide_data |>
       dplyr::left_join(
         metadata |> dplyr::select(dplyr::any_of(c("DAid", variable, correct))),
-        by = "DAid")
+        by = "DAid") |>
+      dplyr::filter(!is.na(!!Variable))
+
+    nrows_after <- nrow(join_data)
+    if (nrows_before != nrows_after){
+      warning(paste0(nrows_before - nrows_after,
+                     " rows were removed because data did not match metadata and NAs were created in ",
+                     variable,
+                     "!"))
+    }
   } else {
-    join_data <- olink_data |> dplyr::left_join(
-      metadata |> dplyr::select(dplyr::any_of(c("DAid", variable, correct))),
-      by = "DAid")
+    wide_data <- widen_data(olink_data)
+
+    nrows_before <- nrow(wide_data)
+    join_data <- olink_data |>
+      dplyr::left_join(metadata |>
+                         dplyr::select(dplyr::any_of(c("DAid", variable, correct))),
+                       by = "DAid") |>
+      dplyr::filter(!is.na(!!Variable))
+
+    nrows_after <- nrow(join_data)
+    if (nrows_before != nrows_after){
+      warning(paste0(nrows_before - nrows_after,
+                     " rows were removed because data did not match metadata and NAs were created in ",
+                     variable,
+                     "!"))
+    }
   }
 
   # Run differential expression analysis
@@ -563,23 +639,23 @@ do_limma_continuous <- function(olink_data,
 
   # Generate (and save) volcano plots
   if (volcano) {
-    volcano_plots <- plot_volcano(de_results,
-                                  pval_lim,
-                                  logfc_lim,
-                                  top_up_prot,
-                                  top_down_prot,
-                                  palette,
-                                  variable,
-                                  report_nproteins,
-                                  subtitle)
+    volcano_plot <- plot_volcano(de_results,
+                                 pval_lim,
+                                 logfc_lim,
+                                 top_up_prot,
+                                 top_down_prot,
+                                 palette,
+                                 variable,
+                                 report_nproteins,
+                                 subtitle)
 
     if (isTRUE(save)) {
-      dir_name <- create_dir("results/volcano_plots", date = T)
+      dir_name <- create_dir("results/volcano_plot", date = T)
       for (i in 1:length(levels)) {
-        ggplot2::ggsave(volcano_plots[[i]], filename = paste0(dir_name, "/", levels[i], "_volcano.png"), width = 10, height = 8)
+        ggplot2::ggsave(volcano_plot[[i]], filename = paste0(dir_name, "/", levels[i], "_volcano.png"), width = 10, height = 8)
       }
     }
-    return(list("de_results" = de_results, "volcano_plots" = volcano_plots))
+    return(list("de_results" = de_results, "volcano_plot" = volcano_plot))
   }
   return(de_results)
 }
@@ -615,6 +691,10 @@ do_limma_continuous <- function(olink_data,
 #'   - volcano_plots: A list with the volcano plots.
 #' @export
 #'
+#' @details
+#' It will filter out rows with NA values in any of the columns that are used for
+#' correction, either the `variable` or in `correct`.
+#'
 #' @examples
 #' de_results <- do_ttest(example_data,
 #'                        example_metadata,
@@ -645,18 +725,42 @@ do_ttest <- function(olink_data,
                      subtitle = NULL,
                      save = FALSE) {
 
+  Variable <- rlang::sym(variable)
   # Prepare Olink data and merge them with metadata
   if (isFALSE(wide)) {
-    join_data <- olink_data |>
-      dplyr::select(DAid, Assay, NPX) |>
-      tidyr::pivot_wider(names_from = Assay, values_from = NPX) |>
+    wide_data <- widen_data(olink_data)
+
+    nrows_before <- nrow(wide_data)
+    join_data <- wide_data |>
       dplyr::left_join(
-        metadata |> dplyr::select(dplyr::any_of(c(variable, "DAid", "Disease", "Sex", "Age", "BMI"))),
-        by = "DAid")
+        metadata |> dplyr::select(dplyr::any_of(c("DAid", variable, "Sex"))),
+        by = "DAid") |>
+      dplyr::filter(!is.na(!!Variable))
+
+    nrows_after <- nrow(join_data)
+    if (nrows_before != nrows_after){
+      warning(paste0(nrows_before - nrows_after,
+                     " rows were removed because data did not match metadata and NAs were created in ",
+                     variable,
+                     "!"))
+    }
   } else {
-    join_data <- olink_data |> dplyr::left_join(
-      metadata |> dplyr::select(dplyr::any_of(c(variable, "DAid", "Disease", "Sex", "Age", "BMI"))),
-      by = "DAid")
+    wide_data <- widen_data(olink_data)
+
+    nrows_before <- nrow(wide_data)
+    join_data <- olink_data |>
+      dplyr::left_join(metadata |>
+                         dplyr::select(dplyr::any_of(c("DAid", variable, "Sex"))),
+                       by = "DAid") |>
+      dplyr::filter(!is.na(!!Variable))
+
+    nrows_after <- nrow(join_data)
+    if (nrows_before != nrows_after){
+      warning(paste0(nrows_before - nrows_after,
+                     " rows were removed because data did not match metadata and NAs were created in ",
+                     variable,
+                     "!"))
+    }
   }
 
   # Run differential expression analysis

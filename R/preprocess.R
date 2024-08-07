@@ -150,6 +150,10 @@ clean_metadata <- function(df_in,
 #'  - join_data: The joined data with metadata. If join is FALSE, this is not returned.
 #' @export
 #'
+#' @details
+#' It will filter out rows with missing values in `Disease`, as a results of
+#' mismatching between data and metadata
+#'
 #' @examples
 #' generate_df(example_data, example_metadata, save = FALSE)
 generate_df <- function(long_data,
@@ -162,9 +166,17 @@ generate_df <- function(long_data,
   wide_data <- widen_data(long_data)
 
   if (isTRUE(join)) {
+    nrows_before <- nrow(wide_data)
     join_data <- wide_data |>
       dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(metadata_cols)), by = "DAid") |>
-      dplyr::relocate(dplyr::all_of(metadata_cols), dplyr::everything())
+      dplyr::relocate(dplyr::all_of(metadata_cols), dplyr::everything()) |>
+      dplyr::filter(!is.na(Disease))
+    nrows_after <- nrow(join_data)
+    if (nrows_before != nrows_after){
+      warning(paste0(nrows_before - nrows_after,
+                     " rows were removed because data did not match metadata and NAs were created in Disease!"))
+    }
+
     if (isTRUE(save)) {
       dir_name <- create_dir("data/processed")
       save_df(wide_data, "wide_data", dir_name, date = T, "rda")

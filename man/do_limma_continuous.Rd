@@ -57,12 +57,16 @@ do_limma_continuous(
 A list with the differential expression results and volcano plots.
 \itemize{
 \item de_results: A list with the differential expression results.
-\item volcano_plots: A list with the volcano plots.
+\item volcano_plot: A list with the volcano plots.
 }
 }
 \description{
 This function runs differential expression analysis using limma for a continuous variable.
 It can generate and save volcano plots.
+}
+\details{
+It will filter out rows with NA values in any of the columns that are used for
+correction, either the \code{variable} or in \code{correct}.
 }
 \examples{
 do_limma_continuous(example_data, example_metadata, "Age", wide = FALSE)

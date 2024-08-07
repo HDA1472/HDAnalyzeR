@@ -66,6 +66,7 @@ model. It also plots the ROC curve and the AUC barplot for each class.
 \details{
 If the data contain missing values, KNN imputation will be applied.
 If no check for feature correlation is preferred, set \code{cor_threshold} to 1.
+It will filter out rows that contain NAs in Disease.
 }
 \examples{
 do_rreg_multi(example_data,
