@@ -35,11 +35,5 @@ A list containing the following elements:
 It saves them in the data/processed/data_metadata directory in RDA format.
 }
 \examples{
-# Preprocess data and metadata
-clean_data <- clean_data(example_data, keep_cols = c("DAid", "Assay", "NPX"))
-clean_metadata <- clean_metadata(example_metadata,
-                                 keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"))
-
-# Create wide and join dataframes
-generate_df(clean_data, clean_metadata, save = FALSE)
+generate_df(example_data, example_metadata, save = FALSE)
 }
