@@ -972,11 +972,8 @@ plot_var_imp <- function (finalfit_res,
 #'  - var_imp_res: Variable importance results.
 #' @export
 #'
-#' @details The metadata should contain only the samples included in the case
-#' and control groups. For example, if the data include group 1, 2, and 3, 1 is the
-#' case and 2 is the control group, the 3 should be filtered out. If the data contain
-#' missing values, KNN imputation will be applied. If no check for feature correlation
-#' is preferred, set `cor_threshold` to 1.
+#' @details If the data contain missing values, KNN imputation will be applied.
+#' If no check for feature correlation is preferred, set `cor_threshold` to 1.
 #'
 #' @examples
 #' do_rreg(example_data,
@@ -1027,9 +1024,9 @@ do_rreg <- function(olink_data,
   } else {
     wide_data <- olink_data
   }
+
   join_data <- wide_data |>
     dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
-    dplyr::filter(!is.na(Disease)) |>
     dplyr::filter(Disease %in% c(case, control))
 
   # Prepare sets and groups
@@ -1154,11 +1151,8 @@ do_rreg <- function(olink_data,
 #'  - var_imp_res: Variable importance results.
 #' @export
 #'
-#' @details The metadata should contain only the samples included in the case
-#' and control groups. For example, if the data include group 1, 2, and 3, 1 is the
-#' case and 2 is the control group, the 3 should be filtered out. If the data contain
-#' missing values, KNN imputation will be applied. If no check for feature correlation
-#' is preferred, set `cor_threshold` to 1.
+#' @details If the data contain missing values, KNN imputation will be applied.
+#' If no check for feature correlation is preferred, set `cor_threshold` to 1.
 #'
 #' @examples
 #' do_rf(example_data,
@@ -1207,9 +1201,9 @@ do_rf <- function(olink_data,
   } else {
     wide_data <- olink_data
   }
+
   join_data <- wide_data |>
     dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
-    dplyr::filter(!is.na(Disease)) |>
     dplyr::filter(Disease %in% c(case, control))
 
   # Prepare sets and groups
@@ -1505,6 +1499,8 @@ plot_features_summary <- function(ml_results,
 #'
 #' @details If the data contain missing values, KNN imputation will be applied.
 #' If no check for feature correlation is preferred, set `cor_threshold` to 1.
+#' It will filter out rows that contain NAs in Disease.
+#'
 #' @examples
 #' do_rreg_multi(example_data,
 #'               example_metadata,
@@ -1533,10 +1529,19 @@ do_rreg_multi <- function(olink_data,
   } else {
     wide_data <- olink_data
   }
+
+  nrows_before <- nrow(wide_data)
   join_data <- wide_data |>
     dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
     dplyr::filter(!is.na(Disease))
-  diseases <- unique(metadata$Disease)
+
+  nrows_after <- nrow(join_data)
+  if (nrows_before != nrows_after){
+    warning(paste0(nrows_before - nrows_after,
+                   " rows were removed because they contain NAs in Disease! They either contain NAs or data did not match metadata."))
+  }
+
+  diseases <- unique(join_data$Disease)
 
   # Prepare sets and groups
   data_split <- split_data(join_data, ratio, seed)
@@ -1663,6 +1668,8 @@ do_rreg_multi <- function(olink_data,
 #'
 #' @details If the data contain missing values, KNN imputation will be applied.
 #' If no check for feature correlation is preferred, set `cor_threshold` to 1.
+#' It will filter out rows that contain NAs in Disease.
+#'
 #' @examples
 #' do_rf_multi(example_data,
 #'             example_metadata,
@@ -1691,10 +1698,18 @@ do_rf_multi <- function(olink_data,
   } else {
     wide_data <- olink_data
   }
+  nrows_before <- nrow(wide_data)
   join_data <- wide_data |>
     dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
     dplyr::filter(!is.na(Disease))
-  diseases <- unique(metadata$Disease)
+
+  nrows_after <- nrow(join_data)
+  if (nrows_before != nrows_after){
+    warning(paste0(nrows_before - nrows_after,
+                   " rows were removed because they contain NAs in Disease! They either contain NAs or data did not match metadata."))
+  }
+
+  diseases <- unique(join_data$Disease)
 
   # Prepare sets and groups
   data_split <- split_data(join_data, ratio, seed)
