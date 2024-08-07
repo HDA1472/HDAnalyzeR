@@ -151,13 +151,7 @@ clean_metadata <- function(df_in,
 #' @export
 #'
 #' @examples
-#' # Preprocess data and metadata
-#' clean_data <- clean_data(example_data)
-#' clean_metadata <- clean_metadata(example_metadata,
-#'                                  keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"))
-#'
-#' # Create wide and join dataframes
-#' generate_df(clean_data, clean_metadata, save = FALSE)
+#' generate_df(example_data, example_metadata, save = FALSE)
 generate_df <- function(long_data,
                         metadata = NULL,
                         join = TRUE,
