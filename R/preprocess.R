@@ -19,15 +19,14 @@ replace_with_na <- function(df_in, replace_w_na = c(0, "0", "", "Unknown", "unkn
 #' Preprocess data
 #'
 #' `clean_data()` preprocesses the data by filtering out rows based on the specified criteria.
-#'   - It keeps only the data of the specified cohort, plates, and assays.
-#'   - It can remove all samples with Assay_Warning != "PASS".
 #'   - It keeps only the specified columns.
+#'   - It keeps only the data of the specified plates and assays.
+#'   - It can remove all samples with Assay_Warning != "PASS".
 #'   - It removes rows with NAs in the DAid and NPX columns.
 #'   - It replaces the specified values with NA.
 #'
 #' @param df_in The input dataframe.
 #' @param keep_cols The columns to keep in the output dataframe.
-#' @param cohort The cohort to keep.
 #' @param filter_plates The plates to exclude.
 #' @param filter_assays The assays to filter out.
 #' @param filter_assay_warning If TRUE, only the rows with Assay_Warning == "PASS" are kept. Default is FALSE.
@@ -45,7 +44,6 @@ replace_with_na <- function(df_in, replace_w_na = c(0, "0", "", "Unknown", "unkn
 #' clean_data(example_data, filter_plates = c("Plate1", "Plate2"), filter_assay_warning = TRUE)
 clean_data <- function(df_in,
                        keep_cols = c("DAid", "Assay", "NPX"),
-                       cohort = NULL,
                        filter_plates = NULL,
                        filter_assays = NULL,
                        filter_assay_warning = FALSE,
@@ -55,11 +53,6 @@ clean_data <- function(df_in,
   df_out <- df_in |>
     dplyr::filter(if ("PlateID" %in% colnames(df_in)) {
                     !(PlateID %in% filter_plates)
-                  } else {
-                    TRUE
-                  }) |>
-    dplyr::filter(if ("Cohort" %in% colnames(df_in)) {
-                    is.null(cohort) | Cohort %in% cohort
                   } else {
                     TRUE
                   }) |>
@@ -92,11 +85,13 @@ clean_data <- function(df_in,
 #'
 #' `clean_metadata()` preprocesses the metadata by filtering out rows based on the specified criteria.
 #'   - It keeps only the specified columns.
+#'   - It keeps only the data of the specified cohort.
 #'   - It removes rows with NAs in the DAid and Disease columns.
 #'   - It replaces the specified values with NA.
 #'
 #' @param df_in The input metadata.
 #' @param keep_cols The columns to keep in the output metadata.
+#' @param cohort The cohort to keep.
 #' @param remove_na_cols The columns to check for NAs and remove respective rows. Defaults is c("DAid", "Disease").
 #' @param replace_w_na The values to replace with NA. Default is c("Unknown", "unknown", "none", NA, "na").
 #'
@@ -111,11 +106,16 @@ clean_data <- function(df_in,
 #' clean_metadata(example_metadata)
 clean_metadata <- function(df_in,
                            keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
+                           cohort = NULL,
                            remove_na_cols = c("DAid", "Disease"),
                            replace_w_na = c("Unknown", "unknown", "none", NA, "na")) {
 
   df_out <- df_in |>
-    dplyr::select(dplyr::any_of(keep_cols))
+    dplyr::filter(if ("Cohort" %in% colnames(df_in)) {
+      is.null(cohort) | Cohort %in% cohort
+    } else {
+      TRUE
+    }) |> dplyr::select(dplyr::any_of(keep_cols))
 
   if (!is.null(replace_w_na)) {
     df_out <- replace_with_na(df_out, replace_w_na)

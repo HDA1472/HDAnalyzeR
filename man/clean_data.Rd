@@ -7,7 +7,6 @@
 clean_data(
   df_in,
   keep_cols = c("DAid", "Assay", "NPX"),
-  cohort = NULL,
   filter_plates = NULL,
   filter_assays = NULL,
   filter_assay_warning = FALSE,
@@ -19,8 +18,6 @@ clean_data(
 \item{df_in}{The input dataframe.}
 
 \item{keep_cols}{The columns to keep in the output dataframe.}
-
-\item{cohort}{The cohort to keep.}
 
 \item{filter_plates}{The plates to exclude.}
 
@@ -38,9 +35,9 @@ The preprocessed dataframe.
 \description{
 \code{clean_data()} preprocesses the data by filtering out rows based on the specified criteria.
 \itemize{
-\item It keeps only the data of the specified cohort, plates, and assays.
-\item It can remove all samples with Assay_Warning != "PASS".
 \item It keeps only the specified columns.
+\item It keeps only the data of the specified plates and assays.
+\item It can remove all samples with Assay_Warning != "PASS".
 \item It removes rows with NAs in the DAid and NPX columns.
 \item It replaces the specified values with NA.
 }

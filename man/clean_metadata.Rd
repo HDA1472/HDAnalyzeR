@@ -7,6 +7,7 @@
 clean_metadata(
   df_in,
   keep_cols = c("DAid", "Disease", "Sex", "Age", "BMI"),
+  cohort = NULL,
   remove_na_cols = c("DAid", "Disease"),
   replace_w_na = c("Unknown", "unknown", "none", NA, "na")
 )
@@ -15,6 +16,8 @@ clean_metadata(
 \item{df_in}{The input metadata.}
 
 \item{keep_cols}{The columns to keep in the output metadata.}
+
+\item{cohort}{The cohort to keep.}
 
 \item{remove_na_cols}{The columns to check for NAs and remove respective rows. Defaults is c("DAid", "Disease").}
 
@@ -27,6 +30,7 @@ The preprocessed metadata.
 \code{clean_metadata()} preprocesses the metadata by filtering out rows based on the specified criteria.
 \itemize{
 \item It keeps only the specified columns.
+\item It keeps only the data of the specified cohort.
 \item It removes rows with NAs in the DAid and Disease columns.
 \item It replaces the specified values with NA.
 }
