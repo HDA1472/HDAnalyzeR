@@ -28,16 +28,6 @@ test_that("clean_data excludes specified plates", {
 })
 
 
-test_that("clean_data filters by cohort", {
-  # Add Cohort column to filter based on
-  result <- clean_data(example_data, cohort = "UCAN")
-  expected <- example_data |>
-    dplyr::filter(Cohort %in% "UCAN") |>
-    dplyr::select(DAid, Assay, NPX)
-  expect_equal(result, expected)
-})
-
-
 test_that("clean_data filters by Assay_Warning", {
   result <- clean_data(example_data, filter_assay_warning = T)
   expected <- example_data |>
@@ -60,10 +50,9 @@ test_that("clean_data handles non-existent columns gracefully", {
 
 test_that("clean_data handles all parameters together", {
   # Add Cohort column
-  result <- clean_data(example_data, cohort = "UCAN", filter_plates = "P2",
-                       filter_assay_warning = T)
+  result <- clean_data(example_data, filter_plates = "P2", filter_assay_warning = T)
   expected <- example_data |>
-    dplyr::filter(Cohort %in% "UCAN" & !(PlateID %in% "P2") & Assay_Warning == "PASS") |>
+    dplyr::filter(!(PlateID %in% "P2") & Assay_Warning == "PASS") |>
     dplyr::select(DAid, Assay, NPX)
   expect_equal(result, expected)
 })
@@ -127,6 +116,16 @@ test_that("clean_metadata selects specified columns", {
   result <- clean_metadata(example_metadata, keep_cols = c("DAid", "Age"))
   expected <- example_metadata |>
     dplyr::select(DAid, Age)
+  expect_equal(result, expected)
+})
+
+
+test_that("clean_metadata filters by cohort", {
+  # Add Cohort column to filter based on
+  result <- clean_metadata(example_metadata, cohort = "UCAN")
+  expected <- example_metadata |>
+    dplyr::filter(Cohort %in% "UCAN") |>
+    dplyr::select(DAid, Disease, Sex, Age, BMI)
   expect_equal(result, expected)
 })
 
