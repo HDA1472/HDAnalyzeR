@@ -34,6 +34,10 @@ A list containing the following elements:
 \code{generate_df()} creates wide and join dataframes from the long data and metadata.
 It saves them in the data/processed/data_metadata directory in RDA format.
 }
+\details{
+It will filter out rows with missing values in \code{Disease}, as a results of
+mismatching between data and metadata
+}
 \examples{
 generate_df(example_data, example_metadata, save = FALSE)
 }

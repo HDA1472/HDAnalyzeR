@@ -10,7 +10,7 @@ do_limma_de(
   case,
   control,
   correct = c("Sex", "Age"),
-  correct_type = c("factor", "numeric", "numeric"),
+  correct_type = c("factor", "numeric"),
   only_female = NULL,
   only_male = NULL,
   pval_lim = 0.05,

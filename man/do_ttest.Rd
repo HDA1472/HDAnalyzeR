@@ -72,6 +72,10 @@ It separates the data in case-control groups, checks for data normality and
 perform a t-test or Wilcoxon test respectively. It also performs p value FDR adjustment.
 It can generate and save volcano plots.
 }
+\details{
+It will filter out rows with NA values in any of the columns that are used for
+correction, either the \code{variable} or in \code{correct}.
+}
 \examples{
 de_results <- do_ttest(example_data,
                        example_metadata,

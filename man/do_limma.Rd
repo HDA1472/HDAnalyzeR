@@ -81,7 +81,9 @@ It can generate and save volcano plots.
 }
 \details{
 For sex-specific diseases, there will be no correction for Sex.
-This is performed automatically by the function.
+This is performed automatically by the function. It will also filter out
+rows with NA values in any of the columns that are used for correction,
+either the \code{variable} or in \code{correct}.
 }
 \examples{
 de_results <- do_limma(example_data,
