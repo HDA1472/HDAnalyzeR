@@ -33,6 +33,7 @@ gene set enrichment analysis."><meta property="og:image" content="https://hda147
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/HDAnalyzeR.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/HDA1472/DA_RPackage/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -123,23 +124,23 @@ gene set enrichment analysis.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...@organism 	 Homo sapiens </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...@setType 	 BP </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...@keytype 	 ENTREZID </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #...@geneList 	 Named num [1:100] 1.57 1.45 1.4 1.2 1.11 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...@geneList 	 Named num [1:100] 1.54 1.48 1.4 1.21 1.12 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "names")= chr [1:100] "566" "328" "100" "9289" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...nPerm 	 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...pvalues adjusted by 'BH' with cutoff &lt;0.9 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #...265 enriched terms found</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	265 obs. of  11 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...264 enriched terms found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	264 obs. of  11 variables:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ ID             : chr  "GO:0048585" "GO:0051641" "GO:0045184" "GO:0008104" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ Description    : chr  "negative regulation of response to stimulus" "cellular localization" "establishment of protein localization" "protein localization" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ setSize        : int  18 25 10 15 15 42 10 19 14 13 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ enrichmentScore: num  0.672 -0.553 -0.713 -0.614 -0.614 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ NES            : num  1.76 -1.67 -1.65 -1.63 -1.63 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pvalue         : num  0.00395 0.0116 0.01721 0.03825 0.03825 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ p.adjust       : num  0.531 0.531 0.531 0.531 0.531 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ qvalue         : num  0.518 0.518 0.518 0.518 0.518 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ rank           : num  23 10 10 10 10 15 19 14 9 23 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ leading_edge   : chr  "tags=50%, list=23%, signal=47%" "tags=24%, list=10%, signal=29%" "tags=30%, list=10%, signal=30%" "tags=27%, list=10%, signal=28%" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ core_enrichment: chr  "ADA/ANGPT2/ABL1/AIF1/ARID4B/AMFR/ACE2/ARHGAP25/ARNT" "ATP5IF1/ANXA3/AGR2/ATG4A/APP/ANGPT1" "ATP5IF1/ATG4A/ANGPT1" "ATP5IF1/AGR2/ATG4A/ANGPT1" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ setSize        : int  18 25 10 15 15 42 19 10 14 13 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ enrichmentScore: num  0.657 -0.552 -0.713 -0.612 -0.612 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ NES            : num  1.71 -1.68 -1.67 -1.63 -1.63 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pvalue         : num  0.00868 0.0087 0.01156 0.02856 0.02856 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ p.adjust       : num  0.527 0.527 0.527 0.527 0.527 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ qvalue         : num  0.505 0.505 0.505 0.505 0.505 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ rank           : num  24 10 10 10 10 15 13 20 10 7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ leading_edge   : chr  "tags=50%, list=24%, signal=46%" "tags=24%, list=10%, signal=29%" "tags=30%, list=10%, signal=30%" "tags=27%, list=10%, signal=28%" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ core_enrichment: chr  "ADA/ANGPT2/ABL1/ARID4B/AIF1/AMFR/ARHGAP25/ACE2/ARNT" "ATP5IF1/ANXA3/ATG4A/AGR2/APP/ANGPT1" "ATP5IF1/ATG4A/ANGPT1" "ATP5IF1/ATG4A/AGR2/ANGPT1" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...Citation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  clusterProfiler 4.0: A universal enrichment tool for interpreting omics data.</span>
@@ -153,7 +154,7 @@ gene set enrichment analysis.</p>
 <span class="r-plt img"><img src="plot_gsea-2.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ridgeplot</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 0.204</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 0.17</span>
 <span class="r-plt img"><img src="plot_gsea-3.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $gseaplot</span>

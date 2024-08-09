@@ -31,6 +31,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/HDAnalyzeR.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/HDA1472/DA_RPackage/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -122,19 +123,19 @@ When Olink data is used, it is recommended to provide a protein list as backgrou
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...@organism 	 Homo sapiens </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...@ontology 	 BP </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...@keytype 	 ENTREZID </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #...@gene 	 chr [1:20] "566" "100" "328" "54518" "9289" "285" "9048" "181" "51129" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...@gene 	 chr [1:21] "566" "100" "328" "54518" "9289" "9048" "285" "181" "51129" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...pvalues adjusted by 'BH' with cutoff &lt;0.05 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #...71 enriched terms found</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	71 obs. of  9 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ID         : chr  "GO:0050900" "GO:0050926" "GO:0045785" "GO:0030336" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Description: chr  "leukocyte migration" "regulation of positive chemotaxis" "positive regulation of cell adhesion" "negative regulation of cell migration" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ GeneRatio  : chr  "7/20" "3/20" "6/20" "5/20" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ BgRatio    : chr  "396/18888" "26/18888" "485/18888" "381/18888" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pvalue     : num  1.03e-07 2.60e-06 7.93e-06 3.93e-05 4.72e-05 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ p.adjust   : num  0.000102 0.001281 0.002606 0.008413 0.008413 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ qvalue     : num  6.12e-05 7.69e-04 1.56e-03 5.05e-03 5.05e-03 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ geneID     : chr  "566/100/9048/25/2683/199/30817" "566/285/9048" "566/100/54518/9289/25/199" "100/9289/285/51742/199" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Count      : int  7 3 6 5 5 3 5 4 2 5 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #...78 enriched terms found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	78 obs. of  9 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ID         : chr  "GO:0050900" "GO:0050926" "GO:0045785" "GO:0001666" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Description: chr  "leukocyte migration" "regulation of positive chemotaxis" "positive regulation of cell adhesion" "response to hypoxia" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ GeneRatio  : chr  "7/21" "3/21" "6/21" "5/21" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ BgRatio    : chr  "396/18888" "26/18888" "485/18888" "313/18888" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pvalue     : num  1.52e-07 3.03e-06 1.09e-05 1.98e-05 2.44e-05 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ p.adjust   : num  0.000163 0.001616 0.003863 0.005215 0.005215 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ qvalue     : num  9.74e-05 9.68e-04 2.31e-03 3.12e-03 3.12e-03 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ geneID     : chr  "566/100/9048/25/2683/199/30817" "566/9048/285" "566/100/54518/9289/25/199" "100/285/51129/405/1386" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Count      : int  7 3 6 5 5 5 5 5 3 5 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...Citation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  clusterProfiler 4.0: A universal enrichment tool for interpreting omics data.</span>

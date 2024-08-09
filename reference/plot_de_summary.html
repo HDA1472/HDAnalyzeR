@@ -35,6 +35,7 @@ It also creates upset plots both for the significant up and down regulated prote
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/HDAnalyzeR.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/HDA1472/DA_RPackage/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -92,8 +93,10 @@ It also creates upset plots both for the significant up and down regulated prote
     <p>A list containing the following plots:</p><ul><li><p>de_barplot: A barplot with the number of significant proteins for each disease.</p></li>
 <li><p>upset_plot_up: An upset plot with the significant up regulated proteins for each disease.</p></li>
 <li><p>upset_plot_down: An upset plot with the significant down regulated proteins for each disease.</p></li>
-<li><p>proteins_list_up: A list with the significant up regulated proteins for each combination of diseases. Created with <code><a href="https://rdrr.io/pkg/UpSetR/man/fromList.html" class="external-link">UpSetR::fromList()</a></code>.</p></li>
-<li><p>proteins_list_down: A list with the significant down regulated proteins for each combination of diseases. Created with <code><a href="https://rdrr.io/pkg/UpSetR/man/fromList.html" class="external-link">UpSetR::fromList()</a></code>.</p></li>
+<li><p>proteins_df_up: A tibble with the significant up regulated proteins for each combination of diseases.</p></li>
+<li><p>proteins_df_down: A tibble with the significant down regulated proteins for each combination of diseases.</p></li>
+<li><p>proteins_list_up: A list with the significant up regulated proteins for each combination of diseases.</p></li>
+<li><p>proteins_list_down: A list with the significant down regulated proteins for each combination of diseases.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -107,6 +110,7 @@ It also creates upset plots both for the significant up and down regulated prote
 <span class="r-in"><span>                           only_female <span class="op">=</span> <span class="st">"BRC"</span>,</span></span>
 <span class="r-in"><span>                           only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Comparing AML with BRC, PRC.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>436 rows were removed because they contain NAs in Disease or Sex, Age!</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">de_results_brc</span> <span class="op">&lt;-</span> <span class="fu"><a href="do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">example_data</span>,</span></span>
 <span class="r-in"><span>                           <span class="va">example_metadata</span>,</span></span>
@@ -116,6 +120,7 @@ It also creates upset plots both for the significant up and down regulated prote
 <span class="r-in"><span>                           only_female <span class="op">=</span> <span class="st">"BRC"</span>,</span></span>
 <span class="r-in"><span>                           only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Comparing BRC with AML, PRC.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>293 rows were removed because they contain NAs in Disease or Sex, Age!</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">de_results_prc</span> <span class="op">&lt;-</span> <span class="fu"><a href="do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">example_data</span>,</span></span>
 <span class="r-in"><span>                           <span class="va">example_metadata</span>,</span></span>
@@ -125,6 +130,7 @@ It also creates upset plots both for the significant up and down regulated prote
 <span class="r-in"><span>                           only_female <span class="op">=</span> <span class="st">"BRC"</span>,</span></span>
 <span class="r-in"><span>                           only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Comparing PRC with AML, BRC.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>143 rows were removed because they contain NAs in Disease or Sex, Age!</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Combine the results</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"AML"</span> <span class="op">=</span> <span class="va">de_results_aml</span>,</span></span>
@@ -133,6 +139,41 @@ It also creates upset plots both for the significant up and down regulated prote
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot summary visualizations</span></span></span>
 <span class="r-in"><span><span class="fu">plot_de_summary</span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $AML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADA"      "APEX1"    "AZU1"     "APBB1IP"  "ANGPT2"   "ARTN"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ADGRG1"   "ACTA2"    "AHCY"     "AGRP"     "ARID4B"   "B4GALT1" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ABL1"     "ADM"      "ATP6V1F"  "ATP6AP2"  "ANGPTL4"  "AMFR"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "AREG"     "ACE2"     "ATF2"     "ADA2"     "AIF1"     "ARHGAP25"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`BRC&amp;PRC`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ANGPT1"  "ADGRG2"  "ADAMTS8"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $BRC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ANGPT1"   "ADGRG2"   "ADAMTS8"  "ADAMTS13" "ART3"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $PRC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ATG4A"   "ADAMTS8" "ANGPT1"  "APOM"    "ADGRG2"  "ALDH1A1" "AMY2B"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [8] "ALPP"    "ACAN"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $AML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ANGPT1"   "ADAMTS8"  "ADGRG2"   "APOM"     "ATG4A"    "ADAMTS13"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ARHGEF12" "APP"      "ALPP"     "ACAN"     "ANGPTL7" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`BRC&amp;PRC`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADA"     "AZU1"    "APEX1"   "APBB1IP" "ARTN"    "ANGPT2"  "ACTA2"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "AGRP"    "ARID4B"  "ADGRG1" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $BRC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADA"      "AZU1"     "APEX1"    "APBB1IP"  "AHCY"     "ARTN"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ANGPT2"   "ACTA2"    "B4GALT1"  "ABL1"     "AGRP"     "ARID4B"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ACE2"     "ADA2"     "ADGRG1"   "ARHGAP25" "ATF2"     "ARSA"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "ADGRE5"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $PRC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADGRG1"  "APEX1"   "ADA"     "AZU1"    "ARTN"    "ANGPT2"  "ATP6AP2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "AGRP"    "APBB1IP" "ADM"     "AREG"    "ARID4B"  "ATP6V1F" "ANGPTL4"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "ACTA2"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $de_barplot</span>
 <span class="r-plt img"><img src="plot_de_summary-1.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -142,43 +183,75 @@ It also creates upset plots both for the significant up and down regulated prote
 <span class="r-out co"><span class="r-pr">#&gt;</span> $upset_plot_down</span>
 <span class="r-plt img"><img src="plot_de_summary-3.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_df_up</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 35 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    `Shared in` `up/down` Assay   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AML         up        ABL1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> PRC         up        ACAN    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AML         up        ACE2    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AML         up        ACTA2   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AML         up        ADA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AML         up        ADA2    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> BRC         up        ADAMTS13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> BRC&amp;PRC     up        ADAMTS8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AML         up        ADGRG1  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> BRC&amp;PRC     up        ADGRG2  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 25 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_df_down</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 35 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    `Shared in` `up/down` Assay   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> BRC         up        ABL1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AML         up        ACAN    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> BRC         up        ACE2    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> BRC&amp;PRC     up        ACTA2   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> BRC&amp;PRC     up        ADA     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> BRC         up        ADA2    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AML         up        ADAMTS13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AML         up        ADAMTS8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> BRC         up        ADGRE5  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> BRC&amp;PRC     up        ADGRG1  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 25 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_up</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_up$AML</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADA"      "APEX1"    "AZU1"     "ANGPT2"   "APBB1IP"  "ARTN"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ACTA2"    "ADGRG1"   "AGRP"     "AHCY"     "B4GALT1"  "ARID4B"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ABL1"     "ATP6AP2"  "ATP6V1F"  "AMFR"     "ANGPTL4"  "ADM"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "ACE2"     "AREG"     "ATF2"     "ADA2"     "AIF1"     "ARHGAP25"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADA"      "APEX1"    "AZU1"     "APBB1IP"  "ANGPT2"   "ARTN"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ADGRG1"   "ACTA2"    "AHCY"     "AGRP"     "ARID4B"   "B4GALT1" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ABL1"     "ADM"      "ATP6V1F"  "ATP6AP2"  "ANGPTL4"  "AMFR"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "AREG"     "ACE2"     "ATF2"     "ADA2"     "AIF1"     "ARHGAP25"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_up$`BRC&amp;PRC`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ANGPT1"  "ADGRG2"  "ADAMTS8"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_up$BRC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ANGPT1"   "ADGRG2"   "AOC1"     "ARHGEF12" "ADAMTS8"  "ART3"     "ADAMTS13"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ANGPT1"   "ADGRG2"   "ADAMTS8"  "ADAMTS13" "ART3"    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_up$PRC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ATG4A"   "APOM"    "ANGPT1"  "ADAMTS8" "ADGRG2"  "AMY2B"   "ALDH1A1"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "ALPP"    "ACAN"    "ANXA4"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ATG4A"   "ADAMTS8" "ANGPT1"  "APOM"    "ADGRG2"  "ALDH1A1" "AMY2B"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [8] "ALPP"    "ACAN"   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_down</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_down$AML</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ANGPT1"   "ADAMTS8"  "ADGRG2"   "ATG4A"    "APOM"     "APP"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ADAMTS13" "ARHGEF12" "ALPP"     "ACAN"     "ANGPTL7"  "ANXA11"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "AMY2B"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ANGPT1"   "ADAMTS8"  "ADGRG2"   "APOM"     "ATG4A"    "ADAMTS13"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ARHGEF12" "APP"      "ALPP"     "ACAN"     "ANGPTL7" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_down$`BRC&amp;PRC`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "AZU1"    "ADA"     "APEX1"   "APBB1IP" "AHCY"    "ACTA2"   "ARTN"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "ANGPT2"  "ARID4B"  "AGRP"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADA"     "AZU1"    "APEX1"   "APBB1IP" "ARTN"    "ANGPT2"  "ACTA2"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "AGRP"    "ARID4B"  "ADGRG1" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_down$BRC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "AZU1"     "ADA"      "APEX1"    "APBB1IP"  "AHCY"     "ACTA2"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ARTN"     "B4GALT1"  "ANGPT2"   "ARID4B"   "ABL1"     "ARHGAP25"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ACE2"     "AGRP"     "ADA2"     "AMFR"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADA"      "AZU1"     "APEX1"    "APBB1IP"  "AHCY"     "ARTN"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ANGPT2"   "ACTA2"    "B4GALT1"  "ABL1"     "AGRP"     "ARID4B"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ACE2"     "ADA2"     "ADGRG1"   "ARHGAP25" "ATF2"     "ARSA"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "ADGRE5"  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $proteins_list_down$PRC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADGRG1"  "ADA"     "AZU1"    "APEX1"   "ATP6AP2" "ANGPT2"  "ARTN"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "ARID4B"  "ADM"     "AGRP"    "AREG"    "AIF1"    "ACTA2"   "APBB1IP"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "AHCY"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ADGRG1"  "APEX1"   "ADA"     "AZU1"    "ARTN"    "ANGPT2"  "ATP6AP2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "AGRP"    "APBB1IP" "ADM"     "AREG"    "ARID4B"  "ATP6V1F" "ANGPTL4"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "ACTA2"  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>

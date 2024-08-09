@@ -35,6 +35,7 @@ process_example_metadata script."><meta property="og:image" content="https://hda
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/HDAnalyzeR.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/HDA1472/DA_RPackage/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -109,16 +110,16 @@ been added as extra columns. The original dataset was processed with the
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 586 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    DAid    Sample     Disease Stage   Grade Sex     Age   BMI Cohort</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DA00001 AML_syn_1  AML     2       <span style="color: #BB0000;">NA</span>    F        76  25.8 UCAN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DA00002 AML_syn_2  AML     Unknown <span style="color: #BB0000;">NA</span>    M        55  23.7 UCAN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DA00003 AML_syn_3  AML     2       <span style="color: #BB0000;">NA</span>    F        51  33.2 UCAN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DA00004 AML_syn_4  AML     Unknown <span style="color: #BB0000;">NA</span>    M        86  32.4 UCAN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DA00005 AML_syn_5  AML     2       <span style="color: #BB0000;">NA</span>    F        69  32.8 UCAN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DA00006 AML_syn_6  AML     Unknown <span style="color: #BB0000;">NA</span>    M        88  29.5 UCAN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DA00007 AML_syn_7  AML     1       <span style="color: #BB0000;">NA</span>    F        80  32   UCAN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DA00008 AML_syn_8  AML     3       <span style="color: #BB0000;">NA</span>    F        83  30   UCAN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DA00009 AML_syn_9  AML     Unknown <span style="color: #BB0000;">NA</span>    M        52  26   UCAN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DA00010 AML_syn_10 AML     3       <span style="color: #BB0000;">NA</span>    M        44  23.1 UCAN  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DA00001 AML_syn_1  AML     2       <span style="color: #BB0000;">NA</span>    F        42  22.7 UCAN  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DA00002 AML_syn_2  AML     Unknown <span style="color: #BB0000;">NA</span>    M        69  33.1 UCAN  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DA00003 AML_syn_3  AML     2       <span style="color: #BB0000;">NA</span>    F        61  26.2 UCAN  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DA00004 AML_syn_4  AML     Unknown <span style="color: #BB0000;">NA</span>    M        54  28.1 UCAN  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DA00005 AML_syn_5  AML     2       <span style="color: #BB0000;">NA</span>    F        57  21.4 UCAN  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DA00006 AML_syn_6  AML     Unknown <span style="color: #BB0000;">NA</span>    M        86  33.9 UCAN  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DA00007 AML_syn_7  AML     1       <span style="color: #BB0000;">NA</span>    F        85  28.7 UCAN  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DA00008 AML_syn_8  AML     3       <span style="color: #BB0000;">NA</span>    F        88  32.6 UCAN  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DA00009 AML_syn_9  AML     Unknown <span style="color: #BB0000;">NA</span>    M        80  26.1 UCAN  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DA00010 AML_syn_10 AML     3       <span style="color: #BB0000;">NA</span>    M        48  33.8 UCAN  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 576 more rows</span></span>
 </code></pre></div>
     </div>

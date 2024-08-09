@@ -51,6 +51,7 @@
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/HDAnalyzeR.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -123,12 +124,12 @@ blood plasma samples.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">example_metadata</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      DAid    Sample Disease   Stage Grade Sex Age  BMI Cohort</span></span>
-<span><span class="co">#&gt; 1 DA00001 AML_syn_1     AML       2  &lt;NA&gt;   F  76 25.8   UCAN</span></span>
-<span><span class="co">#&gt; 2 DA00002 AML_syn_2     AML Unknown  &lt;NA&gt;   M  55 23.7   UCAN</span></span>
-<span><span class="co">#&gt; 3 DA00003 AML_syn_3     AML       2  &lt;NA&gt;   F  51 33.2   UCAN</span></span>
-<span><span class="co">#&gt; 4 DA00004 AML_syn_4     AML Unknown  &lt;NA&gt;   M  86 32.4   UCAN</span></span>
-<span><span class="co">#&gt; 5 DA00005 AML_syn_5     AML       2  &lt;NA&gt;   F  69 32.8   UCAN</span></span>
-<span><span class="co">#&gt; 6 DA00006 AML_syn_6     AML Unknown  &lt;NA&gt;   M  88 29.5   UCAN</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 DA00001 AML_syn_1     AML       2  &lt;NA&gt;   F  42 22.7   UCAN</span></span>
+<span><span class="co">#&gt; 2 DA00002 AML_syn_2     AML Unknown  &lt;NA&gt;   M  69 33.1   UCAN</span></span>
+<span><span class="co">#&gt; 3 DA00003 AML_syn_3     AML       2  &lt;NA&gt;   F  61 26.2   UCAN</span></span>
+<span><span class="co">#&gt; 4 DA00004 AML_syn_4     AML Unknown  &lt;NA&gt;   M  54 28.1   UCAN</span></span>
+<span><span class="co">#&gt; 5 DA00005 AML_syn_5     AML       2  &lt;NA&gt;   F  57 21.4   UCAN</span></span>
+<span><span class="co">#&gt; 6 DA00006 AML_syn_6     AML Unknown  &lt;NA&gt;   M  86 33.9   UCAN</span></span></code></pre></div>
 <blockquote>
 <p>📓 In real-world scenarios, you would load your own data and metadata
 files instead of using the example dataset. In order to run the package
@@ -289,7 +290,7 @@ key metadata variables such as Sex, Age, and BMI.</p>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qc_metadata</span><span class="op">$</span><span class="va">distplot_Age</span></span>
-<span><span class="co">#&gt; Picking joint bandwidth of 6</span></span></code></pre></div>
+<span><span class="co">#&gt; Picking joint bandwidth of 6.06</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-5-2.png" width="700"></p>
 </div>
 </div>
@@ -331,12 +332,12 @@ just by keeping only the specified columns.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
 <span><span class="co">#&gt;   DAid    Disease Sex     Age</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> DA00001 AML     F        76</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> DA00002 AML     M        55</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> DA00003 AML     F        51</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> DA00004 AML     M        86</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> DA00005 AML     F        69</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> DA00006 AML     M        88</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> DA00001 AML     F        42</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> DA00002 AML     M        69</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> DA00003 AML     F        61</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> DA00004 AML     M        54</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> DA00005 AML     F        57</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> DA00006 AML     M        86</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="data-transformation">Data Transformation<a class="anchor" aria-label="anchor" href="#data-transformation"></a>
@@ -375,12 +376,12 @@ dataset as well as the joined with metadata dataset.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 104</span></span></span>
 <span><span class="co">#&gt;   DAid    Disease Sex     Age AARSD1  ABL1  ACAA1    ACAN   ACE2  ACOX1   ACP5</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> DA00001 AML     F        76   3.39  2.76  1.71   0.033<span style="text-decoration: underline;">3</span>  1.76  -<span style="color: #BB0000;">0.919</span> 1.54  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> DA00002 AML     M        55   1.42  1.25 <span style="color: #BB0000;">NA</span>     -<span style="color: #BB0000;">0.459</span>   0.826 -<span style="color: #BB0000;">0.902</span> 0.647 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> DA00003 AML     F        51  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      0.989  <span style="color: #BB0000;">NA</span>      0.330 1.37  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> DA00004 AML     M        86   3.41  3.38  1.69  <span style="color: #BB0000;">NA</span>       1.52  <span style="color: #BB0000;">NA</span>     0.841 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> DA00005 AML     F        69   5.01  5.05  0.128  0.401  -<span style="color: #BB0000;">0.933</span> -<span style="color: #BB0000;">0.584</span> 0.026<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> DA00006 AML     M        88   6.83  1.18 -<span style="color: #BB0000;">1.74</span>  -<span style="color: #BB0000;">0.156</span>   1.53  -<span style="color: #BB0000;">0.721</span> 0.620 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> DA00001 AML     F        42   3.39  2.76  1.71   0.033<span style="text-decoration: underline;">3</span>  1.76  -<span style="color: #BB0000;">0.919</span> 1.54  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> DA00002 AML     M        69   1.42  1.25 <span style="color: #BB0000;">NA</span>     -<span style="color: #BB0000;">0.459</span>   0.826 -<span style="color: #BB0000;">0.902</span> 0.647 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> DA00003 AML     F        61  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      0.989  <span style="color: #BB0000;">NA</span>      0.330 1.37  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> DA00004 AML     M        54   3.41  3.38  1.69  <span style="color: #BB0000;">NA</span>       1.52  <span style="color: #BB0000;">NA</span>     0.841 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> DA00005 AML     F        57   5.01  5.05  0.128  0.401  -<span style="color: #BB0000;">0.933</span> -<span style="color: #BB0000;">0.584</span> 0.026<span style="text-decoration: underline;">5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> DA00006 AML     M        86   6.83  1.18 -<span style="color: #BB0000;">1.74</span>  -<span style="color: #BB0000;">0.156</span>   1.53  -<span style="color: #BB0000;">0.721</span> 0.620 </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 93 more variables: ACP6 &lt;dbl&gt;, ACTA2 &lt;dbl&gt;, ACTN4 &lt;dbl&gt;, ACY1 &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   ADA &lt;dbl&gt;, ADA2 &lt;dbl&gt;, ADAM15 &lt;dbl&gt;, ADAM23 &lt;dbl&gt;, ADAMTS13 &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   ADAMTS15 &lt;dbl&gt;, ADAMTS16 &lt;dbl&gt;, ADAMTS8 &lt;dbl&gt;, ADCYAP1R1 &lt;dbl&gt;,</span></span></span>
@@ -591,7 +592,7 @@ expected after cleaning and imputing the data.</p>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">qc_metadata</span><span class="op">$</span><span class="va">distplot_Age</span></span>
-<span><span class="co">#&gt; Picking joint bandwidth of 6</span></span></code></pre></div>
+<span><span class="co">#&gt; Picking joint bandwidth of 6.06</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-13-2.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -616,21 +617,24 @@ results for AML (Acute Myeloid Leukemia), BRC (Breast Cancer), and PRC
 <span>                       only_female <span class="op">=</span> <span class="st">"BRC"</span>,</span>
 <span>                       only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Comparing AML with BRC, PRC.</span></span>
+<span><span class="co">#&gt; Warning in do_limma_de(join_data, variable, case, control, correct,</span></span>
+<span><span class="co">#&gt; correct_type, : 436 rows were removed because they contain NAs in Disease or</span></span>
+<span><span class="co">#&gt; Sex, Age!</span></span>
 <span></span>
 <span><span class="va">de_res_aml</span><span class="op">$</span><span class="va">de_results</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 100 × 11</span></span></span>
 <span><span class="co">#&gt;    Assay    logFC   CI.L   CI.R AveExpr     t  P.Value adj.P.Val     B Disease</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ADA      1.49   1.18   1.80  1.25     9.51 3.56<span style="color: #949494;">e</span><span style="color: #BB0000;">-17</span>  3.56<span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span> 28.4  AML    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> APEX1    1.85   1.44   2.26  0.583    8.90 1.39<span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span>  6.93<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span> 24.8  AML    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AZU1     1.76   1.32   2.19  0.537    8.02 2.44<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span>  8.14<span style="color: #949494;">e</span><span style="color: #BB0000;">-12</span> 19.7  AML    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> APBB1IP  1.18   0.805  1.55  0.005<span style="text-decoration: underline;">61</span>  6.25 3.89<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span>  9.73<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span> 10.2  AML    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ANGPT1  -<span style="color: #BB0000;">1.73</span>  -<span style="color: #BB0000;">2.31</span>  -<span style="color: #BB0000;">1.16</span>  1.38    -<span style="color: #BB0000;">5.97</span> 1.58<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span>  3.17<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  8.77 AML    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ARTN     0.911  0.602  1.22  0.648    5.83 3.14<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span>  5.23<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  8.12 AML    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ACTA2    0.728  0.470  0.985 1.52     5.58 1.08<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  1.54<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  6.91 AML    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ADGRG1   1.30   0.828  1.77  1.80     5.44 2.05<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  2.56<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  6.30 AML    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ADAMTS8 -<span style="color: #BB0000;">0.817</span> -<span style="color: #BB0000;">1.12</span>  -<span style="color: #BB0000;">0.512</span> 0.420   -<span style="color: #BB0000;">5.30</span> 4.03<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  4.48<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  5.63 AML    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ANGPT2   0.746  0.465  1.03  1.06     5.24 5.25<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  5.25<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  5.37 AML    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ADA      1.50   1.20   1.81  1.25     9.75 7.95<span style="color: #949494;">e</span><span style="color: #BB0000;">-18</span>  7.95<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span> 29.8  AML    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> APEX1    1.84   1.43   2.24  0.583    8.97 8.98<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span>  4.49<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span> 25.2  AML    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AZU1     1.69   1.29   2.08  0.537    8.46 1.81<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span>  6.04<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span> 22.2  AML    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> APBB1IP  1.19   0.840  1.53  0.005<span style="text-decoration: underline;">61</span>  6.77 2.54<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span>  6.35<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span> 12.8  AML    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ANGPT1  -<span style="color: #BB0000;">1.66</span>  -<span style="color: #BB0000;">2.18</span>  -<span style="color: #BB0000;">1.13</span>  1.38    -<span style="color: #BB0000;">6.23</span> 4.11<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span>  8.22<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span> 10.1  AML    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ARTN     0.921  0.615  1.23  0.648    5.95 1.74<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span>  2.89<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  8.67 AML    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ACTA2    0.711  0.458  0.964 1.52     5.55 1.21<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  1.73<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  6.77 AML    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ADGRG1   1.30   0.827  1.77  1.80     5.44 2.08<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  2.60<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  6.25 AML    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ADAMTS8 -<span style="color: #BB0000;">0.809</span> -<span style="color: #BB0000;">1.11</span>  -<span style="color: #BB0000;">0.506</span> 0.420   -<span style="color: #BB0000;">5.27</span> 4.55<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  5.06<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  5.47 AML    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ANGPT2   0.741  0.459  1.02  1.06     5.18 6.73<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  6.73<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  5.10 AML    </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 90 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: sig &lt;chr&gt;</span></span></span>
 <span></span>
@@ -648,21 +652,24 @@ results for AML (Acute Myeloid Leukemia), BRC (Breast Cancer), and PRC
 <span>                       only_female <span class="op">=</span> <span class="st">"BRC"</span>,</span>
 <span>                       only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Comparing BRC with AML, PRC.</span></span>
+<span><span class="co">#&gt; Warning in do_limma_de(join_data, variable, case, control, correct,</span></span>
+<span><span class="co">#&gt; correct_type, : 293 rows were removed because they contain NAs in Disease or</span></span>
+<span><span class="co">#&gt; Sex, Age!</span></span>
 <span></span>
 <span><span class="va">de_res_brc</span><span class="op">$</span><span class="va">de_results</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 100 × 11</span></span></span>
-<span><span class="co">#&gt;    Assay    logFC  CI.L   CI.R AveExpr     t  P.Value adj.P.Val      B Disease</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AZU1    -<span style="color: #BB0000;">2.58</span>  -<span style="color: #BB0000;">3.13</span> -<span style="color: #BB0000;">2.04</span>   0.472  -<span style="color: #BB0000;">9.42</span> 1.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span>  1.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-12</span> 22.5   BRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> ADA     -<span style="color: #BB0000;">1.96</span>  -<span style="color: #BB0000;">2.43</span> -<span style="color: #BB0000;">1.49</span>   1.35   -<span style="color: #BB0000;">8.32</span> 2.36<span style="color: #949494;">e</span><span style="color: #BB0000;">-12</span>  1.18<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span> 17.6   BRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> APEX1   -<span style="color: #BB0000;">2.09</span>  -<span style="color: #BB0000;">2.66</span> -<span style="color: #BB0000;">1.51</span>   0.629  -<span style="color: #BB0000;">7.21</span> 3.20<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span>  1.07<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span> 12.8   BRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> APBB1IP -<span style="color: #BB0000;">1.46</span>  -<span style="color: #BB0000;">2.00</span> -<span style="color: #BB0000;">0.930</span>  0.019<span style="text-decoration: underline;">0</span> -<span style="color: #BB0000;">5.47</span> 5.40<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  1.35<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  5.50  BRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AHCY    -<span style="color: #BB0000;">1.53</span>  -<span style="color: #BB0000;">2.11</span> -<span style="color: #BB0000;">0.936</span>  2.08   -<span style="color: #BB0000;">5.16</span> 1.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  3.76<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  4.28  BRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ACTA2   -<span style="color: #BB0000;">0.823</span> -<span style="color: #BB0000;">1.17</span> -<span style="color: #BB0000;">0.471</span>  1.61   -<span style="color: #BB0000;">4.65</span> 1.32<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  2.20<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  2.35  BRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ARTN    -<span style="color: #BB0000;">1.02</span>  -<span style="color: #BB0000;">1.50</span> -<span style="color: #BB0000;">0.549</span>  0.774  -<span style="color: #BB0000;">4.29</span> 5.13<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  7.32<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  1.10  BRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ANGPT1   2.09   1.10  3.07   1.45    4.24 6.23<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  7.79<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  0.857 BRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> B4GALT1 -<span style="color: #BB0000;">0.746</span> -<span style="color: #BB0000;">1.12</span> -<span style="color: #BB0000;">0.377</span>  0.798  -<span style="color: #BB0000;">4.02</span> 1.33<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  1.48<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span>  0.149 BRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ABL1    -<span style="color: #BB0000;">1.43</span>  -<span style="color: #BB0000;">2.15</span> -<span style="color: #BB0000;">0.702</span>  1.93   -<span style="color: #BB0000;">3.92</span> 1.90<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  1.90<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span> -<span style="color: #BB0000;">0.200</span> BRC    </span></span>
+<span><span class="co">#&gt;    Assay    logFC  CI.L   CI.R AveExpr     t  P.Value adj.P.Val     B Disease</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ADA     -<span style="color: #BB0000;">1.95</span>  -<span style="color: #BB0000;">2.39</span> -<span style="color: #BB0000;">1.52</span>   1.35   -<span style="color: #BB0000;">8.92</span> 1.72<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span>  1.72<span style="color: #949494;">e</span><span style="color: #BB0000;">-11</span> 20.3  BRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AZU1    -<span style="color: #BB0000;">2.57</span>  -<span style="color: #BB0000;">3.16</span> -<span style="color: #BB0000;">1.98</span>   0.472  -<span style="color: #BB0000;">8.66</span> 5.28<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span>  2.64<span style="color: #949494;">e</span><span style="color: #BB0000;">-11</span> 19.2  BRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> APEX1   -<span style="color: #BB0000;">2.02</span>  -<span style="color: #BB0000;">2.58</span> -<span style="color: #BB0000;">1.46</span>   0.629  -<span style="color: #BB0000;">7.17</span> 3.97<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span>  1.32<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span> 12.6  BRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> APBB1IP -<span style="color: #BB0000;">1.39</span>  -<span style="color: #BB0000;">1.90</span> -<span style="color: #BB0000;">0.881</span>  0.019<span style="text-decoration: underline;">0</span> -<span style="color: #BB0000;">5.43</span> 6.22<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>  1.56<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  5.37 BRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AHCY    -<span style="color: #BB0000;">1.42</span>  -<span style="color: #BB0000;">2.02</span> -<span style="color: #BB0000;">0.831</span>  2.08   -<span style="color: #BB0000;">4.78</span> 8.20<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>  1.64<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  2.88 BRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ARTN    -<span style="color: #BB0000;">0.992</span> -<span style="color: #BB0000;">1.42</span> -<span style="color: #BB0000;">0.567</span>  0.774  -<span style="color: #BB0000;">4.65</span> 1.35<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  2.25<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  2.41 BRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ABL1    -<span style="color: #BB0000;">1.44</span>  -<span style="color: #BB0000;">2.07</span> -<span style="color: #BB0000;">0.811</span>  1.93   -<span style="color: #BB0000;">4.54</span> 2.00<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  2.86<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  2.00 BRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ACTA2   -<span style="color: #BB0000;">0.816</span> -<span style="color: #BB0000;">1.18</span> -<span style="color: #BB0000;">0.449</span>  1.61   -<span style="color: #BB0000;">4.43</span> 3.11<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  3.69<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  1.57 BRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> B4GALT1 -<span style="color: #BB0000;">0.856</span> -<span style="color: #BB0000;">1.24</span> -<span style="color: #BB0000;">0.470</span>  0.798  -<span style="color: #BB0000;">4.41</span> 3.32<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  3.69<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  1.50 BRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ANGPT1   1.95   1.05  2.85   1.45    4.32 4.56<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>  4.56<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>  1.19 BRC    </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 90 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: sig &lt;chr&gt;</span></span></span>
 <span></span>
@@ -678,21 +685,24 @@ results for AML (Acute Myeloid Leukemia), BRC (Breast Cancer), and PRC
 <span>                       only_female <span class="op">=</span> <span class="st">"BRC"</span>,</span>
 <span>                       only_male <span class="op">=</span> <span class="st">"PRC"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Comparing PRC with BRC, AML.</span></span>
+<span><span class="co">#&gt; Warning in do_limma_de(join_data, variable, case, control, correct,</span></span>
+<span><span class="co">#&gt; correct_type, : 143 rows were removed because they contain NAs in Disease or</span></span>
+<span><span class="co">#&gt; Sex, Age!</span></span>
 <span></span>
 <span><span class="va">de_res_prc</span><span class="op">$</span><span class="va">de_results</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 100 × 11</span></span></span>
-<span><span class="co">#&gt;    Assay    logFC   CI.L   CI.R AveExpr     t P.Value adj.P.Val        B Disease</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ADGRG1  -<span style="color: #BB0000;">1.77</span>  -<span style="color: #BB0000;">2.34</span>  -<span style="color: #BB0000;">1.20</span>    1.86  -<span style="color: #BB0000;">6.16</span> 2.51<span style="color: #949494;">e</span><span style="color: #BB0000;">-8</span>   2.51<span style="color: #949494;">e</span><span style="color: #BB0000;">-6</span>  8.77    PRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> ADA     -<span style="color: #BB0000;">1.22</span>  -<span style="color: #BB0000;">1.67</span>  -<span style="color: #BB0000;">0.766</span>   1.16  -<span style="color: #BB0000;">5.36</span> 7.46<span style="color: #949494;">e</span><span style="color: #BB0000;">-7</span>   3.73<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>  5.49    PRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AZU1    -<span style="color: #BB0000;">1.40</span>  -<span style="color: #BB0000;">1.93</span>  -<span style="color: #BB0000;">0.858</span>   0.600 -<span style="color: #BB0000;">5.16</span> 1.67<span style="color: #949494;">e</span><span style="color: #BB0000;">-6</span>   5.58<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>  4.72    PRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> APEX1   -<span style="color: #BB0000;">1.62</span>  -<span style="color: #BB0000;">2.28</span>  -<span style="color: #BB0000;">0.959</span>   0.539 -<span style="color: #BB0000;">4.88</span> 5.16<span style="color: #949494;">e</span><span style="color: #BB0000;">-6</span>   1.29<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>  3.61    PRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ATG4A    1.05   0.613  1.49    2.57   4.77 7.97<span style="color: #949494;">e</span><span style="color: #BB0000;">-6</span>   1.59<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>  3.22    PRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ADAMTS8  0.958  0.534  1.38    0.446  4.50 2.22<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>   3.70<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>  2.22    PRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ATP6AP2 -<span style="color: #BB0000;">0.699</span> -<span style="color: #BB0000;">1.02</span>  -<span style="color: #BB0000;">0.381</span>  -<span style="color: #BB0000;">1.11</span>  -<span style="color: #BB0000;">4.37</span> 3.60<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>   5.14<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>  1.77    PRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ANGPT1   1.46   0.789  2.14    1.31   4.32 4.33<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>   5.41<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>  1.58    PRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ARTN    -<span style="color: #BB0000;">0.902</span> -<span style="color: #BB0000;">1.32</span>  -<span style="color: #BB0000;">0.479</span>   0.528 -<span style="color: #BB0000;">4.24</span> 5.81<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>   6.46<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>  1.30    PRC    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ANGPT2  -<span style="color: #BB0000;">0.642</span> -<span style="color: #BB0000;">0.973</span> -<span style="color: #BB0000;">0.310</span>   1.02  -<span style="color: #BB0000;">3.85</span> 2.32<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>   2.32<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span> -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">62</span> PRC    </span></span>
+<span><span class="co">#&gt;    Assay    logFC   CI.L   CI.R  AveExpr     t  P.Value adj.P.Val      B Disease</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ADGRG1  -<span style="color: #BB0000;">1.77</span>  -<span style="color: #BB0000;">2.38</span>  -<span style="color: #BB0000;">1.16</span>   1.86    -<span style="color: #BB0000;">5.74</span>  1.52<span style="color: #949494;">e</span><span style="color: #BB0000;">-7</span> 0.000<span style="text-decoration: underline;">015</span>2  7.07  PRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> APEX1   -<span style="color: #BB0000;">1.68</span>  -<span style="color: #BB0000;">2.28</span>  -<span style="color: #BB0000;">1.07</span>   0.539   -<span style="color: #BB0000;">5.51</span>  4.03<span style="color: #949494;">e</span><span style="color: #BB0000;">-7</span> 0.000<span style="text-decoration: underline;">020</span>2  6.12  PRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> ADA     -<span style="color: #BB0000;">1.22</span>  -<span style="color: #BB0000;">1.68</span>  -<span style="color: #BB0000;">0.750</span>  1.16    -<span style="color: #BB0000;">5.19</span>  1.45<span style="color: #949494;">e</span><span style="color: #BB0000;">-6</span> 0.000<span style="text-decoration: underline;">048</span>3  4.91  PRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AZU1    -<span style="color: #BB0000;">1.29</span>  -<span style="color: #BB0000;">1.82</span>  -<span style="color: #BB0000;">0.761</span>  0.600   -<span style="color: #BB0000;">4.85</span>  5.78<span style="color: #949494;">e</span><span style="color: #BB0000;">-6</span> 0.000<span style="text-decoration: underline;">145</span>   3.58  PRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ADAMTS8  0.967  0.538  1.40   0.446    4.48  2.33<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span> 0.000<span style="text-decoration: underline;">421</span>   2.23  PRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ATG4A    1.04   0.577  1.51   2.57     4.45  2.64<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span> 0.000<span style="text-decoration: underline;">421</span>   2.14  PRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ANGPT1   1.47   0.807  2.13   1.31     4.42  2.95<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span> 0.000<span style="text-decoration: underline;">421</span>   2.02  PRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ARTN    -<span style="color: #BB0000;">0.885</span> -<span style="color: #BB0000;">1.32</span>  -<span style="color: #BB0000;">0.455</span>  0.528   -<span style="color: #BB0000;">4.09</span>  9.90<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span> 0.001<span style="text-decoration: underline;">24</span>    0.863 PRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ATP6AP2 -<span style="color: #BB0000;">0.664</span> -<span style="color: #BB0000;">1.00</span>  -<span style="color: #BB0000;">0.326</span> -<span style="color: #BB0000;">1.11</span>    -<span style="color: #BB0000;">3.90</span>  1.92<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span> 0.002<span style="text-decoration: underline;">14</span>    0.236 PRC    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> APBB1IP -<span style="color: #BB0000;">0.979</span> -<span style="color: #BB0000;">1.50</span>  -<span style="color: #BB0000;">0.456</span> -<span style="color: #BB0000;">0.007</span><span style="color: #BB0000; text-decoration: underline;">13</span> -<span style="color: #BB0000;">3.73</span>  3.55<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span> 0.003<span style="text-decoration: underline;">55</span>   -<span style="color: #BB0000;">0.329</span> PRC    </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 90 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: sig &lt;chr&gt;</span></span></span>
 <span></span>
@@ -707,6 +717,40 @@ list.</p>
 <span>               <span class="st">"PRC"</span> <span class="op">=</span> <span class="va">de_res_prc</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_de_summary.html">plot_de_summary</a></span><span class="op">(</span><span class="va">de_res</span>, disease_palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $AML</span></span>
+<span><span class="co">#&gt;  [1] "ADA"      "APEX1"    "AZU1"     "APBB1IP"  "ARTN"     "ACTA2"   </span></span>
+<span><span class="co">#&gt;  [7] "ADGRG1"   "ANGPT2"   "AHCY"     "AGRP"     "ARID4B"   "B4GALT1" </span></span>
+<span><span class="co">#&gt; [13] "ABL1"     "AMFR"     "ADM"      "ATP6AP2"  "ATP6V1F"  "AREG"    </span></span>
+<span><span class="co">#&gt; [19] "ANGPTL4"  "ACE2"     "ATF2"     "ADA2"     "ATXN10"   "ARHGAP25"</span></span>
+<span><span class="co">#&gt; [25] "ARNT"    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`BRC&amp;PRC`</span></span>
+<span><span class="co">#&gt; [1] "ANGPT1"  "ADAMTS8" "ADGRG2" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $BRC</span></span>
+<span><span class="co">#&gt; [1] "ANGPT1"   "ART3"     "ADAMTS8"  "ADAMTS13" "ADGRG2"   "APP"     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $PRC</span></span>
+<span><span class="co">#&gt;  [1] "ADAMTS8" "ATG4A"   "ANGPT1"  "APOM"    "ALPP"    "ADGRG2"  "AMY2B"  </span></span>
+<span><span class="co">#&gt;  [8] "ALDH1A1" "ACAN"    "AK1"    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $AML</span></span>
+<span><span class="co">#&gt;  [1] "ANGPT1"   "ADAMTS8"  "ADGRG2"   "APOM"     "ATG4A"    "APP"     </span></span>
+<span><span class="co">#&gt;  [7] "ADAMTS13" "ALPP"     "ARHGEF12" "ACAN"    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`BRC&amp;PRC`</span></span>
+<span><span class="co">#&gt;  [1] "ADA"     "AZU1"    "APEX1"   "APBB1IP" "AHCY"    "ARTN"    "ACTA2"  </span></span>
+<span><span class="co">#&gt;  [8] "ANGPT2"  "AGRP"    "ARID4B"  "ADGRG1" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $BRC</span></span>
+<span><span class="co">#&gt;  [1] "ADA"     "AZU1"    "APEX1"   "APBB1IP" "AHCY"    "ARTN"    "ABL1"   </span></span>
+<span><span class="co">#&gt;  [8] "ACTA2"   "B4GALT1" "ANGPT2"  "AGRP"    "ADA2"    "ARID4B"  "ADGRG1" </span></span>
+<span><span class="co">#&gt; [15] "ACE2"    "AMFR"    "ADGRE5"  "AARSD1"  "ANGPTL1"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $PRC</span></span>
+<span><span class="co">#&gt;  [1] "ADGRG1"  "APEX1"   "ADA"     "AZU1"    "ARTN"    "ATP6AP2" "APBB1IP"</span></span>
+<span><span class="co">#&gt;  [8] "ANGPT2"  "AGRP"    "AREG"    "ADM"     "ARID4B"  "ACTA2"   "AHCY"   </span></span>
+<span><span class="co">#&gt; [15] "ANGPTL4"</span></span>
 <span><span class="co">#&gt; $de_barplot</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
@@ -716,44 +760,75 @@ list.</p>
 <span><span class="co">#&gt; $upset_plot_down</span></span></code></pre>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-17-3.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_df_up</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 38 × 3</span></span></span>
+<span><span class="co">#&gt;    `Shared in` `up/down` Assay   </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AML         up        ABL1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> PRC         up        ACAN    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AML         up        ACE2    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AML         up        ACTA2   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AML         up        ADA     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AML         up        ADA2    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> BRC         up        ADAMTS13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> BRC&amp;PRC     up        ADAMTS8 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AML         up        ADGRG1  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> BRC&amp;PRC     up        ADGRG2  </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 28 more rows</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_df_down</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 33 × 3</span></span></span>
+<span><span class="co">#&gt;    `Shared in` `up/down` Assay   </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> BRC         up        AARSD1  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> BRC         up        ABL1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AML         up        ACAN    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> BRC         up        ACE2    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> BRC&amp;PRC     up        ACTA2   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> BRC&amp;PRC     up        ADA     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> BRC         up        ADA2    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AML         up        ADAMTS13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AML         up        ADAMTS8 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> BRC         up        ADGRE5  </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 23 more rows</span></span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $proteins_list_up</span></span>
 <span><span class="co">#&gt; $proteins_list_up$AML</span></span>
 <span><span class="co">#&gt;  [1] "ADA"      "APEX1"    "AZU1"     "APBB1IP"  "ARTN"     "ACTA2"   </span></span>
-<span><span class="co">#&gt;  [7] "ADGRG1"   "ANGPT2"   "AGRP"     "AHCY"     "ABL1"     "ARID4B"  </span></span>
-<span><span class="co">#&gt; [13] "B4GALT1"  "AMFR"     "ATP6AP2"  "ATP6V1F"  "AREG"     "ANGPTL4" </span></span>
-<span><span class="co">#&gt; [19] "ACE2"     "ATF2"     "ADM"      "ADA2"     "ATXN10"   "ARNT"    </span></span>
-<span><span class="co">#&gt; [25] "ARHGAP25"</span></span>
+<span><span class="co">#&gt;  [7] "ADGRG1"   "ANGPT2"   "AHCY"     "AGRP"     "ARID4B"   "B4GALT1" </span></span>
+<span><span class="co">#&gt; [13] "ABL1"     "AMFR"     "ADM"      "ATP6AP2"  "ATP6V1F"  "AREG"    </span></span>
+<span><span class="co">#&gt; [19] "ANGPTL4"  "ACE2"     "ATF2"     "ADA2"     "ATXN10"   "ARHGAP25"</span></span>
+<span><span class="co">#&gt; [25] "ARNT"    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $proteins_list_up$`BRC&amp;PRC`</span></span>
 <span><span class="co">#&gt; [1] "ANGPT1"  "ADAMTS8" "ADGRG2" </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $proteins_list_up$BRC</span></span>
-<span><span class="co">#&gt; [1] "ANGPT1"   "ART3"     "ADAMTS8"  "ADGRG2"   "ADAMTS13" "ARHGEF12" "AOC1"    </span></span>
+<span><span class="co">#&gt; [1] "ANGPT1"   "ART3"     "ADAMTS8"  "ADAMTS13" "ADGRG2"   "APP"     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $proteins_list_up$PRC</span></span>
-<span><span class="co">#&gt; [1] "ATG4A"   "ADAMTS8" "ANGPT1"  "APOM"    "ADGRG2"  "ALPP"    "AMY2B"  </span></span>
-<span><span class="co">#&gt; [8] "ACAN"    "ALDH1A1"</span></span>
+<span><span class="co">#&gt;  [1] "ADAMTS8" "ATG4A"   "ANGPT1"  "APOM"    "ALPP"    "ADGRG2"  "AMY2B"  </span></span>
+<span><span class="co">#&gt;  [8] "ALDH1A1" "ACAN"    "AK1"    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $proteins_list_down</span></span>
 <span><span class="co">#&gt; $proteins_list_down$AML</span></span>
-<span><span class="co">#&gt;  [1] "ANGPT1"   "ADAMTS8"  "ATG4A"    "ADGRG2"   "APOM"     "APP"     </span></span>
-<span><span class="co">#&gt;  [7] "ADAMTS13" "ALPP"     "ARHGEF12" "ACAN"     "ANGPTL7"  "AMY2B"   </span></span>
-<span><span class="co">#&gt; [13] "AKT3"    </span></span>
+<span><span class="co">#&gt;  [1] "ANGPT1"   "ADAMTS8"  "ADGRG2"   "APOM"     "ATG4A"    "APP"     </span></span>
+<span><span class="co">#&gt;  [7] "ADAMTS13" "ALPP"     "ARHGEF12" "ACAN"    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $proteins_list_down$`BRC&amp;PRC`</span></span>
-<span><span class="co">#&gt;  [1] "AZU1"    "ADA"     "APEX1"   "APBB1IP" "AHCY"    "ACTA2"   "ARTN"   </span></span>
+<span><span class="co">#&gt;  [1] "ADA"     "AZU1"    "APEX1"   "APBB1IP" "AHCY"    "ARTN"    "ACTA2"  </span></span>
 <span><span class="co">#&gt;  [8] "ANGPT2"  "AGRP"    "ARID4B"  "ADGRG1" </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $proteins_list_down$BRC</span></span>
-<span><span class="co">#&gt;  [1] "AZU1"     "ADA"      "APEX1"    "APBB1IP"  "AHCY"     "ACTA2"   </span></span>
-<span><span class="co">#&gt;  [7] "ARTN"     "B4GALT1"  "ABL1"     "AMFR"     "ANGPT2"   "AGRP"    </span></span>
-<span><span class="co">#&gt; [13] "ARID4B"   "ADA2"     "ACE2"     "ARHGAP25" "ADGRG1"   "ATP6V1F" </span></span>
+<span><span class="co">#&gt;  [1] "ADA"     "AZU1"    "APEX1"   "APBB1IP" "AHCY"    "ARTN"    "ABL1"   </span></span>
+<span><span class="co">#&gt;  [8] "ACTA2"   "B4GALT1" "ANGPT2"  "AGRP"    "ADA2"    "ARID4B"  "ADGRG1" </span></span>
+<span><span class="co">#&gt; [15] "ACE2"    "AMFR"    "ADGRE5"  "AARSD1"  "ANGPTL1"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $proteins_list_down$PRC</span></span>
-<span><span class="co">#&gt;  [1] "ADGRG1"  "ADA"     "AZU1"    "APEX1"   "ATP6AP2" "ARTN"    "ANGPT2" </span></span>
-<span><span class="co">#&gt;  [8] "ARID4B"  "ADM"     "AGRP"    "ACTA2"   "APBB1IP" "AREG"    "AGRN"   </span></span>
-<span><span class="co">#&gt; [15] "AHCY"    "AIF1"</span></span></code></pre>
+<span><span class="co">#&gt;  [1] "ADGRG1"  "APEX1"   "ADA"     "AZU1"    "ARTN"    "ATP6AP2" "APBB1IP"</span></span>
+<span><span class="co">#&gt;  [8] "ANGPT2"  "AGRP"    "AREG"    "ADM"     "ARID4B"  "ACTA2"   "AHCY"   </span></span>
+<span><span class="co">#&gt; [15] "ANGPTL4"</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="lasso-machine-learning-classification-model">Lasso Machine Learning Classification Model<a class="anchor" aria-label="anchor" href="#lasso-machine-learning-classification-model"></a>
@@ -784,6 +859,20 @@ results for AML, BRC and, PRC.</p>
 <span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
 <span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
 <span><span class="co">#&gt; Classification model for AML as case is starting...</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,800 × 3</span></span></span>
+<span><span class="co">#&gt;    Disease Protein    NPX</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AML     ADGRG1   2.48 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AML     APEX1    3.68 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AML     ABL1     2.76 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AML     ANGPT1   1.59 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AML     ALDH1A1  2.49 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AML     ANXA11   1.35 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AML     ADM      2.35 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AML     ADGRG2   0.869</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AML     AGR3    -<span style="color: #BB0000;">1.28</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AML     AHCY     3.87 </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,790 more rows</span></span></span>
 <span></span>
 <span><span class="va">lasso_res_aml</span><span class="op">$</span><span class="va">hypopt_res</span><span class="op">$</span><span class="va">hypopt_vis</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
@@ -855,6 +944,20 @@ results for AML, BRC and, PRC.</p>
 <span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
 <span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
 <span><span class="co">#&gt; Classification model for BRC as case is starting...</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,800 × 3</span></span></span>
+<span><span class="co">#&gt;    Disease Protein     NPX</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AML     ADA       5.39 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AML     ANGPT1    1.59 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AML     ADGRG2    0.869</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AML     ANGPTL2   1.51 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AML     ADAMTS13 -<span style="color: #BB0000;">1.69</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AML     ACTA2     2.81 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AML     ATP6V1D  -<span style="color: #BB0000;">0.321</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AML     AMIGO2   -<span style="color: #BB0000;">0.362</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AML     APEX1     3.68 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AML     B4GALT1   2.09 </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,790 more rows</span></span></span>
 <span></span>
 <span><span class="va">lasso_res_brc</span><span class="op">$</span><span class="va">hypopt_res</span><span class="op">$</span><span class="va">hypopt_vis</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
@@ -928,6 +1031,20 @@ results for AML, BRC and, PRC.</p>
 <span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
 <span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
 <span><span class="co">#&gt; Classification model for PRC as case is starting...</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,800 × 3</span></span></span>
+<span><span class="co">#&gt;    Disease Protein     NPX</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AML     ANGPT1    1.59 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AML     ALPP     -<span style="color: #BB0000;">2.73</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AML     APEX1     3.68 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AML     ACP6      2.15 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AML     ATP6AP2  -<span style="color: #BB0000;">1.30</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AML     APOM      0.774</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AML     ADM       2.35 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AML     AMBN      0.512</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AML     AGRP      1.77 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AML     ADAMTS15  4.27 </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,790 more rows</span></span></span>
 <span></span>
 <span><span class="va">lasso_res_prc</span><span class="op">$</span><span class="va">hypopt_res</span><span class="op">$</span><span class="va">hypopt_vis</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
@@ -986,7 +1103,35 @@ we need to store the results in a list.</p>
 <span>                  <span class="st">"BRC"</span> <span class="op">=</span> <span class="va">lasso_res_brc</span>, </span>
 <span>                  <span class="st">"PRC"</span> <span class="op">=</span> <span class="va">lasso_res_prc</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_features_summary.html">plot_features_summary</a></span><span class="op">(</span><span class="va">lasso_res</span>, disease_palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plot_features_summary.html">plot_features_summary</a></span><span class="op">(</span><span class="va">lasso_res</span>, case_palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $AML</span></span>
+<span><span class="co">#&gt;  [1] ADGRG1  APEX1   ABL1    ANGPT1  ALDH1A1 ANXA11  ADM     ADGRG2  AGR3   </span></span>
+<span><span class="co">#&gt; [10] AHCY    ADA     ARNT    ACP6    ATXN10  AGER    AGR2    ANXA5   AHSP   </span></span>
+<span><span class="co">#&gt; [19] ADAMTS8 ARID4B  APLP1   ACTA2   ADGRE2 </span></span>
+<span><span class="co">#&gt; 100 Levels: AARSD1 ACAA1 ACAN ACE2 ACOX1 ACP5 ACTN4 ACY1 ADA2 ADAM15 ... ADGRG1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`AML&amp;BRC&amp;PRC`</span></span>
+<span><span class="co">#&gt; [1] "APEX1"  "ANGPT1" "ANXA5" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`AML&amp;PRC`</span></span>
+<span><span class="co">#&gt; [1] "APEX1"   "ANGPT1"  "ALDH1A1" "ADM"     "ACP6"    "ANXA5"   "ADAMTS8"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`AML&amp;BRC`</span></span>
+<span><span class="co">#&gt; [1] "APEX1"  "ANGPT1" "ADGRG2" "ADA"    "ANXA5"  "ACTA2" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $BRC</span></span>
+<span><span class="co">#&gt;  [1] ADA      ANGPT1   ADGRG2   ANGPTL2  ADAMTS13 ACTA2    ATP6V1D  AMIGO2  </span></span>
+<span><span class="co">#&gt;  [9] APEX1    B4GALT1  ANXA5    ADAMTS16 ATP6V1F </span></span>
+<span><span class="co">#&gt; 100 Levels: AARSD1 ABL1 ACAA1 ACAN ACE2 ACOX1 ACP5 ACP6 ACTN4 ACY1 ... ADA</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`BRC&amp;PRC`</span></span>
+<span><span class="co">#&gt; [1] "ANGPT1"   "ADAMTS13" "AMIGO2"   "APEX1"    "ANXA5"   </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $PRC</span></span>
+<span><span class="co">#&gt;  [1] ANGPT1   ALPP     APEX1    ACP6     ATP6AP2  APOM     ADM      AMBN    </span></span>
+<span><span class="co">#&gt;  [9] AGRP     ADAMTS15 ARSB     ADAMTS8  AIF1     ADH4     AMIGO2   ACAN    </span></span>
+<span><span class="co">#&gt; [17] ANGPTL7  ADAM8    ANXA5    ANGPTL4  AZU1     ALDH1A1  ADAMTS13 ADAM23  </span></span>
+<span><span class="co">#&gt; 100 Levels: AARSD1 ABL1 ACAA1 ACE2 ACOX1 ACP5 ACTA2 ACTN4 ACY1 ADA ... ANGPT1</span></span>
 <span><span class="co">#&gt; $features_barplot</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
@@ -995,6 +1140,52 @@ we need to store the results in a list.</p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $metrics_lineplot</span></span></code></pre>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-21-3.png" width="700"></p>
+<pre><code><span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $features_df</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 45 × 3</span></span></span>
+<span><span class="co">#&gt;    `Shared in` `up/down` Assay   </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> PRC         up        ACAN    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> PRC         up        ADAM23  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> PRC         up        ADAM8   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> BRC&amp;PRC     up        ADAMTS13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> PRC         up        ADAMTS15</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> BRC         up        ADAMTS16</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> PRC         up        ADH4    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> PRC         up        AGRP    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> PRC         up        AIF1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> PRC         up        ALPP    </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 35 more rows</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $features_list</span></span>
+<span><span class="co">#&gt; $features_list$AML</span></span>
+<span><span class="co">#&gt;  [1] ADGRG1  APEX1   ABL1    ANGPT1  ALDH1A1 ANXA11  ADM     ADGRG2  AGR3   </span></span>
+<span><span class="co">#&gt; [10] AHCY    ADA     ARNT    ACP6    ATXN10  AGER    AGR2    ANXA5   AHSP   </span></span>
+<span><span class="co">#&gt; [19] ADAMTS8 ARID4B  APLP1   ACTA2   ADGRE2 </span></span>
+<span><span class="co">#&gt; 100 Levels: AARSD1 ACAA1 ACAN ACE2 ACOX1 ACP5 ACTN4 ACY1 ADA2 ADAM15 ... ADGRG1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $features_list$`AML&amp;BRC&amp;PRC`</span></span>
+<span><span class="co">#&gt; [1] "APEX1"  "ANGPT1" "ANXA5" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $features_list$`AML&amp;PRC`</span></span>
+<span><span class="co">#&gt; [1] "APEX1"   "ANGPT1"  "ALDH1A1" "ADM"     "ACP6"    "ANXA5"   "ADAMTS8"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $features_list$`AML&amp;BRC`</span></span>
+<span><span class="co">#&gt; [1] "APEX1"  "ANGPT1" "ADGRG2" "ADA"    "ANXA5"  "ACTA2" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $features_list$BRC</span></span>
+<span><span class="co">#&gt;  [1] ADA      ANGPT1   ADGRG2   ANGPTL2  ADAMTS13 ACTA2    ATP6V1D  AMIGO2  </span></span>
+<span><span class="co">#&gt;  [9] APEX1    B4GALT1  ANXA5    ADAMTS16 ATP6V1F </span></span>
+<span><span class="co">#&gt; 100 Levels: AARSD1 ABL1 ACAA1 ACAN ACE2 ACOX1 ACP5 ACP6 ACTN4 ACY1 ... ADA</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $features_list$`BRC&amp;PRC`</span></span>
+<span><span class="co">#&gt; [1] "ANGPT1"   "ADAMTS13" "AMIGO2"   "APEX1"    "ANXA5"   </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $features_list$PRC</span></span>
+<span><span class="co">#&gt;  [1] ANGPT1   ALPP     APEX1    ACP6     ATP6AP2  APOM     ADM      AMBN    </span></span>
+<span><span class="co">#&gt;  [9] AGRP     ADAMTS15 ARSB     ADAMTS8  AIF1     ADH4     AMIGO2   ACAN    </span></span>
+<span><span class="co">#&gt; [17] ANGPTL7  ADAM8    ANXA5    ANGPTL4  AZU1     ALDH1A1  ADAMTS13 ADAM23  </span></span>
+<span><span class="co">#&gt; 100 Levels: AARSD1 ABL1 ACAA1 ACE2 ACOX1 ACP5 ACTA2 ACTN4 ACY1 ADA ... ANGPT1</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -1008,7 +1199,7 @@ AML.</p>
 <blockquote>
 <p>📓 Remember that these data are a dummy-dataset with fake data.</p>
 </blockquote>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract the proteins identified by both DE and Lasso</span></span>
 <span><span class="va">de_proteins</span> <span class="op">&lt;-</span> <span class="va">de_res_aml</span><span class="op">$</span><span class="va">de_results</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sig</span> <span class="op">==</span> <span class="st">"significant up"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
