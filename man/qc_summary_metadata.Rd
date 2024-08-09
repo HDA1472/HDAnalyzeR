@@ -43,7 +43,6 @@ and creates summary visualizations for user selected categorical and numeric var
 qc_res <- qc_summary_metadata(example_metadata, disease_palette = "cancers12")
 
 # Metadata distributions
-qc_res$sex_barplot
-qc_res$age_dist_plot
-qc_res$bmi_dist_plot
+qc_res$barplot_Sex
+qc_res$distplot_Age
 }

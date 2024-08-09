@@ -318,9 +318,8 @@ qc_summary_data <- function(df, wide = TRUE, threshold = 0.8, report = TRUE) {
 #' qc_res <- qc_summary_metadata(example_metadata, disease_palette = "cancers12")
 #'
 #' # Metadata distributions
-#' qc_res$sex_barplot
-#' qc_res$age_dist_plot
-#' qc_res$bmi_dist_plot
+#' qc_res$barplot_Sex
+#' qc_res$distplot_Age
 qc_summary_metadata <- function(metadata,
                                 categorical = "Sex",
                                 numeric = "Age",
