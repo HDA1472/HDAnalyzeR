@@ -70,7 +70,8 @@ clean_data <- function(df_in,
 
     if (!is.null(remove_na_cols)) {
       rows_before <- nrow(df_out)
-      df_out <- stats::na.omit(df_out, target.colnames = remove_na_cols)
+      df_out <- df_out |>
+        dplyr::filter(dplyr::if_any(dplyr::any_of(remove_na_cols), ~!is.na(.)))
       rows_after <- nrow(df_out)
       if (rows_before != rows_after) {
         message("Removed ", rows_before - rows_after, " rows with NAs based on ", remove_na_cols)
@@ -123,7 +124,8 @@ clean_metadata <- function(df_in,
 
   if (!is.null(remove_na_cols)) {
     rows_before <- nrow(df_out)
-    df_out <- stats::na.omit(df_out, target.colnames = remove_na_cols)
+    df_out <- df_out |>
+      dplyr::filter(dplyr::if_any(dplyr::any_of(remove_na_cols), ~!is.na(.)))
     rows_after <- nrow(df_out)
     if (rows_before != rows_after) {
       message("Removed ", rows_before - rows_after, " rows with NAs based on ", remove_na_cols)

@@ -63,7 +63,7 @@ test_that("The NA columns are removed", {
   test_data <- example_data
   test_data$DAid[random_indices] <- NA
 
-  result <- clean_data(test_data, keep_cols = c("DAid", "NPX"))
+  result <- clean_data(test_data, keep_cols = c("DAid", "NPX"), remove_na_cols = "DAid")
 
   expected <- test_data |>
     dplyr::select(DAid, NPX) |>
