@@ -201,7 +201,13 @@ de_res <- list("AML" = de_res_aml,
                "BRC" = de_res_brc, 
                "PRC" = de_res_prc)
 
-plot_de_summary(de_res, disease_palette = "cancers12")
+de_summary <- plot_de_summary(de_res, disease_palette = "cancers12")
+
+de_summary$de_barplot
+de_summary$proteins_df_up
+de_summary$upset_plot_up
+de_summary$proteins_df_down
+de_summary$upset_plot_down
 ```
 
 ### Lasso Machine Learning Classification Model
@@ -305,7 +311,12 @@ lasso_res <- list("AML" = lasso_res_aml,
                   "BRC" = lasso_res_brc, 
                   "PRC" = lasso_res_prc)
 
-plot_features_summary(lasso_res, case_palette = "cancers12")
+features_summary <- plot_features_summary(lasso_res, case_palette = "cancers12")
+
+features_summary$metrics_lineplot
+features_summary$features_barplot
+features_summary$features_df
+features_summary$upset_plot_features
 ```
 
 ## One step further
