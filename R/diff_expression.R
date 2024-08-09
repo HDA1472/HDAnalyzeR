@@ -486,9 +486,7 @@ do_limma <- function(olink_data,
                      "!"))
     }
   } else {
-    wide_data <- widen_data(olink_data)
-
-    nrows_before <- nrow(wide_data)
+    nrows_before <- nrow(olink_data)
     join_data <- olink_data |>
       dplyr::left_join(metadata |>
                          dplyr::select(dplyr::any_of(c("DAid", variable, "Sex", correct))),
@@ -611,9 +609,7 @@ do_limma_continuous <- function(olink_data,
                      "!"))
     }
   } else {
-    wide_data <- widen_data(olink_data)
-
-    nrows_before <- nrow(wide_data)
+    nrows_before <- nrow(olink_data)
     join_data <- olink_data |>
       dplyr::left_join(metadata |>
                          dplyr::select(dplyr::any_of(c("DAid", variable, correct))),
@@ -745,9 +741,7 @@ do_ttest <- function(olink_data,
                      "!"))
     }
   } else {
-    wide_data <- widen_data(olink_data)
-
-    nrows_before <- nrow(wide_data)
+    nrows_before <- nrow(olink_data)
     join_data <- olink_data |>
       dplyr::left_join(metadata |>
                          dplyr::select(dplyr::any_of(c("DAid", variable, "Sex"))),
