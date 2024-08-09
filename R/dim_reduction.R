@@ -166,6 +166,7 @@ do_pca <- function(olink_data,
 
     tidied_pca <- broom::tidy(pca_prep, 3)
 
+    ntidy <- 3
   } else {
     pca_rec <- recipes::recipe( ~ ., data = wide_data) |>
       recipes::update_role(DAid, new_role = "id")  |>
@@ -175,6 +176,8 @@ do_pca <- function(olink_data,
     pca_prep <- recipes::prep(pca_rec)
 
     tidied_pca <- broom::tidy(pca_prep, 2)
+
+    ntidy <- 2
   }
 
   loadings_data <- tidied_pca |>
@@ -183,7 +186,7 @@ do_pca <- function(olink_data,
   pca_res <-  recipes::juice(pca_prep)
 
   # Extract the explained variance and calculate cumulative explained variance
-  explained_variance <- broom::tidy(pca_prep, number = 3, type = "variance") |>
+  explained_variance <- broom::tidy(pca_prep, number = ntidy, type = "variance") |>
     dplyr::filter(terms %in% c("percent variance", "cumulative percent variance")) |>
     dplyr::filter(component >= 1 & component <= pcs) |>
     tidyr::pivot_wider(names_from = terms, values_from = value) |>
