@@ -46,12 +46,14 @@ plot_explained_variance <- function(explained_variance) {
   variance_plot <- ggplot2::ggplot(
     explained_variance,
     ggplot2::aes(x = factor(component, levels = component),
-                 y = explained_variance)
+                 y = `percent variance`)
     ) +
     ggplot2::geom_bar(stat = "identity", fill = "darkblue") +
-    ggplot2::geom_line(ggplot2::aes(y = cumulative_variance, group = 1), color = "red3") +
-    ggplot2::geom_point(ggplot2::aes(y = cumulative_variance), color = "red3") +
-    ggplot2::labs(x = "Components", y = "Explained Variance") +
+    ggplot2::geom_line(ggplot2::aes(y = `cumulative percent variance`, group = 1),
+                       color = "red3") +
+    ggplot2::geom_point(ggplot2::aes(y = `cumulative percent variance`),
+                        color = "red3") +
+    ggplot2::labs(x = "Components", y = "% Explained Variance") +
     theme_hpa()
 
   return(variance_plot)
@@ -181,12 +183,11 @@ do_pca <- function(olink_data,
   pca_res <-  recipes::juice(pca_prep)
 
   # Extract the explained variance and calculate cumulative explained variance
-  explained_variance <- pca_res |>
-    dplyr::summarise(dplyr::across(dplyr::starts_with("PC"), var)) |>
-    tidyr::pivot_longer(cols = dplyr::everything(), names_to = "component", values_to = "explained_variance")
-
-  explained_variance <- explained_variance |>
-    dplyr::mutate(cumulative_variance = cumsum(explained_variance))
+  explained_variance <- tidy(pca_prep, number = 3, type = "variance") |>
+    dplyr::filter(terms %in% c("percent variance", "cumulative percent variance")) |>
+    dplyr::filter(component >= 1 & component <= pcs) |>
+    tidyr::pivot_wider(names_from = terms, values_from = value) |>
+    dplyr::select(-id)
 
   # Visualize results
   if (isTRUE(plots)) {
