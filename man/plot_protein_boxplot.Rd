@@ -6,8 +6,9 @@
 \usage{
 plot_protein_boxplot(
   join_data,
+  variable = "Disease",
   proteins,
-  disease,
+  case,
   points = TRUE,
   xaxis_names = FALSE,
   palette = NULL
@@ -16,22 +17,24 @@ plot_protein_boxplot(
 \arguments{
 \item{join_data}{The dataset with the wide Olink data joined with the metadata.}
 
+\item{variable}{The variable that will be used as \code{x} and \code{fill.}}
+
 \item{proteins}{The proteins to include in the boxplot.}
 
-\item{disease}{The disease to annotate.}
+\item{case}{The case to annotate.}
 
 \item{points}{Whether to add points to the boxplot.}
 
 \item{xaxis_names}{Whether to show the x-axis names. Default is FALSE.}
 
-\item{palette}{The color palette to use. Default is "red3" for the annotated disease.}
+\item{palette}{The color palette to use. Default is "red3" for the annotated case}
 }
 \value{
 The boxplot panel with the selected proteins.
 }
 \description{
 \code{plot_protein_boxplot()} plots boxplots for the specified proteins in the dataset.
-It annotates the boxplot with color for the selected disease.
+It annotates the boxplot with color for the selected case
 It is also possible to add points to the boxplot.
 }
 \examples{
@@ -41,5 +44,8 @@ join_data <- wide_data |>
   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
 
 # Boxplots for AARSD1 and ABL1 in AML
-plot_protein_boxplot(join_data, c("AARSD1", "ABL1"), "AML", palette = "cancers12")
+plot_protein_boxplot(join_data,
+                     proteins = c("AARSD1", "ABL1"),
+                     case = "AML",
+                     palette = "cancers12")
 }

@@ -7,7 +7,9 @@
 do_rreg_multi(
   olink_data,
   metadata,
+  variable = "Disease",
   wide = TRUE,
+  strata = TRUE,
   exclude_cols = "Sex",
   ratio = 0.75,
   type = "lasso",
@@ -25,7 +27,11 @@ do_rreg_multi(
 
 \item{metadata}{Metadata.}
 
+\item{variable}{The variable to predict. Default is "Disease".}
+
 \item{wide}{Whether the data is wide format. Default is TRUE.}
+
+\item{strata}{Whether to stratify the data. Default is TRUE.}
 
 \item{exclude_cols}{Columns to exclude from the data before the model is tuned.}
 

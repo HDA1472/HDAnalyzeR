@@ -6,7 +6,7 @@
 \usage{
 plot_var_imp(
   finalfit_res,
-  disease,
+  case,
   accuracy,
   sensitivity,
   specificity,
@@ -22,7 +22,7 @@ plot_var_imp(
 \arguments{
 \item{finalfit_res}{Results from \code{finalfit()}.}
 
-\item{disease}{Disease to predict.}
+\item{case}{Case to predict.}
 
 \item{accuracy}{Accuracy of the model.}
 

@@ -305,7 +305,7 @@ lasso_res <- list("AML" = lasso_res_aml,
                   "BRC" = lasso_res_brc, 
                   "PRC" = lasso_res_prc)
 
-plot_features_summary(lasso_res, disease_palette = "cancers12")
+plot_features_summary(lasso_res, case_palette = "cancers12")
 ```
 
 ## One step further

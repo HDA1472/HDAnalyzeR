@@ -2,15 +2,16 @@ utils::globalVariables(c("Value"))
 #' Plot protein boxplots
 #'
 #' `plot_protein_boxplot()` plots boxplots for the specified proteins in the dataset.
-#' It annotates the boxplot with color for the selected disease.
+#' It annotates the boxplot with color for the selected case
 #' It is also possible to add points to the boxplot.
 #'
 #' @param join_data The dataset with the wide Olink data joined with the metadata.
+#' @param variable The variable that will be used as `x` and `fill.`
 #' @param proteins The proteins to include in the boxplot.
-#' @param disease The disease to annotate.
+#' @param case The case to annotate.
 #' @param points Whether to add points to the boxplot.
 #' @param xaxis_names Whether to show the x-axis names. Default is FALSE.
-#' @param palette The color palette to use. Default is "red3" for the annotated disease.
+#' @param palette The color palette to use. Default is "red3" for the annotated case
 #'
 #' @return The boxplot panel with the selected proteins.
 #' @export
@@ -22,14 +23,18 @@ utils::globalVariables(c("Value"))
 #'   dplyr::left_join(example_metadata |> dplyr::select(DAid, Disease, Sex))
 #'
 #' # Boxplots for AARSD1 and ABL1 in AML
-#' plot_protein_boxplot(join_data, c("AARSD1", "ABL1"), "AML", palette = "cancers12")
+#' plot_protein_boxplot(join_data,
+#'                      proteins = c("AARSD1", "ABL1"),
+#'                      case = "AML",
+#'                      palette = "cancers12")
 plot_protein_boxplot <- function(join_data,
+                                 variable = "Disease",
                                  proteins,
-                                 disease,
+                                 case,
                                  points = TRUE,
                                  xaxis_names = FALSE,
                                  palette = NULL) {
-
+  Variable <- rlang::sym(variable)
   # Prepare palettes
   pals <- get_hpa_palettes()
   if (!is.null(palette) && is.null(names(palette))) {
@@ -38,51 +43,53 @@ plot_protein_boxplot <- function(join_data,
   } else if (!is.null(palette)) {
     pal <- palette
   } else {
-    pal <- "red3"
+    pal <- "black"
   }
 
   long_data <- join_data |>
-    dplyr::select(Disease, dplyr::all_of(proteins)) |>
-    tidyr::pivot_longer(cols = !Disease, names_to = "Protein", values_to = "NPX")
+    dplyr::select(!!Variable, dplyr::all_of(proteins)) |>
+    tidyr::pivot_longer(cols = !dplyr::any_of(c(variable)),
+                        names_to = "Protein",
+                        values_to = "NPX")
 
   long_data$Protein <- factor(long_data$Protein, levels = proteins, labels = proteins)
-
+  long_data[[variable]] <- as.factor(long_data[[variable]])
+  print(long_data)
   # Create boxplot
   boxplot <- long_data |>
-    ggplot2::ggplot(ggplot2::aes(x = Disease, y = NPX)) +
+    ggplot2::ggplot(ggplot2::aes(x = !!Variable, y = NPX)) +
     ggplot2::geom_boxplot(outlier.shape = NA) +
-    ggplot2::geom_boxplot(data = subset(long_data, Disease == disease),
-                          ggplot2::aes(fill = Disease),
+    ggplot2::geom_boxplot(data = dplyr::filter(long_data, !!Variable == case),
+                          ggplot2::aes(fill = !!Variable),
                           alpha = 0.5,
                           show.legend = FALSE,
                           outlier.shape = NA)
 
   if (isTRUE(points)) {
     boxplot <- boxplot +
-      ggplot2::geom_point(data = subset(long_data, Disease != disease),
+      ggplot2::geom_point(data = dplyr::filter(long_data, !!Variable == case),
                           position = ggplot2::position_jitter(width = 0.1),
                           color = 'grey',
                           alpha = 0.3)
 
     if (!is.null(palette)) {
       boxplot <- boxplot +
-        ggplot2::geom_point(data = subset(long_data, Disease == disease),
-                            ggplot2::aes(fill = Disease),
+        ggplot2::geom_point(data = dplyr::filter(long_data, !!Variable == case),
+                            ggplot2::aes(fill = !!Variable),
                             position = ggplot2::position_jitter(width = 0.1),
-                            color = pal[disease],
+                            color = pal[case],
                             alpha = 0.5,
                             show.legend = FALSE)
     } else {
       boxplot <- boxplot +
-        ggplot2::geom_point(data = subset(long_data, Disease == disease),
-                            ggplot2::aes(fill = Disease),
+        ggplot2::geom_point(data = dplyr::filter(long_data, !!Variable == case),
+                            ggplot2::aes(fill = !!Variable),
                             position = ggplot2::position_jitter(width = 0.1),
-                            color = pal,
                             alpha = 0.5,
                             show.legend = FALSE)
     }
   }
-
+  boxplot_panel <- boxplot
   boxplot_panel <- boxplot +
     ggplot2::theme(legend.position = 'none') +
     ggplot2::scale_fill_manual(values = pal) +

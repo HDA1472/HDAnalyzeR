@@ -7,9 +7,11 @@
 do_rf(
   olink_data,
   metadata,
+  variable = "Disease",
   case,
   control,
   wide = TRUE,
+  strata = TRUE,
   balance_groups = TRUE,
   only_female = NULL,
   only_male = NULL,
@@ -37,11 +39,15 @@ do_rf(
 
 \item{metadata}{Metadata.}
 
+\item{variable}{The variable to predict. Default is "Disease".}
+
 \item{case}{The case group.}
 
 \item{control}{The control groups.}
 
 \item{wide}{Whether the data is wide format. Default is TRUE.}
+
+\item{strata}{Whether to stratify the data. Default is TRUE.}
 
 \item{balance_groups}{Whether to balance the groups. Default is TRUE.}
 
@@ -103,8 +109,8 @@ If no check for feature correlation is preferred, set \code{cor_threshold} to 1.
 \examples{
 do_rf(example_data,
       example_metadata,
-      "AML",
-      c("CLL", "MYEL"),
+      case = "AML",
+      control = c("CLL", "MYEL"),
       balance_groups = TRUE,
       wide = FALSE,
       palette = "cancers12",

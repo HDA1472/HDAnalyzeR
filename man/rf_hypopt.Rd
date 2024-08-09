@@ -7,7 +7,8 @@
 rf_hypopt(
   train_data,
   test_data,
-  disease,
+  variable = "Disease",
+  case,
   cor_threshold = 0.9,
   normalize = TRUE,
   cv_sets = 5,
@@ -23,7 +24,9 @@ rf_hypopt(
 
 \item{test_data}{Testing data set from \code{make_groups()}.}
 
-\item{disease}{Disease to predict.}
+\item{variable}{The variable to predict. Default is "Disease".}
+
+\item{case}{Case to predict.}
 
 \item{cor_threshold}{Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.}
 
