@@ -7,7 +7,8 @@
 testfit(
   train_set,
   test_set,
-  disease,
+  variable = "Disease",
+  case,
   finalfit_res,
   exclude_cols = NULL,
   type = "lasso",
@@ -20,7 +21,9 @@ testfit(
 
 \item{test_set}{Testing set.}
 
-\item{disease}{Disease to predict.}
+\item{variable}{The variable to predict. Default is "Disease".}
+
+\item{case}{Case to predict.}
 
 \item{finalfit_res}{Results from \code{elnet_finalfit()}.}
 

@@ -4,10 +4,20 @@
 \alias{split_data}
 \title{Split dataset into training and test sets}
 \usage{
-split_data(join_data, ratio = 0.75, seed = 123)
+split_data(
+  join_data,
+  variable = "Disease",
+  strata = TRUE,
+  ratio = 0.75,
+  seed = 123
+)
 }
 \arguments{
 \item{join_data}{Olink data in wide format joined with metadata.}
+
+\item{variable}{Variable to stratify the data. Default is "Disease".}
+
+\item{strata}{Whether to stratify the data. Default is TRUE.}
 
 \item{ratio}{Ratio of training data to test data. Default is 0.75.}
 
@@ -23,5 +33,6 @@ A list with three elements:
 }
 \description{
 \code{split_data()} splits the dataset into training and test sets based on user defined ratio.
+It also stratifies the data based on the variable of interest.
 }
 \keyword{internal}

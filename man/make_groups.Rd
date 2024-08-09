@@ -6,8 +6,9 @@
 \usage{
 make_groups(
   join_data,
-  disease,
-  diseases,
+  variable = "Disease",
+  case,
+  cases,
   only_female = NULL,
   only_male = NULL,
   seed = 123
@@ -16,23 +17,25 @@ make_groups(
 \arguments{
 \item{join_data}{Olink data in wide format joined with metadata.}
 
-\item{disease}{Disease to predict.}
+\item{variable}{The variable to predict. Default is "Disease".}
 
-\item{diseases}{Diseases.}
+\item{case}{Case to predict.}
 
-\item{only_female}{Diseases that are female specific.}
+\item{cases}{Cases.}
 
-\item{only_male}{Diseases that are male specific.}
+\item{only_female}{Cases that are female specific.}
+
+\item{only_male}{Cases that are male specific.}
 
 \item{seed}{Seed for reproducibility. Default is 123.}
 }
 \value{
-A list with combined, class-balanced control-case groups for each disease.
+A list with combined, class-balanced control-case groups for each case.
 }
 \description{
 \code{make_groups()} creates class-balanced case-control groups for classification models.
 It separates the data into control and case groups. It then calculates the amount of data
-from each disease in the control group and randomly selects the number of each control class samples.
-It also filters the control data of sex specific diseases.
+from each case in the control group and randomly selects the number of each control class samples.
+It also filters the control data of sex specific cases.
 }
 \keyword{internal}

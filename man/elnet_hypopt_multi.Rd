@@ -7,6 +7,7 @@
 elnet_hypopt_multi(
   train_data,
   test_data,
+  variable = "Disease",
   type = "lasso",
   cor_threshold = 0.9,
   cv_sets = 5,

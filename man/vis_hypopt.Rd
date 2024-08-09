@@ -4,7 +4,7 @@
 \alias{vis_hypopt}
 \title{Visualize hyperparameter optimization results}
 \usage{
-vis_hypopt(tune_res, x, color, disease)
+vis_hypopt(tune_res, x, color, case)
 }
 \arguments{
 \item{tune_res}{Hyperparameter optimization results.}
@@ -13,7 +13,7 @@ vis_hypopt(tune_res, x, color, disease)
 
 \item{color}{Color variable of the plot.}
 
-\item{disease}{Disease to predict.}
+\item{case}{Case to predict.}
 }
 \value{
 Hyperparameter optimization plot.

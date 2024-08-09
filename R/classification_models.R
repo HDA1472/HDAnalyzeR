@@ -4,8 +4,11 @@ utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled
 #' Split dataset into training and test sets
 #'
 #' `split_data()` splits the dataset into training and test sets based on user defined ratio.
+#' It also stratifies the data based on the variable of interest.
 #'
 #' @param join_data Olink data in wide format joined with metadata.
+#' @param variable Variable to stratify the data. Default is "Disease".
+#' @param strata Whether to stratify the data. Default is TRUE.
 #' @param ratio Ratio of training data to test data. Default is 0.75.
 #' @param seed Seed for reproducibility. Default is 123.
 #'
@@ -14,10 +17,17 @@ utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled
 #'  - test_set: The test set.
 #'  - data_split: The data split object.
 #' @keywords internal
-split_data <- function(join_data, ratio = 0.75, seed = 123) {
-
+split_data <- function(join_data,
+                       variable = "Disease",
+                       strata = TRUE,
+                       ratio = 0.75,
+                       seed = 123) {
   set.seed(seed)
-  data_split <- rsample::initial_split(join_data, prop = ratio, strata = "Disease")
+  if (strata) {
+    data_split <- rsample::initial_split(join_data, prop = ratio, strata = dplyr::any_of(variable))
+  } else {
+    data_split <- rsample::initial_split(join_data, prop = ratio)
+  }
   train_data <- rsample::training(data_split)
   test_data <- rsample::testing(data_split)
 
@@ -27,43 +37,43 @@ split_data <- function(join_data, ratio = 0.75, seed = 123) {
 }
 
 
-#' Create control groups for sex specific diseases
+#' Create control groups for sex specific cases
 #'
-#' `filter_sex_specific_disease()` creates control groups for sex-specific diseases
+#' `filter_sex_specific_disease()` creates control groups for sex-specific cases
 #' by filtering samples to include only those from the relevant sex and by
-#' updating the diseases vector to include only the diseases that will be sampled.
+#' updating the cases vector to include only the cases that will be sampled.
 #'
 #' @param control_data Control data to filter.
-#' @param disease Disease to create control group.
-#' @param diseases Diseases.
-#' @param only_female Diseases that are female specific.
-#' @param only_male Diseases that are male specific.
+#' @param case Case to create control group.
+#' @param cases Cases.
+#' @param only_female Cases that are female specific.
+#' @param only_male Cases that are male specific.
 #'
 #' @return A list with two elements:
 #'  - control_data: Control data to filter.
-#'  - diseases_subset: Filtered diseases vector.
+#'  - cases_subset: Filtered cases vector.
 #' @keywords internal
 filter_sex_specific_disease <- function(control_data,
-                                        disease,
-                                        diseases,
+                                        case,
+                                        cases,
                                         only_female = NULL,
                                         only_male = NULL) {
 
-  if(!is.null(only_female) & disease %in% only_female) {
+  if(!is.null(only_female) & case %in% only_female) {
     control_data <- control_data |>
       dplyr::filter(Sex == "F")
-    diseases_subset <- diseases[!diseases %in% only_male]
-  } else if(!is.null(only_male) & disease %in% only_male) {
+    cases_subset <- cases[!cases %in% only_male]
+  } else if(!is.null(only_male) & case %in% only_male) {
     control_data <- control_data |>
       dplyr::filter(Sex == "M")
-    diseases_subset <- diseases[!diseases %in% only_female]
+    cases_subset <- cases[!cases %in% only_female]
   } else {
     control_data <- control_data
-    diseases_subset <- diseases
+    cases_subset <- cases
   }
 
   return(list("control_data" = control_data,
-              "diseases_subset" = diseases_subset))
+              "cases_subset" = cases_subset))
 }
 
 
@@ -71,51 +81,54 @@ filter_sex_specific_disease <- function(control_data,
 #'
 #' `make_groups()` creates class-balanced case-control groups for classification models.
 #' It separates the data into control and case groups. It then calculates the amount of data
-#' from each disease in the control group and randomly selects the number of each control class samples.
-#' It also filters the control data of sex specific diseases.
+#' from each case in the control group and randomly selects the number of each control class samples.
+#' It also filters the control data of sex specific cases.
 #'
 #' @param join_data Olink data in wide format joined with metadata.
-#' @param disease Disease to predict.
-#' @param diseases Diseases.
-#' @param only_female Diseases that are female specific.
-#' @param only_male Diseases that are male specific.
+#' @param variable The variable to predict. Default is "Disease".
+#' @param case Case to predict.
+#' @param cases Cases.
+#' @param only_female Cases that are female specific.
+#' @param only_male Cases that are male specific.
 #' @param seed Seed for reproducibility. Default is 123.
 #'
-#' @return A list with combined, class-balanced control-case groups for each disease.
+#' @return A list with combined, class-balanced control-case groups for each case.
 #' @keywords internal
 make_groups <- function(join_data,
-                        disease,
-                        diseases,
+                        variable = "Disease",
+                        case,
+                        cases,
                         only_female = NULL,
                         only_male = NULL,
                         seed = 123) {
-
+  Variable <- rlang::sym(variable)
   set.seed(seed)
 
   # Separate data in control and case groups
-  case_data <- join_data |> dplyr::filter(Disease == disease)
-  control_data <- join_data |> dplyr::filter(Disease != disease)
+  case_data <- join_data |> dplyr::filter(!!Variable == case)
+  control_data <- join_data |> dplyr::filter(!!Variable != case)
 
-  # Filter for gender if disease is gender specific
+  # Filter for gender if case is gender specific
   filtered_results <- filter_sex_specific_disease(control_data,
-                                                  disease,
-                                                  diseases,
+                                                  case,
+                                                  cases,
                                                   only_female,
                                                   only_male)
 
   control_data <- filtered_results$control_data
-  diseases_subset <- filtered_results$diseases_subset  # Keep only diseases that we will pick samples from
+  cases_subset <- filtered_results$cases_subset  # Keep only cases that we will pick samples from
 
-  # Calculate amount of data from each disease in control group
+  # Calculate amount of data from each case in control group
   case_sample_num <- nrow(case_data)
-  samples_per_disease <- ceiling(case_sample_num/(length(unique(diseases_subset))-1))
+  samples_per_case <- ceiling(case_sample_num/(length(unique(cases_subset))-1))
 
   # Loop over control group, randomly select the number of each control class samples
   group <- case_data
-  for (control_class in diseases_subset[diseases_subset != disease]) {
+  for (control_class in cases_subset[cases_subset != case]) {
+
     control_class_data <- control_data |>
-      dplyr::filter(Disease == control_class) |>
-      dplyr::sample_n(size = samples_per_disease, replace = TRUE)
+      dplyr::filter(!!Variable == control_class) |>
+      dplyr::sample_n(size = samples_per_case, replace = TRUE)
     group <- rbind(group, control_class_data)
   }
 
@@ -130,14 +143,14 @@ make_groups <- function(join_data,
 #' @param tune_res Hyperparameter optimization results.
 #' @param x X-axis variable of the plot.
 #' @param color Color variable of the plot.
-#' @param disease Disease to predict.
+#' @param case Case to predict.
 #'
 #' @return Hyperparameter optimization plot.
 #' @keywords internal
 vis_hypopt <- function(tune_res,
                        x,
                        color,
-                       disease) {
+                       case) {
 
   hypopt_res <- tune_res |>
     tune::collect_metrics()
@@ -152,7 +165,7 @@ vis_hypopt <- function(tune_res,
     ggplot2::geom_errorbar(ggplot2::aes(ymin = mean - std_err,
                                         ymax = mean + std_err),
                            alpha = 0.5) +
-    ggplot2::ggtitle(label = paste0(disease,'')) +
+    ggplot2::ggtitle(label = paste0(case,'')) +
     viridis::scale_color_viridis() +
     ggplot2::labs(y = "metric_mean") +
     ggplot2::theme_classic()
@@ -170,7 +183,8 @@ vis_hypopt <- function(tune_res,
 #'
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
-#' @param disease Disease to predict.
+#' @param variable The variable to predict. Default is "Disease".
+#' @param case Case to predict.
 #' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
 #' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
@@ -189,7 +203,8 @@ vis_hypopt <- function(tune_res,
 #' @keywords internal
 elnet_hypopt <- function(train_data,
                          test_data,
-                         disease,
+                         variable = "Disease",
+                         case,
                          type = "lasso",
                          cor_threshold = 0.9,
                          cv_sets = 5,
@@ -199,23 +214,26 @@ elnet_hypopt <- function(train_data,
                          exclude_cols = NULL,
                          seed = 123) {
 
+  Variable <- rlang::sym(variable)
   if (ncores > 1) {
     doParallel::registerDoParallel(cores = ncores)
   }
 
   # Prepare train data and create cross-validation sets with binary classifier
   train_set <- train_data |>
-    dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
-    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::mutate(!!Variable := ifelse(!!Variable == case, 1, 0)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
     dplyr::select(-dplyr::any_of(exclude_cols))
-  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
+  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = !!Variable)
 
   test_set <- test_data |>
-    dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
-    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::mutate(!!Variable := ifelse(!!Variable == case, 1, 0)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
     dplyr::select(-dplyr::any_of(exclude_cols))
 
-  elnet_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
+  formula <- stats::as.formula(paste(variable, "~ ."))
+
+  elnet_rec <- recipes::recipe(formula, data = train_set) |>
     recipes::update_role(DAid, new_role = "id") |>
     recipes::step_normalize(recipes::all_numeric()) |>
     recipes::step_nzv(recipes::all_numeric()) |>
@@ -264,9 +282,9 @@ elnet_hypopt <- function(train_data,
 
   if (hypopt_vis) {
     if (type == "elnet") {
-      hypopt_plot <- vis_hypopt(elnet_tune, "penalty", "mixture", disease)
+      hypopt_plot <- vis_hypopt(elnet_tune, "penalty", "mixture", case)
     } else {
-      hypopt_plot <- vis_hypopt(elnet_tune, "penalty", NULL, disease)
+      hypopt_plot <- vis_hypopt(elnet_tune, "penalty", NULL, case)
     }
     return(list("elnet_tune" = elnet_tune,
                 "elnet_wf" = elnet_wf,
@@ -293,7 +311,8 @@ elnet_hypopt <- function(train_data,
 #'
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
-#' @param disease Disease to predict.
+#' @param variable The variable to predict. Default is "Disease".
+#' @param case Case to predict.
 #' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
 #' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
@@ -312,7 +331,8 @@ elnet_hypopt <- function(train_data,
 #' @keywords internal
 rf_hypopt <- function(train_data,
                       test_data,
-                      disease,
+                      variable = "Disease",
+                      case,
                       cor_threshold = 0.9,
                       normalize = TRUE,
                       cv_sets = 5,
@@ -322,26 +342,29 @@ rf_hypopt <- function(train_data,
                       exclude_cols = NULL,
                       seed = 123) {
 
+  Variable <- rlang::sym(variable)
   if (ncores > 1) {
     doParallel::registerDoParallel(cores = ncores)
   }
 
   # Prepare train data and create cross-validation sets with binary classifier
   train_set <- train_data |>
-    dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
-    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::mutate(!!Variable := ifelse(!!Variable == case, 1, 0)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
     dplyr::select(-dplyr::any_of(exclude_cols)) |>
     dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))  # Solve bug of Gower distance function
 
-  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
+  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = !!Variable)
 
   test_set <- test_data |>
-    dplyr::mutate(Disease = ifelse(Disease == disease, 1, 0)) |>
-    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::mutate(!!Variable := ifelse(!!Variable == case, 1, 0)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
     dplyr::select(-dplyr::any_of(exclude_cols)) |>
     dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))
 
-  rf_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
+  formula <- stats::as.formula(paste(variable, "~ ."))
+
+  rf_rec <- recipes::recipe(formula, data = train_set) |>
     recipes::update_role(DAid, new_role = "id")
 
   if (isTRUE(normalize)) {
@@ -385,7 +408,7 @@ rf_hypopt <- function(train_data,
     )
 
   if (hypopt_vis) {
-    hypopt_plot <- vis_hypopt(rf_tune, "min_n", "mtry", disease)
+    hypopt_plot <- vis_hypopt(rf_tune, "min_n", "mtry", case)
 
     return(list("rf_tune" = rf_tune,
                 "rf_wf" = rf_wf,
@@ -429,6 +452,7 @@ rf_hypopt <- function(train_data,
 #' @keywords internal
 elnet_hypopt_multi <- function(train_data,
                                test_data,
+                               variable = "Disease",
                                type = "lasso",
                                cor_threshold = 0.9,
                                cv_sets = 5,
@@ -438,21 +462,25 @@ elnet_hypopt_multi <- function(train_data,
                                exclude_cols = NULL,
                                seed = 123) {
 
+  Variable <- rlang::sym(variable)
+
   if (ncores > 1) {
     doParallel::registerDoParallel(cores = ncores)
   }
 
   # Prepare train data and create cross-validation sets with binary classifier
   train_set <- train_data |>
-    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
     dplyr::select(-dplyr::any_of(exclude_cols))
-  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
+  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = !!Variable)
 
   test_set <- test_data |>
-    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
     dplyr::select(-dplyr::any_of(exclude_cols))
 
-  elnet_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
+  formula <- stats::as.formula(paste(variable, "~ ."))
+
+  elnet_rec <- recipes::recipe(formula, data = train_set) |>
     recipes::update_role(DAid, new_role = "id") |>
     recipes::step_normalize(recipes::all_numeric()) |>
     recipes::step_nzv(recipes::all_numeric()) |>
@@ -548,6 +576,7 @@ elnet_hypopt_multi <- function(train_data,
 #' @keywords internal
 rf_hypopt_multi <- function(train_data,
                             test_data,
+                            variable = "Disease",
                             cor_threshold = 0.9,
                             normalize = TRUE,
                             cv_sets = 5,
@@ -557,24 +586,28 @@ rf_hypopt_multi <- function(train_data,
                             exclude_cols = NULL,
                             seed = 123) {
 
+  Variable <- rlang::sym(variable)
+
   if (ncores > 1) {
     doParallel::registerDoParallel(cores = ncores)
   }
 
   # Prepare train data and create cross-validation sets with binary classifier
   train_set <- train_data |>
-    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
     dplyr::select(-dplyr::any_of(exclude_cols)) |>
     dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))  # Solve bug of Gower distance function
 
-  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = Disease)
+  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = !!Variable)
 
   test_set <- test_data |>
-    dplyr::mutate(Disease = as.factor(Disease)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
     dplyr::select(-dplyr::any_of(exclude_cols)) |>
     dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))
 
-  rf_rec <- recipes::recipe(Disease ~ ., data = train_set) |>
+  formula <- stats::as.formula(paste(variable, "~ ."))
+
+  rf_rec <- recipes::recipe(formula, data = train_set) |>
     recipes::update_role(DAid, new_role = "id")
 
   if (isTRUE(normalize)) {
@@ -594,7 +627,7 @@ rf_hypopt_multi <- function(train_data,
     parsnip::set_mode("classification") |>
     parsnip::set_engine("ranger", importance = "permutation")
 
-  disease_pred <- train_set |> dplyr::select(-dplyr::any_of(c("Disease", "DAid", "Sex", "Age", "BMI")))
+  disease_pred <- train_set |> dplyr::select(-dplyr::any_of(c("Disease", "DAid", "Sex", "Age", "BMI", variable)))
 
   rf_wf <- workflows::workflow() |>
     workflows::add_model(rf_spec) |>
@@ -676,7 +709,8 @@ finalfit <- function(train_set,
 #'
 #' @param train_set Training set.
 #' @param test_set Testing set.
-#' @param disease Disease to predict.
+#' @param variable The variable to predict. Default is "Disease".
+#' @param case Case to predict.
 #' @param finalfit_res Results from `elnet_finalfit()`.
 #' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is NULL.
 #' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
@@ -697,12 +731,15 @@ finalfit <- function(train_set,
 #' @keywords internal
 testfit <- function(train_set,
                     test_set,
-                    disease,
+                    variable = "Disease",
+                    case,
                     finalfit_res,
                     exclude_cols = NULL,
                     type = "lasso",
                     seed = 123,
                     palette = NULL) {
+
+  Variable <- rlang::sym(variable)
 
   set.seed(seed)
   splits <- rsample::make_splits(train_set, test_set)
@@ -712,19 +749,19 @@ testfit <- function(train_set,
                           metrics = yardstick::metric_set(yardstick::roc_auc))
   res <- stats::predict(finalfit_res$final, new_data = test_set)
 
-  res <- dplyr::bind_cols(res, test_set |> dplyr::select(Disease))
+  res <- dplyr::bind_cols(res, test_set |> dplyr::select(!!Variable))
 
   accuracy <- res |>
-    yardstick::accuracy(Disease, .pred_class)
+    yardstick::accuracy(!!Variable, .pred_class)
 
   sensitivity <- res |>
-    yardstick::sensitivity(Disease, .pred_class)
+    yardstick::sensitivity(!!Variable, .pred_class)
 
   specificity <- res |>
-    yardstick::specificity(Disease, .pred_class)
+    yardstick::specificity(!!Variable, .pred_class)
 
   if (is.null(names(palette)) && !is.null(palette)) {
-    disease_color <- get_hpa_palettes()[[palette]][[disease]]
+    disease_color <- get_hpa_palettes()[[palette]][[case]]
   } else if (!is.null(palette)) {
     disease_color <- palette
   } else {
@@ -735,7 +772,7 @@ testfit <- function(train_set,
                                    y = sensitivity$.estimate)
   roc <- preds |>
     tune::collect_predictions(summarize = F) |>
-    yardstick::roc_curve(truth = Disease, .pred_0) |>
+    yardstick::roc_curve(truth = !!Variable, .pred_0) |>
     ggplot2::ggplot(ggplot2::aes(x = 1 - specificity, y = sensitivity)) +
     ggplot2::geom_path(colour = disease_color, linewidth = 2) +
     ggplot2::geom_point(data = selected_point, ggplot2::aes(x = x, y = y), size = 2, shape = 4, colour = "black") +
@@ -747,7 +784,7 @@ testfit <- function(train_set,
     tune::collect_metrics()
 
   cm <- res |>
-    yardstick::conf_mat(Disease, .pred_class)
+    yardstick::conf_mat(!!Variable, .pred_class)
 
   if (type == "elnet") {
     mixture <- finalfit_res$best$mixture
@@ -845,7 +882,7 @@ generate_subtitle <- function(features,
 #' It scales their importance and plots it against them.
 #'
 #' @param finalfit_res Results from `finalfit()`.
-#' @param disease Disease to predict.
+#' @param case Case to predict.
 #' @param accuracy Accuracy of the model.
 #' @param sensitivity Sensitivity of the model.
 #' @param specificity Specificity of the model.
@@ -861,7 +898,7 @@ generate_subtitle <- function(features,
 #'  - var_imp_plot: Variable importance plot.
 #' @keywords internal
 plot_var_imp <- function (finalfit_res,
-                          disease,
+                          case,
                           accuracy,
                           sensitivity,
                           specificity,
@@ -906,11 +943,11 @@ plot_var_imp <- function (finalfit_res,
 
   var_imp_plot <- features |>
     ggplot2::ggplot(ggplot2::aes(x = Scaled_Importance, y = Variable)) +
-    ggplot2::geom_col(ggplot2::aes(fill = ifelse(Scaled_Importance > 50, disease, NA))) +
+    ggplot2::geom_col(ggplot2::aes(fill = ifelse(Scaled_Importance > 50, case, NA))) +
     ggplot2::labs(y = NULL) +
     ggplot2::scale_x_continuous(breaks = c(0, 100), expand = c(0, 0)) +  # Keep x-axis tick labels at 0 and 100
     ggplot2::scale_fill_manual(values = pal, na.value = "grey50") +
-    ggplot2::ggtitle(label = paste0(disease, ''),
+    ggplot2::ggtitle(label = paste0(case, ''),
                      subtitle = subtitle_text) +
     ggplot2::xlab('Importance') +
     ggplot2::ylab('Features') +
@@ -942,9 +979,11 @@ plot_var_imp <- function (finalfit_res,
 #'
 #' @param olink_data Olink data.
 #' @param metadata Metadata.
+#' @param variable The variable to predict. Default is "Disease".
 #' @param case The case group.
 #' @param control The control groups.
 #' @param wide Whether the data is wide format. Default is TRUE.
+#' @param strata Whether to stratify the data. Default is TRUE.
 #' @param balance_groups Whether to balance the groups. Default is TRUE.
 #' @param only_female Vector of diseases that are female specific. Default is NULL.
 #' @param only_male Vector of diseases that are male specific. Default is NULL.
@@ -978,8 +1017,8 @@ plot_var_imp <- function (finalfit_res,
 #' @examples
 #' do_rreg(example_data,
 #'         example_metadata,
-#'         "AML",
-#'         c("CLL", "MYEL"),
+#'         case = "AML",
+#'         control = c("CLL", "MYEL"),
 #'         balance_groups = TRUE,
 #'         wide = FALSE,
 #'         type = "elnet",
@@ -989,9 +1028,11 @@ plot_var_imp <- function (finalfit_res,
 #'         ncores = 1)
 do_rreg <- function(olink_data,
                     metadata,
+                    variable = "Disease",
                     case,
                     control,
                     wide = TRUE,
+                    strata = TRUE,
                     balance_groups = TRUE,
                     only_female = NULL,
                     only_male = NULL,
@@ -1018,6 +1059,8 @@ do_rreg <- function(olink_data,
                     boxplot_xaxis_names = FALSE,
                     seed = 123) {
 
+  Variable <- rlang::sym(variable)
+
   # Prepare datasets
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
@@ -1026,19 +1069,21 @@ do_rreg <- function(olink_data,
   }
 
   join_data <- wide_data |>
-    dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
-    dplyr::filter(Disease %in% c(case, control))
+    dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", variable)))) |>
+    dplyr::filter(!!Variable %in% c(case, control))
 
   # Prepare sets and groups
-  data_split <- split_data(join_data, ratio, seed)
+  data_split <- split_data(join_data, variable, strata, ratio, seed)
   if (isTRUE(balance_groups)) {
     train_list <- make_groups(data_split$train_set,
+                              variable,
                               case,
                               c(case, control),
                               only_female,
                               only_male,
                               seed)
     test_list <- make_groups(data_split$test_set,
+                             variable,
                              case,
                              c(case, control),
                              only_female,
@@ -1054,6 +1099,7 @@ do_rreg <- function(olink_data,
   message(paste0("Classification model for ", case, " as case is starting..."))
   hypopt_res <- elnet_hypopt(train_list,
                              test_list,
+                             variable,
                              case,
                              type,
                              cor_threshold,
@@ -1071,6 +1117,7 @@ do_rreg <- function(olink_data,
 
   testfit_res <- testfit(hypopt_res$train_set,
                          hypopt_res$test_set,
+                         variable,
                          case,
                          finalfit_res,
                          exclude_cols,
@@ -1095,14 +1142,15 @@ do_rreg <- function(olink_data,
     dplyr::select(Variable) |>
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
     utils::head(nfeatures)
-  proteins <- top_features[['Variable']]
+  proteins <- top_features[["Variable"]]
 
   boxplot_res <- plot_protein_boxplot(join_data,
+                                      variable,
                                       proteins,
                                       case,
                                       points,
                                       xaxis_names = boxplot_xaxis_names,
-                                      palette)
+                                      palette = palette)
 
   return(list("hypopt_res" = hypopt_res,
               "finalfit_res" = finalfit_res,
@@ -1121,9 +1169,11 @@ do_rreg <- function(olink_data,
 #'
 #' @param olink_data Olink data.
 #' @param metadata Metadata.
+#' @param variable The variable to predict. Default is "Disease".
 #' @param case The case group.
 #' @param control The control groups.
 #' @param wide Whether the data is wide format. Default is TRUE.
+#' @param strata Whether to stratify the data. Default is TRUE.
 #' @param balance_groups Whether to balance the groups. Default is TRUE.
 #' @param only_female Vector of diseases that are female specific. Default is NULL.
 #' @param only_male Vector of diseases that are male specific. Default is NULL.
@@ -1157,8 +1207,8 @@ do_rreg <- function(olink_data,
 #' @examples
 #' do_rf(example_data,
 #'       example_metadata,
-#'       "AML",
-#'       c("CLL", "MYEL"),
+#'       case = "AML",
+#'       control = c("CLL", "MYEL"),
 #'       balance_groups = TRUE,
 #'       wide = FALSE,
 #'       palette = "cancers12",
@@ -1167,9 +1217,11 @@ do_rreg <- function(olink_data,
 #'       ncores = 1)
 do_rf <- function(olink_data,
                   metadata,
+                  variable = "Disease",
                   case,
                   control,
                   wide = TRUE,
+                  strata = TRUE,
                   balance_groups = TRUE,
                   only_female = NULL,
                   only_male = NULL,
@@ -1195,6 +1247,8 @@ do_rf <- function(olink_data,
                   boxplot_xaxis_names = FALSE,
                   seed = 123) {
 
+  Variable <- rlang::sym(variable)
+
   # Prepare datasets
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
@@ -1203,19 +1257,21 @@ do_rf <- function(olink_data,
   }
 
   join_data <- wide_data |>
-    dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
-    dplyr::filter(Disease %in% c(case, control))
+    dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", variable)))) |>
+    dplyr::filter(!!Variable %in% c(case, control))
 
   # Prepare sets and groups
-  data_split <- split_data(join_data, ratio, seed)
+  data_split <- split_data(join_data, variable, strata, ratio, seed)
   if (isTRUE(balance_groups)) {
     train_list <- make_groups(data_split$train_set,
+                              variable,
                               case,
                               c(case, control),
                               only_female,
                               only_male,
                               seed)
     test_list <- make_groups(data_split$test_set,
+                             variable,
                              case,
                              c(case, control),
                              only_female,
@@ -1225,13 +1281,13 @@ do_rf <- function(olink_data,
     train_list <- data_split$train_set
     test_list <- data_split$test_set
   }
-
   message("Sets and groups are ready. Model fitting is starting...")
 
   # Run model
   message(paste0("Classification model for ", case, " as case is starting..."))
   hypopt_res <- rf_hypopt(train_list,
                           test_list,
+                          variable,
                           case,
                           cor_threshold,
                           normalize,
@@ -1249,6 +1305,7 @@ do_rf <- function(olink_data,
 
   testfit_res <- testfit(hypopt_res$train_set,
                          hypopt_res$test_set,
+                         variable,
                          case,
                          finalfit_res,
                          exclude_cols,
@@ -1273,9 +1330,10 @@ do_rf <- function(olink_data,
     dplyr::select(Variable) |>
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
     utils::head(nfeatures)
-  proteins <- top_features[['Variable']]
+  proteins <- top_features[["Variable"]]
 
   boxplot_res <- plot_protein_boxplot(join_data,
+                                      variable,
                                       proteins,
                                       case,
                                       points,
@@ -1300,7 +1358,7 @@ do_rf <- function(olink_data,
 #' @param ml_results Results from `do_rreg()` or `do_rf()`.
 #' @param importance Importance threshold for top features. Default is 50.
 #' @param upset_top_features Whether to plot the upset plot for the top features. Default is FALSE.
-#' @param disease_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param case_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
 #' @param feature_type_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "all-features" = "pink" and "top-features" = "darkblue".
 #'
 #' @return A list with two elements:
@@ -1313,8 +1371,8 @@ do_rf <- function(olink_data,
 #' # Run the elastic net model pipeline for 3 different cases
 #' res_aml <- do_rreg(example_data,
 #'                    example_metadata,
-#'                    "AML",
-#'                    c("BRC", "PRC"),
+#'                    case = "AML",
+#'                    control = c("BRC", "PRC"),
 #'                    wide = FALSE,
 #'                    only_female = "BRC",
 #'                    only_male = "PRC",
@@ -1324,8 +1382,8 @@ do_rf <- function(olink_data,
 #'
 #' res_brc <- do_rreg(example_data,
 #'                    example_metadata,
-#'                    "BRC",
-#'                    c("BRC", "AML"),
+#'                    case = "BRC",
+#'                    control = c("BRC", "AML"),
 #'                    wide = FALSE,
 #'                    only_female = "BRC",
 #'                    only_male = "PRC",
@@ -1335,8 +1393,8 @@ do_rf <- function(olink_data,
 #'
 #' res_prc <- do_rreg(example_data,
 #'                    example_metadata,
-#'                    "PRC",
-#'                    c("BRC", "AML"),
+#'                    case = "PRC",
+#'                    control = c("BRC", "AML"),
 #'                    wide = FALSE,
 #'                    only_female = "BRC",
 #'                    only_male = "PRC",
@@ -1354,27 +1412,27 @@ do_rf <- function(olink_data,
 plot_features_summary <- function(ml_results,
                                   importance = 50,
                                   upset_top_features = FALSE,
-                                  disease_palette = NULL,
+                                  case_palette = NULL,
                                   feature_type_palette = c("all-features" = "pink",
                                                            "top-features" = "darkblue")) {
 
-  barplot_data <- lapply(names(ml_results), function(disease) {
+  barplot_data <- lapply(names(ml_results), function(case) {
 
-    features <- ml_results[[disease]]$var_imp_res$features |>
-      dplyr::mutate(Disease = disease) |>
-      dplyr::select(Disease, Variable) |>
+    features <- ml_results[[case]]$var_imp_res$features |>
+      dplyr::mutate(Category = case) |>
+      dplyr::select(Category, Variable) |>
       dplyr::rename(Assay = Variable) |>
-      dplyr::group_by(Disease) |>
+      dplyr::group_by(Category) |>
       dplyr::summarise(Count = dplyr::n()) |>
       dplyr::ungroup() |>
       dplyr::mutate(Type = "all-features")
 
-    top_features <- ml_results[[disease]]$var_imp_res$features |>
-      dplyr::mutate(Disease = disease) |>
+    top_features <- ml_results[[case]]$var_imp_res$features |>
+      dplyr::mutate(Category = case) |>
       dplyr::filter(Scaled_Importance >= importance) |>
-      dplyr::select(Disease, Variable) |>
+      dplyr::select(Category, Variable) |>
       dplyr::rename(Assay = Variable) |>
-      dplyr::group_by(Disease) |>
+      dplyr::group_by(Category) |>
       dplyr::summarise(Count = dplyr::n()) |>
       dplyr::ungroup() |>
       dplyr::mutate(Type = "top-features")
@@ -1385,7 +1443,7 @@ plot_features_summary <- function(ml_results,
   barplot_data <- do.call(rbind, barplot_data)
 
   features_barplot <- barplot_data |>
-    ggplot2::ggplot(ggplot2::aes(x = Disease, y = Count, fill = Type)) +
+    ggplot2::ggplot(ggplot2::aes(x = Category, y = Count, fill = Type)) +
     ggplot2::geom_bar(stat = "identity", position = "dodge") +
     ggplot2::labs(x = "", y = "Number of protein", fill = "Feature type") +
     theme_hpa(angled = T) +
@@ -1398,21 +1456,21 @@ plot_features_summary <- function(ml_results,
     features_barplot <- features_barplot + ggplot2::scale_fill_manual(values = feature_type_palette)
   }
 
-  metrics_data <- lapply(names(ml_results), function(disease) {
+  metrics_data <- lapply(names(ml_results), function(case) {
     metrics <- tibble::tibble(
       metric = c("Accuracy", "Sensitivity", "Specificity", "AUC"),
-      value = c(ml_results[[disease]]$testfit_res$metrics$accuracy,
-                ml_results[[disease]]$testfit_res$metrics$sensitivity,
-                ml_results[[disease]]$testfit_res$metrics$specificity,
-                ml_results[[disease]]$testfit_res$metrics$auc)
+      value = c(ml_results[[case]]$testfit_res$metrics$accuracy,
+                ml_results[[case]]$testfit_res$metrics$sensitivity,
+                ml_results[[case]]$testfit_res$metrics$specificity,
+                ml_results[[case]]$testfit_res$metrics$auc)
     ) |>
-      dplyr::mutate(Disease = disease)
+      dplyr::mutate(Category = case)
   })
 
   metrics_data <- do.call(rbind, metrics_data)
 
   metrics_lineplot <- metrics_data |>
-    ggplot2::ggplot(ggplot2::aes(x = Disease,
+    ggplot2::ggplot(ggplot2::aes(x = Category,
                                  y = value,
                                  color = metric,
                                  group = metric)) +
@@ -1427,14 +1485,14 @@ plot_features_summary <- function(ml_results,
                                            "Specificity" = "darkgreen",
                                            "AUC" = "purple3"))
 
-  upset_features <- lapply(names(ml_results), function(disease) {
+  upset_features <- lapply(names(ml_results), function(case) {
 
     if (upset_top_features == T) {
-      upset_features <- ml_results[[disease]]$var_imp_res$features |>
+      upset_features <- ml_results[[case]]$var_imp_res$features |>
         dplyr::filter(Scaled_Importance >= importance) |>
         dplyr::pull(Variable)
     } else {
-      upset_features <- ml_results[[disease]]$var_imp_res$features |>
+      upset_features <- ml_results[[case]]$var_imp_res$features |>
         dplyr::pull(Variable)
     }
 
@@ -1442,10 +1500,10 @@ plot_features_summary <- function(ml_results,
   names(upset_features) <- names(ml_results)
 
   # Prepare palettes
-  if (is.null(names(disease_palette)) && !is.null(disease_palette)) {
-    pal <- get_hpa_palettes()[[disease_palette]]
-  } else if (!is.null(disease_palette)) {
-    pal <- disease_palette
+  if (is.null(names(case_palette)) && !is.null(case_palette)) {
+    pal <- get_hpa_palettes()[[case_palette]]
+  } else if (!is.null(case_palette)) {
+    pal <- case_palette
   } else {
     pal <- rep("black", length(names(ml_results)))
     names(pal) <- names(ml_results)
@@ -1460,7 +1518,6 @@ plot_features_summary <- function(ml_results,
                                  order.by = "freq",
                                  nsets = length(names(ml_results)),
                                  sets.bar.color = ordered_colors)
-
 
   return(list("features_barplot" = features_barplot,
               "upset_plot_features" = upset_plot_features,
@@ -1477,7 +1534,9 @@ plot_features_summary <- function(ml_results,
 #'
 #' @param olink_data Olink data.
 #' @param metadata Metadata.
+#' @param variable The variable to predict. Default is "Disease".
 #' @param wide Whether the data is wide format. Default is TRUE.
+#' @param strata Whether to stratify the data. Default is TRUE.
 #' @param exclude_cols Columns to exclude from the data before the model is tuned.
 #' @param ratio Ratio of training data to test data. Default is 0.75.
 #' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
@@ -1511,7 +1570,9 @@ plot_features_summary <- function(ml_results,
 #'               ncores = 1)
 do_rreg_multi <- function(olink_data,
                           metadata,
+                          variable = "Disease",
                           wide = TRUE,
+                          strata = TRUE,
                           exclude_cols = "Sex",
                           ratio = 0.75,
                           type = "lasso",
@@ -1523,6 +1584,8 @@ do_rreg_multi <- function(olink_data,
                           palette = NULL,
                           seed = 123) {
 
+  Variable <- rlang::sym(variable)
+
   # Prepare datasets
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
@@ -1532,19 +1595,19 @@ do_rreg_multi <- function(olink_data,
 
   nrows_before <- nrow(wide_data)
   join_data <- wide_data |>
-    dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
-    dplyr::filter(!is.na(Disease))
+    dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", variable)))) |>
+    dplyr::filter(!is.na(!!Variable))
 
   nrows_after <- nrow(join_data)
   if (nrows_before != nrows_after){
     warning(paste0(nrows_before - nrows_after,
-                   " rows were removed because they contain NAs in Disease! They either contain NAs or data did not match metadata."))
+                   " rows were removed because they contain NAs in ", variable, "! They either contain NAs or data did not match metadata."))
   }
 
-  diseases <- unique(join_data$Disease)
+  cases <- unique(join_data[[variable]])
 
   # Prepare sets and groups
-  data_split <- split_data(join_data, ratio, seed)
+  data_split <- split_data(join_data, variable, strata, ratio, seed)
   train_list <- data_split$train_set
   test_list <- data_split$test_set
 
@@ -1553,6 +1616,7 @@ do_rreg_multi <- function(olink_data,
   # Run model
   hypopt_res <- elnet_hypopt_multi(train_list,
                                    test_list,
+                                   variable,
                                    type,
                                    cor_threshold,
                                    cv_sets,
@@ -1574,12 +1638,12 @@ do_rreg_multi <- function(olink_data,
 
   preds <- last_fit |> tune::collect_predictions()
   unique_classes <- preds |>
-    dplyr::pull(Disease) |>
+    dplyr::pull(!!Variable) |>
     unique()
   pred_cols <- paste0(".pred_", unique_classes)
 
   roc_curve <- preds |>
-    yardstick::roc_curve(truth = Disease,
+    yardstick::roc_curve(truth = !!Variable,
                          !!!rlang::syms(pred_cols)) |>
     ggplot2::ggplot(ggplot2::aes(x = 1 - specificity,
                                  y = sensitivity,
@@ -1594,19 +1658,19 @@ do_rreg_multi <- function(olink_data,
 
   # Extract AUC values by comparing each class to the rest
   auc_df <- tibble::tibble()
-  for (i in 1:length(diseases)) {
-    col <- paste0(".pred_", diseases[[i]])
+  for (i in 1:length(cases)) {
+    col <- paste0(".pred_", cases[[i]])
     auc_ind <- preds |>
-      dplyr::mutate(Disease = factor(dplyr::if_else(Disease == diseases[[i]],
-                                                    diseases[[i]],
-                                                    "ZZZ")))
+      dplyr::mutate(!!Variable := factor(dplyr::if_else(!!Variable == cases[[i]],
+                                                        cases[[i]],
+                                                        "ZZZ")))
     auc_ind <- auc_ind |>
-      yardstick::roc_auc(truth = Disease, col) |>
-      dplyr::mutate(Disease = diseases[[i]])
+      yardstick::roc_auc(truth = !!Variable, col) |>
+      dplyr::mutate(!!Variable := cases[[i]])
     auc_df <- rbind(auc_df, auc_ind)
   }
 
-  barplot <- ggplot2::ggplot(auc_df, ggplot2::aes(x = Disease, y = .estimate, fill = Disease)) +
+  barplot <- ggplot2::ggplot(auc_df, ggplot2::aes(x = !!Variable, y = .estimate, fill = !!Variable)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
     theme_hpa(angled = T) +
@@ -1620,13 +1684,13 @@ do_rreg_multi <- function(olink_data,
     roc_curve <- roc_curve + ggplot2::scale_color_manual(values = palette)
     barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
   } else {
-    palette <- rep("black", length(diseases))
+    palette <- rep("black", length(cases))
     roc_curve <- roc_curve + ggplot2::scale_color_manual(values = palette)
     barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
   }
 
   auc_df <- auc_df |>
-    dplyr::select(Disease, .estimate) |>
+    dplyr::select(!!Variable, .estimate) |>
     dplyr::rename(AUC = .estimate)
 
   return(list("hypopt_res" = hypopt_res,
@@ -1646,7 +1710,9 @@ do_rreg_multi <- function(olink_data,
 #'
 #' @param olink_data Olink data.
 #' @param metadata Metadata.
+#' @param variable The variable to predict. Default is "Disease".
 #' @param wide Whether the data is wide format. Default is TRUE.
+#' @param strata Whether to stratify the data. Default is TRUE.
 #' @param exclude_cols Columns to exclude from the data before the model is tuned.
 #' @param ratio Ratio of training data to test data. Default is 0.75.
 #' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
@@ -1680,7 +1746,9 @@ do_rreg_multi <- function(olink_data,
 #'             ncores = 1)
 do_rf_multi <- function(olink_data,
                         metadata,
+                        variable = "Disease",
                         wide = TRUE,
+                        strata = TRUE,
                         exclude_cols = "Sex",
                         ratio = 0.75,
                         cor_threshold = 0.9,
@@ -1692,27 +1760,30 @@ do_rf_multi <- function(olink_data,
                         palette = NULL,
                         seed = 123) {
 
+  Variable <- rlang::sym(variable)
+
   # Prepare datasets
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
   } else {
     wide_data <- olink_data
   }
+
   nrows_before <- nrow(wide_data)
   join_data <- wide_data |>
-    dplyr::left_join(metadata |> dplyr::select(DAid, Disease, Sex)) |>
-    dplyr::filter(!is.na(Disease))
+    dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", variable)))) |>
+    dplyr::filter(!is.na(!!Variable))
 
   nrows_after <- nrow(join_data)
   if (nrows_before != nrows_after){
     warning(paste0(nrows_before - nrows_after,
-                   " rows were removed because they contain NAs in Disease! They either contain NAs or data did not match metadata."))
+                   " rows were removed because they contain NAs in ", variable, "! They either contain NAs or data did not match metadata."))
   }
 
-  diseases <- unique(join_data$Disease)
+  cases <- unique(join_data[[variable]])
 
   # Prepare sets and groups
-  data_split <- split_data(join_data, ratio, seed)
+  data_split <- split_data(join_data, variable, strata, ratio, seed)
   train_list <- data_split$train_set
   test_list <- data_split$test_set
 
@@ -1721,6 +1792,7 @@ do_rf_multi <- function(olink_data,
   # Run model
   hypopt_res <- rf_hypopt_multi(train_list,
                                 test_list,
+                                variable,
                                 cor_threshold,
                                 normalize,
                                 cv_sets,
@@ -1742,12 +1814,12 @@ do_rf_multi <- function(olink_data,
 
   preds <- last_fit |> tune::collect_predictions()
   unique_classes <- preds |>
-    dplyr::pull(Disease) |>
+    dplyr::pull(!!Variable) |>
     unique()
   pred_cols <- paste0(".pred_", unique_classes)
 
   roc_curve <- preds |>
-    yardstick::roc_curve(truth = Disease,
+    yardstick::roc_curve(truth = !!Variable,
                          !!!rlang::syms(pred_cols)) |>
     ggplot2::ggplot(ggplot2::aes(x = 1 - specificity,
                                  y = sensitivity,
@@ -1762,19 +1834,19 @@ do_rf_multi <- function(olink_data,
 
   # Extract AUC values by comparing each class to the rest
   auc_df <- tibble::tibble()
-  for (i in 1:length(diseases)) {
-    col <- paste0(".pred_", diseases[[i]])
+  for (i in 1:length(cases)) {
+    col <- paste0(".pred_", cases[[i]])
     auc_ind <- preds |>
-      dplyr::mutate(Disease = factor(dplyr::if_else(Disease == diseases[[i]],
-                                                    diseases[[i]],
-                                                    "ZZZ")))
+      dplyr::mutate(!!Variable := factor(dplyr::if_else(!!Variable == cases[[i]],
+                                                        cases[[i]],
+                                                        "ZZZ")))
     auc_ind <- auc_ind |>
-      yardstick::roc_auc(truth = Disease, col) |>
-      dplyr::mutate(Disease = diseases[[i]])
+      yardstick::roc_auc(truth = !!Variable, col) |>
+      dplyr::mutate(!!Variable := cases[[i]])
     auc_df <- rbind(auc_df, auc_ind)
   }
 
-  barplot <- ggplot2::ggplot(auc_df, ggplot2::aes(x = Disease, y = .estimate, fill = Disease)) +
+  barplot <- ggplot2::ggplot(auc_df, ggplot2::aes(x = !!Variable, y = .estimate, fill = Disease)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
     theme_hpa(angled = T) +
@@ -1788,13 +1860,13 @@ do_rf_multi <- function(olink_data,
     roc_curve <- roc_curve + ggplot2::scale_color_manual(values = palette)
     barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
   } else {
-    palette <- rep("black", length(diseases))
+    palette <- rep("black", length(cases))
     roc_curve <- roc_curve + ggplot2::scale_color_manual(values = palette)
     barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
   }
 
   auc_df <- auc_df |>
-    dplyr::select(Disease, .estimate) |>
+    dplyr::select(!!Variable, .estimate) |>
     dplyr::rename(AUC = .estimate)
 
   return(list("hypopt_res" = hypopt_res,

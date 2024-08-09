@@ -2,12 +2,12 @@
 % Please edit documentation in R/classification_models.R
 \name{filter_sex_specific_disease}
 \alias{filter_sex_specific_disease}
-\title{Create control groups for sex specific diseases}
+\title{Create control groups for sex specific cases}
 \usage{
 filter_sex_specific_disease(
   control_data,
-  disease,
-  diseases,
+  case,
+  cases,
   only_female = NULL,
   only_male = NULL
 )
@@ -15,24 +15,24 @@ filter_sex_specific_disease(
 \arguments{
 \item{control_data}{Control data to filter.}
 
-\item{disease}{Disease to create control group.}
+\item{case}{Case to create control group.}
 
-\item{diseases}{Diseases.}
+\item{cases}{Cases.}
 
-\item{only_female}{Diseases that are female specific.}
+\item{only_female}{Cases that are female specific.}
 
-\item{only_male}{Diseases that are male specific.}
+\item{only_male}{Cases that are male specific.}
 }
 \value{
 A list with two elements:
 \itemize{
 \item control_data: Control data to filter.
-\item diseases_subset: Filtered diseases vector.
+\item cases_subset: Filtered cases vector.
 }
 }
 \description{
-\code{filter_sex_specific_disease()} creates control groups for sex-specific diseases
+\code{filter_sex_specific_disease()} creates control groups for sex-specific cases
 by filtering samples to include only those from the relevant sex and by
-updating the diseases vector to include only the diseases that will be sampled.
+updating the cases vector to include only the cases that will be sampled.
 }
 \keyword{internal}

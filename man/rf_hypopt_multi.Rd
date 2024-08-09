@@ -7,6 +7,7 @@
 rf_hypopt_multi(
   train_data,
   test_data,
+  variable = "Disease",
   cor_threshold = 0.9,
   normalize = TRUE,
   cv_sets = 5,

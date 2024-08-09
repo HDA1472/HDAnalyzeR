@@ -7,7 +7,8 @@
 elnet_hypopt(
   train_data,
   test_data,
-  disease,
+  variable = "Disease",
+  case,
   type = "lasso",
   cor_threshold = 0.9,
   cv_sets = 5,
@@ -23,7 +24,9 @@ elnet_hypopt(
 
 \item{test_data}{Testing data set from \code{make_groups()}.}
 
-\item{disease}{Disease to predict.}
+\item{variable}{The variable to predict. Default is "Disease".}
+
+\item{case}{Case to predict.}
 
 \item{type}{Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
 

@@ -8,7 +8,7 @@ plot_features_summary(
   ml_results,
   importance = 50,
   upset_top_features = FALSE,
-  disease_palette = NULL,
+  case_palette = NULL,
   feature_type_palette = c(`all-features` = "pink", `top-features` = "darkblue")
 )
 }
@@ -19,7 +19,7 @@ plot_features_summary(
 
 \item{upset_top_features}{Whether to plot the upset plot for the top features. Default is FALSE.}
 
-\item{disease_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
+\item{case_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
 
 \item{feature_type_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "all-features" = "pink" and "top-features" = "darkblue".}
 }
@@ -41,8 +41,8 @@ performance metrics.
 # Run the elastic net model pipeline for 3 different cases
 res_aml <- do_rreg(example_data,
                    example_metadata,
-                   "AML",
-                   c("BRC", "PRC"),
+                   case = "AML",
+                   control = c("BRC", "PRC"),
                    wide = FALSE,
                    only_female = "BRC",
                    only_male = "PRC",
@@ -52,8 +52,8 @@ res_aml <- do_rreg(example_data,
 
 res_brc <- do_rreg(example_data,
                    example_metadata,
-                   "BRC",
-                   c("BRC", "AML"),
+                   case = "BRC",
+                   control = c("BRC", "AML"),
                    wide = FALSE,
                    only_female = "BRC",
                    only_male = "PRC",
@@ -63,8 +63,8 @@ res_brc <- do_rreg(example_data,
 
 res_prc <- do_rreg(example_data,
                    example_metadata,
-                   "PRC",
-                   c("BRC", "AML"),
+                   case = "PRC",
+                   control = c("BRC", "AML"),
                    wide = FALSE,
                    only_female = "BRC",
                    only_male = "PRC",
