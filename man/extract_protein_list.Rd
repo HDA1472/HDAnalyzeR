@@ -4,18 +4,23 @@
 \alias{extract_protein_list}
 \title{Extract protein lists from the upset data}
 \usage{
-extract_protein_list(upset_data, protein_lists)
+extract_protein_list(upset_data, proteins)
 }
 \arguments{
 \item{upset_data}{A tibble with the upset data.}
 
-\item{protein_lists}{A list with the protein lists for each disease.}
+\item{proteins}{A list with the protein lists for each disease.}
 }
 \value{
-A list with the proteins for each combination of diseases.
+A list with the following elements:
+\itemize{
+\item proteins_list: A list with the proteins for each combination of diseases.
+\item proteins_df: A tibble with the proteins for each combination of diseases.
+}
 }
 \description{
 \code{extract_protein_list()} extracts the protein lists from the upset data.
 It creates a list with the proteins for each combination of diseases.
+It also creates a tibble with the proteins for each combination of diseases.
 }
 \keyword{internal}
