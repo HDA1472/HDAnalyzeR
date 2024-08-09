@@ -29,6 +29,8 @@ A list with two elements:
 \item features_barplot: Barplot of the number of proteins and top proteins for each disease.
 \item upset_plot_features: Upset plot of the top or all proteins.
 \item metrics_barplot: Barplot of the model metrics for each disease.
+\item features_df: A tibble with the proteins for each combination of cases.
+\item features_list: A list with the proteins for each combination of cases.
 }
 }
 \description{

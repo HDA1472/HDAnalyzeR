@@ -1,6 +1,6 @@
 utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled_Importance",
                          "Importance", "Variable", "std_err", "Type", "metric",
-                         'specificity', 'sensitivity', '.level', '.estimate'))
+                         "specificity", "sensitivity", ".level", ".estimate", "Category"))
 #' Split dataset into training and test sets
 #'
 #' `split_data()` splits the dataset into training and test sets based on user defined ratio.
@@ -1365,6 +1365,8 @@ do_rf <- function(olink_data,
 #'   - features_barplot: Barplot of the number of proteins and top proteins for each disease.
 #'   - upset_plot_features: Upset plot of the top or all proteins.
 #'   - metrics_barplot: Barplot of the model metrics for each disease.
+#'   - features_df: A tibble with the proteins for each combination of cases.
+#'   - features_list: A list with the proteins for each combination of cases.
 #' @export
 #'
 #' @examples
@@ -1514,14 +1516,21 @@ plot_features_summary <- function(ml_results,
   ordered_feature_names <- names(sort(frequencies, decreasing = TRUE))
   ordered_colors <- ordered_colors[ordered_feature_names]
 
-  upset_plot_features <- UpSetR::upset(UpSetR::fromList(upset_features),
+  upset <- UpSetR::fromList(upset_features)
+  features <- extract_protein_list(upset, upset_features)
+
+  print(features$proteins_list)
+
+  upset_plot_features <- UpSetR::upset(upset,
                                  order.by = "freq",
                                  nsets = length(names(ml_results)),
                                  sets.bar.color = ordered_colors)
 
   return(list("features_barplot" = features_barplot,
               "upset_plot_features" = upset_plot_features,
-              "metrics_lineplot" = metrics_lineplot))
+              "metrics_lineplot" = metrics_lineplot,
+              "features_df" = features$proteins_df,
+              "features_list" = features$proteins_list))
 }
 
 

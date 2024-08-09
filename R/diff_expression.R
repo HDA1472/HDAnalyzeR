@@ -1,5 +1,6 @@
 utils::globalVariables(c("adj.P.Val", "P.Value", "logFC", "sig", "sig.label", "Sex",
-                         "Disease", "case", "control", "is_normal", "Count", ":="))
+                         "Disease", "case", "control", "is_normal", "Count", ":=",
+                         "Shared in", "Priority"))
 #' Differential expression analysis with limma
 #'
 #' `do_limma_de()` performs differential expression analysis using limma package.
@@ -810,26 +811,46 @@ do_ttest <- function(olink_data,
 #'
 #' `extract_protein_list()` extracts the protein lists from the upset data.
 #' It creates a list with the proteins for each combination of diseases.
+#' It also creates a tibble with the proteins for each combination of diseases.
 #'
 #' @param upset_data A tibble with the upset data.
-#' @param protein_lists A list with the protein lists for each disease.
+#' @param proteins A list with the protein lists for each disease.
 #'
-#' @return A list with the proteins for each combination of diseases.
+#' @return A list with the following elements:
+#'  - proteins_list: A list with the proteins for each combination of diseases.
+#'  - proteins_df: A tibble with the proteins for each combination of diseases.
 #' @keywords internal
-extract_protein_list <- function(upset_data, protein_lists) {
+extract_protein_list <- function(upset_data, proteins) {
   combinations <- as.data.frame(upset_data)
-  print(combinations)
-  proteins <- list()
+  proteins_list <- list()
 
   for (i in 1:nrow(combinations)) {
     combo <- combinations[i, ]
     set_names <- names(combo)[combo == 1]
     set_name <- paste(set_names, collapse = "&")
-    protein_set <- Reduce(intersect, protein_lists[set_names])
-    proteins[[set_name]] <- protein_set
+    protein_set <- Reduce(intersect, proteins[set_names])
+    proteins_list[[set_name]] <- protein_set
   }
 
-  return(proteins)
+  proteins_df <- do.call(rbind, lapply(names(proteins_list), function(set_name) {
+    tibble::tibble(
+      "Shared in" = set_name,
+      "up/down" = ifelse(grepl("down", deparse(substitute(proteins_list))), "down", "up"),
+      "Assay" = unique(unlist(proteins_list[[set_name]]))
+    )
+  }))
+
+  proteins_df <- proteins_df |>
+    dplyr::mutate(Priority = stringr::str_count(`Shared in`, "&"))
+
+  proteins_df <- proteins_df |>
+    dplyr::arrange(Assay, dplyr::desc(Priority)) |>
+    dplyr::group_by(Assay) |>
+    dplyr::slice(1) |>
+    dplyr::ungroup() |>
+    dplyr::select(-Priority)
+
+  return(list("proteins_list" = proteins_list, "proteins_df" = proteins_df))
 }
 
 
@@ -847,8 +868,10 @@ extract_protein_list <- function(upset_data, protein_lists) {
 #'   - de_barplot: A barplot with the number of significant proteins for each disease.
 #'   - upset_plot_up: An upset plot with the significant up regulated proteins for each disease.
 #'   - upset_plot_down: An upset plot with the significant down regulated proteins for each disease.
-#'   - proteins_list_up: A list with the significant up regulated proteins for each combination of diseases. Created with `UpSetR::fromList()`.
-#'   - proteins_list_down: A list with the significant down regulated proteins for each combination of diseases. Created with `UpSetR::fromList()`.
+#'   - proteins_df_up: A tibble with the significant up regulated proteins for each combination of diseases.
+#'   - proteins_df_down: A tibble with the significant down regulated proteins for each combination of diseases.
+#'   - proteins_list_up: A list with the significant up regulated proteins for each combination of diseases.
+#'   - proteins_list_down: A list with the significant down regulated proteins for each combination of diseases.
 #'
 #' @export
 #'
@@ -955,8 +978,11 @@ plot_de_summary <- function(de_results,
   # Create upset data and extract protein lists
   upset_up <- UpSetR::fromList(significant_proteins_up)
   upset_down <- UpSetR::fromList(significant_proteins_down)
-  proteins_list_up <- extract_protein_list(upset_up, significant_proteins_up)
-  proteins_list_down <- extract_protein_list(upset_down, significant_proteins_down)
+  proteins_up <- extract_protein_list(upset_up, significant_proteins_up)
+  proteins_down <- extract_protein_list(upset_down, significant_proteins_down)
+
+  print(proteins_up$proteins_list)
+  print(proteins_down$proteins_list)
 
   # Create upset plots
   upset_plot_up <- UpSetR::upset(upset_up,
@@ -972,6 +998,8 @@ plot_de_summary <- function(de_results,
   return(list("de_barplot" = de_barplot,
               "upset_plot_up" = upset_plot_up,
               "upset_plot_down" = upset_plot_down,
-              "proteins_list_up" = proteins_list_up,
-              "proteins_list_down" = proteins_list_down))
+              "proteins_df_up" = proteins_up$proteins_df,
+              "proteins_df_down" = proteins_down$proteins_df,
+              "proteins_list_up" = proteins_up$proteins_list,
+              "proteins_list_down" = proteins_down$proteins_list))
 }
