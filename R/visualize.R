@@ -54,7 +54,7 @@ plot_protein_boxplot <- function(join_data,
 
   long_data$Protein <- factor(long_data$Protein, levels = proteins, labels = proteins)
   long_data[[variable]] <- as.factor(long_data[[variable]])
-  print(long_data)
+
   # Create boxplot
   boxplot <- long_data |>
     ggplot2::ggplot(ggplot2::aes(x = !!Variable, y = NPX)) +

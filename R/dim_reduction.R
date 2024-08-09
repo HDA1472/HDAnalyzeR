@@ -183,7 +183,7 @@ do_pca <- function(olink_data,
   pca_res <-  recipes::juice(pca_prep)
 
   # Extract the explained variance and calculate cumulative explained variance
-  explained_variance <- tidy(pca_prep, number = 3, type = "variance") |>
+  explained_variance <- broom::tidy(pca_prep, number = 3, type = "variance") |>
     dplyr::filter(terms %in% c("percent variance", "cumulative percent variance")) |>
     dplyr::filter(component >= 1 & component <= pcs) |>
     tidyr::pivot_wider(names_from = terms, values_from = value) |>
