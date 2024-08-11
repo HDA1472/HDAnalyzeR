@@ -116,6 +116,6 @@ do_rreg(example_data,
         type = "elnet",
         palette = "cancers12",
         cv_sets = 5,
-        grid_size = 20,
+        grid_size = 10,
         ncores = 1)
 }

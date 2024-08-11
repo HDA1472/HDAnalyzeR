@@ -115,6 +115,6 @@ do_rf(example_data,
       wide = FALSE,
       palette = "cancers12",
       cv_sets = 5,
-      grid_size = 20,
+      grid_size = 10,
       ncores = 1)
 }
