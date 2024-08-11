@@ -63,6 +63,7 @@ reference:
   - do_rf
   - do_rreg_multi
   - do_rf_multi
+  - do_lreg
 - subtitle: Visualize Results
   desc: |
     Functions that visualize the results of your analysis.
