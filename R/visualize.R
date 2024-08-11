@@ -67,7 +67,7 @@ plot_protein_boxplot <- function(join_data,
 
   if (isTRUE(points)) {
     boxplot <- boxplot +
-      ggplot2::geom_point(data = dplyr::filter(long_data, !!Variable == case),
+      ggplot2::geom_point(data = dplyr::filter(long_data, !!Variable != case),
                           position = ggplot2::position_jitter(width = 0.1),
                           color = 'grey',
                           alpha = 0.3)

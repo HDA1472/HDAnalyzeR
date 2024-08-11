@@ -136,6 +136,143 @@ make_groups <- function(join_data,
 }
 
 
+#' Fit logistic regression model for single predictors
+#'
+#' `lreg_fit()` fits a logistic regression model for single predictors.
+#' It uses the glm engine for logistic regression and fits the model using the
+#' `logistic_reg()` function from the parsnip package. It also calculates the
+#' accuracy, sensitivity, specificity, AUC, and confusion matrix of the model.
+#'
+#' @param train_data Training data set from `make_groups()`.
+#' @param test_data Testing data set from `make_groups()`.
+#' @param variable The variable to predict. Default is "Disease".
+#' @param case Case to predict.
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is NULL.
+#' @param palette Color palette for the ROC curve. Default is NULL.
+#' @param seed Seed for reproducibility. Default is 123.
+#'
+#' @return A list with two elements:
+#' - fit_res: A list with 4 elements:
+#'  - lreg_wf: Workflow object.
+#'  - train_set: Training set.
+#'  - test_set: Testing set.
+#'  - final: Fitted model.
+#' - metrics: A list with the model metrics:
+#'  - accuracy: Accuracy of the model.
+#'  - sensitivity: Sensitivity of the model.
+#'  - specificity: Specificity of the model.
+#'  - auc: AUC of the model.
+#'  - conf_matrix: Confusion matrix of the model.
+#'  - roc_curve: ROC curve of the model.
+#' @keywords internal
+lreg_fit <- function(train_data,
+                     test_data,
+                     variable = "Disease",
+                     case,
+                     cor_threshold = 0.9,
+                     cv_sets = 4,
+                     ncores = 1,
+                     exclude_cols = NULL,
+                     palette = NULL,
+                     seed = 123) {
+
+  Variable <- rlang::sym(variable)
+
+  if (ncores > 1) {
+    doParallel::registerDoParallel(cores = ncores)
+  }
+
+  # Prepare train data and create cross-validation sets with binary classifier
+  train_set <- train_data |>
+    dplyr::mutate(!!Variable := ifelse(!!Variable == case, 1, 0)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols))
+  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = !!Variable)
+
+  test_set <- test_data |>
+    dplyr::mutate(!!Variable := ifelse(!!Variable == case, 1, 0)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols))
+
+  formula <- stats::as.formula(paste(variable, "~ ."))
+
+  lreg_rec <- recipes::recipe(formula, data = train_set) |>
+    recipes::update_role(DAid, new_role = "id") |>
+    recipes::step_normalize(recipes::all_numeric()) |>
+    recipes::step_nzv(recipes::all_numeric()) |>
+    recipes::step_corr(recipes::all_numeric(), threshold = cor_threshold) |>
+    recipes::step_impute_knn(recipes::all_numeric())
+
+  lreg_spec <- parsnip::logistic_reg() |>
+    parsnip::set_engine("glm")
+
+  lreg_wf <- workflows::workflow() |>
+    workflows::add_model(lreg_spec) |>
+    workflows::add_recipe(lreg_rec)
+
+  final <- lreg_wf |>
+    parsnip::fit(train_set)
+
+  splits <- rsample::make_splits(train_set, test_set)
+
+  preds <- tune::last_fit(lreg_wf,
+                          splits,
+                          metrics = yardstick::metric_set(yardstick::roc_auc))
+  res <- stats::predict(final, new_data = test_set)
+
+  res <- dplyr::bind_cols(res, test_set |> dplyr::select(!!Variable))
+
+  accuracy <- res |>
+    yardstick::accuracy(!!Variable, .pred_class)
+
+  sensitivity <- res |>
+    yardstick::sensitivity(!!Variable, .pred_class)
+
+  specificity <- res |>
+    yardstick::specificity(!!Variable, .pred_class)
+
+  if (is.null(names(palette)) && !is.null(palette)) {
+    disease_color <- get_hpa_palettes()[[palette]][[case]]
+  } else if (!is.null(palette)) {
+    disease_color <- palette
+  } else {
+    disease_color <- "black"
+  }
+
+  selected_point <- tibble::tibble(x = 1 - specificity$.estimate,
+                                   y = sensitivity$.estimate)
+  roc <- preds |>
+    tune::collect_predictions(summarize = F) |>
+    yardstick::roc_curve(truth = !!Variable, .pred_0) |>
+    ggplot2::ggplot(ggplot2::aes(x = 1 - specificity, y = sensitivity)) +
+    ggplot2::geom_path(colour = disease_color, linewidth = 2) +
+    ggplot2::geom_point(data = selected_point, ggplot2::aes(x = x, y = y), size = 2, shape = 4, colour = "black") +
+    ggplot2::geom_abline(lty = 3) +
+    ggplot2::coord_equal() +
+    theme_hpa()
+
+  auc <- preds |>
+    tune::collect_metrics()
+
+  cm <- res |>
+    yardstick::conf_mat(!!Variable, .pred_class)
+
+  return(list("fit_res" = list("lreg_wf" = lreg_wf,
+                               "train_set" = train_set,
+                               "test_set" = test_set,
+                               "final" = final),
+              "metrics" = list("accuracy" = round(accuracy$.estimate, 2),
+                               "sensitivity" = round(sensitivity$.estimate, 2),
+                               "specificity" = round(specificity$.estimate, 2),
+                               "auc" = round(auc$.estimate, 2),
+                               "conf_matrix" = cm,
+                               "roc_curve" = roc)))
+}
+
+
 #' Visualize hyperparameter optimization results
 #'
 #' `vis_hypopt()` plots the hyperparameter optimization results.
@@ -1346,6 +1483,150 @@ do_rf <- function(olink_data,
               "var_imp_res" = var_imp_res,
               "boxplot_res" = boxplot_res))
 }
+
+
+#' Fit logistic regression model for single predictors
+#'
+#' `lreg_fit()` fits a logistic regression model for a single predictor and calculates
+#' the ROC AUC, accuracy, sensitivity, and specificity. It also performs cross-validation
+#' and plots the ROC curve.
+#'
+#' @param olink_data Olink data.
+#' @param metadata Metadata.
+#' @param variable The variable to predict. Default is "Disease".
+#' @param case The case group.
+#' @param control The control groups.
+#' @param wide Whether the data is wide format. Default is TRUE.
+#' @param strata Whether to stratify the data. Default is TRUE.
+#' @param balance_groups Whether to balance the groups. Default is TRUE.
+#' @param only_female Vector of diseases.
+#' @param only_male Vector of diseases.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned.
+#' @param ratio Ratio of training data to test data. Default is 0.75.
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
+#' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param points Whether to add points to the boxplot. Default is TRUE.
+#' @param boxplot_xaxis_names Whether to add x-axis names to the boxplot. Default is FALSE.
+#' @param seed Seed for reproducibility. Default is 123.
+#'
+#' @return A list with two elements:
+#' - fit_res: A list with 4 elements:
+#'  - lreg_wf: Workflow object.
+#'  - train_set: Training set.
+#'  - test_set: Testing set.
+#'  - final: Fitted model.
+#' - metrics: A list with the model metrics:
+#'  - accuracy: Accuracy of the model.
+#'  - sensitivity: Sensitivity of the model.
+#'  - specificity: Specificity of the model.
+#'  - auc: AUC of the model.
+#'  - conf_matrix: Confusion matrix of the model.
+#'  - roc_curve: ROC curve of the model.
+#' @export
+#'
+#' @examples
+#' do_lreg(test_data,
+#'         example_metadata,
+#'         variable = "Disease",
+#'         case = "AML",
+#'         control = "CLL",
+#'         wide = FALSE,
+#'         ncores = 1,
+#'         palette = "cancers12")
+do_lreg <- function(olink_data,
+                    metadata,
+                    variable = "Disease",
+                    case,
+                    control,
+                    wide = TRUE,
+                    strata = TRUE,
+                    balance_groups = TRUE,
+                    only_female = NULL,
+                    only_male = NULL,
+                    exclude_cols = "Sex",
+                    ratio = 0.75,
+                    cor_threshold = 0.9,
+                    normalize = TRUE,
+                    cv_sets = 5,
+                    ncores = 4,
+                    palette = NULL,
+                    points = TRUE,
+                    boxplot_xaxis_names = FALSE,
+                    seed = 123) {
+
+  Variable <- rlang::sym(variable)
+
+  # Prepare datasets
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
+  }
+
+  join_data <- wide_data |>
+    dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", variable)))) |>
+    dplyr::filter(!!Variable %in% c(case, control))
+
+  # Prepare sets and groups
+  data_split <- split_data(join_data, variable, strata, ratio, seed)
+  if (isTRUE(balance_groups)) {
+    train_data <- make_groups(data_split$train_set,
+                              variable,
+                              case,
+                              c(case, control),
+                              only_female,
+                              only_male,
+                              seed)
+    test_data <- make_groups(data_split$test_set,
+                             variable,
+                             case,
+                             c(case, control),
+                             only_female,
+                             only_male,
+                             seed)
+  } else {
+    train_data <- data_split$train_set
+    test_data <- data_split$test_set
+  }
+  message("Sets and groups are ready. Model fitting is starting...")
+  lreg_res <- lreg_fit(train_data,
+                       test_data,
+                       variable,
+                       case,
+                       cor_threshold,
+                       cv_sets,
+                       ncores,
+                       exclude_cols,
+                       palette,
+                       seed)
+
+  protein <- wide_data |> dplyr::select(-DAid) |> names()
+  boxplot_res <- plot_protein_boxplot(join_data,
+                                      variable,
+                                      protein,
+                                      case,
+                                      points,
+                                      xaxis_names = boxplot_xaxis_names,
+                                      palette)
+
+  lreg_res <- c(lreg_res, list("boxplot_res" = boxplot_res))
+
+  return(lreg_res)
+
+}
+
+
+
+
+
+
+
+
+
+
 
 
 #' Plot features summary visualizations
