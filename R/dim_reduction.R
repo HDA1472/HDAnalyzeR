@@ -1,4 +1,6 @@
-utils::globalVariables(c("terms", "value", "component", "positive", "var", "cumulative_variance"))
+utils::globalVariables(c("terms", "value", "component", "positive", "var",
+                         "cumulative_variance", "cumulative percent variance",
+                         "id", "percent variance"))
 #' Plot PCA loadings
 #'
 #' `plot_loadings()` plots the PCA loadings for the top n features and first m PCs.

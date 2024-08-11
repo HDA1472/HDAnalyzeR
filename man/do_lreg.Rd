@@ -91,6 +91,10 @@ the ROC AUC, accuracy, sensitivity, and specificity. It also performs cross-vali
 and plots the ROC curve.
 }
 \examples{
+# Data with single predictor
+test_data <- example_data |> dplyr::filter(Assay == "ADA")
+
+# Run model
 do_lreg(test_data,
         example_metadata,
         variable = "Disease",
