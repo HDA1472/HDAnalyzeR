@@ -716,7 +716,7 @@ list.</p>
 <span>               <span class="st">"BRC"</span> <span class="op">=</span> <span class="va">de_res_brc</span>, </span>
 <span>               <span class="st">"PRC"</span> <span class="op">=</span> <span class="va">de_res_prc</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_de_summary.html">plot_de_summary</a></span><span class="op">(</span><span class="va">de_res</span>, disease_palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
+<span><span class="va">de_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_de_summary.html">plot_de_summary</a></span><span class="op">(</span><span class="va">de_res</span>, disease_palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $AML</span></span>
 <span><span class="co">#&gt;  [1] "ADA"      "APEX1"    "AZU1"     "APBB1IP"  "ARTN"     "ACTA2"   </span></span>
 <span><span class="co">#&gt;  [7] "ADGRG1"   "ANGPT2"   "AHCY"     "AGRP"     "ARID4B"   "B4GALT1" </span></span>
@@ -751,16 +751,11 @@ list.</p>
 <span><span class="co">#&gt;  [1] "ADGRG1"  "APEX1"   "ADA"     "AZU1"    "ARTN"    "ATP6AP2" "APBB1IP"</span></span>
 <span><span class="co">#&gt;  [8] "ANGPT2"  "AGRP"    "AREG"    "ADM"     "ARID4B"  "ACTA2"   "AHCY"   </span></span>
 <span><span class="co">#&gt; [15] "ANGPTL4"</span></span>
-<span><span class="co">#&gt; $de_barplot</span></span></code></pre></div>
+<span></span>
+<span><span class="va">de_summary</span><span class="op">$</span><span class="va">de_barplot</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
-<pre><code><span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $upset_plot_up</span></span></code></pre>
-<p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-17-2.png" width="700"></p>
-<pre><code><span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $upset_plot_down</span></span></code></pre>
-<p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-17-3.png" width="700"></p>
-<pre><code><span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $proteins_df_up</span></span>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">de_summary</span><span class="op">$</span><span class="va">proteins_df_up</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 38 × 3</span></span></span>
 <span><span class="co">#&gt;    `Shared in` `up/down` Assay   </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
@@ -775,8 +770,10 @@ list.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AML         up        ADGRG1  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> BRC&amp;PRC     up        ADGRG2  </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 28 more rows</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $proteins_df_down</span></span>
+<span><span class="va">de_summary</span><span class="op">$</span><span class="va">upset_plot_up</span></span></code></pre></div>
+<p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-17-2.png" width="700"></p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">de_summary</span><span class="op">$</span><span class="va">proteins_df_down</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 33 × 3</span></span></span>
 <span><span class="co">#&gt;    `Shared in` `up/down` Assay   </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
@@ -791,44 +788,8 @@ list.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AML         up        ADAMTS8 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> BRC         up        ADGRE5  </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 23 more rows</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $proteins_list_up</span></span>
-<span><span class="co">#&gt; $proteins_list_up$AML</span></span>
-<span><span class="co">#&gt;  [1] "ADA"      "APEX1"    "AZU1"     "APBB1IP"  "ARTN"     "ACTA2"   </span></span>
-<span><span class="co">#&gt;  [7] "ADGRG1"   "ANGPT2"   "AHCY"     "AGRP"     "ARID4B"   "B4GALT1" </span></span>
-<span><span class="co">#&gt; [13] "ABL1"     "AMFR"     "ADM"      "ATP6AP2"  "ATP6V1F"  "AREG"    </span></span>
-<span><span class="co">#&gt; [19] "ANGPTL4"  "ACE2"     "ATF2"     "ADA2"     "ATXN10"   "ARHGAP25"</span></span>
-<span><span class="co">#&gt; [25] "ARNT"    </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $proteins_list_up$`BRC&amp;PRC`</span></span>
-<span><span class="co">#&gt; [1] "ANGPT1"  "ADAMTS8" "ADGRG2" </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $proteins_list_up$BRC</span></span>
-<span><span class="co">#&gt; [1] "ANGPT1"   "ART3"     "ADAMTS8"  "ADAMTS13" "ADGRG2"   "APP"     </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $proteins_list_up$PRC</span></span>
-<span><span class="co">#&gt;  [1] "ADAMTS8" "ATG4A"   "ANGPT1"  "APOM"    "ALPP"    "ADGRG2"  "AMY2B"  </span></span>
-<span><span class="co">#&gt;  [8] "ALDH1A1" "ACAN"    "AK1"    </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $proteins_list_down</span></span>
-<span><span class="co">#&gt; $proteins_list_down$AML</span></span>
-<span><span class="co">#&gt;  [1] "ANGPT1"   "ADAMTS8"  "ADGRG2"   "APOM"     "ATG4A"    "APP"     </span></span>
-<span><span class="co">#&gt;  [7] "ADAMTS13" "ALPP"     "ARHGEF12" "ACAN"    </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $proteins_list_down$`BRC&amp;PRC`</span></span>
-<span><span class="co">#&gt;  [1] "ADA"     "AZU1"    "APEX1"   "APBB1IP" "AHCY"    "ARTN"    "ACTA2"  </span></span>
-<span><span class="co">#&gt;  [8] "ANGPT2"  "AGRP"    "ARID4B"  "ADGRG1" </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $proteins_list_down$BRC</span></span>
-<span><span class="co">#&gt;  [1] "ADA"     "AZU1"    "APEX1"   "APBB1IP" "AHCY"    "ARTN"    "ABL1"   </span></span>
-<span><span class="co">#&gt;  [8] "ACTA2"   "B4GALT1" "ANGPT2"  "AGRP"    "ADA2"    "ARID4B"  "ADGRG1" </span></span>
-<span><span class="co">#&gt; [15] "ACE2"    "AMFR"    "ADGRE5"  "AARSD1"  "ANGPTL1"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $proteins_list_down$PRC</span></span>
-<span><span class="co">#&gt;  [1] "ADGRG1"  "APEX1"   "ADA"     "AZU1"    "ARTN"    "ATP6AP2" "APBB1IP"</span></span>
-<span><span class="co">#&gt;  [8] "ANGPT2"  "AGRP"    "AREG"    "ADM"     "ARID4B"  "ACTA2"   "AHCY"   </span></span>
-<span><span class="co">#&gt; [15] "ANGPTL4"</span></span></code></pre>
+<span><span class="va">de_summary</span><span class="op">$</span><span class="va">upset_plot_down</span></span></code></pre></div>
+<p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-17-3.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="lasso-machine-learning-classification-model">Lasso Machine Learning Classification Model<a class="anchor" aria-label="anchor" href="#lasso-machine-learning-classification-model"></a>
@@ -838,7 +799,7 @@ machine learning classification model to identify significant features.
 This model will help us understand which proteins are most predictive of
 the conditions being studied. Once again, we will present only the
 results for AML, BRC and, PRC.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lasso_res_aml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_rreg.html">do_rreg</a></span><span class="op">(</span><span class="va">imputed_data</span>, </span>
 <span>                         <span class="va">clean_metadata</span>, </span>
 <span>                         case <span class="op">=</span> <span class="st">"AML"</span>,</span>
@@ -859,24 +820,10 @@ results for AML, BRC and, PRC.</p>
 <span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
 <span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
 <span><span class="co">#&gt; Classification model for AML as case is starting...</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,800 × 3</span></span></span>
-<span><span class="co">#&gt;    Disease Protein    NPX</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AML     ADGRG1   2.48 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AML     APEX1    3.68 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AML     ABL1     2.76 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AML     ANGPT1   1.59 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AML     ALDH1A1  2.49 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AML     ANXA11   1.35 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AML     ADM      2.35 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AML     ADGRG2   0.869</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AML     AGR3    -<span style="color: #BB0000;">1.28</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AML     AHCY     3.87 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,790 more rows</span></span></span>
 <span></span>
 <span><span class="va">lasso_res_aml</span><span class="op">$</span><span class="va">hypopt_res</span><span class="op">$</span><span class="va">hypopt_vis</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lasso_res_aml</span><span class="op">$</span><span class="va">testfit_res</span><span class="op">$</span><span class="va">metrics</span></span>
 <span><span class="co">#&gt; $accuracy</span></span>
@@ -899,7 +846,7 @@ results for AML, BRC and, PRC.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $roc_curve</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-18-2.png" width="700"></p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lasso_res_aml</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">features</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 23 × 4</span></span></span>
@@ -919,11 +866,11 @@ results for AML, BRC and, PRC.</p>
 <span></span>
 <span><span class="va">lasso_res_aml</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">var_imp_plot</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-18-3.png" width="700"></p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lasso_res_aml</span><span class="op">$</span><span class="va">boxplot_res</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-18-4.png" width="700"></p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lasso_res_brc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_rreg.html">do_rreg</a></span><span class="op">(</span><span class="va">imputed_data</span>, </span>
 <span>                         <span class="va">clean_metadata</span>, </span>
 <span>                         case <span class="op">=</span> <span class="st">"BRC"</span>,</span>
@@ -944,24 +891,10 @@ results for AML, BRC and, PRC.</p>
 <span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
 <span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
 <span><span class="co">#&gt; Classification model for BRC as case is starting...</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,800 × 3</span></span></span>
-<span><span class="co">#&gt;    Disease Protein     NPX</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AML     ADA       5.39 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AML     ANGPT1    1.59 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AML     ADGRG2    0.869</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AML     ANGPTL2   1.51 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AML     ADAMTS13 -<span style="color: #BB0000;">1.69</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AML     ACTA2     2.81 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AML     ATP6V1D  -<span style="color: #BB0000;">0.321</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AML     AMIGO2   -<span style="color: #BB0000;">0.362</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AML     APEX1     3.68 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AML     B4GALT1   2.09 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,790 more rows</span></span></span>
 <span></span>
 <span><span class="va">lasso_res_brc</span><span class="op">$</span><span class="va">hypopt_res</span><span class="op">$</span><span class="va">hypopt_vis</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lasso_res_brc</span><span class="op">$</span><span class="va">testfit_res</span><span class="op">$</span><span class="va">metrics</span></span>
 <span><span class="co">#&gt; $accuracy</span></span>
@@ -984,7 +917,7 @@ results for AML, BRC and, PRC.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $roc_curve</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-19-2.png" width="700"></p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lasso_res_brc</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">features</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 13 × 4</span></span></span>
@@ -1006,11 +939,11 @@ results for AML, BRC and, PRC.</p>
 <span></span>
 <span><span class="va">lasso_res_brc</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">var_imp_plot</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-19-3.png" width="700"></p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lasso_res_brc</span><span class="op">$</span><span class="va">boxplot_res</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-19-4.png" width="700"></p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lasso_res_prc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_rreg.html">do_rreg</a></span><span class="op">(</span><span class="va">imputed_data</span>, </span>
 <span>                         <span class="va">clean_metadata</span>, </span>
 <span>                         case <span class="op">=</span> <span class="st">"PRC"</span>,</span>
@@ -1031,24 +964,10 @@ results for AML, BRC and, PRC.</p>
 <span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
 <span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
 <span><span class="co">#&gt; Classification model for PRC as case is starting...</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,800 × 3</span></span></span>
-<span><span class="co">#&gt;    Disease Protein     NPX</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AML     ANGPT1    1.59 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AML     ALPP     -<span style="color: #BB0000;">2.73</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AML     APEX1     3.68 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AML     ACP6      2.15 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AML     ATP6AP2  -<span style="color: #BB0000;">1.30</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AML     APOM      0.774</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AML     ADM       2.35 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AML     AMBN      0.512</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AML     AGRP      1.77 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AML     ADAMTS15  4.27 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,790 more rows</span></span></span>
 <span></span>
 <span><span class="va">lasso_res_prc</span><span class="op">$</span><span class="va">hypopt_res</span><span class="op">$</span><span class="va">hypopt_vis</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lasso_res_prc</span><span class="op">$</span><span class="va">testfit_res</span><span class="op">$</span><span class="va">metrics</span></span>
 <span><span class="co">#&gt; $accuracy</span></span>
@@ -1071,7 +990,7 @@ results for AML, BRC and, PRC.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $roc_curve</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-20-2.png" width="700"></p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lasso_res_prc</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">features</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 24 × 4</span></span></span>
@@ -1091,19 +1010,19 @@ results for AML, BRC and, PRC.</p>
 <span></span>
 <span><span class="va">lasso_res_prc</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">var_imp_plot</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-20-3.png" width="700"></p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lasso_res_prc</span><span class="op">$</span><span class="va">boxplot_res</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-20-4.png" width="700"></p>
 <p>We can get a visual summary of the results via
 <code><a href="../reference/plot_features_summary.html">plot_features_summary()</a></code> too. In order to use this function
 we need to store the results in a list.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lasso_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"AML"</span> <span class="op">=</span> <span class="va">lasso_res_aml</span>, </span>
 <span>                  <span class="st">"BRC"</span> <span class="op">=</span> <span class="va">lasso_res_brc</span>, </span>
 <span>                  <span class="st">"PRC"</span> <span class="op">=</span> <span class="va">lasso_res_prc</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_features_summary.html">plot_features_summary</a></span><span class="op">(</span><span class="va">lasso_res</span>, case_palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
+<span><span class="va">features_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_features_summary.html">plot_features_summary</a></span><span class="op">(</span><span class="va">lasso_res</span>, case_palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $AML</span></span>
 <span><span class="co">#&gt;  [1] ADGRG1  APEX1   ABL1    ANGPT1  ALDH1A1 ANXA11  ADM     ADGRG2  AGR3   </span></span>
 <span><span class="co">#&gt; [10] AHCY    ADA     ARNT    ACP6    ATXN10  AGER    AGR2    ANXA5   AHSP   </span></span>
@@ -1132,16 +1051,14 @@ we need to store the results in a list.</p>
 <span><span class="co">#&gt;  [9] AGRP     ADAMTS15 ARSB     ADAMTS8  AIF1     ADH4     AMIGO2   ACAN    </span></span>
 <span><span class="co">#&gt; [17] ANGPTL7  ADAM8    ANXA5    ANGPTL4  AZU1     ALDH1A1  ADAMTS13 ADAM23  </span></span>
 <span><span class="co">#&gt; 100 Levels: AARSD1 ABL1 ACAA1 ACE2 ACOX1 ACP5 ACTA2 ACTN4 ACY1 ADA ... ANGPT1</span></span>
-<span><span class="co">#&gt; $features_barplot</span></span></code></pre></div>
+<span></span>
+<span><span class="va">features_summary</span><span class="op">$</span><span class="va">metrics_lineplot</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
-<pre><code><span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $upset_plot_features</span></span></code></pre>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">features_summary</span><span class="op">$</span><span class="va">features_barplot</span></span></code></pre></div>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-21-2.png" width="700"></p>
-<pre><code><span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $metrics_lineplot</span></span></code></pre>
-<p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-21-3.png" width="700"></p>
-<pre><code><span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $features_df</span></span>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">features_summary</span><span class="op">$</span><span class="va">features_df</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 45 × 3</span></span></span>
 <span><span class="co">#&gt;    `Shared in` `up/down` Assay   </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   </span></span>
@@ -1156,36 +1073,8 @@ we need to store the results in a list.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> PRC         up        AIF1    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> PRC         up        ALPP    </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 35 more rows</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $features_list</span></span>
-<span><span class="co">#&gt; $features_list$AML</span></span>
-<span><span class="co">#&gt;  [1] ADGRG1  APEX1   ABL1    ANGPT1  ALDH1A1 ANXA11  ADM     ADGRG2  AGR3   </span></span>
-<span><span class="co">#&gt; [10] AHCY    ADA     ARNT    ACP6    ATXN10  AGER    AGR2    ANXA5   AHSP   </span></span>
-<span><span class="co">#&gt; [19] ADAMTS8 ARID4B  APLP1   ACTA2   ADGRE2 </span></span>
-<span><span class="co">#&gt; 100 Levels: AARSD1 ACAA1 ACAN ACE2 ACOX1 ACP5 ACTN4 ACY1 ADA2 ADAM15 ... ADGRG1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $features_list$`AML&amp;BRC&amp;PRC`</span></span>
-<span><span class="co">#&gt; [1] "APEX1"  "ANGPT1" "ANXA5" </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $features_list$`AML&amp;PRC`</span></span>
-<span><span class="co">#&gt; [1] "APEX1"   "ANGPT1"  "ALDH1A1" "ADM"     "ACP6"    "ANXA5"   "ADAMTS8"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $features_list$`AML&amp;BRC`</span></span>
-<span><span class="co">#&gt; [1] "APEX1"  "ANGPT1" "ADGRG2" "ADA"    "ANXA5"  "ACTA2" </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $features_list$BRC</span></span>
-<span><span class="co">#&gt;  [1] ADA      ANGPT1   ADGRG2   ANGPTL2  ADAMTS13 ACTA2    ATP6V1D  AMIGO2  </span></span>
-<span><span class="co">#&gt;  [9] APEX1    B4GALT1  ANXA5    ADAMTS16 ATP6V1F </span></span>
-<span><span class="co">#&gt; 100 Levels: AARSD1 ABL1 ACAA1 ACAN ACE2 ACOX1 ACP5 ACP6 ACTN4 ACY1 ... ADA</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $features_list$`BRC&amp;PRC`</span></span>
-<span><span class="co">#&gt; [1] "ANGPT1"   "ADAMTS13" "AMIGO2"   "APEX1"    "ANXA5"   </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $features_list$PRC</span></span>
-<span><span class="co">#&gt;  [1] ANGPT1   ALPP     APEX1    ACP6     ATP6AP2  APOM     ADM      AMBN    </span></span>
-<span><span class="co">#&gt;  [9] AGRP     ADAMTS15 ARSB     ADAMTS8  AIF1     ADH4     AMIGO2   ACAN    </span></span>
-<span><span class="co">#&gt; [17] ANGPTL7  ADAM8    ANXA5    ANGPTL4  AZU1     ALDH1A1  ADAMTS13 ADAM23  </span></span>
-<span><span class="co">#&gt; 100 Levels: AARSD1 ABL1 ACAA1 ACE2 ACOX1 ACP5 ACTA2 ACTN4 ACY1 ADA ... ANGPT1</span></span></code></pre>
+<span><span class="va">features_summary</span><span class="op">$</span><span class="va">upset_plot_features</span></span></code></pre></div>
+<p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-21-3.png" width="700"></p>
 </div>
 </div>
 <div class="section level2">
@@ -1199,7 +1088,7 @@ AML.</p>
 <blockquote>
 <p>📓 Remember that these data are a dummy-dataset with fake data.</p>
 </blockquote>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract the proteins identified by both DE and Lasso</span></span>
 <span><span class="va">de_proteins</span> <span class="op">&lt;-</span> <span class="va">de_res_aml</span><span class="op">$</span><span class="va">de_results</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sig</span> <span class="op">==</span> <span class="st">"significant up"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>

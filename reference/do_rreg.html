@@ -231,25 +231,11 @@ If no check for feature correlation is preferred, set <code>cor_threshold</code>
 <span class="r-in"><span>        type <span class="op">=</span> <span class="st">"elnet"</span>,</span></span>
 <span class="r-in"><span>        palette <span class="op">=</span> <span class="st">"cancers12"</span>,</span></span>
 <span class="r-in"><span>        cv_sets <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>        grid_size <span class="op">=</span> <span class="fl">20</span>,</span></span>
+<span class="r-in"><span>        grid_size <span class="op">=</span> <span class="fl">10</span>,</span></span>
 <span class="r-in"><span>        ncores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(DAid)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Sets and groups are ready. Model fitting is starting...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Classification model for AML as case is starting...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,224 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Disease Protein    NPX</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AML     AZU1     5.19 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AML     ADA      5.39 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AML     ATP5PO   0.336</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AML     ANGPTL2  1.51 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AML     ARID4B   1.45 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AML     ANG      1.05 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AML     ATOX1    3.51 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AML     ACP6     2.15 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AML     ADAM8   -<span style="color: #BB0000;">0.167</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AML     AZU1     2.73 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,214 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$elnet_tune</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # Tuning results</span>
@@ -257,11 +243,11 @@ If no check for feature correlation is preferred, set <code>cor_threshold</code>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   splits          id    .metrics          .notes           .predictions      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [59/16]&gt;</span> Fold1 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [320 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;split [59/16]&gt;</span> Fold2 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [320 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;split [60/15]&gt;</span> Fold3 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [300 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">&lt;split [61/14]&gt;</span> Fold4 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [280 × 7]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> <span style="color: #949494;">&lt;split [61/14]&gt;</span> Fold5 <span style="color: #949494;">&lt;tibble [20 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [280 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [59/16]&gt;</span> Fold1 <span style="color: #949494;">&lt;tibble [10 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [160 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;split [59/16]&gt;</span> Fold2 <span style="color: #949494;">&lt;tibble [10 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [160 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;split [60/15]&gt;</span> Fold3 <span style="color: #949494;">&lt;tibble [10 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [150 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">&lt;split [61/14]&gt;</span> Fold4 <span style="color: #949494;">&lt;tibble [10 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [140 × 7]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> <span style="color: #949494;">&lt;split [61/14]&gt;</span> Fold5 <span style="color: #949494;">&lt;tibble [10 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [140 × 7]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $hypopt_res$elnet_wf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Workflow ════════════════════════════════════════════════════════════════════</span>
@@ -350,55 +336,55 @@ If no check for feature correlation is preferred, set <code>cor_threshold</code>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ── Model ───────────────────────────────────────────────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Call:  glmnet::glmnet(x = maybe_matrix(x), y = y, family = "binomial",      alpha = ~0.1) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:  glmnet::glmnet(x = maybe_matrix(x), y = y, family = "binomial",      alpha = ~0.261111111111111) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Df  %Dev  Lambda</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    0  0.00 2.53800</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    3  0.39 2.42300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3  0.86 2.31300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    3  1.35 2.20800</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    3  1.84 2.10700</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    4  2.46 2.01100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    4  3.10 1.92000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    9  3.87 1.83300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9   10  4.96 1.74900</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  13  6.24 1.67000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11  13  7.57 1.59400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12  14  8.95 1.52200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13  14 10.33 1.45200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14  14 11.70 1.38600</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15  14 13.06 1.32300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16  16 14.44 1.26300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17  18 15.88 1.20600</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18  18 17.35 1.15100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19  19 18.80 1.09900</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20  21 20.27 1.04900</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21  23 21.79 1.00100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22  24 23.32 0.95560</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23  25 24.84 0.91220</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24  27 26.35 0.87070</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25  31 27.91 0.83110</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26  32 29.48 0.79340</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27  33 31.04 0.75730</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28  35 32.60 0.72290</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29  38 34.14 0.69000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30  38 35.66 0.65870</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31  38 37.14 0.62870</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32  39 38.59 0.60010</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33  40 40.02 0.57290</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34  40 41.42 0.54680</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35  40 42.78 0.52200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36  41 44.11 0.49820</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37  43 45.43 0.47560</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38  43 46.73 0.45400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39  43 48.00 0.43340</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40  45 49.25 0.41370</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41  45 50.47 0.39490</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42  46 51.67 0.37690</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43  46 52.84 0.35980</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44  49 54.01 0.34340</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45  49 55.15 0.32780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46  50 56.27 0.31290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    0  0.00 0.97210</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    3  0.87 0.92790</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3  1.92 0.88570</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    3  2.95 0.84540</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    3  3.96 0.80700</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    4  5.16 0.77030</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    4  6.42 0.73530</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    5  7.66 0.70190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    8  9.15 0.67000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  10 11.01 0.63950</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  11 12.97 0.61050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12  12 14.94 0.58270</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13  12 16.86 0.55620</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14  14 18.80 0.53100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15  14 20.69 0.50680</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16  14 22.51 0.48380</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17  14 24.27 0.46180</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18  15 25.98 0.44080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19  15 27.67 0.42080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20  16 29.31 0.40170</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21  18 30.99 0.38340</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22  19 32.65 0.36600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23  20 34.29 0.34930</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24  20 35.94 0.33350</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25  22 37.56 0.31830</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26  22 39.18 0.30380</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27  24 40.80 0.29000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28  24 42.39 0.27680</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29  25 43.95 0.26430</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30  26 45.47 0.25230</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31  27 46.96 0.24080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32  27 48.40 0.22980</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33  28 49.80 0.21940</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34  30 51.17 0.20940</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35  32 52.53 0.19990</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36  35 53.90 0.19080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37  35 55.28 0.18210</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38  35 56.62 0.17390</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39  36 57.91 0.16600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40  36 59.17 0.15840</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41  37 60.38 0.15120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42  37 61.56 0.14430</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43  37 62.70 0.13780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44  38 63.82 0.13150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45  40 64.91 0.12550</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46  40 66.01 0.11980</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> and 54 more lines.</span>
@@ -407,7 +393,7 @@ If no check for feature correlation is preferred, set <code>cor_threshold</code>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   penalty mixture</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 0.007<span style="text-decoration: underline;">85</span>     0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  0.077<span style="text-decoration: underline;">4</span>   0.261</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $finalfit_res$final_wf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ══ Workflow ════════════════════════════════════════════════════════════════════</span>
@@ -426,8 +412,8 @@ If no check for feature correlation is preferred, set <code>cor_threshold</code>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Logistic Regression Model Specification (classification)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Main Arguments:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   penalty = 0.00784759970351461</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mixture = 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   penalty = 0.0774263682681128</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   mixture = 0.261111111111111</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Computational engine: glmnet </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -436,60 +422,60 @@ If no check for feature correlation is preferred, set <code>cor_threshold</code>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$accuracy</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.78</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$sensitivity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.64</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.71</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$specificity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.85</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$auc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.82</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.85</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$conf_matrix</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Truth</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Prediction  0  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          0  9  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          1  5 11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          0 10  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          1  4 11</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$metrics$roc_curve</span>
 <span class="r-plt img"><img src="do_rreg-2.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $testfit_res$mixture</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2611111</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res$features</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 78 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 69 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Variable Importance Sign  Scaled_Importance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AZU1          0.525 POS               100  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ADA           0.501 POS                95.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ATP5PO        0.494 NEG                94.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ANGPTL2       0.455 POS                86.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ARID4B        0.424 NEG                80.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ANG           0.424 NEG                80.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ATOX1         0.416 NEG                79.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ACP6          0.416 NEG                79.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ADAM8         0.409 NEG                77.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ANGPTL7       0.401 NEG                76.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 68 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AZU1          0.773 POS               100  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ATP5PO        0.724 NEG                93.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ANGPTL2       0.671 POS                86.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ADA           0.669 POS                86.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ANG           0.624 NEG                80.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ARID4B        0.598 NEG                77.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ATOX1         0.567 NEG                73.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ACP6          0.567 NEG                73.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> APP           0.527 NEG                68.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ADAM8         0.527 NEG                68.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 59 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res$var_imp_plot</span>
 <span class="r-plt img"><img src="do_rreg-3.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $boxplot_res</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 62 rows containing non-finite outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 69 rows containing non-finite outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_boxplot()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 11 rows containing non-finite outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 13 rows containing non-finite outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_boxplot()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 11 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 56 rows containing missing values or values outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 11 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 13 rows containing missing values or values outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
 <span class="r-plt img"><img src="do_rreg-4.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
