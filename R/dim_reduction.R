@@ -255,6 +255,11 @@ do_umap <- function(olink_data,
                     plots = TRUE,
                     save = FALSE) {
 
+  # Ensure 'umap' package is loaded
+  if (!requireNamespace("umap", quietly = TRUE)) {
+    stop("The 'umap' package is required but not installed. Please install it using install.packages('umap').")
+  }
+
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
   } else {
