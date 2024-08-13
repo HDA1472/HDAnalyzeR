@@ -100,6 +100,9 @@ test_that("do_umap runs pca analysis properly - umap_res", {
     dplyr::select(DAid, Assay, NPX) |>
     tidyr::pivot_wider(names_from = Assay, values_from = NPX)
   set.seed(123)
+  if (!requireNamespace("umap", quietly = TRUE)) {
+    stop("The 'umap' package is required but not installed. Please install it using install.packages('umap').")
+  }
   umap_rec <- recipes::recipe( ~ ., data = wide_df) |>
     recipes::update_role(DAid, new_role = "id")  |>
     recipes::step_normalize(recipes::all_predictors()) |>
