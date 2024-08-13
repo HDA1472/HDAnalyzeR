@@ -75,7 +75,10 @@ calc_na_percentage_row <- function(df) {
 check_normality <- function(df) {
 
   # Perform Shapiro-Wilk test
-  p_values <- lapply(df |> dplyr::select(-dplyr::any_of(c("DAid"))), function(column) {
+  p_values <- lapply(df |>
+                       dplyr::select(-dplyr::any_of(c("DAid"))) |>
+                       dplyr::select_if(is.numeric),
+                     function(column) {
     stats::shapiro.test(column)$p.value
   })
 
