@@ -1,0 +1,128 @@
+---
+title: "Data Preprocessing & Quality Control Check"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data Preprocessing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette will guide you through the initial steps of data preprocessing. Except from HDAnalyzeR We will import dplyr in order to perform some basic data manipulation.
+
+```{r setup}
+library(HDAnalyzeR)
+library(dplyr)
+```
+
+> 📓 This vignette is just a basic example of how to preprocess the data. Every dataset is different and may require different preprocessing steps. Please make sure to check the data and metadata before proceeding with the analysis. Remember that in order to run the package without issues, make sure that your data include the following columns: DAid, Assay and NPX, while your metadata include the following columns: DAid and Disease. Also, if you have a Sex column in your metadata, the data should be encoded as M and F.
+
+Let's start with loading the example data and metadata that come with the package.
+
+```{r}
+example_data
+example_metadata
+```
+
+We will check the structure of the data, as well as the unique values of the columns `Assay_Warning` and `PlateID`.
+
+```{r}
+str(example_data)
+
+unique(example_data$Assay_Warning)
+unique(example_data$PlateID)
+```
+
+We will count the number of warnings for each assay to see if there is a bias between the different assays.
+
+```{r}
+example_data |> 
+  filter(Assay_Warning == "WARN") |> 
+  group_by(Assay) |> 
+  summarize(nWarnings = n()) |> 
+  arrange(nWarnings) |> 
+  tail()
+```
+
+As we see there is not a bias between the different assays. We will now clean the data by keeping only the columns `DAid`, `Assay`, `NPX`, and `PlateID`, and filtering out the assays with warnings and the `Run004` plate.
+
+```{r}
+long_data <- clean_data(example_data, 
+                        keep_cols = c("DAid", "Assay", "NPX", "PlateID"),
+                        filter_assay_warning = TRUE,
+                        filter_plates = "Run004")
+
+long_data
+```
+We will do the same for the metadata, keeping only the columns `DAid`, `Disease`, `Sex`, and `Age`, and keeping only the `UCAN` cohort.
+
+```{r}
+str(example_metadata)
+
+unique(example_metadata$Cohort)
+```
+
+```{r}
+metadata <- clean_metadata(example_metadata, c("DAid", "Disease", "Sex", "Age"), cohort = "UCAN")
+metadata
+```
+
+> ‼️️ Don't forget to match your data with the metadata!
+
+```{r}
+long_data <- metadata |> 
+  inner_join(long_data, by = "DAid") |> 
+  select(-any_of(c("Disease", "Sex", "Age")))
+```
+
+We will generate the wide data and the join data. The wide data will have assays as names, NPX as values and the rows will be the samples with a unique DAid. The join data will be the wide data with the extra metadata columns `DAid`, `Disease`, `Sex`, and `Age`.
+
+```{r}
+dfs <- generate_df(long_data, 
+                   metadata, 
+                   metadata_cols = c("DAid", "Disease", "Sex", "Age"), 
+                   save = FALSE)
+
+wide_data <- dfs$wide_data
+join_data <- dfs$join_data
+
+wide_data
+join_data
+```
+
+Now, we will perform a quality control check on the data. `qc_summary_data()` will return the percentage of missing values for each column and row and plot their distributions, the protein-protein correlation and check if there are any highly correlated proteins (above the threshold of 0.9), as well as the normality of the different assays.
+
+```{r}
+qc_data <- qc_summary_data(wide_data, threshold = 0.9, report = TRUE)
+
+qc_data$na_col_dist
+qc_data$na_row_dist
+```
+
+From the QC results we can see that all assays have less than 10% missing values, while only a few samples have more than 20% missing values. The protein-protein correlation plot shows that there are no highly correlated proteins. The normality plot shows that most of the assays are not normally distributed, but this is expected for this artificial dataset. Based on these we can take decisions on filtering samples with high missing values or excluding assays from statistical analysis with normality assumptions.
+
+Let's do the same for the metadata, this time using the `qc_summary_metadata()` function. This function will return the percentage of missing values for each row and column and plot their distributions, as well as the distributions of selected metadata columns like `Sex` and `Age`.
+
+```{r}
+qc_metadata <- qc_summary_metadata(metadata, 
+                                   categorical = "Sex", 
+                                   numerical = "Age", 
+                                   disease_palette = "cancers12")
+
+qc_metadata$barplot_Sex
+qc_metadata$distplot_Age
+```
+
+Finally we will run a PCA and UMAP analysis on the data to check if the data contain any outliers or cluster in an unexpected way. From the PCA analysis we can also check how the variance in the data is explained by the different principal components. 
+
+```{r}
+do_pca(wide_data, metadata, color = "Disease", palette = "cancers12")
+
+do_umap(wide_data, metadata, color = "Disease", palette = "cancers12")
+```
