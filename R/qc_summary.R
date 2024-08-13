@@ -76,8 +76,7 @@ check_normality <- function(df) {
 
   # Perform Shapiro-Wilk test
   p_values <- lapply(df |>
-                       dplyr::select(-dplyr::any_of(c("DAid"))) |>
-                       dplyr::select_if(is.numeric),
+                       dplyr::select(-dplyr::any_of(c("DAid"))),
                      function(column) {
     stats::shapiro.test(column)$p.value
   })
@@ -283,6 +282,8 @@ qc_summary_data <- function(df, wide = TRUE, threshold = 0.8, report = TRUE) {
   } else {
     wide_data <- df
   }
+  wide_data <- wide_data |>
+    dplyr::select(DAid, dplyr::where(is.numeric))
   sample_n <- nrow(wide_data)
   protein_n <- ncol(wide_data) - 1
   class_summary <- check_col_types(wide_data)
