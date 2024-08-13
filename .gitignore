@@ -9,3 +9,4 @@ logo/
 .Rprofile
 docs
 inst/doc
+*.pptx
