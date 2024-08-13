@@ -14,7 +14,7 @@ A tibble with the protein names, p-values, adjusted p-values, and normality stat
 }
 \description{
 \code{check_normality()} checks the normality of the input dataset using the Shapiro-Wilk test.
-It performs the test in parallel and returns the p-values, adjusted p-values, and
+It performs the test and returns the p-values, adjusted p-values, and
 normality status for each protein.
 }
 \keyword{internal}

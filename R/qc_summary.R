@@ -1,4 +1,4 @@
-utils::globalVariables(c("DAid", "Assay", "NPX", "adj.P.Val", "Age", "BMI", "n"))
+utils::globalVariables(c("DAid", "Assay", "NPX", "adj.P.Val", "Age", "BMI", "n", "na_percentage"))
 #' Check the column types of the dataset
 #'
 #' `check_col_types()` checks the column types of the input dataset and
@@ -65,7 +65,7 @@ calc_na_percentage_row <- function(df) {
 #' Check normality of the data
 #'
 #' `check_normality()` checks the normality of the input dataset using the Shapiro-Wilk test.
-#' It performs the test in parallel and returns the p-values, adjusted p-values, and
+#' It performs the test and returns the p-values, adjusted p-values, and
 #' normality status for each protein.
 #'
 #' @param df The input dataset.
@@ -74,10 +74,8 @@ calc_na_percentage_row <- function(df) {
 #' @keywords internal
 check_normality <- function(df) {
 
-  future::plan(future::multicore)
-
-  # Perform Shapiro-Wilk test in parallel
-  p_values <- future.apply::future_lapply(df |> dplyr::select(-dplyr::any_of(c("DAid"))), function(column) {
+  # Perform Shapiro-Wilk test
+  p_values <- lapply(df |> dplyr::select(-dplyr::any_of(c("DAid"))), function(column) {
     stats::shapiro.test(column)$p.value
   })
 

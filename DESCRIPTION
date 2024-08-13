@@ -26,8 +26,6 @@ Imports:
     easyPubMed,
     embed,
     forcats,
-    future,
-    future.apply,
     ggplot2,
     ggrepel,
     ggridges,
