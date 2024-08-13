@@ -1,0 +1,145 @@
+---
+title: "Data Imputation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{data_imputation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette will guide you to the different imputation methods HDAnalyzeR offers. First of all, we will load the package, as well as dplyr, ggplot2 and patchwork for data manipulation and visualization. We will also load and widen the Olink example dataset.
+
+```{r setup}
+library(HDAnalyzeR)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+```
+
+```{r}
+wide_data <- widen_data(example_data)
+```
+
+We can simply check our data for NA values by using the `qc_summary_data()`.
+
+```{r}
+qc_data <- qc_summary_data(wide_data, report = FALSE)
+
+qc_data$na_row_dist
+qc_data$na_col_dist
+```
+
+We will start the imputation with the simplest and fastest method, which is the median imputation by using the `impute_median()`. After the imputation, we will check the sample distribution of a random Assay that contains missing values to see if these values are imputed logically.
+
+```{r}
+imputed_data <- impute_median(wide_data, show_na_percentage = FALSE)
+
+plot_before <- wide_data |> 
+  ggplot(aes(x = ACTA2)) +
+  geom_histogram(fill = "lightblue", color = "black", alpha = 0.5) +
+  labs(title = "Before imputation",
+       x = "ACTA2", y = "Count") +
+  ylim(0, 90) +
+  theme_minimal()
+
+plot_after <- imputed_data |> 
+  ggplot(aes(x = ACTA2)) +
+  geom_histogram(fill = "lightpink", color = "black", alpha = 0.5) +
+  labs(title = "After median imputation",
+       x = "ACTA2", y = "Count") +
+  ylim(0, 90) +
+  theme_minimal()
+
+plot_before + plot_after
+```
+
+As observed in the plots, the distribution of the ACTA2 assay shifts slightly after imputation, with an exaggerated median value in the imputed data. This highlights a key drawback of median imputation: the more missing values there are, the greater the potential bias.
+
+A better approach is to use the `impute_knn()` with 5 neighbors, which imputes missing values based on the 5-nearest neighbors. We will use the same assay to compare the imputed data with the original data.
+
+```{r}
+imputed_data <- impute_knn(wide_data, k = 5, show_na_percentage = FALSE)
+
+plot_before <- wide_data |> 
+  ggplot(aes(x = ACTA2)) +
+  geom_histogram(fill = "lightblue", color = "black", alpha = 0.5) +
+  labs(title = "Before imputation",
+       x = "ACTA2", y = "Count") +
+  ylim(0, 90) +
+  theme_minimal()
+
+plot_after <- imputed_data |>
+  ggplot(aes(x = ACTA2)) +
+  geom_histogram(fill = "lightpink", color = "black", alpha = 0.5) +
+  labs(title = "After KNN imputation",
+       x = "ACTA2", y = "Count") +
+  ylim(0, 90) +
+  theme_minimal()
+
+plot_before + plot_after
+```
+
+In this case, the distribution of the ACTA2 assay is more similar to the original data after imputation. This is because the KNN imputation method uses the nearest neighbors to impute missing values, which is more accurate and representative than median imputation.
+
+Another imputation method is the `impute_mice()`, which uses multiple imputation by chained equations. We will use the default values for the number of imputations, the number of iterations and the imputation method.
+
+```{r}
+imputed_data <- impute_mice(wide_data, show_na_percentage = FALSE)
+
+plot_before <- wide_data |> 
+  ggplot(aes(x = ACTA2)) +
+  geom_histogram(fill = "lightblue", color = "black", alpha = 0.5) +
+  labs(title = "Before imputation",
+       x = "ACTA2", y = "Count") +
+  ylim(0, 90) +
+  theme_minimal()
+
+plot_after <- imputed_data |>
+  ggplot(aes(x = ACTA2)) +
+  geom_histogram(fill = "lightpink", color = "black", alpha = 0.5) +
+  labs(title = "After MICE imputation",
+       x = "ACTA2", y = "Count") +
+  ylim(0, 90) +
+  theme_minimal()
+
+plot_before + plot_after
+```
+
+This imputed dataset is even closer to the original data, as the MICE imputation method uses multiple imputations to estimate missing values. This is a more robust and accurate method than median or KNN imputation. However, it is the most computationally expensive method.
+
+Finally, we will use the `impute_missForest()` method, which uses the random forest algorithm to impute missing values. We will use the default values for the number of trees and the number of iterations.
+
+```{r}
+imputed_data <- impute_missForest(wide_data, show_na_percentage = FALSE)
+
+plot_before <- wide_data |> 
+  ggplot(aes(x = ACTA2)) +
+  geom_histogram(fill = "lightblue", color = "black", alpha = 0.5) +
+  labs(title = "Before imputation",
+       x = "ACTA2", y = "Count") +
+  ylim(0, 90) +
+  theme_minimal()
+
+plot_after <- imputed_data |>
+  ggplot(aes(x = ACTA2)) +
+  geom_histogram(fill = "lightpink", color = "black", alpha = 0.5) +
+  labs(title = "After MissForest imputation",
+       x = "ACTA2", y = "Count") +
+  ylim(0, 90) +
+  theme_minimal()
+
+plot_before + plot_after
+```
+
+The MissForest imputation method is also accurate and robust, as it uses the random forest algorithm to impute missing values. This method is particularly useful for large datasets with complex relationships between variables. In this case though, the MICE imputation method seems to be the most accurate.
+
+In this vignette we showed that via HDAnalyzeR the user can impute their data with different methods, each of them with its own advantages and drawbacks. The user can choose the method that best fits their data and their analysis needs. When using KNN, MICE or MissForest imputation methods, the user should experiment with the parameters and look at the distributions of assays before and after to pick the most suitable.
+
+> 📓 All methods assume that the data is missing at random, which is a common assumption in imputation methods. If the data are missing in a biased way (either technical or biological), the imputation methods may introduce bias into the data. In such cases, it is important to carefully consider the way the data were collected and what they represent.
