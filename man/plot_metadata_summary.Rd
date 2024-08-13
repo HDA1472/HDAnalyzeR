@@ -7,7 +7,7 @@
 plot_metadata_summary(
   metadata,
   categorical = "Sex",
-  numeric = "Age",
+  numerical = "Age",
   disease_palette = NULL,
   categ_palette = "sex_hpa"
 )
@@ -17,7 +17,7 @@ plot_metadata_summary(
 
 \item{categorical}{The categorical variables to summarize. Default is "Sex".}
 
-\item{numeric}{The numeric variables to summarize. Default is "Age".}
+\item{numerical}{The numerical variables to summarize. Default is "Age".}
 
 \item{disease_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}.}
 

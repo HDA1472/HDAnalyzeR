@@ -163,6 +163,26 @@ print_summary <- function(sample_n,
 }
 
 
+#' Create the missing value distribution
+#'
+#' `plot_missing_values()` creates a histogram of the missing value distribution.
+#'
+#' @param missing_values A tibble with the column/row names and the percentage of NAs in each column/row.
+#' @param yaxis_name The name of the y-axis.
+#'
+#' @return A histogram of the missing value distribution.
+#' @keywords internal
+plot_missing_values <- function(missing_values, yaxis_name) {
+
+  na_histogram <- missing_values |>
+    ggplot2::ggplot(ggplot2::aes(x = na_percentage)) +
+    ggplot2::geom_histogram() +
+    ggplot2::labs(x = "Missing value percentage", y = yaxis_name) +
+    theme_hpa()
+
+  return(na_histogram)
+}
+
 #' Plot summary visualization for Sex, Age and BMI metadata
 #'
 #' `plot_metadata_summary()` creates three plots:
@@ -171,7 +191,7 @@ print_summary <- function(sample_n,
 #'
 #' @param metadata The metadata dataframe.
 #' @param categorical The categorical variables to summarize. Default is "Sex".
-#' @param numeric The numeric variables to summarize. Default is "Age".
+#' @param numerical The numerical variables to summarize. Default is "Age".
 #' @param disease_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
 #' @param categ_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "sex_hpa".
 #'
@@ -179,14 +199,14 @@ print_summary <- function(sample_n,
 #' @keywords internal
 plot_metadata_summary <- function(metadata,
                                   categorical = "Sex",
-                                  numeric = "Age",
+                                  numerical = "Age",
                                   disease_palette = NULL,
                                   categ_palette = "sex_hpa") {
 
   plot_list <- list()
   counts_list <- list()
 
-  for (col in numeric) {
+  for (col in numerical) {
     Variable <- rlang::sym(col)
     dist_plot <- metadata |>
       ggplot2::ggplot(ggplot2::aes(x = !!Variable, y = Disease, fill = Disease)) +
@@ -266,7 +286,9 @@ qc_summary_data <- function(df, wide = TRUE, threshold = 0.8, report = TRUE) {
   protein_n <- ncol(wide_data) - 1
   class_summary <- check_col_types(wide_data)
   na_percentage_col <- calc_na_percentage_col(wide_data)
+  na_col_dist <- plot_missing_values(na_percentage_col, "Number of Assays")
   na_percentage_row <- calc_na_percentage_row(wide_data)
+  na_row_dist <- plot_missing_values(na_percentage_row, "Number of Samples")
   normality_results <- check_normality(wide_data)
   cor <- create_corr_heatmap(wide_data |> dplyr::select(-dplyr::any_of(c("DAid"))),
                              threshold = threshold)
@@ -287,7 +309,9 @@ qc_summary_data <- function(df, wide = TRUE, threshold = 0.8, report = TRUE) {
   }
 
   return(list("na_percentage_col" = na_percentage_col,
+              "na_col_dist" = na_col_dist,
               "na_percentage_row" = na_percentage_row,
+              "na_row_dist" = na_row_dist,
               "normality_results" = normality_results,
               "cor_matrix" = cor_matrix,
               "cor_results" = cor_results,
@@ -303,7 +327,7 @@ qc_summary_data <- function(df, wide = TRUE, threshold = 0.8, report = TRUE) {
 #'
 #' @param metadata The metadata dataframe.
 #' @param categorical The categorical variables to summarize. Default is "Sex".
-#' @param numeric The numeric variables to summarize. Default is "Age".
+#' @param numerical The numeric variables to summarize. Default is "Age".
 #' @param disease_palette The color palette for the different diseases. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
 #' @param categ_palette The categorical color palette. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "sex_hpa".
 #' @param report Whether to print the summary. Default is TRUE.
@@ -322,7 +346,7 @@ qc_summary_data <- function(df, wide = TRUE, threshold = 0.8, report = TRUE) {
 #' qc_res$distplot_Age
 qc_summary_metadata <- function(metadata,
                                 categorical = "Sex",
-                                numeric = "Age",
+                                numerical = "Age",
                                 disease_palette = NULL,
                                 categ_palette = "sex_hpa",
                                 report = TRUE) {
@@ -331,7 +355,9 @@ qc_summary_metadata <- function(metadata,
   var_n <- ncol(metadata) - 1
   class_summary <- check_col_types(metadata)
   na_percentage_col <- calc_na_percentage_col(metadata)
+  na_col_dist <- plot_missing_values(na_percentage_col, "Number of Columns")
   na_percentage_row <- calc_na_percentage_row(metadata)
+  na_row_dist <- plot_missing_values(na_percentage_row, "Number of Rows")
 
   if (isTRUE(report)) {
     print_summary(sample_n, var_n, class_summary, na_percentage_col, na_percentage_row)
@@ -339,12 +365,14 @@ qc_summary_metadata <- function(metadata,
 
   metadata_plot <- plot_metadata_summary(metadata,
                                          categorical,
-                                         numeric,
+                                         numerical,
                                          disease_palette,
                                          categ_palette)
 
   na_list <- list("na_percentage_col" = na_percentage_col,
-                  "na_percentage_row" = na_percentage_row)
+                  "na_col_dist" = na_col_dist,
+                  "na_percentage_row" = na_percentage_row,
+                  "na_row_dist" = na_row_dist)
 
   res_list <- c(na_list, metadata_plot)
 
