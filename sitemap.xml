@@ -2,6 +2,7 @@
 <url><loc>https://hda1472.github.io/DA_RPackage/404.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/LICENSE.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/articles/HDAnalyzeR.html</loc></url>
+<url><loc>https://hda1472.github.io/DA_RPackage/articles/data_preprocessing.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/articles/index.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/authors.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/index.html</loc></url>
@@ -58,6 +59,7 @@
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_gsea.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_loadings.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_metadata_summary.html</loc></url>
+<url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_missing_values.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_ora.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_protein_boxplot.html</loc></url>
 <url><loc>https://hda1472.github.io/DA_RPackage/reference/plot_scatter_with_regression.html</loc></url>

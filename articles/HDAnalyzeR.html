@@ -51,6 +51,12 @@
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/HDAnalyzeR.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/data_preprocessing.html">Data Preprocessing &amp; Quality Control Check</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -134,7 +140,7 @@ blood plasma samples.</p>
 <p>📓 In real-world scenarios, you would load your own data and metadata
 files instead of using the example dataset. In order to run the package
 without issues, make sure that your data include the following columns:
-DAid, Assay and, NPX, while your metadata include the following columns:
+DAid, Assay and NPX, while your metadata include the following columns:
 DAid and Disease. Also, if you have a Sex column in your metadata, the
 data should be encoded as M and F.</p>
 </blockquote>
@@ -1098,7 +1104,7 @@ AML.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Scaled_Importance</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">Variable</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">intersect_proteins</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">de_proteins</span>, <span class="va">lasso_proteins</span><span class="op">)</span></span>
+<span><span class="va">intersect_proteins</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">de_proteins</span>, <span class="va">lasso_proteins</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Perform ORA with GO database and visualize results</span></span>
 <span><span class="va">enrichment</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_ora.html">do_ora</a></span><span class="op">(</span><span class="va">intersect_proteins</span>, database <span class="op">=</span> <span class="st">"GO"</span><span class="op">)</span></span>
