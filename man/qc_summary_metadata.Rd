@@ -7,7 +7,7 @@
 qc_summary_metadata(
   metadata,
   categorical = "Sex",
-  numeric = "Age",
+  numerical = "Age",
   disease_palette = NULL,
   categ_palette = "sex_hpa",
   report = TRUE
@@ -18,7 +18,7 @@ qc_summary_metadata(
 
 \item{categorical}{The categorical variables to summarize. Default is "Sex".}
 
-\item{numeric}{The numeric variables to summarize. Default is "Age".}
+\item{numerical}{The numeric variables to summarize. Default is "Age".}
 
 \item{disease_palette}{The color palette for the different diseases. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}.}
 
