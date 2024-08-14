@@ -72,11 +72,14 @@ do_lreg(
 A list with two elements:
 \itemize{
 \item fit_res: A list with 4 elements:
+\itemize{
 \item lreg_wf: Workflow object.
 \item train_set: Training set.
 \item test_set: Testing set.
 \item final: Fitted model.
+}
 \item metrics: A list with the model metrics:
+\itemize{
 \item accuracy: Accuracy of the model.
 \item sensitivity: Sensitivity of the model.
 \item specificity: Specificity of the model.
@@ -85,10 +88,15 @@ A list with two elements:
 \item roc_curve: ROC curve of the model.
 }
 }
+}
 \description{
 \code{lreg_fit()} fits a logistic regression model for a single predictor and calculates
 the ROC AUC, accuracy, sensitivity, and specificity. It also performs cross-validation
 and plots the ROC curve.
+}
+\details{
+This model should be used with data that contain a single predictor. If the data
+contains multiple predictors, prefer using the \code{do_rreg()} or \code{do_rf()} functions.
 }
 \examples{
 # Data with single predictor
