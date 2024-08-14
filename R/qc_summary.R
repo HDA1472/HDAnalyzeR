@@ -264,6 +264,8 @@ plot_metadata_summary <- function(metadata,
 #' @param threshold The reporting protein-protein correlation threshold. Default is 0.8.
 #' @param report Whether to print the summary. Default is TRUE.
 #'
+#' @details The correlation method is Pearson and the normality test is Shapiro-Wilk.
+#'
 #' @return A list containing the following elements:
 #'   - na_percentage_col: A tibble with the column names and the percentage of NAs in each column.
 #'   - na_percentage_row: A tibble with the DAids and the percentage of NAs in each row.

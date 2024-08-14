@@ -33,6 +33,9 @@ calculates the percentage of NAs in each column and row, performs a normality te
 calculates the protein-protein correlations, and creates a heatmap of the correlations.
 The user can specify the reporting protein-protein correlation threshold.
 }
+\details{
+The correlation method is Pearson and the normality test is Shapiro-Wilk.
+}
 \examples{
 qc_res <- qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
 }
