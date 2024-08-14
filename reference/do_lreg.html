@@ -180,19 +180,24 @@ and plots the ROC curve.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with two elements:</p><ul><li><p>fit_res: A list with 4 elements:</p></li>
-<li><p>lreg_wf: Workflow object.</p></li>
+    <p>A list with two elements:</p><ul><li><p>fit_res: A list with 4 elements:</p><ul><li><p>lreg_wf: Workflow object.</p></li>
 <li><p>train_set: Training set.</p></li>
 <li><p>test_set: Testing set.</p></li>
 <li><p>final: Fitted model.</p></li>
-<li><p>metrics: A list with the model metrics:</p></li>
-<li><p>accuracy: Accuracy of the model.</p></li>
+</ul></li>
+<li><p>metrics: A list with the model metrics:</p><ul><li><p>accuracy: Accuracy of the model.</p></li>
 <li><p>sensitivity: Sensitivity of the model.</p></li>
 <li><p>specificity: Specificity of the model.</p></li>
 <li><p>auc: AUC of the model.</p></li>
 <li><p>conf_matrix: Confusion matrix of the model.</p></li>
 <li><p>roc_curve: ROC curve of the model.</p></li>
+</ul></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>This model should be used with data that contain a single predictor. If the data
+contains multiple predictors, prefer using the <code><a href="do_rreg.html">do_rreg()</a></code> or <code><a href="do_rf.html">do_rf()</a></code> functions.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

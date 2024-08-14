@@ -67,7 +67,17 @@ The points can be plotted in the PC1/PC2 or UMAP1/UMAP2 space.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_dim_reduction</span><span class="op">(</span><span class="va">res</span>, <span class="va">x</span>, <span class="va">y</span>, <span class="va">metadata</span>, <span class="va">color</span>, <span class="va">palette</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_dim_reduction</span><span class="op">(</span></span>
+<span>  <span class="va">res</span>,</span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  <span class="va">metadata</span>,</span>
+<span>  <span class="va">color</span>,</span>
+<span>  <span class="va">palette</span>,</span>
+<span>  loadings <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  variance_explained <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  loadings_data <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
