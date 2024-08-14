@@ -11,10 +11,14 @@ do_pca(
   color = "Disease",
   palette = NULL,
   wide = TRUE,
+  assay = FALSE,
   impute = TRUE,
   plots = TRUE,
+  x = "PC1",
+  y = "PC2",
   npcs = 4,
   nproteins = 8,
+  loadings = FALSE,
   save = FALSE
 )
 }
@@ -32,13 +36,21 @@ to be used to plot the points color. Default is "Disease".}
 
 \item{wide}{If TRUE, the data is assumed to be in wide format. Default is TRUE.}
 
+\item{assay}{If TRUE, each point is an assay and not a sample. Default is FALSE.}
+
 \item{impute}{If TRUE, the data is imputed before the PCA analysis. Default is TRUE.}
 
 \item{plots}{If TRUE, the function creates plots of the PCA results. Default is TRUE.}
 
+\item{x}{The component to be plotted on the x-axis. Default is "PC1".}
+
+\item{y}{The component to be plotted on the y-axis. Default is "PC2".}
+
 \item{npcs}{The number of PCs to be plotted. Default is 4.}
 
 \item{nproteins}{The number of proteins to be plotted. Default is 8.}
+
+\item{loadings}{If TRUE, the PCA loadings are plotted on the 2 dimensional plot. Default is FALSE.}
 
 \item{save}{If TRUE, the plots are saved in the results directory. Default is FALSE.}
 }
@@ -56,6 +68,10 @@ A list with the PCA results and, if requested, the PCA plots.
 \code{do_pca()} runs a PCA analysis on the provided data. The function can visualize
 the sample points on the first and second PC plane as well as the PCA loadings
 and the explained variance. It can also save the plots in the results directory.
+}
+\details{
+If you use more than 9 principal components (\code{pcs} > 9), the \code{x} and \code{y}
+arguments should be formatted as 'PC01' instead of 'PC1', and so on.
 }
 \examples{
 do_pca(example_data,

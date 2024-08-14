@@ -47,16 +47,25 @@ plot_explained_variance <- function(explained_variance) {
 
   variance_plot <- ggplot2::ggplot(
     explained_variance,
-    ggplot2::aes(x = factor(component, levels = component),
-                 y = `percent variance`)
+    ggplot2::aes(x = factor(component, levels = component))
     ) +
-    ggplot2::geom_bar(stat = "identity", fill = "darkblue") +
-    ggplot2::geom_line(ggplot2::aes(y = `cumulative percent variance`, group = 1),
-                       color = "red3") +
-    ggplot2::geom_point(ggplot2::aes(y = `cumulative percent variance`),
-                        color = "red3") +
+    ggplot2::geom_bar(ggplot2::aes(y = `percent variance`,
+                                   fill = "Individual Variance"),
+                      stat = "identity") +
+    ggplot2::geom_line(ggplot2::aes(y = `cumulative percent variance`,
+                                    group = 1,
+                                    color = "Cumulative Variance")) +
+    ggplot2::geom_point(ggplot2::aes(y = `cumulative percent variance`,
+                                     color = "Cumulative Variance")) +
+    ggplot2::geom_text(ggplot2::aes(y = `cumulative percent variance`,
+                       label = paste0(round(`cumulative percent variance`), "%")),
+              vjust = -0.5,
+              size = 3.5) +
     ggplot2::labs(x = "Components", y = "% Explained Variance") +
-    theme_hpa()
+    ggplot2::scale_fill_manual(name = "", values = c("Individual Variance" = "darkblue")) +
+    ggplot2::scale_color_manual(name = "", values = c("Cumulative Variance" = "red3")) +
+    theme_hpa() +
+    ggplot2::theme(legend.position = "top")
 
   return(variance_plot)
 }
@@ -74,7 +83,15 @@ plot_explained_variance <- function(explained_variance) {
 #'
 #' @return A ggplot object
 #' @keywords internal
-plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
+plot_dim_reduction <- function(res,
+                               x,
+                               y,
+                               metadata,
+                               color,
+                               palette,
+                               loadings = FALSE,
+                               variance_explained = NULL,
+                               loadings_data = NULL) {
 
   if (!is.null(metadata)) {
     p <- res |>
@@ -83,7 +100,7 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
       ggplot2::geom_point(ggplot2::aes(color = !!rlang::sym(color)),
                           alpha = 0.7,
                           size = 2) +
-      ggplot2::labs(color = color) +
+      ggplot2::labs(Color = color) +
       ggplot2::theme_classic()
   } else {
     p <- res |>
@@ -92,6 +109,27 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
       ggplot2::theme_classic()
   }
 
+  if (isTRUE(loadings)) {
+    loadings_data <- loadings_data |>
+      dplyr::filter(PC %in% c("PC1", "PC01")) |>
+      dplyr::arrange(desc(abs(Value))) |>
+      head(5)
+
+    p <- p +
+      ggplot2::geom_segment(data = loadings_data,
+                            ggplot2::aes(x = 0, y = 0, xend = Value, yend = Value)) +
+      ggrepel::geom_text_repel(data = loadings_data,
+                               ggplot2::aes(x = Value, y = Value, label = Assay),
+                               size = 3,
+                               color = "black")
+  }
+
+  if (!is.null(variance_explained)) {
+    x_num <- as.numeric(sub("PC", "", x))
+    y_num <- as.numeric(sub("PC", "", y))
+    p <- p + ggplot2::labs(x = paste0(x, " (", round(variance_explained[x_num], 1), "%)"),
+                           y = paste0(y, " (", round(variance_explained[y_num], 1), "%)"))
+  }
   if (!is.null(palette)) {
     if (is.null(names(palette))) {
       p <- p + scale_color_hpa(palette)
@@ -117,10 +155,14 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
 #' to be used to plot the points color. Default is "Disease".
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
 #' @param wide If TRUE, the data is assumed to be in wide format. Default is TRUE.
+#' @param assay If TRUE, each point is an assay and not a sample. Default is FALSE.
 #' @param impute If TRUE, the data is imputed before the PCA analysis. Default is TRUE.
 #' @param plots If TRUE, the function creates plots of the PCA results. Default is TRUE.
+#' @param x The component to be plotted on the x-axis. Default is "PC1".
+#' @param y The component to be plotted on the y-axis. Default is "PC2".
 #' @param npcs The number of PCs to be plotted. Default is 4.
 #' @param nproteins The number of proteins to be plotted. Default is 8.
+#' @param loadings If TRUE, the PCA loadings are plotted on the 2 dimensional plot. Default is FALSE.
 #' @param save If TRUE, the plots are saved in the results directory. Default is FALSE.
 #'
 #' @return A list with the PCA results and, if requested, the PCA plots.
@@ -130,6 +172,9 @@ plot_dim_reduction <- function(res, x, y, metadata, color, palette) {
 #'   - loadings_plot: A PCA loadings ggplot object.
 #'   - variance_plot: A ggplot object with the explained variance and cumulative explained variance.
 #' @export
+#'
+#' @details If you use more than 9 principal components (`pcs` > 9), the `x` and `y`
+#' arguments should be formatted as 'PC01' instead of 'PC1', and so on.
 #'
 #' @examples
 #' do_pca(example_data,
@@ -144,10 +189,14 @@ do_pca <- function(olink_data,
                    color = "Disease",
                    palette = NULL,
                    wide = TRUE,
+                   assay = FALSE,
                    impute = TRUE,
                    plots = TRUE,
+                   x = "PC1",
+                   y = "PC2",
                    npcs = 4,
                    nproteins = 8,
+                   loadings = FALSE,
                    save = FALSE) {
 
   if (isFALSE(wide)) {
@@ -156,10 +205,17 @@ do_pca <- function(olink_data,
     wide_data <- olink_data
   }
 
+  if (isTRUE(assay)) {
+    transposed_data <- wide_data |> tibble::column_to_rownames(var = "DAid")
+    wide_data <- tibble::as_tibble(cbind(nms = names(transposed_data), t(transposed_data))) |>
+      dplyr::rename(Assay = nms) |>
+      dplyr::mutate(dplyr::across(-Assay, as.numeric))
+  }
+
   set.seed(123)
   if (isTRUE(impute)) {
     pca_rec <- recipes::recipe( ~ ., data = wide_data) |>
-      recipes::update_role(DAid, new_role = "id")  |>
+      recipes::update_role(1, new_role = "id")  |>
       recipes::step_normalize(recipes::all_predictors()) |>
       recipes::step_impute_knn(recipes::all_predictors(), neighbors = 5) |>
       recipes::step_pca(recipes::all_predictors(), num_comp = pcs)
@@ -171,7 +227,7 @@ do_pca <- function(olink_data,
     ntidy <- 3
   } else {
     pca_rec <- recipes::recipe( ~ ., data = wide_data) |>
-      recipes::update_role(DAid, new_role = "id")  |>
+      recipes::update_role(1, new_role = "id")  |>
       recipes::step_normalize(recipes::all_predictors()) |>
       recipes::step_pca(recipes::all_predictors())
 
@@ -194,11 +250,20 @@ do_pca <- function(olink_data,
     tidyr::pivot_wider(names_from = terms, values_from = value) |>
     dplyr::select(-id)
 
+  variance_explained <- explained_variance %>%
+    dplyr::pull(`percent variance`)
+
   # Visualize results
   if (isTRUE(plots)) {
-    comp1 <- names(pca_res)[2]
-    comp2 <- names(pca_res)[3]
-    pca_plot <- plot_dim_reduction(pca_res, comp1, comp2, metadata, color, palette)
+    pca_plot <- plot_dim_reduction(pca_res,
+                                   x,
+                                   y,
+                                   metadata,
+                                   color,
+                                   palette,
+                                   loadings,
+                                   variance_explained,
+                                   loadings_data)
     loadings_plot <- plot_loadings(tidied_pca, npcs, nproteins)
     variance_plot <- plot_explained_variance(explained_variance)
 
@@ -231,6 +296,7 @@ do_pca <- function(olink_data,
 #' to be used to plot the points color. Default is "Disease".
 #' @param palette A vector with the colors to be used in the UMAP plots. Default is NULL.
 #' @param wide If TRUE, the data is assumed to be in wide format. Default is TRUE.
+#' @param assay If TRUE, each point is an assay and not a sample. Default is FALSE.
 #' @param impute If TRUE, the data is imputed before the UMAP analysis. Default is TRUE.
 #' @param plots If TRUE, the function creates plots of the UMAP results. Default is TRUE.
 #' @param save If TRUE, the plots are saved in the results directory. Default is FALSE.
@@ -251,6 +317,7 @@ do_umap <- function(olink_data,
                     color = "Disease",
                     palette = NULL,
                     wide = TRUE,
+                    assay = FALSE,
                     impute = TRUE,
                     plots = TRUE,
                     save = FALSE) {
@@ -266,10 +333,17 @@ do_umap <- function(olink_data,
     wide_data <- olink_data
   }
 
+  if (isTRUE(assay)) {
+    transposed_data <- wide_data |> tibble::column_to_rownames(var = "DAid")
+    wide_data <- tibble::as_tibble(cbind(nms = names(transposed_data), t(transposed_data))) |>
+      dplyr::rename(Assay = nms) |>
+      dplyr::mutate(dplyr::across(-Assay, as.numeric))
+  }
+
   set.seed(123)
   if (isTRUE(impute)) {
     umap_rec <- recipes::recipe( ~ ., data = wide_data) |>
-      recipes::update_role(DAid, new_role = "id")  |>
+      recipes::update_role(1, new_role = "id")  |>
       recipes::step_normalize(recipes::all_predictors()) |>
       recipes::step_impute_knn(recipes::all_predictors(), neighbors = 5) |>
       embed::step_umap(recipes::all_predictors())
@@ -278,7 +352,7 @@ do_umap <- function(olink_data,
 
   } else {
     umap_rec <- recipes::recipe( ~ ., data = wide_data) |>
-      recipes::update_role(DAid, new_role = "id")  |>
+      recipes::update_role(1, new_role = "id")  |>
       recipes::step_normalize(recipes::all_predictors()) |>
       embed::step_umap(recipes::all_predictors())
 
