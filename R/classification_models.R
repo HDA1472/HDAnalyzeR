@@ -1135,19 +1135,29 @@ plot_var_imp <- function (finalfit_res,
 #' @param seed Seed for reproducibility. Default is 123.
 #'
 #' @return A list with two elements:
-#' - fit_res: A list with 4 elements:
-#'  - lreg_wf: Workflow object.
-#'  - train_set: Training set.
-#'  - test_set: Testing set.
-#'  - final: Fitted model.
-#' - metrics: A list with the model metrics:
-#'  - accuracy: Accuracy of the model.
-#'  - sensitivity: Sensitivity of the model.
-#'  - specificity: Specificity of the model.
-#'  - auc: AUC of the model.
-#'  - conf_matrix: Confusion matrix of the model.
-#'  - roc_curve: ROC curve of the model.
+#' \itemize{
+#' \item fit_res: A list with 4 elements:
+#' \itemize{
+#'  \item lreg_wf: Workflow object.
+#'  \item train_set: Training set.
+#'  \item test_set: Testing set.
+#'  \item final: Fitted model.
+#'  }
+#' \item metrics: A list with the model metrics:
+#' \itemize{
+#'  \item accuracy: Accuracy of the model.
+#'  \item sensitivity: Sensitivity of the model.
+#'  \item specificity: Specificity of the model.
+#'  \item auc: AUC of the model.
+#'  \item conf_matrix: Confusion matrix of the model.
+#'  \item roc_curve: ROC curve of the model.
+#'  }
+#' }
 #' @export
+#'
+#' @details
+#' This model should be used with data that contain a single predictor. If the data
+#' contains multiple predictors, prefer using the `do_rreg()` or `do_rf()` functions.
 #'
 #' @examples
 #' # Data with single predictor
