@@ -138,7 +138,7 @@ plot_after <- imputed_data |>
 plot_before + plot_after
 ```
 
-The MissForest imputation method is also accurate and robust, as it uses the random forest algorithm to impute missing values. This method is particularly useful for large datasets with complex relationships between variables. In this case though, the MICE imputation method seems to be the most accurate.
+The MissForest imputation method is the most accurate and also very robust, as it uses the random forest algorithm to impute missing values. This method is particularly useful for large datasets with complex relationships between variables.
 
 In this vignette we showed that via HDAnalyzeR the user can impute their data with different methods, each of them with its own advantages and drawbacks. The user can choose the method that best fits their data and their analysis needs. When using KNN, MICE or MissForest imputation methods, the user should experiment with the parameters and look at the distributions of assays before and after to pick the most suitable.
 
