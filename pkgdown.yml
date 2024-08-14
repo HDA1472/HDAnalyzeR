@@ -2,9 +2,10 @@ pandoc: 3.1.11
 pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
+  data_imputation: data_imputation.html
   data_preprocessing: data_preprocessing.html
   HDAnalyzeR: HDAnalyzeR.html
-last_built: 2024-08-13T22:18Z
+last_built: 2024-08-14T15:42Z
 urls:
   reference: https://hda1472.github.io/DA_RPackage/reference
   article: https://hda1472.github.io/DA_RPackage/articles
