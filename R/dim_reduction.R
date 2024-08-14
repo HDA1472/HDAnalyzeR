@@ -1,6 +1,6 @@
 utils::globalVariables(c("terms", "value", "component", "positive", "var",
                          "cumulative_variance", "cumulative percent variance",
-                         "id", "percent variance"))
+                         "id", "percent variance", "nms", "PC"))
 #' Plot PCA loadings
 #'
 #' `plot_loadings()` plots the PCA loadings for the top n features and first m PCs.
@@ -112,8 +112,8 @@ plot_dim_reduction <- function(res,
   if (isTRUE(loadings)) {
     loadings_data <- loadings_data |>
       dplyr::filter(PC %in% c("PC1", "PC01")) |>
-      dplyr::arrange(desc(abs(Value))) |>
-      head(5)
+      dplyr::arrange(dplyr::desc(abs(Value))) |>
+      dplyr::head(5)
 
     p <- p +
       ggplot2::geom_segment(data = loadings_data,
@@ -250,7 +250,7 @@ do_pca <- function(olink_data,
     tidyr::pivot_wider(names_from = terms, values_from = value) |>
     dplyr::select(-id)
 
-  variance_explained <- explained_variance %>%
+  variance_explained <- explained_variance |>
     dplyr::pull(`percent variance`)
 
   # Visualize results
