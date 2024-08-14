@@ -4,7 +4,17 @@
 \alias{plot_dim_reduction}
 \title{Plot sample data points in a two-dimensional plane.}
 \usage{
-plot_dim_reduction(res, x, y, metadata, color, palette)
+plot_dim_reduction(
+  res,
+  x,
+  y,
+  metadata,
+  color,
+  palette,
+  loadings = FALSE,
+  variance_explained = NULL,
+  loadings_data = NULL
+)
 }
 \arguments{
 \item{res}{A tibble with the results of the dimensionality reduction analysis.}

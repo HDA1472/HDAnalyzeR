@@ -10,6 +10,7 @@ do_umap(
   color = "Disease",
   palette = NULL,
   wide = TRUE,
+  assay = FALSE,
   impute = TRUE,
   plots = TRUE,
   save = FALSE
@@ -26,6 +27,8 @@ to be used to plot the points color. Default is "Disease".}
 \item{palette}{A vector with the colors to be used in the UMAP plots. Default is NULL.}
 
 \item{wide}{If TRUE, the data is assumed to be in wide format. Default is TRUE.}
+
+\item{assay}{If TRUE, each point is an assay and not a sample. Default is FALSE.}
 
 \item{impute}{If TRUE, the data is imputed before the UMAP analysis. Default is TRUE.}
 
