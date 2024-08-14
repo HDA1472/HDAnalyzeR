@@ -113,7 +113,7 @@ plot_dim_reduction <- function(res,
     loadings_data <- loadings_data |>
       dplyr::filter(PC %in% c("PC1", "PC01")) |>
       dplyr::arrange(dplyr::desc(abs(Value))) |>
-      dplyr::head(5)
+      utils::head(5)
 
     p <- p +
       ggplot2::geom_segment(data = loadings_data,
