@@ -4,12 +4,12 @@
 \alias{do_gsea}
 \title{Perform gene set enrichment analysis}
 \usage{
-do_gsea(de_results, database = c("KEGG", "GO", "Reactome"), pval_lim = 0.05)
+do_gsea(de_results, database = c("GO", "Reactome"), pval_lim = 0.05)
 }
 \arguments{
 \item{de_results}{A tibble containing the results of a differential expression analysis.}
 
-\item{database}{The database to perform the GSEA. It can be either "KEGG", "GO", or "Reactome".}
+\item{database}{The database to perform the GSEA. It can be either "GO" or "Reactome".}
 
 \item{pval_lim}{The p-value threshold to consider a term as significant.}
 }

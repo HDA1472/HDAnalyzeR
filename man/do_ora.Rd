@@ -6,7 +6,7 @@
 \usage{
 do_ora(
   protein_list,
-  database = c("KEGG", "GO", "Reactome"),
+  database = c("GO", "Reactome"),
   background = NULL,
   pval_lim = 0.05
 )
@@ -14,7 +14,7 @@ do_ora(
 \arguments{
 \item{protein_list}{A character vector containing the protein names.}
 
-\item{database}{The database to perform the ORA. It can be either "KEGG", "GO", or "Reactome".}
+\item{database}{The database to perform the ORA. It can be either "GO" or "Reactome".}
 
 \item{background}{A character vector containing the background genes.}
 

@@ -4,7 +4,7 @@ utils::globalVariables(c("ENTREZID"))
 #' `do_ora()` performs over-representation analysis (ORA) using the clusterProfiler package.
 #'
 #' @param protein_list A character vector containing the protein names.
-#' @param database The database to perform the ORA. It can be either "KEGG", "GO", or "Reactome".
+#' @param database The database to perform the ORA. It can be either "GO" or "Reactome".
 #' @param background A character vector containing the background genes.
 #' @param pval_lim The p-value threshold to consider a term as significant.
 #'
@@ -31,7 +31,7 @@ utils::globalVariables(c("ENTREZID"))
 #' # Perform ORA with GO database
 #' do_ora(sig_up_proteins_aml, database = "GO")
 do_ora <- function(protein_list,
-                   database = c("KEGG", "GO", "Reactome"),
+                   database = c("GO", "Reactome"),
                    background = NULL,
                    pval_lim = 0.05) {
   database <- match.arg(database)
@@ -58,11 +58,11 @@ do_ora <- function(protein_list,
   }
 
   if (database == "KEGG") {
-    # Perform KEGG enrichment analysis
-    enrichment <- clusterProfiler::enrichKEGG(gene = protein_list,
-                                              organism = "hsa",
-                                              pvalueCutoff = pval_lim,
-                                              universe = background)
+    # Perform KEGG enrichment analysis - Under development
+    # enrichment <- clusterProfiler::enrichKEGG(gene = protein_list,
+    #                                           organism = "hsa",
+    #                                           pvalueCutoff = pval_lim,
+    #                                           universe = background)
   } else if (database == "GO") {
     # Perform GO enrichment analysis
     enrichment <- clusterProfiler::enrichGO(gene = protein_list,
@@ -167,7 +167,7 @@ plot_ora <- function(enrichment,
 #' This function performs gene set enrichment analysis (GSEA) using the clusterProfiler package.
 #'
 #' @param de_results A tibble containing the results of a differential expression analysis.
-#' @param database The database to perform the GSEA. It can be either "KEGG", "GO", or "Reactome".
+#' @param database The database to perform the GSEA. It can be either "GO" or "Reactome".
 #' @param pval_lim The p-value threshold to consider a term as significant.
 #'
 #' @return A list containing the results of the GSEA.
@@ -191,7 +191,7 @@ plot_ora <- function(enrichment,
 #'         pval_lim = 0.9)
 #' # Remember that the data is artificial, this is why we use an absurdly high p-value cutoff
 do_gsea <- function(de_results,
-                    database = c("KEGG", "GO", "Reactome"),
+                    database = c("GO", "Reactome"),
                     pval_lim = 0.05) {
 
   database <- match.arg(database)
@@ -210,13 +210,13 @@ do_gsea <- function(de_results,
   protein_list <- stats::setNames(sorted_protein_list, protein_conversion$ENTREZID)
 
   if (database == "KEGG") {
-    # Perform GSEA for KEGG
-    enrichment <- clusterProfiler::gseKEGG(geneList = protein_list,
-                                           organism = "hsa",
-                                           pvalueCutoff = pval_lim,
-                                           pAdjustMethod = "BH",
-                                           minGSSize = 10,
-                                           maxGSSize = 500)
+    # Perform GSEA for KEGG - Under development
+    # enrichment <- clusterProfiler::gseKEGG(geneList = protein_list,
+    #                                        organism = "hsa",
+    #                                        pvalueCutoff = pval_lim,
+    #                                        pAdjustMethod = "BH",
+    #                                        minGSSize = 10,
+    #                                        maxGSSize = 500)
   } else if (database == "GO") {
     # Perform GSEA for GO
     enrichment <- clusterProfiler::gseGO(geneList = protein_list,
