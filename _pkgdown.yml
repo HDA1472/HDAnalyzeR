@@ -4,12 +4,14 @@ template:
   light-switch: yes
   includes:
     in_header: pkgdown/extra.css
+
 footer:
   structure:
     left: developed_by
     right: legal
   components:
     legal: Provided without **any warranty**.
+
 reference:
 - title: Preprocessing Data
 - subtitle: Preprocessing
@@ -101,3 +103,11 @@ reference:
   contents:
   - example_data
   - example_metadata
+
+  articles:
+  - title: Articles
+    navbar: ~
+    contents:
+    - data_preprocessing
+    - data_imputation
+    - differential_expression
