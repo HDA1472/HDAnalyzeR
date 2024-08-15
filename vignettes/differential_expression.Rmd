@@ -75,7 +75,7 @@ do_ttest(wide_data,
          only_male = "PRC")
 ```
 
-We could run Differential Expression against another categorical variable like `Sex`.
+We could run differential expression against another categorical variable like `Sex`.
 
 ```{r}
 do_ttest(wide_data, 
@@ -85,7 +85,7 @@ do_ttest(wide_data,
          control = "M")
 ```
 
-Finally, we can also perform Differential Expression Analysis against a continuous variable such as `Age` via `do_limma_continuous()`. We can also correct for categorical and other continuous variables.
+Moreover, we can also perform Differential Expression Analysis against a continuous variable such as `Age` via `do_limma_continuous()`. We can also correct for categorical and other continuous variables.
 
 ```{r}
 do_limma_continuous(wide_data, 
@@ -93,4 +93,19 @@ do_limma_continuous(wide_data,
                     variable = "Age",
                     correct = "Sex",
                     pval_lim = 0.001)
+```
+
+As a last step, we can summarize the results via `plot_de_summary()`. Let's first run a differential expression analysis for 4 different cases (1 vs 3).
+
+```{r}
+res_aml <- do_limma(wide_data, metadata, case = "AML", control = c("CLL", "MYEL", "GLIOM"))
+
+res_cll <- do_limma(wide_data, metadata, case = "CLL", control = c("AML", "MYEL", "GLIOM"))
+
+res_myel <- do_limma(wide_data, metadata, case = "MYEL", control = c("AML", "CLL", "GLIOM"))
+
+res_gliom <- do_limma(wide_data, metadata, case = "GLIOM", control = c("AML", "CLL", "MYEL"))
+
+plot_de_summary(list("AML" = res_aml, "CLL" = res_cll, "MYEL" = res_myel, "GLIOM" = res_gliom),
+                disease_palette = "cancers12")
 ```
