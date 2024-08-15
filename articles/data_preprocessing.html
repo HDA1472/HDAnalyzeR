@@ -56,6 +56,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/data_imputation.html">Data Imputation</a></li>
     <li><a class="dropdown-item" href="../articles/data_preprocessing.html">Data Preprocessing &amp; Quality Control Check</a></li>
+    <li><a class="dropdown-item" href="../articles/differential_expression.html">Differential Expression Analysis</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -455,7 +456,10 @@ like <code>Sex</code> and <code>Age</code>.</p>
 <p>Finally we will run a PCA and UMAP analysis on the data to check if
 the data contain any outliers or cluster in an unexpected way. From the
 PCA analysis we can also check how the variance in the data is explained
-by the different principal components.</p>
+by the different principal components. The PCA plot will be colored
+based on <code>Disease</code>, while the UMAP plot will be colored based
+on <code>Sex</code>. We can also run a UMAP where the points are Assays
+instead of samples.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/do_pca.html">do_pca</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, color <span class="op">=</span> <span class="st">"Disease"</span>, palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $pca_res</span></span>
@@ -500,7 +504,7 @@ by the different principal components.</p>
 <p><img src="data_preprocessing_files/figure-html/unnamed-chunk-12-3.png" width="700"></p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="../reference/do_umap.html">do_umap</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, color <span class="op">=</span> <span class="st">"Disease"</span>, palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/do_umap.html">do_umap</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, color <span class="op">=</span> <span class="st">"Sex"</span>, palette <span class="op">=</span> <span class="st">"sex_hpa"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $umap_res</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 268 × 3</span></span></span>
 <span><span class="co">#&gt;    DAid     UMAP1  UMAP2</span></span>
@@ -519,6 +523,27 @@ by the different principal components.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $umap_plot</span></span></code></pre></div>
 <p><img src="data_preprocessing_files/figure-html/unnamed-chunk-12-4.png" width="700"></p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="../reference/do_umap.html">do_umap</a></span><span class="op">(</span><span class="va">wide_data</span>, color <span class="op">=</span> <span class="st">"Assay"</span>, assay <span class="op">=</span> <span class="cn">TRUE</span>, palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ADA"</span> <span class="op">=</span> <span class="st">"darkblue"</span>, <span class="st">"ABL1"</span> <span class="op">=</span> <span class="st">"red3"</span>, <span class="st">"ACAN"</span> <span class="op">=</span> <span class="st">"green3"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $umap_res</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 100 × 3</span></span></span>
+<span><span class="co">#&gt;    Assay    UMAP1  UMAP2</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AARSD1  3.22   -<span style="color: #BB0000;">2.73</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> ABL1    2.64   -<span style="color: #BB0000;">1.37</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> ACAA1   1.63   -<span style="color: #BB0000;">0.260</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> ACAN   -<span style="color: #BB0000;">1.75</span>   -<span style="color: #BB0000;">0.358</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ACE2   -<span style="color: #BB0000;">0.037</span><span style="color: #BB0000; text-decoration: underline;">9</span> -<span style="color: #BB0000;">1.04</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ACOX1  -<span style="color: #BB0000;">1.05</span>    1.96 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ACP5    1.01    0.307</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ACP6    1.06   -<span style="color: #BB0000;">0.457</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ACTA2   1.31   -<span style="color: #BB0000;">1.57</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ACTN4  -<span style="color: #BB0000;">1.20</span>    2.07 </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 90 more rows</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $umap_plot</span></span></code></pre></div>
+<p><img src="data_preprocessing_files/figure-html/unnamed-chunk-12-5.png" width="700"></p>
   </main>
 </div>
 
