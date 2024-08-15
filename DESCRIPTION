@@ -1,6 +1,6 @@
 Package: HDAnalyzeR
 Title: HDA Internal Package for Streamed-line Proteomics Analysis
-Version: 0.0.1
+Version: 1.0.0
 Authors@R: 
     c(
       person("Konstantinos", "Antonopoulos", , "konstantinos.antonopoulos@scilifelab.se", 
