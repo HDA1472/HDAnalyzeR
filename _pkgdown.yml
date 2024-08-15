@@ -104,10 +104,10 @@ reference:
   - example_data
   - example_metadata
 
-  articles:
-  - title: Articles
-    navbar: ~
-    contents:
-    - data_preprocessing
-    - data_imputation
-    - differential_expression
+articles:
+- title: Get started
+  navbar: ~
+  contents:
+  - data_preprocessing
+  - data_imputation
+  - differential_expression
