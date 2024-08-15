@@ -29,7 +29,7 @@ plot_loadings <- function(tidied_res, npcs = 4, nproteins = 8) {
     tidytext::scale_y_reordered() +
     ggplot2::labs(x = "Absolute value of contribution",
                   y = NULL, fill = "Positive?") +
-    ggplot2::theme_classic()
+    theme_hpa()
 
   return(p)
 }
@@ -80,6 +80,10 @@ plot_explained_variance <- function(explained_variance) {
 #' @param metadata A tibble with metadata information to be added to the plot. It will be used for coloring the points.
 #' @param color The name of the column in `metadata` that contains the variable to be used to plot the points color.
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`.
+#' @param loadings If TRUE, the PCA loadings are plotted on the 2 dimensional plot. Default is FALSE.
+#' @param variance_explained A vector with the explained variance for each PC. Default is NULL.
+#' @param loadings_data A tibble with the PCA loadings. Default is NULL.
+#' @param assay If TRUE, each point is an assay and not a sample. Default is FALSE.
 #'
 #' @return A ggplot object
 #' @keywords internal
@@ -91,7 +95,8 @@ plot_dim_reduction <- function(res,
                                palette,
                                loadings = FALSE,
                                variance_explained = NULL,
-                               loadings_data = NULL) {
+                               loadings_data = NULL,
+                               assay = FALSE) {
 
   if (!is.null(metadata)) {
     p <- res |>
@@ -101,12 +106,21 @@ plot_dim_reduction <- function(res,
                           alpha = 0.7,
                           size = 2) +
       ggplot2::labs(Color = color) +
-      ggplot2::theme_classic()
-  } else {
+      theme_hpa()
+  } else if (isTRUE(assay)) {
+    p <- res |>
+      ggplot2::ggplot(ggplot2::aes(!!rlang::sym(x), !!rlang::sym(y))) +
+      ggplot2::geom_point(ggplot2::aes(color = !!rlang::sym(color)),
+                          alpha = 0.7,
+                          size = 2) +
+      ggplot2::labs(Color = color) +
+      theme_hpa()
+  }
+  else {
     p <- res |>
       ggplot2::ggplot(ggplot2::aes(!!rlang::sym(x), !!rlang::sym(y))) +
       ggplot2::geom_point(alpha = 0.7, size = 2) +
-      ggplot2::theme_classic()
+      theme_hpa()
   }
 
   if (isTRUE(loadings)) {
@@ -263,7 +277,8 @@ do_pca <- function(olink_data,
                                    palette,
                                    loadings,
                                    variance_explained,
-                                   loadings_data)
+                                   loadings_data,
+                                   assay)
     loadings_plot <- plot_loadings(tidied_pca, npcs, nproteins)
     variance_plot <- plot_explained_variance(explained_variance)
 
@@ -363,7 +378,13 @@ do_umap <- function(olink_data,
   umap_res <-  recipes::juice(umap_prep)
 
   if (isTRUE(plots)) {
-    umap_plot <- plot_dim_reduction(umap_res, "UMAP1", "UMAP2", metadata, color, palette)
+    umap_plot <- plot_dim_reduction(umap_res,
+                                    "UMAP1",
+                                    "UMAP2",
+                                    metadata,
+                                    color,
+                                    palette,
+                                    assay = assay)
 
     if (isTRUE(save)) {
       dir_name <- create_dir("results/umap_plots", date = T)
