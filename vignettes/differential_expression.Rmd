@@ -1,0 +1,96 @@
+---
+title: "Differential Expression Analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{differential_expression}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette will guide you through the differential expression analysis of your data. We will load HDAnalyzeR and ggplot2, widen the data and load the metadata we are going to use. 
+
+```{r setup}
+library(HDAnalyzeR)
+library(ggplot2)
+
+wide_data <- widen_data(example_data)
+metadata <- example_metadata
+```
+
+We will start by running a simple differential expression analysis using the `do_limma()` function. In this function we have to state the group that will be the case, as well as the control(s). We will also keep the default correction for both `Sex` and `Age` variables. We get the warning because the metadata are not pre-filtered, but it is safe to ignore it in this case as it is something that we do on purpose.
+
+```{r}
+do_limma(wide_data, metadata, case = "AML", control = "CLL")
+```
+
+We are able to state more control groups if we want to. We can also change the correction for the variables as well as both the p-value and logFC significance thresholds. 
+
+```{r}
+do_limma(wide_data, 
+         metadata, 
+         case = "AML",
+         control = c("CLL", "MYEL", "GLIOM"), 
+         correct = "Sex",
+         pval_lim = 0.01, 
+         logfc_lim  = 1)
+```
+
+We can customize the volcano plot further by adding a subtitle and removing the number of significant proteins. We can also remove the title via ggplot2 because now it seems to be redundant.
+
+```{r}
+res <- do_limma(wide_data, 
+                metadata, 
+                case = "AML",
+                control = c("CLL", "MYEL", "GLIOM"), 
+                correct = "Sex",
+                pval_lim = 0.01, 
+                logfc_lim  = 1,
+                report_nproteins = FALSE,
+                subtitle = "AML vs CLL, MYEL and GLIOM")
+
+res$volcano_plot + ggplot2::labs(title = NULL)
+```
+
+Let's move to another method. We will use the `do_ttest()` that performs a t-test for each protein. This function works in a similar way with `do_limma()` but it cannot correct for other variables like `Sex` and `Age`.
+
+```{r}
+do_ttest(wide_data, metadata, case = "AML", control = "CLL")
+```
+
+If we have diseases that are gender specific, we can specify them and only their gender will be used in the analysis. This is also available in the `do_limma()` function, but in that case we should not forget to remove the `Sex` correction.
+
+```{r}
+do_ttest(wide_data, 
+         metadata, 
+         case = "BRC", 
+         control = c("AML", "CLL", "PRC"), 
+         only_female = "BRC", 
+         only_male = "PRC")
+```
+
+We could run Differential Expression against another categorical variable like `Sex`.
+
+```{r}
+do_ttest(wide_data, 
+         metadata, 
+         variable = "Sex",
+         case = "F", 
+         control = "M")
+```
+
+Finally, we can also perform Differential Expression Analysis against a continuous variable such as `Age` via `do_limma_continuous()`. We can also correct for categorical and other continuous variables.
+
+```{r}
+do_limma_continuous(wide_data, 
+                    metadata, 
+                    variable = "Age",
+                    correct = "Sex",
+                    pval_lim = 0.001)
+```

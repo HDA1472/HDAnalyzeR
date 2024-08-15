@@ -119,10 +119,12 @@ qc_metadata$barplot_Sex
 qc_metadata$distplot_Age
 ```
 
-Finally we will run a PCA and UMAP analysis on the data to check if the data contain any outliers or cluster in an unexpected way. From the PCA analysis we can also check how the variance in the data is explained by the different principal components. 
+Finally we will run a PCA and UMAP analysis on the data to check if the data contain any outliers or cluster in an unexpected way. From the PCA analysis we can also check how the variance in the data is explained by the different principal components. The PCA plot will be colored based on `Disease`, while the UMAP plot will be colored based on `Sex`. We can also run a UMAP where the points are Assays instead of samples.
 
 ```{r}
 do_pca(wide_data, metadata, color = "Disease", palette = "cancers12")
 
-do_umap(wide_data, metadata, color = "Disease", palette = "cancers12")
+do_umap(wide_data, metadata, color = "Sex", palette = "sex_hpa")
+
+do_umap(wide_data, color = "Assay", assay = TRUE, palette = c("ADA" = "darkblue", "ABL1" = "red3", "ACAN" = "green3"))
 ```

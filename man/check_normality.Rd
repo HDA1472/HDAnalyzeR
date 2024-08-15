@@ -17,4 +17,8 @@ A tibble with the protein names, p-values, adjusted p-values, and normality stat
 It performs the test and returns the p-values, adjusted p-values, and
 normality status for each protein.
 }
+\details{
+If the number of rows is greater than 5000, a random sample of 5000 rows is taken.
+Shapiro-Wilk test is not working properly with large datasets.
+}
 \keyword{internal}

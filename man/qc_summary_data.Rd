@@ -35,6 +35,8 @@ The user can specify the reporting protein-protein correlation threshold.
 }
 \details{
 The correlation method is Pearson and the normality test is Shapiro-Wilk.
+If the wide dataset contains more than 5000 rows, a random sample of 5000 rows
+is taken to assess normality as it is a requirement from Shapiro-Wilk test.
 }
 \examples{
 qc_res <- qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
