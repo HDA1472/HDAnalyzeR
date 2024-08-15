@@ -8,8 +8,6 @@ HDAnalyzeR offers ready-to-use functions for common proteomics tasks such as pro
 
 ## Installation
 
-> ⚠️ We recommend to install it in a toy environment as it is currently under development.
-
 You can install the latest version of HDAnalyzeR from GitHub:
 
 ``` r
