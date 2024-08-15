@@ -111,3 +111,5 @@ articles:
   - data_preprocessing
   - data_imputation
   - differential_expression
+  - classification
+  - post_analysis
