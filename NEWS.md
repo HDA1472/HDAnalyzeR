@@ -1,3 +1,3 @@
-# HDAnalyzeR 0.0.1 (Under Development)
+# HDAnalyzeR 0.1.0 (2024-08-19)
 
-* Under Development
+Initial release of HDAnalyzeR.
