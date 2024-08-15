@@ -70,9 +70,16 @@ calc_na_percentage_row <- function(df) {
 #'
 #' @param df The input dataset.
 #'
+#' @details If the number of rows is greater than 5000, a random sample of 5000 rows is taken.
+#' Shapiro-Wilk test is not working properly with large datasets.
+#'
 #' @return A tibble with the protein names, p-values, adjusted p-values, and normality status.
 #' @keywords internal
 check_normality <- function(df) {
+
+  if (nrow(df) >= 5000) {
+    df <- df |> dplyr::sample_n(5000)
+  }
 
   # Perform Shapiro-Wilk test
   p_values <- lapply(df |>
@@ -265,6 +272,8 @@ plot_metadata_summary <- function(metadata,
 #' @param report Whether to print the summary. Default is TRUE.
 #'
 #' @details The correlation method is Pearson and the normality test is Shapiro-Wilk.
+#' If the wide dataset contains more than 5000 rows, a random sample of 5000 rows
+#' is taken to assess normality as it is a requirement from Shapiro-Wilk test.
 #'
 #' @return A list containing the following elements:
 #'   - na_percentage_col: A tibble with the column names and the percentage of NAs in each column.
