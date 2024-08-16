@@ -144,9 +144,6 @@ plot_ora <- function(enrichment,
                      showCategory = ncateg,
                      font.size = fontsize)
 
-  goplot <- clusterProfiler::goplot(enrichment,
-                                    showCategory = ncateg)
-
   enrichment <- clusterProfiler::setReadable(enrichment, OrgDb = org.Hs.eg.db::org.Hs.eg.db)
   cnetplot <- clusterProfiler::cnetplot(enrichment,
                                         showCategory = ncateg,
@@ -157,7 +154,6 @@ plot_ora <- function(enrichment,
 
   return(list("dotplot" = dotplot,
               "barplot" = barplot,
-              "goplot" = goplot,
               "cnetplot" = cnetplot))
 }
 
