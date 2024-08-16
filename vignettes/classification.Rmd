@@ -45,7 +45,7 @@ res <- do_rreg(wide_data,
                palette = "cancers12")
 
 res$testfit_res$metrics
-res$var_imp_res
+res$var_imp_res$var_imp_plot
 res$boxplot_res
 ```
 
@@ -62,7 +62,7 @@ res <- do_rf(wide_data,
              points = FALSE)
 
 res$testfit_res$metrics
-res$var_imp_res
+res$var_imp_res$var_imp_plot
 res$boxplot_res
 ```
 
@@ -70,7 +70,8 @@ If our data have a single predictor, we can use `do_lreg()` instead of `do_rreg(
 
 ```{r}
 one_pred_data <- wide_data |> 
-  select(DAid, ANGPTL2)
+  select(DAid, ANGPTL2) |> 
+  na.omit()
 
 res <- do_lreg(one_pred_data, 
                metadata, 
@@ -79,15 +80,21 @@ res <- do_lreg(one_pred_data,
                ratio = 0.7,
                palette = "cancers12")
 
+res$metrics
+res$boxplot_res
 ```
 `
 We can also do multiclassification predictions with all available classes in the data via `do_rreg_multi()` and `do_rf_multi()`. The parameters are similar with the binary classification functions but in this case there are no `case` and `control` arguments.
 
 ```{r}
-do_rreg_multi(wide_data, 
-              metadata, 
-              type = "elnet",
-              palette = "cancers12")
+res <- do_rreg_multi(wide_data, 
+                     metadata, 
+                     type = "elnet",
+                     palette = "cancers12")
+
+res$auc
+res$auc_barplot
+res$roc_curve
 ```
 
 Finally, let's use the `plot_features_summary()` to summarize our model results. We can create models of different cases and controls and compare them like we did in the Get Started vignette. However, we can also compare different models. Let's run two different models for two different cases and summarize them.

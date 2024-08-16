@@ -1989,7 +1989,7 @@ do_rreg_multi <- function(olink_data,
 
   auc_macro <- auc_macro |>
     dplyr::select(.pred_class, .estimate) |>
-    dplyr::rename(AUC = .estimate, !!Variable = .pred_class)
+    dplyr::rename(AUC = .estimate, !!Variable := .pred_class)
 
   return(list("hypopt_res" = hypopt_res,
               "finalfit_res" = finalfit_res,
@@ -2169,7 +2169,7 @@ do_rf_multi <- function(olink_data,
 
   auc_macro <- auc_macro |>
     dplyr::select(.pred_class, .estimate) |>
-    dplyr::rename(AUC = .estimate, !!Variable = .pred_class)
+    dplyr::rename(AUC = .estimate, !!Variable := .pred_class)
 
   return(list("hypopt_res" = hypopt_res,
               "finalfit_res" = finalfit_res,
