@@ -14,10 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this vignette, we will demonstrate how to use the `HDAnalyzeR` package to build classification models. We will start by loading HDAnalyzeR, widen the example dataset and loading the metadata.
+In this vignette, we will demonstrate how to use the `HDAnalyzeR` package to build classification models. We will start by loading HDAnalyzeR and dplyr packages, widen the example dataset and loading the metadata.
 
 ```{r setup}
 library(HDAnalyzeR)
+library(dplyr) 
 
 wide_data <- widen_data(example_data)
 metadata <- example_metadata
