@@ -44,7 +44,7 @@
 
     <a class="navbar-brand me-2" href="index.html">HDAnalyzeR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,8 @@
 <li><a class="dropdown-item" href="articles/data_preprocessing.html">Data Preprocessing &amp; Quality Control Check</a></li>
     <li><a class="dropdown-item" href="articles/data_imputation.html">Data Imputation</a></li>
     <li><a class="dropdown-item" href="articles/differential_expression.html">Differential Expression Analysis</a></li>
+    <li><a class="dropdown-item" href="articles/classification.html">Classification Models</a></li>
+    <li><a class="dropdown-item" href="articles/post_analysis.html">Post Analysis: Pathway Enrichment &amp; Automated Literature Search</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -90,15 +92,12 @@
 <img src="logo.png" class="logo" alt=""><h1 id="hdanalyzer-">HDAnalyzeR <a class="anchor" aria-label="anchor" href="#hdanalyzer-"></a>
 </h1>
 </div>
-<p><a href="https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/HDA1472/DA_RPackage" class="external-link"><img src="https://img.shields.io/badge/Version-0.1.0-blue" alt="Version"></a> <a href="https://github.com/HDA1472/DA_RPackage/blob/main/LICENSE.md" class="external-link"><img src="https://img.shields.io/badge/license-Apache2.0-yellow" alt="License"></a></p>
+<p><a href="https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/HDA1472/DA_RPackage/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/HDA1472/DA_RPackage" class="external-link"><img src="https://img.shields.io/badge/Version-1.0.0-blue" alt="Version"></a> <a href="https://github.com/HDA1472/DA_RPackage/blob/main/LICENSE.md" class="external-link"><img src="https://img.shields.io/badge/license-Apache2.0-yellow" alt="License"></a></p>
 <p>HDAnalyzeR is an R package developed by the Human Disease Blood Atlas project, designed to facilitate proteomics analysis for biomarker selection from blood plasma samples. It is optimized to work with Olink proteomics data, but it can be adapted to other proteomics platforms. In order to use the package without issues the data should have these three necessary columns: <code>DAid</code> with the Sample IDs, <code>Assay</code> with the protein names, and <code>NPX</code> with the protein expression data. The metadata should contain the <code>DAid</code>, <code>Disease</code>, and <code>Sex</code> columns, where the <code>Disease</code> column should contain the different class names (Healthy, Disease, etc.), while in the <code>Sex</code> column the data should be encoded as M (males) and F (females).</p>
 <p>HDAnalyzeR offers ready-to-use functions for common proteomics tasks such as protein differential expression analysis, classification models, imputation methods, dimensionality reduction, and data visualization, aiming to streamline workflows and enhance the standardization and efficiency of biomarker discovery in disease research.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<blockquote>
-<p>⚠️ We recommend to install it in a toy environment as it is currently under development.</p>
-</blockquote>
 <p>You can install the latest version of HDAnalyzeR from GitHub:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install devtools if you haven't already</span></span>

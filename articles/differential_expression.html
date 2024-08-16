@@ -40,7 +40,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">HDAnalyzeR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,8 @@
 <li><a class="dropdown-item" href="../articles/data_preprocessing.html">Data Preprocessing &amp; Quality Control Check</a></li>
     <li><a class="dropdown-item" href="../articles/data_imputation.html">Data Imputation</a></li>
     <li><a class="dropdown-item" href="../articles/differential_expression.html">Differential Expression Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/classification.html">Classification Models</a></li>
+    <li><a class="dropdown-item" href="../articles/post_analysis.html">Post Analysis: Pathway Enrichment &amp; Automated Literature Search</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -243,7 +245,7 @@ forget to remove the <code>Sex</code> correction.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $volcano_plot</span></span></code></pre></div>
 <p><img src="differential_expression_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
-<p>We could run Differential Expression against another categorical
+<p>We could run differential expression against another categorical
 variable like <code>Sex</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/do_ttest.html">do_ttest</a></span><span class="op">(</span><span class="va">wide_data</span>, </span>
@@ -269,8 +271,8 @@ variable like <code>Sex</code>.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $volcano_plot</span></span></code></pre></div>
 <p><img src="differential_expression_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-<p>Finally, we can also perform Differential Expression Analysis against
-a continuous variable such as <code>Age</code> via
+<p>Moreover, we can also perform Differential Expression Analysis
+against a continuous variable such as <code>Age</code> via
 <code><a href="../reference/do_limma_continuous.html">do_limma_continuous()</a></code>. We can also correct for categorical
 and other continuous variables.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -300,6 +302,176 @@ and other continuous variables.</p>
 <span><span class="co">#&gt; Warning: ggrepel: 11 unlabeled data points (too many overlaps). Consider</span></span>
 <span><span class="co">#&gt; increasing max.overlaps</span></span></code></pre></div>
 <p><img src="differential_expression_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p>As a last step, we can summarize the results via
+<code><a href="../reference/plot_de_summary.html">plot_de_summary()</a></code>. Let’s first run a differential
+expression analysis for 4 different cases (1 vs 3).</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_aml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, case <span class="op">=</span> <span class="st">"AML"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span>, <span class="st">"GLIOM"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Comparing AML with CLL, MYEL, GLIOM.</span></span>
+<span><span class="co">#&gt; Warning in do_limma_de(join_data, variable, case, control, correct,</span></span>
+<span><span class="co">#&gt; correct_type, : 400 rows were removed because they contain NAs in Disease or</span></span>
+<span><span class="co">#&gt; Sex, Age!</span></span>
+<span></span>
+<span><span class="va">res_cll</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, case <span class="op">=</span> <span class="st">"CLL"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AML"</span>, <span class="st">"MYEL"</span>, <span class="st">"GLIOM"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Comparing CLL with AML, MYEL, GLIOM.</span></span>
+<span><span class="co">#&gt; Warning in do_limma_de(join_data, variable, case, control, correct,</span></span>
+<span><span class="co">#&gt; correct_type, : 400 rows were removed because they contain NAs in Disease or</span></span>
+<span><span class="co">#&gt; Sex, Age!</span></span>
+<span></span>
+<span><span class="va">res_myel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, case <span class="op">=</span> <span class="st">"MYEL"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AML"</span>, <span class="st">"CLL"</span>, <span class="st">"GLIOM"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Comparing MYEL with AML, CLL, GLIOM.</span></span>
+<span><span class="co">#&gt; Warning in do_limma_de(join_data, variable, case, control, correct,</span></span>
+<span><span class="co">#&gt; correct_type, : 400 rows were removed because they contain NAs in Disease or</span></span>
+<span><span class="co">#&gt; Sex, Age!</span></span>
+<span></span>
+<span><span class="va">res_gliom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_limma.html">do_limma</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, case <span class="op">=</span> <span class="st">"GLIOM"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AML"</span>, <span class="st">"CLL"</span>, <span class="st">"MYEL"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Comparing GLIOM with AML, CLL, MYEL.</span></span>
+<span><span class="co">#&gt; Warning in do_limma_de(join_data, variable, case, control, correct,</span></span>
+<span><span class="co">#&gt; correct_type, : 400 rows were removed because they contain NAs in Disease or</span></span>
+<span><span class="co">#&gt; Sex, Age!</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_de_summary.html">plot_de_summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"AML"</span> <span class="op">=</span> <span class="va">res_aml</span>, <span class="st">"CLL"</span> <span class="op">=</span> <span class="va">res_cll</span>, <span class="st">"MYEL"</span> <span class="op">=</span> <span class="va">res_myel</span>, <span class="st">"GLIOM"</span> <span class="op">=</span> <span class="va">res_gliom</span><span class="op">)</span>,</span>
+<span>                disease_palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $AML</span></span>
+<span><span class="co">#&gt;  [1] "ADA"     "AZU1"    "ANGPT2"  "ADGRG1"  "APBB1IP" "AGRP"    "ARTN"   </span></span>
+<span><span class="co">#&gt;  [8] "ANGPTL4" "AHCY"    "ATP6V1F" "ANGPTL2"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`AML&amp;MYEL`</span></span>
+<span><span class="co">#&gt; [1] "ADGRG1" "ARTN"  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $CLL</span></span>
+<span><span class="co">#&gt;  [1] "ARID4B"   "ADAM8"    "APEX1"    "ARHGAP25" "ADAMTS8"  "ADGRG2"  </span></span>
+<span><span class="co">#&gt;  [7] "ADGRE2"   "ALCAM"    "B4GALT1"  "ATF2"     "AMFR"     "ADGRE5"  </span></span>
+<span><span class="co">#&gt; [13] "ANXA11"   "ABL1"     "AARSD1"   "ACAN"     "ACP6"     "ADAMTS13"</span></span>
+<span><span class="co">#&gt; [19] "AMIGO2"   "ADAM23"   "ADAM15"   "AGER"    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`CLL&amp;MYEL`</span></span>
+<span><span class="co">#&gt; [1] "ACP6" "AGER"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $MYEL</span></span>
+<span><span class="co">#&gt;  [1] "ADAMTS15" "ARTN"     "ACTA2"    "ATOX1"    "AGER"     "AIFM1"   </span></span>
+<span><span class="co">#&gt;  [7] "AGR3"     "APOH"     "AREG"     "ADAMTS16" "ANG"      "ADA2"    </span></span>
+<span><span class="co">#&gt; [13] "AGRN"     "ARSB"     "ARSA"     "ACP6"     "ANXA4"    "AGR2"    </span></span>
+<span><span class="co">#&gt; [19] "ATP5IF1"  "APP"      "ARHGEF12" "ACOX1"    "ANXA3"    "AK1"     </span></span>
+<span><span class="co">#&gt; [25] "AMN"      "ADGRG1"   "ADM"      "AMBP"    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $GLIOM</span></span>
+<span><span class="co">#&gt;  [1] "ANGPTL7" "AGXT"    "ACY1"    "ACE2"    "ALDH1A1" "AHSP"    "AMY2B"  </span></span>
+<span><span class="co">#&gt;  [8] "ACP5"    "ART3"    "APLP1"   "ANGPT1" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $AML</span></span>
+<span><span class="co">#&gt;  [1] "ANGPT1"   "APP"      "ARHGEF12" "AMY2B"    "ACAN"     "AGR2"    </span></span>
+<span><span class="co">#&gt;  [7] "ATG4A"    "ACP6"     "ANGPTL7"  "ADAMTS13" "ANXA3"    "ANXA11"  </span></span>
+<span><span class="co">#&gt; [13] "AKT3"     "AK1"      "ANXA10"  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $CLL</span></span>
+<span><span class="co">#&gt; [1] "AREG"  "AZU1"  "ACE2"  "ARTN"  "ACTA2"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`CLL&amp;GLIOM`</span></span>
+<span><span class="co">#&gt; [1] "ARTN"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $MYEL</span></span>
+<span><span class="co">#&gt; [1] "AHSP" "ATF2" "AXL" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $GLIOM</span></span>
+<span><span class="co">#&gt;  [1] "ANGPT2"   "APEX1"    "AGER"     "ADAMTS8"  "ADGRG1"   "ABL1"    </span></span>
+<span><span class="co">#&gt;  [7] "ADGRE5"   "APBB1IP"  "ADGRE2"   "ADA2"     "ARID4B"   "ADAM23"  </span></span>
+<span><span class="co">#&gt; [13] "ADAMTS15" "ADAM15"   "ATOX1"    "B4GALT1"  "ARHGAP25" "ADAM8"   </span></span>
+<span><span class="co">#&gt; [19] "ANGPTL2"  "ATXN10"   "ARTN"     "ADA"      "ANGPTL4"  "AGRP"    </span></span>
+<span><span class="co">#&gt; [25] "AMFR"     "AMIGO2"   "ADM"      "ALCAM"    "APOH"     "ATP5IF1" </span></span>
+<span><span class="co">#&gt; [31] "AGRN"     "AIF1"     "ATP6V1F"  "AHCY"     "ANG"</span></span>
+<span><span class="co">#&gt; $de_barplot</span></span></code></pre></div>
+<p><img src="differential_expression_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<pre><code><span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $upset_plot_up</span></span></code></pre>
+<p><img src="differential_expression_files/figure-html/unnamed-chunk-9-2.png" width="700"></p>
+<pre><code><span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $upset_plot_down</span></span></code></pre>
+<p><img src="differential_expression_files/figure-html/unnamed-chunk-9-3.png" width="700"></p>
+<pre><code><span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_df_up</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 68 × 3</span></span></span>
+<span><span class="co">#&gt;    `Shared in` `up/down` Assay </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> CLL         up        AARSD1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> CLL         up        ABL1  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> CLL         up        ACAN  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> GLIOM       up        ACE2  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> MYEL        up        ACOX1 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> GLIOM       up        ACP5  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> CLL&amp;MYEL    up        ACP6  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> MYEL        up        ACTA2 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> GLIOM       up        ACY1  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AML         up        ADA   </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 58 more rows</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_df_down</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 57 × 3</span></span></span>
+<span><span class="co">#&gt;    `Shared in` `up/down` Assay </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> GLIOM       up        ABL1  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AML         up        ACAN  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> CLL         up        ACE2  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AML         up        ACP6  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> CLL         up        ACTA2 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> GLIOM       up        ADA   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> GLIOM       up        ADA2  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> GLIOM       up        ADAM15</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> GLIOM       up        ADAM23</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> GLIOM       up        ADAM8 </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 47 more rows</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_up</span></span>
+<span><span class="co">#&gt; $proteins_list_up$AML</span></span>
+<span><span class="co">#&gt;  [1] "ADA"     "AZU1"    "ANGPT2"  "ADGRG1"  "APBB1IP" "AGRP"    "ARTN"   </span></span>
+<span><span class="co">#&gt;  [8] "ANGPTL4" "AHCY"    "ATP6V1F" "ANGPTL2"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_up$`AML&amp;MYEL`</span></span>
+<span><span class="co">#&gt; [1] "ADGRG1" "ARTN"  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_up$CLL</span></span>
+<span><span class="co">#&gt;  [1] "ARID4B"   "ADAM8"    "APEX1"    "ARHGAP25" "ADAMTS8"  "ADGRG2"  </span></span>
+<span><span class="co">#&gt;  [7] "ADGRE2"   "ALCAM"    "B4GALT1"  "ATF2"     "AMFR"     "ADGRE5"  </span></span>
+<span><span class="co">#&gt; [13] "ANXA11"   "ABL1"     "AARSD1"   "ACAN"     "ACP6"     "ADAMTS13"</span></span>
+<span><span class="co">#&gt; [19] "AMIGO2"   "ADAM23"   "ADAM15"   "AGER"    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_up$`CLL&amp;MYEL`</span></span>
+<span><span class="co">#&gt; [1] "ACP6" "AGER"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_up$MYEL</span></span>
+<span><span class="co">#&gt;  [1] "ADAMTS15" "ARTN"     "ACTA2"    "ATOX1"    "AGER"     "AIFM1"   </span></span>
+<span><span class="co">#&gt;  [7] "AGR3"     "APOH"     "AREG"     "ADAMTS16" "ANG"      "ADA2"    </span></span>
+<span><span class="co">#&gt; [13] "AGRN"     "ARSB"     "ARSA"     "ACP6"     "ANXA4"    "AGR2"    </span></span>
+<span><span class="co">#&gt; [19] "ATP5IF1"  "APP"      "ARHGEF12" "ACOX1"    "ANXA3"    "AK1"     </span></span>
+<span><span class="co">#&gt; [25] "AMN"      "ADGRG1"   "ADM"      "AMBP"    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_up$GLIOM</span></span>
+<span><span class="co">#&gt;  [1] "ANGPTL7" "AGXT"    "ACY1"    "ACE2"    "ALDH1A1" "AHSP"    "AMY2B"  </span></span>
+<span><span class="co">#&gt;  [8] "ACP5"    "ART3"    "APLP1"   "ANGPT1" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_down</span></span>
+<span><span class="co">#&gt; $proteins_list_down$AML</span></span>
+<span><span class="co">#&gt;  [1] "ANGPT1"   "APP"      "ARHGEF12" "AMY2B"    "ACAN"     "AGR2"    </span></span>
+<span><span class="co">#&gt;  [7] "ATG4A"    "ACP6"     "ANGPTL7"  "ADAMTS13" "ANXA3"    "ANXA11"  </span></span>
+<span><span class="co">#&gt; [13] "AKT3"     "AK1"      "ANXA10"  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_down$CLL</span></span>
+<span><span class="co">#&gt; [1] "AREG"  "AZU1"  "ACE2"  "ARTN"  "ACTA2"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_down$`CLL&amp;GLIOM`</span></span>
+<span><span class="co">#&gt; [1] "ARTN"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_down$MYEL</span></span>
+<span><span class="co">#&gt; [1] "AHSP" "ATF2" "AXL" </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $proteins_list_down$GLIOM</span></span>
+<span><span class="co">#&gt;  [1] "ANGPT2"   "APEX1"    "AGER"     "ADAMTS8"  "ADGRG1"   "ABL1"    </span></span>
+<span><span class="co">#&gt;  [7] "ADGRE5"   "APBB1IP"  "ADGRE2"   "ADA2"     "ARID4B"   "ADAM23"  </span></span>
+<span><span class="co">#&gt; [13] "ADAMTS15" "ADAM15"   "ATOX1"    "B4GALT1"  "ARHGAP25" "ADAM8"   </span></span>
+<span><span class="co">#&gt; [19] "ANGPTL2"  "ATXN10"   "ARTN"     "ADA"      "ANGPTL4"  "AGRP"    </span></span>
+<span><span class="co">#&gt; [25] "AMFR"     "AMIGO2"   "ADM"      "ALCAM"    "APOH"     "ATP5IF1" </span></span>
+<span><span class="co">#&gt; [31] "AGRN"     "AIF1"     "ATP6V1F"  "AHCY"     "ANG"</span></span></code></pre>
   </main>
 </div>
 
