@@ -14,6 +14,100 @@ knitr::opts_chunk$set(
 )
 ```
 
+In this vignette, we will demonstrate how to use the `HDAnalyzeR` package to build classification models. We will start by loading HDAnalyzeR, widen the example dataset and loading the metadata.
+
 ```{r setup}
 library(HDAnalyzeR)
+
+wide_data <- widen_data(example_data)
+metadata <- example_metadata
 ```
+
+First, let's start with a regularized regression LASSO model via `do_rreg()`. Exactly like in the previous vignette with the differential expression functions, we have to state the case and control(s) groups.
+
+```{r}
+do_rreg(wide_data, metadata, case = "AML", control = c("CLL", "MYEL", "GLIOM"))
+```
+
+We can change several parameters in the `do_rreg()` function. For example, we can change the number of cross-validation folds, the number of grid points for the hyperparameter optimization, the number of cores to use, the feature correlation threshold, and even the type of regularized regression. For more information, please refer to the documentation.
+
+```{r}
+do_rreg(wide_data, 
+        metadata, 
+        case = "AML", 
+        control = c("CLL", "MYEL", "GLIOM"), 
+        cv_sets = 8, 
+        grid_size = 15, 
+        ncores = 2, 
+        cor_threshold = 0.7, 
+        type = "elnet",
+        palette = "cancers12")
+```
+
+We can use a different variable to classify like `Sex` and even a different algorithm like random forest via `do_rf()`. Do not forget to change the `exclude_cols` parameter to exclude the `Disease` column instead of default `Sex`.
+
+```{r}
+do_rf(wide_data, 
+      metadata, 
+      variable = "Sex", 
+      case = "F", 
+      control = "M", 
+      exclude_cols = "Disease", 
+      palette = "sex_hpa")
+```
+
+If our data have a single predictor, we can use `do_lreg()` instead of `do_rreg()` to perform a logistic regression. Random forest can be used as it was for multiple predictors. Let's also change the ratio of the training and testing sets.
+
+```{r}
+one_pred_data <- wide_data |> 
+  select(DAid, ANGPTL2)
+
+do_lreg(one_pred_data, 
+        metadata, 
+        case = "AML",
+        control = c("CLL", "MYEL", "GLIOM"),
+        ratio = 0.7,
+        palette = "cancers12")
+```
+`
+We can also do multiclassification predictions with all available classes in the data via `do_rreg_multi()` and `do_rf_multi()`. The parameters are similar with the binary classification functions but in this case there are no `case` and `control` arguments.
+
+```{r}
+do_rreg_multi(wide_data, 
+              metadata, 
+              type = "elnet",
+              palette = "cancers12")
+```
+
+Finally, let's use the `plot_features_summary()` to summarize our model results. We can create models of different cases and controls and compare them like we did in the Get Started vignette. However, we can also compare different models. Let's run two different models for two different cases and summarize them.
+
+```{r}
+ridge_aml <- do_rreg(wide_data, 
+                     metadata, 
+                     case = "AML", 
+                     control = c("CLL", "MYEL", "GLIOM"), 
+                     type = "ridge")
+
+rf_aml <- do_rf(wide_data, metadata, case = "AML", control = c("CLL", "MYEL", "GLIOM"))
+
+ridge_gliom <- do_rreg(wide_data, 
+                       metadata, 
+                       case = "GLIOM", 
+                       control = c("CLL", "MYEL", "AML"), 
+                       type = "ridge")
+
+rf_gliom <- do_rf(wide_data, metadata, case = "GLIOM", control = c("CLL", "MYEL", "AML"))
+```
+
+```{r}
+res <- plot_features_summary(list("Ridge_AML" = ridge_aml, 
+                                  "RF_AML" = rf_aml, 
+                                  "Ridge_GLIOM" = ridge_gliom, 
+                                  "RF_GLIOM" = rf_gliom))
+
+res$features_barplot
+res$upset_plot_features
+res$metrics_lineplot
+```
+
+From the last plot we can quickly see that the Ridge regression model works better for Glioma classification, while the Random Forest model works better for AML classification. 
