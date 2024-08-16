@@ -54,7 +54,8 @@ do_rf(wide_data,
       case = "F", 
       control = "M", 
       exclude_cols = "Disease", 
-      palette = "sex_hpa")
+      palette = "sex_hpa",
+      points = FALSE)
 ```
 
 If our data have a single predictor, we can use `do_lreg()` instead of `do_rreg()` to perform a logistic regression. Random forest can be used as it was for multiple predictors. Let's also change the ratio of the training and testing sets.
