@@ -1930,7 +1930,18 @@ do_rreg_multi <- function(olink_data,
                              splits,
                              metrics = yardstick::metric_set(yardstick::roc_auc))
 
-  preds <- last_fit |> tune::collect_predictions()
+  preds <- last_fit |>
+    tune::collect_predictions()
+
+  pred_cols <- grep("^\\.pred_", names(preds), value = TRUE)
+  preds <- preds |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      .pred_class = names(preds)[which.max(dplyr::c_across(dplyr::all_of(pred_cols)))]
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(.pred_class = sub("^\\.pred_", "", .pred_class))
+
   unique_classes <- preds |>
     dplyr::pull(!!Variable) |>
     unique()
@@ -1950,21 +1961,14 @@ do_rreg_multi <- function(olink_data,
     ggplot2::theme(legend.position = "none",
                    axis.text = ggplot2::element_text(size = 10))
 
-  # Extract AUC values by comparing each class to the rest
-  auc_df <- tibble::tibble()
-  for (i in 1:length(cases)) {
-    col <- paste0(".pred_", cases[[i]])
-    auc_ind <- preds |>
-      dplyr::mutate(!!Variable := factor(dplyr::if_else(!!Variable == cases[[i]],
-                                                        cases[[i]],
-                                                        "ZZZ")))
-    auc_ind <- auc_ind |>
-      yardstick::roc_auc(truth = !!Variable, col) |>
-      dplyr::mutate(!!Variable := cases[[i]])
-    auc_df <- rbind(auc_df, auc_ind)
-  }
+  # Calculate AUC
+  auc_macro <- preds |>
+    dplyr::group_by(.pred_class) |>
+    yardstick::roc_auc(truth = !!Variable,
+                       !!!rlang::syms(pred_cols),
+                       estimator = "macro_weighted")
 
-  barplot <- ggplot2::ggplot(auc_df, ggplot2::aes(x = !!Variable, y = .estimate, fill = !!Variable)) +
+  barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = .pred_class, y = .estimate, fill = .pred_class)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
     theme_hpa(angled = T) +
@@ -1983,14 +1987,14 @@ do_rreg_multi <- function(olink_data,
     barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
   }
 
-  auc_df <- auc_df |>
-    dplyr::select(!!Variable, .estimate) |>
-    dplyr::rename(AUC = .estimate)
+  auc_macro <- auc_macro |>
+    dplyr::select(.pred_class, .estimate) |>
+    dplyr::rename(AUC = .estimate, !!Variable = .pred_class)
 
   return(list("hypopt_res" = hypopt_res,
               "finalfit_res" = finalfit_res,
               "roc_curve" = roc_curve,
-              "auc" = auc_df,
+              "auc" = auc_macro,
               "auc_barplot" = barplot))
 }
 
@@ -2106,7 +2110,18 @@ do_rf_multi <- function(olink_data,
                              splits,
                              metrics = yardstick::metric_set(yardstick::roc_auc))
 
-  preds <- last_fit |> tune::collect_predictions()
+  preds <- last_fit |>
+    tune::collect_predictions()
+
+  pred_cols <- grep("^\\.pred_", names(preds), value = TRUE)
+  preds <- preds |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      .pred_class = names(preds)[which.max(dplyr::c_across(dplyr::all_of(pred_cols)))]
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(.pred_class = sub("^\\.pred_", "", .pred_class))
+
   unique_classes <- preds |>
     dplyr::pull(!!Variable) |>
     unique()
@@ -2126,21 +2141,14 @@ do_rf_multi <- function(olink_data,
     ggplot2::theme(legend.position = "none",
                    axis.text = ggplot2::element_text(size = 10))
 
-  # Extract AUC values by comparing each class to the rest
-  auc_df <- tibble::tibble()
-  for (i in 1:length(cases)) {
-    col <- paste0(".pred_", cases[[i]])
-    auc_ind <- preds |>
-      dplyr::mutate(!!Variable := factor(dplyr::if_else(!!Variable == cases[[i]],
-                                                        cases[[i]],
-                                                        "ZZZ")))
-    auc_ind <- auc_ind |>
-      yardstick::roc_auc(truth = !!Variable, col) |>
-      dplyr::mutate(!!Variable := cases[[i]])
-    auc_df <- rbind(auc_df, auc_ind)
-  }
+  # Calculate AUC
+  auc_macro <- preds |>
+    dplyr::group_by(.pred_class) |>
+    yardstick::roc_auc(truth = !!Variable,
+                       !!!rlang::syms(pred_cols),
+                       estimator = "macro_weighted")
 
-  barplot <- ggplot2::ggplot(auc_df, ggplot2::aes(x = !!Variable, y = .estimate, fill = Disease)) +
+  barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = .pred_class, y = .estimate, fill = .pred_class)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
     theme_hpa(angled = T) +
@@ -2159,13 +2167,13 @@ do_rf_multi <- function(olink_data,
     barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
   }
 
-  auc_df <- auc_df |>
-    dplyr::select(!!Variable, .estimate) |>
-    dplyr::rename(AUC = .estimate)
+  auc_macro <- auc_macro |>
+    dplyr::select(.pred_class, .estimate) |>
+    dplyr::rename(AUC = .estimate, !!Variable = .pred_class)
 
   return(list("hypopt_res" = hypopt_res,
               "finalfit_res" = finalfit_res,
               "roc_curve" = roc_curve,
-              "auc" = auc_df,
+              "auc" = auc_macro,
               "auc_barplot" = barplot))
 }

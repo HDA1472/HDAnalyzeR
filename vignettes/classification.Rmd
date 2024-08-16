@@ -33,29 +33,37 @@ do_rreg(wide_data, metadata, case = "AML", control = c("CLL", "MYEL", "GLIOM"))
 We can change several parameters in the `do_rreg()` function. For example, we can change the number of cross-validation folds, the number of grid points for the hyperparameter optimization, the number of cores to use, the feature correlation threshold, and even the type of regularized regression. For more information, please refer to the documentation.
 
 ```{r}
-do_rreg(wide_data, 
-        metadata, 
-        case = "AML", 
-        control = c("CLL", "MYEL", "GLIOM"), 
-        cv_sets = 8, 
-        grid_size = 15, 
-        ncores = 2, 
-        cor_threshold = 0.7, 
-        type = "elnet",
-        palette = "cancers12")
+res <- do_rreg(wide_data, 
+               metadata, 
+               case = "AML", 
+               control = c("CLL", "MYEL", "GLIOM"), 
+               cv_sets = 8, 
+               grid_size = 15, 
+               ncores = 2, 
+               cor_threshold = 0.7, 
+               type = "elnet",
+               palette = "cancers12")
+
+res$testfit_res$metrics
+res$var_imp_res
+res$boxplot_res
 ```
 
 We can use a different variable to classify like `Sex` and even a different algorithm like random forest via `do_rf()`. Do not forget to change the `exclude_cols` parameter to exclude the `Disease` column instead of default `Sex`.
 
 ```{r}
-do_rf(wide_data, 
-      metadata, 
-      variable = "Sex", 
-      case = "F", 
-      control = "M", 
-      exclude_cols = "Disease", 
-      palette = "sex_hpa",
-      points = FALSE)
+res <- do_rf(wide_data, 
+             metadata, 
+             variable = "Sex", 
+             case = "F", 
+             control = "M", 
+             exclude_cols = "Disease", 
+             palette = "sex_hpa",
+             points = FALSE)
+
+res$testfit_res$metrics
+res$var_imp_res
+res$boxplot_res
 ```
 
 If our data have a single predictor, we can use `do_lreg()` instead of `do_rreg()` to perform a logistic regression. Random forest can be used as it was for multiple predictors. Let's also change the ratio of the training and testing sets.
@@ -64,12 +72,13 @@ If our data have a single predictor, we can use `do_lreg()` instead of `do_rreg(
 one_pred_data <- wide_data |> 
   select(DAid, ANGPTL2)
 
-do_lreg(one_pred_data, 
-        metadata, 
-        case = "AML",
-        control = c("CLL", "MYEL", "GLIOM"),
-        ratio = 0.7,
-        palette = "cancers12")
+res <- do_lreg(one_pred_data, 
+               metadata, 
+               case = "AML",
+               control = c("CLL", "MYEL", "GLIOM"),
+               ratio = 0.7,
+               palette = "cancers12")
+
 ```
 `
 We can also do multiclassification predictions with all available classes in the data via `do_rreg_multi()` and `do_rf_multi()`. The parameters are similar with the binary classification functions but in this case there are no `case` and `control` arguments.
