@@ -19,7 +19,13 @@ options(timeout = 1200)  # Set timeout to 20 minutes to avoid timeout errors
 devtools::install_github("HDA1472/HDAnalyzeR")
 ```
 
-## Example
+## Cheat Sheet
+
+<a href="https://github.com/HDA1472/HDAnalyzeR/blob/main/cheatsheet/hdanalyzer_cheat-sheet.pdf"><img src="https://github.com/HDA1472/HDAnalyzeR/blob/main/cheatsheet/hdanalyzer_cheat-sheet.png" width="630" height="252"/></a>  
+
+
+
+## Usage
 
 The following example showcases how to perform a differential expression analysis. It is one of the many features of HDAnalyzeR. A complete guide is available through [package's documentation](https://hda1472.github.io/HDAnalyzeR/).
 
