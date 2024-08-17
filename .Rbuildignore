@@ -13,3 +13,4 @@
 ^pkgdown$
 ^vignettes
 ^LICENSE\.md$
+^cheatsheet$
