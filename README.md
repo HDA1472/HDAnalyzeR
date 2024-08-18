@@ -21,7 +21,7 @@ devtools::install_github("HDA1472/HDAnalyzeR")
 
 ## Cheat Sheet
 
-<a href="https://github.com/HDA1472/HDAnalyzeR/blob/main/cheatsheet/hdanalyzer_cheat-sheet.pdf"><img src="https://github.com/HDA1472/HDAnalyzeR/blob/main/cheatsheet/hdanalyzer_cheat-sheet.png" width="630" height="252"/></a>  
+<a href="https://github.com/HDA1472/HDAnalyzeR/blob/main/cheatsheet/hdanalyzer_cheat-sheet.pdf"><img src="cheatsheet/hdanalyzer_cheat-sheet.png" width="630" height="252"/></a>
 
 
 
