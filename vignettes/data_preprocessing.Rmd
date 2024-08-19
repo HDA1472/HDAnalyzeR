@@ -73,7 +73,7 @@ metadata <- clean_metadata(example_metadata, c("DAid", "Disease", "Sex", "Age"),
 metadata
 ```
 
-> ‼️️ Don't forget to match your data with the metadata!
+> 💡 Don't forget to match your data with the metadata!
 
 ```{r}
 long_data <- metadata |> 
@@ -128,3 +128,5 @@ do_umap(wide_data, metadata, color = "Sex", palette = "sex_hpa")
 
 do_umap(wide_data, color = "Assay", assay = TRUE, palette = c("ADA" = "darkblue", "ABL1" = "red3", "ACAN" = "green3"))
 ```
+
+> 📓 Remember that these data are a dummy-dataset with fake data and the results in this guide should not be interpreted as real results. The purpose of this vignette is to show you how to use the package and its functions.

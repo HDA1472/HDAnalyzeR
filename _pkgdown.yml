@@ -113,3 +113,7 @@ articles:
   - differential_expression
   - classification
   - post_analysis
+
+extra_files:
+  - cheatsheet/hdanalyzer_cheat-sheet.pdf
+  - cheatsheet/hdanalyzer_cheat-sheet.png

@@ -83,7 +83,6 @@ res <- do_lreg(one_pred_data,
 res$metrics
 res$boxplot_res
 ```
-`
 We can also do multiclassification predictions with all available classes in the data via `do_rreg_multi()` and `do_rf_multi()`. The parameters are similar with the binary classification functions but in this case there are no `case` and `control` arguments.
 
 ```{r}
@@ -129,3 +128,5 @@ res$metrics_lineplot
 ```
 
 From the last plot we can quickly see that the Ridge regression model works better for Glioma classification, while the Random Forest model works better for AML classification. 
+
+> 📓 Remember that these data are a dummy-dataset with fake data and the results in this guide should not be interpreted as real results. The purpose of this vignette is to show you how to use the package and its functions.

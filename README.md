@@ -23,8 +23,6 @@ devtools::install_github("HDA1472/HDAnalyzeR")
 
 <a href="https://github.com/HDA1472/HDAnalyzeR/blob/main/cheatsheet/hdanalyzer_cheat-sheet.pdf"><img src="cheatsheet/hdanalyzer_cheat-sheet.png" width="630" height="252"/></a>
 
-
-
 ## Usage
 
 The following example showcases how to perform a differential expression analysis. It is one of the many features of HDAnalyzeR. A complete guide is available through [package's documentation](https://hda1472.github.io/HDAnalyzeR/).

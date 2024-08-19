@@ -323,8 +323,6 @@ features_summary$upset_plot_features
 
 The final step involves performing an Over-Representation Analysis for the up-regulated proteins from differential expression, that are also identified as features by the ML model. In this example, we will use the Gene Ontology (GO) database and show the results only for AML.
 
-> 📓 Remember that these data are a dummy-dataset with fake data.
-
 ```{r}
 # Extract the proteins identified by both DE and Lasso
 de_proteins <- de_res_aml$de_results |> 
@@ -341,3 +339,5 @@ intersect_proteins <- intersect(de_proteins, lasso_proteins)
 enrichment <- do_ora(intersect_proteins, database = "GO")
 plot_ora(enrichment, intersect_proteins, ncateg = 5)
 ```
+
+> 📓 Remember that these data are a dummy-dataset with fake data and the results in this guide should not be interpreted as real results. The purpose of this vignette is to show you how to use the package and its functions.
