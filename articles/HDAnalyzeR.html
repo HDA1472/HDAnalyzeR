@@ -1095,9 +1095,6 @@ for the up-regulated proteins from differential expression, that are
 also identified as features by the ML model. In this example, we will
 use the Gene Ontology (GO) database and show the results only for
 AML.</p>
-<blockquote>
-<p>📓 Remember that these data are a dummy-dataset with fake data.</p>
-</blockquote>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract the proteins identified by both DE and Lasso</span></span>
 <span><span class="va">de_proteins</span> <span class="op">&lt;-</span> <span class="va">de_res_aml</span><span class="op">$</span><span class="va">de_results</span> <span class="op">|&gt;</span> </span>
@@ -1126,6 +1123,12 @@ AML.</p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $cnetplot</span></span></code></pre>
 <p><img src="HDAnalyzeR_files/figure-html/unnamed-chunk-22-3.png" width="700"></p>
+<blockquote>
+<p>📓 Remember that these data are a dummy-dataset with fake data and
+the results in this guide should not be interpreted as real results. The
+purpose of this vignette is to show you how to use the package and its
+functions.</p>
+</blockquote>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -513,8 +513,12 @@ sets.</p>
 <p><img src="classification_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">boxplot_res</span></span></code></pre></div>
-<p><img src="classification_files/figure-html/unnamed-chunk-5-2.png" width="700"><code>We can also do multiclassification predictions with all available classes in the data via</code>do_rreg_multi()<code>and</code>do_rf_multi()<code>. The parameters are similar with the binary classification functions but in this case there are no</code>case<code>and</code>control`
-arguments.</p>
+<p><img src="classification_files/figure-html/unnamed-chunk-5-2.png" width="700">
+We can also do multiclassification predictions with all available
+classes in the data via <code><a href="../reference/do_rreg_multi.html">do_rreg_multi()</a></code> and
+<code><a href="../reference/do_rf_multi.html">do_rf_multi()</a></code>. The parameters are similar with the binary
+classification functions but in this case there are no <code>case</code>
+and <code>control</code> arguments.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_rreg_multi.html">do_rreg_multi</a></span><span class="op">(</span><span class="va">wide_data</span>, </span>
 <span>                     <span class="va">metadata</span>, </span>
@@ -859,6 +863,12 @@ models for two different cases and summarize them.</p>
 <p>From the last plot we can quickly see that the Ridge regression model
 works better for Glioma classification, while the Random Forest model
 works better for AML classification.</p>
+<blockquote>
+<p>📓 Remember that these data are a dummy-dataset with fake data and
+the results in this guide should not be interpreted as real results. The
+purpose of this vignette is to show you how to use the package and its
+functions.</p>
+</blockquote>
   </main>
 </div>
 
