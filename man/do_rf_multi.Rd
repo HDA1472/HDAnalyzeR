@@ -19,6 +19,8 @@ do_rf_multi(
   ncores = 4,
   hypopt_vis = TRUE,
   palette = NULL,
+  vline = TRUE,
+  varimp_yaxis_names = FALSE,
   seed = 123
 )
 }
@@ -50,6 +52,10 @@ do_rf_multi(
 \item{hypopt_vis}{Whether to visualize hyperparameter optimization results. Default is TRUE.}
 
 \item{palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
+
+\item{vline}{Whether to add a vertical line at 50\% importance. Default is TRUE.}
+
+\item{varimp_yaxis_names}{Whether to add y-axis names to the variable importance plot. Default is FALSE.}
 
 \item{seed}{Seed for reproducibility. Default is 123.}
 }
