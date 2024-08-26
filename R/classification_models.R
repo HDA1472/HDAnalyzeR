@@ -939,6 +939,111 @@ rf_hypopt_multi <- function(train_data,
 }
 
 
+xgboost_hypopt_multi <- function(train_data,
+                                 test_data,
+                                 variable = "Disease",
+                                 cor_threshold = 0.9,
+                                 normalize = TRUE,
+                                 cv_sets = 5,
+                                 grid_size = 10,
+                                 ncores = 4,
+                                 hypopt_vis = TRUE,
+                                 exclude_cols = NULL,
+                                 seed = 123) {
+
+  Variable <- rlang::sym(variable)
+
+  if (ncores > 1) {
+    doParallel::registerDoParallel(cores = ncores)
+  }
+
+  # Prepare train data and create cross-validation sets with binary classifier
+  train_set <- train_data |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols)) |>
+    dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))  # Solve bug of Gower distance function
+
+  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = !!Variable)
+
+  test_set <- test_data |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols)) |>
+    dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))
+
+  formula <- stats::as.formula(paste(variable, "~ ."))
+
+  xgboost_rec <- recipes::recipe(formula, data = train_set) |>
+    recipes::update_role(DAid, new_role = "id")
+
+  if (isTRUE(normalize)) {
+    xgboost_rec <- xgboost_rec |> recipes::step_normalize(recipes::all_numeric())
+  }
+
+  xgboost_rec <- xgboost_rec |>
+    recipes::step_nzv(recipes::all_numeric()) |>
+    recipes::step_corr(recipes::all_numeric(), threshold = cor_threshold) |>
+    recipes::step_impute_knn(recipes::all_numeric())
+
+  xgboost_spec <- parsnip::boost_tree(trees = 1000,
+                                      tree_depth = tune::tune(),
+                                      min_n = tune::tune(),
+                                      loss_reduction = tune::tune(),
+                                      sample_size = tune::tune(),
+                                      mtry = tune::tune(),
+                                      learn_rate = tune::tune()) |>
+    parsnip::set_engine("xgboost") |>
+    parsnip::set_mode("classification")
+
+  disease_pred <- train_set |> dplyr::select(-dplyr::any_of(c("Disease", "DAid", "Sex", "Age", "BMI", variable)))
+
+  xgboost_wf <- workflows::workflow() |>
+    workflows::add_model(xgboost_spec) |>
+    workflows::add_recipe(xgboost_rec)
+
+  xgboost_grid <- xgboost_wf |>
+    workflows::extract_parameter_set_dials() |>
+    dials::finalize(disease_pred) |>
+    dials::grid_space_filling(size = grid_size)
+
+  roc_res <- yardstick::metric_set(yardstick::roc_auc)
+
+  set.seed(seed)
+  ctrl <- tune::control_grid(save_pred = TRUE, parallel_over = "everything")
+  xgboost_tune <- xgboost_wf |>
+    tune::tune_grid(
+      train_folds,
+      grid = xgboost_grid,
+      control = ctrl,
+      metrics = roc_res
+    )
+
+  if (hypopt_vis) {
+    hypopt_plot <- xgboost_tune |>
+      tune::collect_metrics() |>
+      dplyr::filter(.metric == "roc_auc") |>
+      dplyr::select(mean, mtry:sample_size) |>
+      tidyr::pivot_longer(mtry:sample_size,
+                          values_to = "value",
+                          names_to = "parameter") |>
+      ggplot2::ggplot(ggplot2::aes(value, mean, color = parameter)) +
+      ggplot2::geom_point(alpha = 0.8, show.legend = FALSE) +
+      ggplot2::facet_wrap(~parameter, scales = "free_x") +
+      ggplot2::labs(x = NULL, y = "AUC")
+
+    return(list("xgboost_tune" = xgboost_tune,
+                "xgboost_wf" = xgboost_wf,
+                "train_set" = train_set,
+                "test_set" = test_set,
+                "hypopt_vis" = hypopt_plot))
+  }
+
+  return(list("xgboost_tune" = xgboost_tune,
+              "xgboost_wf" = xgboost_wf,
+              "train_set" = train_set,
+              "test_set" = test_set))
+}
+
+
 #' Fit the best model
 #'
 #' `finalfit()` fits the model that performed the best in hyperparameter optimization.
@@ -2447,6 +2552,162 @@ do_rf_multi <- function(olink_data,
   finalfit_res <- finalfit(hypopt_res$train_set,
                            hypopt_res$rf_tune,
                            hypopt_res$rf_wf,
+                           seed)
+
+  splits <- rsample::make_splits(hypopt_res$train_set, hypopt_res$test_set)
+  last_fit <- tune::last_fit(finalfit_res$final_wf,
+                             splits,
+                             metrics = yardstick::metric_set(yardstick::roc_auc))
+
+  preds <- last_fit |>
+    tune::collect_predictions()
+
+  pred_cols <- grep("^\\.pred_", names(preds), value = TRUE)
+  preds <- preds |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      .pred_class = names(preds)[which.max(dplyr::c_across(dplyr::all_of(pred_cols)))]
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(.pred_class = sub("^\\.pred_", "", .pred_class))
+
+  unique_classes <- preds |>
+    dplyr::pull(!!Variable) |>
+    unique()
+  pred_cols <- paste0(".pred_", unique_classes)
+
+  roc_curve <- preds |>
+    yardstick::roc_curve(truth = !!Variable,
+                         !!!rlang::syms(pred_cols)) |>
+    ggplot2::ggplot(ggplot2::aes(x = 1 - specificity,
+                                 y = sensitivity,
+                                 color = .level)) +
+    ggplot2::geom_path(linewidth = 1) +
+    ggplot2::geom_abline(lty = 3) +
+    ggplot2::coord_equal() +
+    ggplot2::facet_wrap(~ .level) +
+    theme_hpa() +
+    ggplot2::theme(legend.position = "none",
+                   axis.text = ggplot2::element_text(size = 10))
+
+  # Calculate AUC
+  auc_macro <- preds |>
+    dplyr::group_by(.pred_class) |>
+    yardstick::roc_auc(truth = !!Variable,
+                       !!!rlang::syms(pred_cols),
+                       estimator = "macro_weighted")
+
+  # Variable importance plot
+  var_imp_res <- plot_var_imp(finalfit_res,
+                              "Multiclassification",
+                              NULL,
+                              NULL,
+                              NULL,
+                              NULL,
+                              NULL,
+                              palette = NULL,
+                              vline = vline,
+                              subtitle = c("features",
+                                           "top-features"),
+                              yaxis_names = varimp_yaxis_names)
+
+  # AUC barplot``
+  barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = reorder(.pred_class, -.estimate), y = .estimate, fill = .pred_class)) +
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::labs(x = "", y = "AUC") +
+    ggplot2::ylim(0, 1) +
+    theme_hpa(angled = T) +
+    ggplot2::theme(legend.position = "none")
+
+  # Prepare palettes
+  if (!is.null(palette) && is.null(names(palette))) {
+    roc_curve <- roc_curve + scale_color_hpa(palette)
+    barplot <- barplot + scale_fill_hpa(palette)
+  } else if (!is.null(palette)) {
+    roc_curve <- roc_curve + ggplot2::scale_color_manual(values = palette)
+    barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
+  } else {
+    palette <- rep("black", length(cases))
+    roc_curve <- roc_curve + ggplot2::scale_color_manual(values = palette)
+    barplot <- barplot + ggplot2::scale_fill_manual(values = palette)
+  }
+
+  auc_macro <- auc_macro |>
+    dplyr::select(.pred_class, .estimate) |>
+    dplyr::rename(AUC = .estimate, !!Variable := .pred_class)
+
+  return(list("hypopt_res" = hypopt_res,
+              "finalfit_res" = finalfit_res,
+              "roc_curve" = roc_curve,
+              "auc" = auc_macro,
+              "auc_barplot" = barplot,
+              "var_imp_res" = var_imp_res))
+}
+
+
+do_xgboost_multi <- function(olink_data,
+                             metadata,
+                             variable = "Disease",
+                             wide = TRUE,
+                             strata = TRUE,
+                             exclude_cols = "Sex",
+                             ratio = 0.75,
+                             cor_threshold = 0.9,
+                             normalize = TRUE,
+                             cv_sets = 5,
+                             grid_size = 10,
+                             ncores = 4,
+                             hypopt_vis = TRUE,
+                             palette = NULL,
+                             vline = TRUE,
+                             varimp_yaxis_names = FALSE,
+                             seed = 123) {
+
+  Variable <- rlang::sym(variable)
+
+  # Prepare datasets
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
+  }
+
+  nrows_before <- nrow(wide_data)
+  join_data <- wide_data |>
+    dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", variable)))) |>
+    dplyr::filter(!is.na(!!Variable))
+
+  nrows_after <- nrow(join_data)
+  if (nrows_before != nrows_after){
+    warning(paste0(nrows_before - nrows_after,
+                   " rows were removed because they contain NAs in ", variable, "! They either contain NAs or data did not match metadata."))
+  }
+
+  cases <- unique(join_data[[variable]])
+
+  # Prepare sets and groups
+  data_split <- split_data(join_data, variable, strata, ratio, seed)
+  train_list <- data_split$train_set
+  test_list <- data_split$test_set
+
+  message("Sets are ready. Multiclassification model fitting is starting...")
+
+  # Run model
+  hypopt_res <- xgboost_hypopt_multi(train_list,
+                                     test_list,
+                                     variable,
+                                     cor_threshold,
+                                     normalize,
+                                     cv_sets,
+                                     grid_size,
+                                     ncores,
+                                     hypopt_vis,
+                                     exclude_cols,
+                                     seed)
+
+  finalfit_res <- finalfit(hypopt_res$train_set,
+                           hypopt_res$xgboost_tune,
+                           hypopt_res$xgboost_wf,
                            seed)
 
   splits <- rsample::make_splits(hypopt_res$train_set, hypopt_res$test_set)

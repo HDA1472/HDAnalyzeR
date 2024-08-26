@@ -62,9 +62,11 @@ reference:
     Functions that run Machine Learning classification model pipelines.
   contents:
   - do_rreg
-  - do_rf
   - do_rreg_multi
+  - do_rf
   - do_rf_multi
+  - do_xgboost
+  - do_xgboost_multi
   - do_lreg
 - subtitle: Visualize Results
   desc: |
