@@ -67,6 +67,7 @@ A list with the following elements:
 \item roc_curve: ROC curve plot.
 \item auc: AUC values for each class.
 \item auc_barplot: AUC barplot.
+\item var_imp_res: Variable importance results.
 }
 }
 \description{

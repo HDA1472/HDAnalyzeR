@@ -35,6 +35,8 @@ do_xgboost(
 )
 }
 \arguments{
+\item{olink_data}{Olink data.}
+
 \item{metadata}{Metadata.}
 
 \item{variable}{The variable to predict. Default is "Disease".}
@@ -84,8 +86,6 @@ do_xgboost(
 \item{boxplot_xaxis_names}{Whether to add x-axis names to the boxplot. Default is FALSE.}
 
 \item{seed}{Seed for reproducibility. Default is 123.}
-
-\item{olink_dat}{Olink data.}
 }
 \value{
 A list with results for each disease. The list contains:
