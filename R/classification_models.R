@@ -1840,6 +1840,8 @@ plot_features_summary <- function(ml_results,
 #' @param ncores Number of cores to use for parallel processing. Default is 4.
 #' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param vline Whether to add a vertical line at 50% importance. Default is TRUE.
+#' @param varimp_yaxis_names Whether to add y-axis names to the variable importance plot. Default is FALSE.
 #' @param seed Seed for reproducibility. Default is 123.
 #'
 #' @return A list with the following elements:
@@ -1876,6 +1878,8 @@ do_rreg_multi <- function(olink_data,
                           ncores = 4,
                           hypopt_vis = TRUE,
                           palette = NULL,
+                          vline = TRUE,
+                          varimp_yaxis_names = FALSE,
                           seed = 123) {
 
   Variable <- rlang::sym(variable)
@@ -1968,6 +1972,21 @@ do_rreg_multi <- function(olink_data,
                        !!!rlang::syms(pred_cols),
                        estimator = "macro_weighted")
 
+  # Variable importance plot
+  var_imp_res <- plot_var_imp(finalfit_res,
+                              "Multiclassification",
+                              NULL,
+                              NULL,
+                              NULL,
+                              NULL,
+                              NULL,
+                              palette = NULL,
+                              vline = vline,
+                              subtitle = c("features",
+                                           "top-features"),
+                              yaxis_names = varimp_yaxis_names)
+
+  # AUC barplot
   barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = .pred_class, y = .estimate, fill = .pred_class)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
@@ -1995,7 +2014,8 @@ do_rreg_multi <- function(olink_data,
               "finalfit_res" = finalfit_res,
               "roc_curve" = roc_curve,
               "auc" = auc_macro,
-              "auc_barplot" = barplot))
+              "auc_barplot" = barplot,
+              "var_imp_res" = var_imp_res))
 }
 
 
@@ -2020,6 +2040,8 @@ do_rreg_multi <- function(olink_data,
 #' @param ncores Number of cores to use for parallel processing. Default is 4.
 #' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param vline Whether to add a vertical line at 50% importance. Default is TRUE.
+#' @param varimp_yaxis_names Whether to add y-axis names to the variable importance plot. Default is FALSE.
 #' @param seed Seed for reproducibility. Default is 123.
 #'
 #' @return A list with the following elements:
@@ -2056,6 +2078,8 @@ do_rf_multi <- function(olink_data,
                         ncores = 4,
                         hypopt_vis = TRUE,
                         palette = NULL,
+                        vline = TRUE,
+                        varimp_yaxis_names = FALSE,
                         seed = 123) {
 
   Variable <- rlang::sym(variable)
@@ -2148,6 +2172,21 @@ do_rf_multi <- function(olink_data,
                        !!!rlang::syms(pred_cols),
                        estimator = "macro_weighted")
 
+  # Variable importance plot
+  var_imp_res <- plot_var_imp(finalfit_res,
+                              "Multiclassification",
+                              NULL,
+                              NULL,
+                              NULL,
+                              NULL,
+                              NULL,
+                              palette = NULL,
+                              vline = vline,
+                              subtitle = c("features",
+                                           "top-features"),
+                              yaxis_names = varimp_yaxis_names)
+
+  # AUC barplot``
   barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = .pred_class, y = .estimate, fill = .pred_class)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
@@ -2175,5 +2214,6 @@ do_rf_multi <- function(olink_data,
               "finalfit_res" = finalfit_res,
               "roc_curve" = roc_curve,
               "auc" = auc_macro,
-              "auc_barplot" = barplot))
+              "auc_barplot" = barplot,
+              "var_imp_res" = var_imp_res))
 }
