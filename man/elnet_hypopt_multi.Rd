@@ -23,6 +23,8 @@ elnet_hypopt_multi(
 
 \item{test_data}{Testing data set from \code{make_groups()}.}
 
+\item{variable}{The variable to predict. Default is "Disease".}
+
 \item{type}{Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".}
 
 \item{cor_threshold}{Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.}

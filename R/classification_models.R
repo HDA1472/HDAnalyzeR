@@ -705,6 +705,7 @@ xgboost_hypopt <- function(train_data,
 #'
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
+#' @param variable The variable to predict. Default is "Disease".
 #' @param type Type of regularization. Default is "lasso". Other options are "ridge" and "elnet".
 #' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
@@ -830,6 +831,7 @@ elnet_hypopt_multi <- function(train_data,
 #'
 #' @param train_data Training data set from `make_groups()`.
 #' @param test_data Testing data set from `make_groups()`.
+#' @param variable The variable to predict. Default is "Disease".
 #' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
 #' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
 #' @param cv_sets Number of cross-validation sets. Default is 5.
@@ -939,6 +941,33 @@ rf_hypopt_multi <- function(train_data,
 }
 
 
+#' Hyperparameter optimization for XGBoost multiclassification model
+#'
+#' `xgboost_hypopt_multi()` tunes an XGBoost model and performs hyperparameter optimization.
+#' It uses the xgboost engine for multinomial regression and tunes the number of trees,
+#' tree depth, minimum number of data points in a node, loss reduction, sample size,
+#' and number of predictors randomly sampled at each split. For the hyperparameter optimization,
+#' it uses the `grid_space_filling()` function from the dials package.
+#'
+#' @param train_data Training data set from `make_groups()`.
+#' @param test_data Testing data set from `make_groups()`.
+#' @param variable The variable to predict. Default is "Disease".
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
+#' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the grid for hyperparameter optimization. Default is 10.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is NULL.
+#' @param seed Seed for reproducibility. Default is 123.
+#'
+#' @return A list with five elements:
+#'  - xgboost_tune: Hyperparameter optimization results.
+#'  - xgboost_wf: Workflow object.
+#'  - train_set: Training set.
+#'  - test_set: Testing set.
+#'  - hypopt_vis: Hyperparameter optimization plot.
+#' @keywords internal
 xgboost_hypopt_multi <- function(train_data,
                                  test_data,
                                  variable = "Disease",
@@ -1878,7 +1907,7 @@ do_rf <- function(olink_data,
 #' and fits the model. It also performs hyperparameter optimization, fits the best
 #' model, tests it, and plots useful the feature variable importance.
 #'
-#' @param olink_dat Olink data.
+#' @param olink_data Olink data.
 #' @param metadata Metadata.
 #' @param variable The variable to predict. Default is "Disease".
 #' @param case The case group.
@@ -2274,6 +2303,7 @@ plot_features_summary <- function(ml_results,
 #' - roc_curve: ROC curve plot.
 #' - auc: AUC values for each class.
 #' - auc_barplot: AUC barplot.
+#' - var_imp_res: Variable importance results.
 #' @export
 #'
 #' @details If the data contain missing values, KNN imputation will be applied.
@@ -2475,6 +2505,7 @@ do_rreg_multi <- function(olink_data,
 #' - roc_curve: ROC curve plot.
 #' - auc: AUC values for each class.
 #' - auc_barplot: AUC barplot.
+#' - var_imp_res: Variable importance results.
 #' @export
 #'
 #' @details If the data contain missing values, KNN imputation will be applied.
@@ -2645,6 +2676,52 @@ do_rf_multi <- function(olink_data,
 }
 
 
+#' XGBoost multiclassification model pipeline
+#'
+#' `do_xgboost_multi()` runs the XGBoost multiclassification model pipeline. It splits the
+#' data into training and test sets, creates class-balanced case-control groups,
+#' and fits the model. It performs hyperparameter optimization and fits the best
+#' model. It also plots the ROC curve and the AUC barplot for each class.
+#'
+#' @param olink_data Olink data.
+#' @param metadata Metadata.
+#' @param variable The variable to predict. Default is "Disease".
+#' @param wide Whether the data is wide format. Default is TRUE.
+#' @param strata Whether to stratify the data. Default is TRUE.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned.
+#' @param ratio Ratio of training data to test data. Default is 0.75.
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
+#' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the hyperparameter optimization grid. Default is 50.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param vline Whether to add a vertical line at 50% importance. Default is TRUE.
+#' @param varimp_yaxis_names Whether to add y-axis names to the variable importance plot. Default is FALSE.
+#' @param seed Seed for reproducibility. Default is 123.
+#'
+#' @return A list with the following elements:
+#'  - hypopt_res: Hyperparameter optimization results.
+#'  - finalfit_res: Final model fitting results.
+#'  - roc_curve: ROC curve plot.
+#'  - auc: AUC values for each class.
+#'  - auc_barplot: AUC barplot.
+#'  - var_imp_res: Variable importance results.
+#' @export
+#'
+#' @details If the data contain missing values, KNN imputation will be applied.
+#' If no check for feature correlation is preferred, set `cor_threshold` to 1.
+#' It will filter out rows that contain NAs in Disease.
+#'
+#' @examples
+#' do_xgboost_multi(example_data,
+#'                  example_metadata,
+#'                  wide = FALSE,
+#'                  palette = "cancers12",
+#'                  cv_sets = 5,
+#'                  grid_size = 5,
+#'                  ncores = 1)
 do_xgboost_multi <- function(olink_data,
                              metadata,
                              variable = "Disease",
@@ -2655,7 +2732,7 @@ do_xgboost_multi <- function(olink_data,
                              cor_threshold = 0.9,
                              normalize = TRUE,
                              cv_sets = 5,
-                             grid_size = 10,
+                             grid_size = 50,
                              ncores = 4,
                              hypopt_vis = TRUE,
                              palette = NULL,
