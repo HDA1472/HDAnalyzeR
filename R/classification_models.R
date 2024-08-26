@@ -305,7 +305,7 @@ vis_hypopt <- function(tune_res,
     ggplot2::ggtitle(label = paste0(case,'')) +
     viridis::scale_color_viridis() +
     ggplot2::labs(y = "metric_mean") +
-    ggplot2::theme_classic()
+    theme_hpa()
 
   return(hypopt_plot)
 }
@@ -556,6 +556,141 @@ rf_hypopt <- function(train_data,
 
   return(list("rf_tune" = rf_tune,
               "rf_wf" = rf_wf,
+              "train_set" = train_set,
+              "test_set" = test_set))
+}
+
+
+#' Hyperparameter optimization for XGBoost model
+#'
+#' `xgboost_hypopt()` tunes an XGBoost model and performs hyperparameter optimization.
+#' It uses the xgboost engine for logistic regression and tunes the number of trees,
+#' tree depth, minimum number of data points in a node, loss reduction, sample size,
+#' and number of predictors randomly sampled at each split. For the hyperparameter optimization,
+#' it uses the `grid_space_filling()` function from the dials package.
+#'
+#' @param train_data Training data set from `make_groups()`.
+#' @param test_data Testing data set from `make_groups()`.
+#' @param variable The variable to predict. Default is "Disease".
+#' @param case Case to predict.
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
+#' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the grid for hyperparameter optimization. Default is 10.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned. Default is NULL.
+#' @param seed Seed for reproducibility. Default is 123.
+#'
+#' @return A list with five elements:
+#'  - xgboost_tune: Hyperparameter optimization results.
+#'  - xgboost_wf: Workflow object.
+#'  - train_set: Training set.
+#'  - test_set: Testing set.
+#'  - hypopt_vis: Hyperparameter optimization plot.
+#' @keywords internal
+xgboost_hypopt <- function(train_data,
+                           test_data,
+                           variable = "Disease",
+                           case,
+                           cor_threshold = 0.9,
+                           normalize = TRUE,
+                           cv_sets = 5,
+                           grid_size = 10,
+                           ncores = 4,
+                           hypopt_vis = TRUE,
+                           exclude_cols = NULL,
+                           seed = 123) {
+
+  Variable <- rlang::sym(variable)
+  if (ncores > 1) {
+    doParallel::registerDoParallel(cores = ncores)
+  }
+
+  # Prepare train data and create cross-validation sets with binary classifier
+  train_set <- train_data |>
+    dplyr::mutate(!!Variable := ifelse(!!Variable == case, 1, 0)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols)) |>
+    dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))  # Solve bug of Gower distance function
+
+  train_folds <- rsample::vfold_cv(train_set, v = cv_sets, strata = !!Variable)
+
+  test_set <- test_data |>
+    dplyr::mutate(!!Variable := ifelse(!!Variable == case, 1, 0)) |>
+    dplyr::mutate(!!Variable := as.factor(!!Variable)) |>
+    dplyr::select(-dplyr::any_of(exclude_cols)) |>
+    dplyr::mutate(dplyr::across(tidyselect::where(is.character) & !dplyr::all_of("DAid"), as.factor))
+
+  formula <- stats::as.formula(paste(variable, "~ ."))
+
+  xgboost_rec <- recipes::recipe(formula, data = train_set) |>
+    recipes::update_role(DAid, new_role = "id")
+
+  if (isTRUE(normalize)) {
+    xgboost_rec <- xgboost_rec |> recipes::step_normalize(recipes::all_numeric())
+  }
+
+  xgboost_rec <- xgboost_rec |>
+    recipes::step_nzv(recipes::all_numeric()) |>
+    recipes::step_corr(recipes::all_numeric(), threshold = cor_threshold) |>
+    recipes::step_impute_knn(recipes::all_numeric())
+
+  xgboost_spec <- parsnip::boost_tree(trees = 1000,
+                                      tree_depth = tune::tune(),
+                                      min_n = tune::tune(),
+                                      loss_reduction = tune::tune(),
+                                      sample_size = tune::tune(),
+                                      mtry = tune::tune(),
+                                      learn_rate = tune::tune()) |>
+    parsnip::set_engine("xgboost") |>
+    parsnip::set_mode("classification")
+
+  disease_pred <- train_set |> dplyr::select(-dplyr::any_of(c("Disease", "DAid", "Sex", "Age", "BMI")))
+
+  xgboost_wf <- workflows::workflow() |>
+    workflows::add_model(xgboost_spec) |>
+    workflows::add_recipe(xgboost_rec)
+
+  xgboost_grid <- xgboost_wf |>
+    workflows::extract_parameter_set_dials() |>
+    dials::finalize(disease_pred) |>
+    dials::grid_space_filling(size = grid_size)
+
+  roc_res <- yardstick::metric_set(yardstick::roc_auc)
+
+  set.seed(seed)
+  ctrl <- tune::control_grid(save_pred = TRUE, parallel_over = "everything")
+  xgboost_tune <- xgboost_wf |>
+    tune::tune_grid(
+      train_folds,
+      grid = xgboost_grid,
+      control = ctrl,
+      metrics = roc_res
+    )
+
+  if (hypopt_vis) {
+    hypopt_plot <- xgboost_tune |>
+      tune::collect_metrics() |>
+      dplyr::filter(.metric == "roc_auc") |>
+      dplyr::select(mean, mtry:sample_size) |>
+      tidyr::pivot_longer(mtry:sample_size,
+                          values_to = "value",
+                          names_to = "parameter") |>
+      ggplot2::ggplot(ggplot2::aes(value, mean, color = parameter)) +
+      ggplot2::geom_point(alpha = 0.8, show.legend = FALSE) +
+      ggplot2::facet_wrap(~parameter, scales = "free_x") +
+      ggplot2::labs(x = NULL, y = "AUC")
+
+    return(list("xgboost_tune" = xgboost_tune,
+                "xgboost_wf" = xgboost_wf,
+                "train_set" = train_set,
+                "test_set" = test_set,
+                "hypopt_vis" = hypopt_plot))
+  }
+
+  return(list("xgboost_tune" = xgboost_tune,
+              "xgboost_wf" = xgboost_wf,
               "train_set" = train_set,
               "test_set" = test_set))
 }
@@ -1622,6 +1757,192 @@ do_rf <- function(olink_data,
                                       points,
                                       xaxis_names = boxplot_xaxis_names,
                                       palette)
+
+  return(list("hypopt_res" = hypopt_res,
+              "finalfit_res" = finalfit_res,
+              "testfit_res" = testfit_res,
+              "var_imp_res" = var_imp_res,
+              "boxplot_res" = boxplot_res))
+}
+
+
+#' XGBoost classification model pipeline
+#'
+#' `do_xgboost()` runs the XGBoost classification model pipeline. It splits the
+#' data into training and test sets, creates class-balanced case-control groups,
+#' and fits the model. It also performs hyperparameter optimization, fits the best
+#' model, tests it, and plots useful the feature variable importance.
+#'
+#' @param olink_dat Olink data.
+#' @param metadata Metadata.
+#' @param variable The variable to predict. Default is "Disease".
+#' @param case The case group.
+#' @param control The control groups.
+#' @param wide Whether the data is wide format. Default is TRUE.
+#' @param strata Whether to stratify the data. Default is TRUE.
+#' @param balance_groups Whether to balance the groups. Default is TRUE.
+#' @param only_female Vector of diseases.
+#' @param only_male Vector of diseases.
+#' @param exclude_cols Columns to exclude from the data before the model is tuned.
+#' @param ratio Ratio of training data to test data. Default is 0.75.
+#' @param cor_threshold Threshold of absolute correlation values. This will be used to remove the minimum number of features so that all their resulting absolute correlations are less than this value.
+#' @param normalize Whether to normalize numeric data to have a standard deviation of one and a mean of zero. Default is TRUE.
+#' @param cv_sets Number of cross-validation sets. Default is 5.
+#' @param grid_size Size of the hyperparameter optimization grid. Default is 50.
+#' @param ncores Number of cores to use for parallel processing. Default is 4.
+#' @param hypopt_vis Whether to visualize hyperparameter optimization results. Default is TRUE.
+#' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
+#' @param vline Whether to add a vertical line at 50% importance. Default is TRUE.
+#' @param subtitle Vector of subtitle elements to include in the plot. Default is a list with all.
+#' @param varimp_yaxis_names Whether to add y-axis names to the plot. Default is FALSE.
+#' @param nfeatures Number of top features to include in the boxplot. Default is 9.
+#' @param points Whether to add points to the boxplot. Default is TRUE.
+#' @param boxplot_xaxis_names Whether to add x-axis names to the boxplot. Default is FALSE.
+#' @param seed Seed for reproducibility. Default is 123.
+#'
+#' @return A list with results for each disease. The list contains:
+#'  - hypopt_res: Hyperparameter optimization results.
+#'  - finalfit_res: Final model fitting results.
+#'  - testfit_res: Test model fitting results.
+#'  - var_imp_res: Variable importance results.
+#'  - boxplot_res: Boxplot results.
+#' @export
+#'
+#' @examples
+#' do_xgboost(example_data,
+#'            example_metadata,
+#'            case = "AML",
+#'            control = c("CLL", "MYEL"),
+#'            balance_groups = TRUE,
+#'            wide = FALSE,
+#'            palette = "cancers12",
+#'            cv_sets = 5,
+#'            grid_size = 10,
+#'            ncores = 1)
+do_xgboost <- function(olink_data,
+                       metadata,
+                       variable = "Disease",
+                       case,
+                       control,
+                       wide = TRUE,
+                       strata = TRUE,
+                       balance_groups = TRUE,
+                       only_female = NULL,
+                       only_male = NULL,
+                       exclude_cols = "Sex",
+                       ratio = 0.75,
+                       cor_threshold = 0.9,
+                       normalize = TRUE,
+                       cv_sets = 5,
+                       grid_size = 50,
+                       ncores = 4,
+                       hypopt_vis = TRUE,
+                       palette = NULL,
+                       vline = TRUE,
+                       subtitle = c("accuracy",
+                                    "sensitivity",
+                                    "specificity",
+                                    "auc",
+                                    "features",
+                                    "top-features"),
+                       varimp_yaxis_names = FALSE,
+                       nfeatures = 9,
+                       points = TRUE,
+                       boxplot_xaxis_names = FALSE,
+                       seed = 123) {
+
+  Variable <- rlang::sym(variable)
+
+  # Prepare datasets
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
+  }
+
+  join_data <- wide_data |>
+    dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(c("DAid", "Disease", "Sex", variable)))) |>
+    dplyr::filter(!!Variable %in% c(case, control))
+
+  # Prepare sets and groups
+  data_split <- split_data(join_data, variable, strata, ratio, seed)
+  if (isTRUE(balance_groups)) {
+    train_list <- make_groups(data_split$train_set,
+                              variable,
+                              case,
+                              c(case, control),
+                              only_female,
+                              only_male,
+                              seed)
+    test_list <- make_groups(data_split$test_set,
+                             variable,
+                             case,
+                             c(case, control),
+                             only_female,
+                             only_male,
+                             seed)
+  } else {
+    train_list <- data_split$train_set
+    test_list <- data_split$test_set
+  }
+  message("Sets and groups are ready. Model fitting is starting...")
+
+  # Run model
+  message(paste0("Classification model for ", case, " as case is starting..."))
+  hypopt_res <- xgboost_hypopt(train_list,
+                               test_list,
+                               variable,
+                               case,
+                               cor_threshold,
+                               normalize,
+                               cv_sets,
+                               grid_size,
+                               ncores,
+                               hypopt_vis,
+                               exclude_cols,
+                               seed)
+
+  finalfit_res <- finalfit(hypopt_res$train_set,
+                           hypopt_res$xgboost_tune,
+                           hypopt_res$xgboost_wf,
+                           seed)
+
+  testfit_res <- testfit(hypopt_res$train_set,
+                         hypopt_res$test_set,
+                         variable,
+                         case,
+                         finalfit_res,
+                         exclude_cols,
+                         type = "other",
+                         seed,
+                         palette)
+
+  var_imp_res <- plot_var_imp(finalfit_res,
+                              case,
+                              testfit_res$metrics$accuracy,
+                              testfit_res$metrics$sensitivity,
+                              testfit_res$metrics$specificity,
+                              testfit_res$metrics$auc,
+                              testfit_res$mixture,
+                              palette = palette,
+                              vline = vline,
+                              subtitle = subtitle,
+                              yaxis_names = varimp_yaxis_names)
+
+  top_features <- var_imp_res$features |>
+    dplyr::arrange(dplyr::desc(Scaled_Importance)) |>
+    dplyr::select(Variable) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    utils::head(nfeatures)
+  proteins <- top_features[["Variable"]]
+
+  boxplot_res <- plot_protein_boxplot(join_data,
+                                      variable,
+                                      proteins,
+                                      case,
+                                      points,
+                                      xaxis_names = boxplot_xaxis_names,
+                                      palette = palette)
 
   return(list("hypopt_res" = hypopt_res,
               "finalfit_res" = finalfit_res,

@@ -65,7 +65,8 @@ Suggests:
     ranger,
     rmarkdown,
     testthat (>= 3.0.0),
-    writexl
+    writexl,
+    xgboost
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
