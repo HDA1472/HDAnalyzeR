@@ -1054,9 +1054,7 @@ plot_var_imp <- function (finalfit_res,
 
   features <- finalfit_res$final |>
     workflows::extract_fit_parsnip() |>
-    vip::vi(lambda = finalfit_res$best_model$penalty,
-            alpha = finalfit_res$best_model$mixture
-    ) |>
+    vip::vi() |>
     dplyr::mutate(
       Importance = abs(Importance),
       Variable = forcats::fct_reorder(Variable, Importance)
@@ -1987,9 +1985,10 @@ do_rreg_multi <- function(olink_data,
                               yaxis_names = varimp_yaxis_names)
 
   # AUC barplot
-  barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = .pred_class, y = .estimate, fill = .pred_class)) +
+  barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = reorder(.pred_class, -.estimate), y = .estimate, fill = .pred_class)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
+    ggplot2::ylim(0, 1) +
     theme_hpa(angled = T) +
     ggplot2::theme(legend.position = "none")
 
@@ -2187,9 +2186,10 @@ do_rf_multi <- function(olink_data,
                               yaxis_names = varimp_yaxis_names)
 
   # AUC barplot``
-  barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = .pred_class, y = .estimate, fill = .pred_class)) +
+  barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = reorder(.pred_class, -.estimate), y = .estimate, fill = .pred_class)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
+    ggplot2::ylim(0, 1) +
     theme_hpa(angled = T) +
     ggplot2::theme(legend.position = "none")
 
