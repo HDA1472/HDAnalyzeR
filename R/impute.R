@@ -89,7 +89,6 @@ na_search <- function(olink_data,
     unique()
 
   # Create heatmap
-  graphics.off()
   if (x_labels == FALSE) {
     x_labs <- c("")
   } else {
