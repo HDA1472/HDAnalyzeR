@@ -35,6 +35,7 @@ reference:
   desc: |
     Functions that perform quality control check on your data.
   contents:
+  - na_search
   - qc_summary_data
   - qc_summary_metadata
 - subtitle: Correlation and Clustering
