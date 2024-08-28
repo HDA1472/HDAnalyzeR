@@ -84,7 +84,7 @@ head(clean_metadata)
 Once the data is cleaned, we recommend transforming it into a tidy format (wide format) if it's not already in that form. `widen_data()` will create for us the wide Olink dataset.
 
 ```{r}
-wide_data <- widen_data(long_data)
+wide_data <- widen_data(clean_data)
 head(wide_data)
 ```
 
