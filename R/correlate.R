@@ -34,6 +34,7 @@ correlate <- function(x, y = NULL, use = "pairwise.complete.obs", method = "pear
 #' @param threshold The reporting protein-protein correlation threshold. Default is 0.8.
 #' @param cluster_rows Whether to cluster the rows. Default is TRUE.
 #' @param cluster_cols Whether to cluster the columns. Default is TRUE.
+#' @param show_heatmap Whether to show the heatmap. Default is TRUE.
 #'
 #' @return A list containing the following elements:
 #'   - cor_matrix: A matrix of protein-protein correlations.
@@ -63,7 +64,8 @@ create_corr_heatmap <- function(x,
                                 method = "pearson",
                                 threshold = 0.8,
                                 cluster_rows = TRUE,
-                                cluster_cols = TRUE) {
+                                cluster_cols = TRUE,
+                                show_heatmap = TRUE) {
 
   cor_matrix <- correlate(x,
                           y = NULL,
@@ -90,7 +92,7 @@ create_corr_heatmap <- function(x,
                                         color_legend_max = 1,
                                         treeheight_row = 20,
                                         treeheight_col = 20,
-                                        silent = TRUE)
+                                        silent = isFALSE(show_heatmap))
 
   return(list("cor_matrix" = cor_matrix, "cor_results" = cor_results, "cor_plot" = cor_plot))
 }

@@ -287,6 +287,8 @@ plot_metadata_summary <- function(metadata,
 #'
 #' @examples
 #' qc_res <- qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
+#'
+#' qc_res$heatmap
 qc_summary_data <- function(df, wide = TRUE, threshold = 0.8, cor_method = "pearson", report = TRUE) {
 
   if (isFALSE(wide)) {
@@ -304,10 +306,10 @@ qc_summary_data <- function(df, wide = TRUE, threshold = 0.8, cor_method = "pear
   na_percentage_row <- calc_na_percentage_row(wide_data)
   na_row_dist <- plot_missing_values(na_percentage_row, "Number of Samples")
   normality_results <- check_normality(wide_data)
-  graphics.off()
   cor <- create_corr_heatmap(wide_data |> dplyr::select(-dplyr::any_of(c("DAid"))),
                              threshold = threshold,
-                             method = cor_method)
+                             method = cor_method,
+                             show_heatmap = report)
   cor_matrix <- cor$cor_matrix
   cor_results <- cor$cor_results
   p <- cor$cor_plot

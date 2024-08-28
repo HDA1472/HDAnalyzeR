@@ -11,6 +11,7 @@
 #' @param palette The color palettes to use for the heatmap annotations (check examples bellow).
 #' @param x_labels If TRUE, show x-axis labels.
 #' @param y_labels If TRUE, show y-axis labels.
+#' @param show_heatmap If TRUE, show the heatmap.
 #'
 #' @return A list containing the summary of missing values and a heatmap.
 #' @export
@@ -26,19 +27,21 @@
 #' @examples
 #' # Use custom palettes for coloring annotations
 #' palette = list(Sex = c(M = "blue", F = "pink"))
-#' na_search(example_data,
-#'           example_metadata,
-#'           wide = FALSE,
-#'           metadata_cols = c("Age", "Sex"),
-#'           palette = palette)
+#' na_res <- na_search(example_data,
+#'                     example_metadata,
+#'                     wide = FALSE,
+#'                     metadata_cols = c("Age", "Sex"),
+#'                     palette = palette,
+#'                     show_heatmap = FALSE)
 #'
 #' # Use HPA palettes for coloring annotations
 #' palette = list(Disease = get_hpa_palettes()$cancers12, Sex = get_hpa_palettes()$sex_hpa)
-#' na_search(example_data,
-#'           example_metadata,
-#'           wide = FALSE,
-#'           metadata_cols = c("Disease", "Sex"),
-#'           palette = palette)
+#' na_res <- na_search(example_data,
+#'                     example_metadata,
+#'                     wide = FALSE,
+#'                     metadata_cols = c("Disease", "Sex"),
+#'                     palette = palette,
+#'                     show_heatmap = FALSE)
 #'
 #' # Pre-bin a continuous variable
 #' metadata <- example_metadata
@@ -60,7 +63,8 @@ na_search <- function(olink_data,
                       metadata_cols = NULL,
                       palette = NULL,
                       x_labels = FALSE,
-                      y_labels = FALSE) {
+                      y_labels = FALSE,
+                      show_heatmap = TRUE) {
   # Prepare data
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
@@ -111,7 +115,7 @@ na_search <- function(olink_data,
                                           show_selected_col_labels = x_labs,
                                           treeheight_row = 20,
                                           treeheight_col = 20,
-                                          silent = TRUE)
+                                          silent = isFALSE(show_heatmap))
 
   return(list("na_data" = na_data, "na_heatmap" = na_heatmap))
 }
