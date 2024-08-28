@@ -1,6 +1,7 @@
 utils::globalVariables(c("roc_auc", ".config", ".pred_class", ".pred_0", "Scaled_Importance",
                          "Importance", "Variable", "std_err", "Type", "metric",
-                         "specificity", "sensitivity", ".level", ".estimate", "Category"))
+                         "specificity", "sensitivity", ".level", ".estimate", "Category",
+                         ".metric", "mtry", "sample_size", "parameter"))
 #' Split dataset into training and test sets
 #'
 #' `split_data()` splits the dataset into training and test sets based on user defined ratio.
@@ -2441,7 +2442,10 @@ do_rreg_multi <- function(olink_data,
                               yaxis_names = varimp_yaxis_names)
 
   # AUC barplot
-  barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = reorder(.pred_class, -.estimate), y = .estimate, fill = .pred_class)) +
+  barplot <- ggplot2::ggplot(auc_macro,
+                             ggplot2::aes(x = stats::reorder(.pred_class, -.estimate),
+                                          y = .estimate,
+                                          fill = .pred_class)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
     ggplot2::ylim(0, 1) +
@@ -2643,7 +2647,10 @@ do_rf_multi <- function(olink_data,
                               yaxis_names = varimp_yaxis_names)
 
   # AUC barplot``
-  barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = reorder(.pred_class, -.estimate), y = .estimate, fill = .pred_class)) +
+  barplot <- ggplot2::ggplot(auc_macro,
+                             ggplot2::aes(x = stats::reorder(.pred_class, -.estimate),
+                                          y = .estimate,
+                                          fill = .pred_class)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
     ggplot2::ylim(0, 1) +
@@ -2845,7 +2852,10 @@ do_xgboost_multi <- function(olink_data,
                               yaxis_names = varimp_yaxis_names)
 
   # AUC barplot``
-  barplot <- ggplot2::ggplot(auc_macro, ggplot2::aes(x = reorder(.pred_class, -.estimate), y = .estimate, fill = .pred_class)) +
+  barplot <- ggplot2::ggplot(auc_macro,
+                             ggplot2::aes(x = stats::reorder(.pred_class, -.estimate),
+                                          y = .estimate,
+                                          fill = .pred_class)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::labs(x = "", y = "AUC") +
     ggplot2::ylim(0, 1) +
