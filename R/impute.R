@@ -9,11 +9,16 @@
 #' @param wide If TRUE, the data is in wide format.
 #' @param metadata_cols The metadata columns to include in the summary.
 #' @param palette The color palettes to use for the heatmap annotations (check examples bellow).
+#' @param x_labels If TRUE, show x-axis labels.
+#' @param y_labels If TRUE, show y-axis labels.
 #'
 #' @return A list containing the summary of missing values and a heatmap.
 #' @export
 #'
-#' @details When coloring annotations, the user can use custom palettes or the
+#' @details When using continuous metadata variables, consider converted them to
+#' categorical by binning them into categories before passing them to the function.
+#' This will make the heatmap more informative and easier to interpret.
+#' Also when coloring annotations, the user can use custom palettes or the
 #' Human Protein Atlas (HPA) palettes. It is not required to provide a palette
 #' for all annotations, but when a palette is provided, it must be in correct
 #' format (check examples bellow).
@@ -24,7 +29,7 @@
 #' na_search(example_data,
 #'           example_metadata,
 #'           wide = FALSE,
-#'           metadata_cols = c("Disease", "Sex"),
+#'           metadata_cols = c("Age", "Sex"),
 #'           palette = palette)
 #'
 #' # Use HPA palettes for coloring annotations
@@ -34,7 +39,28 @@
 #'           wide = FALSE,
 #'           metadata_cols = c("Disease", "Sex"),
 #'           palette = palette)
-na_search <- function(olink_data, metadata, wide = TRUE, metadata_cols = NULL, palette = NULL) {
+#'
+#' # Pre-bin a continuous variable
+#' metadata <- example_metadata
+#' metadata$Age_bin <- cut(metadata$Age,
+#'                         breaks = c(0, 20, 40, 60, 80, 120),
+#'                         labels = c("0-20", "21-40", "41-60", "61-80", "81+"),
+#'                         right = FALSE)
+#'
+#' palette = list(Disease = get_hpa_palettes()$cancers12)
+#'
+#' na_search(example_data,
+#'           metadata,
+#'           wide = FALSE,
+#'           metadata_cols = c("Age_bin", "Disease"),
+#'           palette = palette)
+na_search <- function(olink_data,
+                      metadata,
+                      wide = TRUE,
+                      metadata_cols = NULL,
+                      palette = NULL,
+                      x_labels = FALSE,
+                      y_labels = FALSE) {
   # Prepare data
   if (isFALSE(wide)) {
     wide_data <- widen_data(olink_data)
@@ -64,6 +90,16 @@ na_search <- function(olink_data, metadata, wide = TRUE, metadata_cols = NULL, p
 
   # Create heatmap
   graphics.off()
+  if (x_labels == FALSE) {
+    x_labs <- c("")
+  } else {
+    x_labs <- NULL
+  }
+  if (y_labels == FALSE) {
+    y_labs <- c("")
+  } else {
+    y_labs <- NULL
+  }
   na_heatmap <- tidyheatmaps::tidyheatmap(na_data,
                                           rows = Categories,
                                           columns = Assay,
@@ -72,8 +108,8 @@ na_search <- function(olink_data, metadata, wide = TRUE, metadata_cols = NULL, p
                                           annotation_colors = palette,
                                           cluster_rows = TRUE,
                                           cluster_cols = TRUE,
-                                          show_selected_row_labels = c(""),
-                                          show_selected_col_labels = c(""),
+                                          show_selected_row_labels = y_labs,
+                                          show_selected_col_labels = x_labs,
                                           treeheight_row = 20,
                                           treeheight_col = 20,
                                           silent = TRUE)

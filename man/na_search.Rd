@@ -9,7 +9,9 @@ na_search(
   metadata,
   wide = TRUE,
   metadata_cols = NULL,
-  palette = NULL
+  palette = NULL,
+  x_labels = FALSE,
+  y_labels = FALSE
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ na_search(
 \item{metadata_cols}{The metadata columns to include in the summary.}
 
 \item{palette}{The color palettes to use for the heatmap annotations (check examples bellow).}
+
+\item{x_labels}{If TRUE, show x-axis labels.}
+
+\item{y_labels}{If TRUE, show y-axis labels.}
 }
 \value{
 A list containing the summary of missing values and a heatmap.
@@ -32,7 +38,10 @@ specify the metadata columns to include in the summary and the color palette to 
 the heatmap annotations.
 }
 \details{
-When coloring annotations, the user can use custom palettes or the
+When using continuous metadata variables, consider converted them to
+categorical by binning them into categories before passing them to the function.
+This will make the heatmap more informative and easier to interpret.
+Also when coloring annotations, the user can use custom palettes or the
 Human Protein Atlas (HPA) palettes. It is not required to provide a palette
 for all annotations, but when a palette is provided, it must be in correct
 format (check examples bellow).
@@ -43,7 +52,7 @@ palette = list(Sex = c(M = "blue", F = "pink"))
 na_search(example_data,
           example_metadata,
           wide = FALSE,
-          metadata_cols = c("Disease", "Sex"),
+          metadata_cols = c("Age", "Sex"),
           palette = palette)
 
 # Use HPA palettes for coloring annotations
@@ -52,5 +61,20 @@ na_search(example_data,
           example_metadata,
           wide = FALSE,
           metadata_cols = c("Disease", "Sex"),
+          palette = palette)
+
+# Pre-bin a continuous variable
+metadata <- example_metadata
+metadata$Age_bin <- cut(metadata$Age,
+                        breaks = c(0, 20, 40, 60, 80, 120),
+                        labels = c("0-20", "21-40", "41-60", "61-80", "81+"),
+                        right = FALSE)
+
+palette = list(Disease = get_hpa_palettes()$cancers12)
+
+na_search(example_data,
+          metadata,
+          wide = FALSE,
+          metadata_cols = c("Age_bin", "Disease"),
           palette = palette)
 }
