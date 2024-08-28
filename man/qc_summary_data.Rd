@@ -4,7 +4,13 @@
 \alias{qc_summary_data}
 \title{Summarize the quality control results of Olink data}
 \usage{
-qc_summary_data(df, wide = TRUE, threshold = 0.8, report = TRUE)
+qc_summary_data(
+  df,
+  wide = TRUE,
+  threshold = 0.8,
+  cor_method = "pearson",
+  report = TRUE
+)
 }
 \arguments{
 \item{df}{The input dataset.}
@@ -12,6 +18,8 @@ qc_summary_data(df, wide = TRUE, threshold = 0.8, report = TRUE)
 \item{wide}{Whether the input dataset is in wide format. Default is TRUE.}
 
 \item{threshold}{The reporting protein-protein correlation threshold. Default is 0.8.}
+
+\item{cor_method}{The correlation method. Default is "pearson".}
 
 \item{report}{Whether to print the summary. Default is TRUE.}
 }
