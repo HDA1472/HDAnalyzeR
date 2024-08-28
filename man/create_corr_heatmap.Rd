@@ -11,7 +11,8 @@ create_corr_heatmap(
   method = "pearson",
   threshold = 0.8,
   cluster_rows = TRUE,
-  cluster_cols = TRUE
+  cluster_cols = TRUE,
+  show_heatmap = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ create_corr_heatmap(
 \item{cluster_rows}{Whether to cluster the rows. Default is TRUE.}
 
 \item{cluster_cols}{Whether to cluster the columns. Default is TRUE.}
+
+\item{show_heatmap}{Whether to show the heatmap. Default is TRUE.}
 }
 \value{
 A list containing the following elements:

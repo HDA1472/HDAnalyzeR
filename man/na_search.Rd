@@ -11,7 +11,8 @@ na_search(
   metadata_cols = NULL,
   palette = NULL,
   x_labels = FALSE,
-  y_labels = FALSE
+  y_labels = FALSE,
+  show_heatmap = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ na_search(
 \item{x_labels}{If TRUE, show x-axis labels.}
 
 \item{y_labels}{If TRUE, show y-axis labels.}
+
+\item{show_heatmap}{If TRUE, show the heatmap.}
 }
 \value{
 A list containing the summary of missing values and a heatmap.
@@ -49,19 +52,21 @@ format (check examples bellow).
 \examples{
 # Use custom palettes for coloring annotations
 palette = list(Sex = c(M = "blue", F = "pink"))
-na_search(example_data,
-          example_metadata,
-          wide = FALSE,
-          metadata_cols = c("Age", "Sex"),
-          palette = palette)
+na_res <- na_search(example_data,
+                    example_metadata,
+                    wide = FALSE,
+                    metadata_cols = c("Age", "Sex"),
+                    palette = palette,
+                    show_heatmap = FALSE)
 
 # Use HPA palettes for coloring annotations
 palette = list(Disease = get_hpa_palettes()$cancers12, Sex = get_hpa_palettes()$sex_hpa)
-na_search(example_data,
-          example_metadata,
-          wide = FALSE,
-          metadata_cols = c("Disease", "Sex"),
-          palette = palette)
+na_res <- na_search(example_data,
+                    example_metadata,
+                    wide = FALSE,
+                    metadata_cols = c("Disease", "Sex"),
+                    palette = palette,
+                    show_heatmap = FALSE)
 
 # Pre-bin a continuous variable
 metadata <- example_metadata

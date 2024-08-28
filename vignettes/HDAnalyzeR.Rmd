@@ -133,7 +133,6 @@ We will perform another QC check to ensure that everything is as expected after 
 
 ```{r}
 qc_data <- qc_summary_data(imputed_data, wide = TRUE, threshold = 0.7)
-qc_data$heatmap
 ```
 
 ```{r}

@@ -48,4 +48,6 @@ is taken to assess normality as it is a requirement from Shapiro-Wilk test.
 }
 \examples{
 qc_res <- qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
+
+qc_res$heatmap
 }
