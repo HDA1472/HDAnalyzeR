@@ -1,3 +1,4 @@
+utils::globalVariables(c("Categories", "NA_percentage"))
 #' Summary of missing values
 #'
 #' `na_search()` provides a summary of missing values in a dataset. It allows the user to
@@ -85,7 +86,7 @@ na_search <- function(olink_data,
 
   # Calculate NA percentages
   na_data <- join_data |>
-    dplyr::group_by(dplyr::across(all_of(c(metadata_cols, "Assay")))) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(metadata_cols, "Assay")))) |>
     dplyr::mutate(NA_percentage = mean(is.na(NPX)) * 100) |>
     dplyr::ungroup() |>
     dplyr::mutate(Categories = paste(!!!rlang::syms(metadata_cols), sep = "_")) |>
