@@ -36,6 +36,8 @@
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/do_ttest.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/do_ttest_de.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/do_umap.html</loc></url>
+<url><loc>https://hda1472.github.io/HDAnalyzeR/reference/do_xgboost.html</loc></url>
+<url><loc>https://hda1472.github.io/HDAnalyzeR/reference/do_xgboost_multi.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/elnet_hypopt.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/elnet_hypopt_multi.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/example_data.html</loc></url>
@@ -55,6 +57,7 @@
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/literature_search.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/lreg_fit.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/make_groups.html</loc></url>
+<url><loc>https://hda1472.github.io/HDAnalyzeR/reference/na_search.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/normalize_data.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/plot_de_summary.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/plot_dim_reduction.html</loc></url>
@@ -84,5 +87,7 @@
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/theme_hpa.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/vis_hypopt.html</loc></url>
 <url><loc>https://hda1472.github.io/HDAnalyzeR/reference/widen_data.html</loc></url>
+<url><loc>https://hda1472.github.io/HDAnalyzeR/reference/xgboost_hypopt.html</loc></url>
+<url><loc>https://hda1472.github.io/HDAnalyzeR/reference/xgboost_hypopt_multi.html</loc></url>
 </urlset>
 

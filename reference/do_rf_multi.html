@@ -63,7 +63,7 @@ model. It also plots the ROC curve and the AUC barplot for each class."><meta pr
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Random forest multiclassification model pipeline</h1>
-      <small class="dont-index">Source: <a href="https://github.com/HDA1472/HDAnalyzeR/blob/v1.0.0/R/classification_models.R" class="external-link"><code>R/classification_models.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HDA1472/HDAnalyzeR/blob/main/R/classification_models.R" class="external-link"><code>R/classification_models.R</code></a></small>
       <div class="d-none name"><code>do_rf_multi.Rd</code></div>
     </div>
 
@@ -91,6 +91,8 @@ model. It also plots the ROC curve and the AUC barplot for each class.</p>
 <span>  ncores <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  hypopt_vis <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  palette <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  vline <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  varimp_yaxis_names <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">123</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -155,6 +157,14 @@ model. It also plots the ROC curve and the AUC barplot for each class.</p>
 <dd><p>The color palette for the plot. If it is a character, it should be one of the palettes from <code><a href="get_hpa_palettes.html">get_hpa_palettes()</a></code>. Default is NULL.</p></dd>
 
 
+<dt id="arg-vline">vline<a class="anchor" aria-label="anchor" href="#arg-vline"></a></dt>
+<dd><p>Whether to add a vertical line at 50% importance. Default is TRUE.</p></dd>
+
+
+<dt id="arg-varimp-yaxis-names">varimp_yaxis_names<a class="anchor" aria-label="anchor" href="#arg-varimp-yaxis-names"></a></dt>
+<dd><p>Whether to add y-axis names to the variable importance plot. Default is FALSE.</p></dd>
+
+
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Seed for reproducibility. Default is 123.</p></dd>
 
@@ -166,6 +176,7 @@ model. It also plots the ROC curve and the AUC barplot for each class.</p>
 <li><p>roc_curve: ROC curve plot.</p></li>
 <li><p>auc: AUC values for each class.</p></li>
 <li><p>auc_barplot: AUC barplot.</p></li>
+<li><p>var_imp_res: Variable importance results.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -438,6 +449,27 @@ It will filter out rows that contain NAs in Disease.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $auc_barplot</span>
 <span class="r-plt img"><img src="do_rf_multi-3.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res$features</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 99 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Variable Importance Scaled_Importance</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> APEX1       0.023<span style="text-decoration: underline;">7</span>              100  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ARID4B      0.010<span style="text-decoration: underline;">9</span>               45.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AZU1        0.007<span style="text-decoration: underline;">95</span>              33.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ARTN        0.007<span style="text-decoration: underline;">66</span>              32.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ADA         0.005<span style="text-decoration: underline;">94</span>              25.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ALPP        0.005<span style="text-decoration: underline;">62</span>              23.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AHCY        0.004<span style="text-decoration: underline;">48</span>              18.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ADGRG2      0.004<span style="text-decoration: underline;">24</span>              17.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ARHGAP25    0.003<span style="text-decoration: underline;">16</span>              13.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ADGRE5      0.002<span style="text-decoration: underline;">61</span>              11.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 89 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $var_imp_res$var_imp_plot</span>
+<span class="r-plt img"><img src="do_rf_multi-4.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

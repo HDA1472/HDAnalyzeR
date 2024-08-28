@@ -57,7 +57,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Perform over-representation analysis</h1>
-      <small class="dont-index">Source: <a href="https://github.com/HDA1472/HDAnalyzeR/blob/v1.0.0/R/enrichment_analysis.R" class="external-link"><code>R/enrichment_analysis.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HDA1472/HDAnalyzeR/blob/main/R/enrichment_analysis.R" class="external-link"><code>R/enrichment_analysis.R</code></a></small>
       <div class="d-none name"><code>do_ora.Rd</code></div>
     </div>
 
@@ -134,16 +134,19 @@ When Olink data is used, it is recommended to provide a protein list as backgrou
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...@gene 	 chr [1:21] "566" "100" "328" "54518" "9289" "9048" "285" "181" "51129" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...pvalues adjusted by 'BH' with cutoff &lt;0.05 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...78 enriched terms found</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	78 obs. of  9 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ID         : chr  "GO:0050900" "GO:0050926" "GO:0045785" "GO:0001666" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Description: chr  "leukocyte migration" "regulation of positive chemotaxis" "positive regulation of cell adhesion" "response to hypoxia" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ GeneRatio  : chr  "7/21" "3/21" "6/21" "5/21" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ BgRatio    : chr  "396/18888" "26/18888" "485/18888" "313/18888" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pvalue     : num  1.52e-07 3.03e-06 1.09e-05 1.98e-05 2.44e-05 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ p.adjust   : num  0.000163 0.001616 0.003863 0.005215 0.005215 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ qvalue     : num  9.74e-05 9.68e-04 2.31e-03 3.12e-03 3.12e-03 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ geneID     : chr  "566/100/9048/25/2683/199/30817" "566/9048/285" "566/100/54518/9289/25/199" "100/285/51129/405/1386" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Count      : int  7 3 6 5 5 5 5 5 3 5 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	78 obs. of  12 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ID            : chr  "GO:0050900" "GO:0050926" "GO:0045785" "GO:0001666" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Description   : chr  "leukocyte migration" "regulation of positive chemotaxis" "positive regulation of cell adhesion" "response to hypoxia" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ GeneRatio     : chr  "7/21" "3/21" "6/21" "5/21" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ BgRatio       : chr  "396/18888" "26/18888" "485/18888" "313/18888" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ RichFactor    : num  0.0177 0.1154 0.0124 0.016 0.0153 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ FoldEnrichment: num  15.9 103.8 11.1 14.4 13.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ zScore        : num  10 17.5 7.54 7.96 7.76 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pvalue        : num  1.52e-07 3.03e-06 1.09e-05 1.98e-05 2.44e-05 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ p.adjust      : num  0.000163 0.001616 0.003863 0.005215 0.005215 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ qvalue        : num  9.74e-05 9.68e-04 2.31e-03 3.12e-03 3.12e-03 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ geneID        : chr  "566/100/9048/25/2683/199/30817" "566/9048/285" "566/100/54518/9289/25/199" "100/285/51129/405/1386" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Count         : int  7 3 6 5 5 5 5 5 3 5 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> #...Citation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  clusterProfiler 4.0: A universal enrichment tool for interpreting omics data.</span>
