@@ -89,7 +89,8 @@ create_corr_heatmap <- function(x,
                                         color_legend_min = -1,
                                         color_legend_max = 1,
                                         treeheight_row = 20,
-                                        treeheight_col = 20)
+                                        treeheight_col = 20,
+                                        silent = TRUE)
 
   return(list("cor_matrix" = cor_matrix, "cor_results" = cor_results, "cor_plot" = cor_plot))
 }
