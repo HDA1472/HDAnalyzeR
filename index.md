@@ -8,13 +8,17 @@ HDAnalyzeR offers ready-to-use functions for common proteomics tasks such as pro
 
 ## Installation
 
-You can install the latest version of HDAnalyzeR from GitHub:
+You can install the **latest** (recommended) or development version of HDAnalyzeR from GitHub:
 
 ``` r
 # Install devtools if you haven't already
 install.packages("devtools")
 
-# Install HDAnalyzeR
+# Install HDAnalyzeR latest version
+options(timeout = 1200)  # Set timeout to 20 minutes to avoid timeout errors
+devtools::install_github("HDA1472/HDAnalyzeR@v1.0.0")
+
+# Install HDAnalyzeR development version
 options(timeout = 1200)  # Set timeout to 20 minutes to avoid timeout errors
 devtools::install_github("HDA1472/HDAnalyzeR")
 ```
