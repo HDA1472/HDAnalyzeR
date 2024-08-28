@@ -20,7 +20,6 @@ reference:
   contents:
   - clean_data
   - clean_metadata
-  - generate_df
 - subtitle: Data Normalization and Imputation
   desc: |
     Functions that normalize data, remove batch effects, and impute missing values.
