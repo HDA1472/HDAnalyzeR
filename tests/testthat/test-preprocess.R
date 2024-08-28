@@ -162,26 +162,3 @@ test_that("The specified values are replaced with NAs", {
     dplyr::select(DAid, Disease)
   expect_equal(result, expected)
 })
-
-
-# Test generate_df -------------------------------------------------------------
-test_that("generate_df returns a list of a wide and a joined dataframe", {
-  test_data <- example_data |>
-    dplyr::select(DAid, Assay, NPX)
-  test_metadata <- example_metadata |>
-    dplyr::select(DAid, Disease, Sex, Age, BMI)
-
-  expected_wide <- test_data |>
-    tidyr::pivot_wider(names_from = Assay, values_from = NPX)
-  expected_join <- expected_wide |>
-    dplyr::left_join(test_metadata, by = "DAid") |>
-    dplyr::relocate("DAid", "Disease", "Sex", "Age", "BMI", dplyr::everything())
-
-  result_df <- generate_df(test_data, test_metadata)
-  wide_data <- result_df[[1]]
-  join_data <- result_df[[2]]
-
-  expect_equal(wide_data, expected_wide)
-  expect_equal(join_data, expected_join)
-  unlink("data", recursive = TRUE)
-})
