@@ -81,19 +81,11 @@ head(clean_metadata)
 
 ### Data Transformation
 
-Once the data is cleaned, we recommend transforming it into a tidy format (wide format) if it's not already in that form. `generate_df()` will create for us both the wide Olink dataset as well as the joined with metadata dataset.
+Once the data is cleaned, we recommend transforming it into a tidy format (wide format) if it's not already in that form. `widen_data()` will create for us the wide Olink dataset.
 
 ```{r}
-dfs <- generate_df(clean_data, 
-                   clean_metadata, 
-                   metadata_cols = c("DAid", "Disease", "Sex", "Age"), 
-                   save = FALSE)
-
-wide_data <- dfs$wide_data
+wide_data <- widen_data(long_data)
 head(wide_data)
-
-join_data <- dfs$join_data
-head(join_data)
 ```
 
 > 📓 While HDAnalyzeR can work with long format data, most functions will transform it into a wide format, which can slightly slow down the pipeline. Thus, starting with tidy data is advisable.

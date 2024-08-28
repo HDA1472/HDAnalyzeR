@@ -81,19 +81,10 @@ long_data <- metadata |>
   select(-any_of(c("Disease", "Sex", "Age")))
 ```
 
-We will generate the wide data and the join data. The wide data will have assays as names, NPX as values and the rows will be the samples with a unique DAid. The join data will be the wide data with the extra metadata columns `DAid`, `Disease`, `Sex`, and `Age`.
+We will generate the wide data which will have assays as names, NPX as values and the rows will be the samples with a unique DAid.
 
 ```{r}
-dfs <- generate_df(long_data, 
-                   metadata, 
-                   metadata_cols = c("DAid", "Disease", "Sex", "Age"), 
-                   save = FALSE)
-
-wide_data <- dfs$wide_data
-join_data <- dfs$join_data
-
-wide_data
-join_data
+wide_data <- widen_data(long_data)
 ```
 
 Now, we will perform a quality control check on the data. `qc_summary_data()` will return the percentage of missing values for each column and row and plot their distributions, the protein-protein correlation and check if there are any highly correlated proteins (above the threshold of 0.9), as well as the normality of the different assays.
