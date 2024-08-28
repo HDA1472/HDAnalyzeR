@@ -1,3 +1,86 @@
+#' Summary of missing values
+#'
+#' `na_search()` provides a summary of missing values in a dataset. It allows the user to
+#' specify the metadata columns to include in the summary and the color palette to use for
+#' the heatmap annotations.
+#'
+#' @param olink_data The Olink dataset.
+#' @param metadata The metadata dataset.
+#' @param wide If TRUE, the data is in wide format.
+#' @param metadata_cols The metadata columns to include in the summary.
+#' @param palette The color palettes to use for the heatmap annotations (check examples bellow).
+#'
+#' @return A list containing the summary of missing values and a heatmap.
+#' @export
+#'
+#' @details When coloring annotations, the user can use custom palettes or the
+#' Human Protein Atlas (HPA) palettes. It is not required to provide a palette
+#' for all annotations, but when a palette is provided, it must be in correct
+#' format (check examples bellow).
+#'
+#' @examples
+#' # Use custom palettes for coloring annotations
+#' palette = list(Sex = c(M = "blue", F = "pink"))
+#' na_search(example_data,
+#'           example_metadata,
+#'           wide = FALSE,
+#'           metadata_cols = c("Disease", "Sex"),
+#'           palette = palette)
+#'
+#' # Use HPA palettes for coloring annotations
+#' palette = list(Disease = get_hpa_palettes()$cancers12, Sex = get_hpa_palettes()$sex_hpa)
+#' na_search(example_data,
+#'           example_metadata,
+#'           wide = FALSE,
+#'           metadata_cols = c("Disease", "Sex"),
+#'           palette = palette)
+na_search <- function(olink_data, metadata, wide = TRUE, metadata_cols = NULL, palette = NULL) {
+  # Prepare data
+  if (isFALSE(wide)) {
+    wide_data <- widen_data(olink_data)
+  } else {
+    wide_data <- olink_data
+  }
+
+  if (!all(metadata_cols %in% colnames(metadata))) {
+    message("Some category columns provided do not exist in the dataset.")
+  }
+
+  long_data <- wide_data |>
+    tidyr::pivot_longer(cols = -DAid, names_to = "Assay", values_to = "NPX", values_drop_na = FALSE)
+
+  join_data <- long_data |>
+    dplyr::select(DAid, Assay, NPX) |>
+    dplyr::left_join(metadata |> dplyr::select(dplyr::any_of(c(metadata_cols, "DAid"))), by = "DAid")
+
+  # Calculate NA percentages
+  na_data <- join_data |>
+    dplyr::group_by(dplyr::across(all_of(c(metadata_cols, "Assay")))) |>
+    dplyr::mutate(NA_percentage = mean(is.na(NPX)) * 100) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(Categories = paste(!!!rlang::syms(metadata_cols), sep = "_")) |>
+    dplyr::select(dplyr::any_of(c(metadata_cols, "Categories", "Assay", "NA_percentage"))) |>
+    unique()
+
+  # Create heatmap
+  graphics.off()
+  na_heatmap <- tidyheatmaps::tidyheatmap(na_data,
+                                          rows = Categories,
+                                          columns = Assay,
+                                          values = NA_percentage,
+                                          annotation_row = metadata_cols,
+                                          annotation_colors = palette,
+                                          cluster_rows = TRUE,
+                                          cluster_cols = TRUE,
+                                          show_selected_row_labels = c(""),
+                                          show_selected_col_labels = c(""),
+                                          treeheight_row = 20,
+                                          treeheight_col = 20,
+                                          silent = TRUE)
+
+  return(list("na_data" = na_data, "na_heatmap" = na_heatmap))
+}
+
 #' Impute via Median
 #'
 #' `impute_median()` imputes missing values in a dataset using the median of each column.
