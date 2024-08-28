@@ -80,7 +80,8 @@ the heatmap annotations.</p>
 <span>  metadata_cols <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  palette <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  x_labels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  y_labels <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  y_labels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  show_heatmap <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -115,6 +116,10 @@ the heatmap annotations.</p>
 <dt id="arg-y-labels">y_labels<a class="anchor" aria-label="anchor" href="#arg-y-labels"></a></dt>
 <dd><p>If TRUE, show y-axis labels.</p></dd>
 
+
+<dt id="arg-show-heatmap">show_heatmap<a class="anchor" aria-label="anchor" href="#arg-show-heatmap"></a></dt>
+<dd><p>If TRUE, show the heatmap.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -135,55 +140,21 @@ format (check examples bellow).</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Use custom palettes for coloring annotations</span></span></span>
 <span class="r-in"><span><span class="va">palette</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>M <span class="op">=</span> <span class="st">"blue"</span>, F <span class="op">=</span> <span class="st">"pink"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">na_search</span><span class="op">(</span><span class="va">example_data</span>,</span></span>
-<span class="r-in"><span>          <span class="va">example_metadata</span>,</span></span>
-<span class="r-in"><span>          wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>          metadata_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Age"</span>, <span class="st">"Sex"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>          palette <span class="op">=</span> <span class="va">palette</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $na_data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10,000 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Age Sex   Categories Assay  NA_percentage</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    42 F     42_F       AARSD1             0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    42 F     42_F       ABL1               0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    42 F     42_F       ACAA1              0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    42 F     42_F       ACAN               0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    42 F     42_F       ACE2               0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    42 F     42_F       ACOX1              0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    42 F     42_F       ACP5               0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    42 F     42_F       ACP6               0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    42 F     42_F       ACTA2              0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    42 F     42_F       ACTN4              0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9,990 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $na_heatmap</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">na_res</span> <span class="op">&lt;-</span> <span class="fu">na_search</span><span class="op">(</span><span class="va">example_data</span>,</span></span>
+<span class="r-in"><span>                    <span class="va">example_metadata</span>,</span></span>
+<span class="r-in"><span>                    wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                    metadata_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Age"</span>, <span class="st">"Sex"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                    palette <span class="op">=</span> <span class="va">palette</span>,</span></span>
+<span class="r-in"><span>                    show_heatmap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use HPA palettes for coloring annotations</span></span></span>
 <span class="r-in"><span><span class="va">palette</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Disease <span class="op">=</span> <span class="fu"><a href="get_hpa_palettes.html">get_hpa_palettes</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">cancers12</span>, Sex <span class="op">=</span> <span class="fu"><a href="get_hpa_palettes.html">get_hpa_palettes</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">sex_hpa</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">na_search</span><span class="op">(</span><span class="va">example_data</span>,</span></span>
-<span class="r-in"><span>          <span class="va">example_metadata</span>,</span></span>
-<span class="r-in"><span>          wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>          metadata_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Disease"</span>, <span class="st">"Sex"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>          palette <span class="op">=</span> <span class="va">palette</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $na_data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,900 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Disease Sex   Categories Assay  NA_percentage</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AML     F     AML_F      AARSD1         13.0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AML     F     AML_F      ABL1           13.0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AML     F     AML_F      ACAA1           4.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AML     F     AML_F      ACAN            4.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AML     F     AML_F      ACE2            4.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AML     F     AML_F      ACOX1           4.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AML     F     AML_F      ACP5            0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AML     F     AML_F      ACP6            4.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AML     F     AML_F      ACTA2           4.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AML     F     AML_F      ACTN4           4.35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,890 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $na_heatmap</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">na_res</span> <span class="op">&lt;-</span> <span class="fu">na_search</span><span class="op">(</span><span class="va">example_data</span>,</span></span>
+<span class="r-in"><span>                    <span class="va">example_metadata</span>,</span></span>
+<span class="r-in"><span>                    wide <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                    metadata_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Disease"</span>, <span class="st">"Sex"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                    palette <span class="op">=</span> <span class="va">palette</span>,</span></span>
+<span class="r-in"><span>                    show_heatmap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Pre-bin a continuous variable</span></span></span>
 <span class="r-in"><span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="va">example_metadata</span></span></span>
