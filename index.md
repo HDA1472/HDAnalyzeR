@@ -1,4 +1,4 @@
-# HDAnalyzeR <img src="man/figures/logo.png" align="right" height="200"/>
+# HDAnalyzeR <a href="https://hda1472.github.io/HDAnalyzeR"><img src="man/figures/logo.png" align="right" height="200" alt="HDAnalyzeR website" /></a>
 
 [![R-CMD-check](https://github.com/HDA1472/HDAnalyzeR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HDA1472/HDAnalyzeR/actions/workflows/R-CMD-check.yaml) [![Version](https://img.shields.io/badge/Version-1.0.0-blue)](https://github.com/HDA1472/HDAnalyzeR) [![License](https://img.shields.io/badge/license-Apache2.0-yellow)](https://github.com/HDA1472/HDAnalyzeR/blob/main/LICENSE.md)
 
