@@ -74,6 +74,7 @@ reference:
   contents:
   - plot_de_summary
   - plot_features_summary
+  - plot_biomarkers_summary_heatmap
   - plot_protein_boxplot
   - plot_scatter_with_regression
 - title: Post Analysis
