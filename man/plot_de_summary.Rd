@@ -11,7 +11,7 @@ plot_de_summary(
 )
 }
 \arguments{
-\item{de_results}{A list with the differential expression results.}
+\item{de_results}{A list of differential expression results.}
 
 \item{disease_palette}{The color palette for the disease. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
 

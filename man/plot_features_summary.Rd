@@ -13,7 +13,7 @@ plot_features_summary(
 )
 }
 \arguments{
-\item{ml_results}{Results from \code{do_rreg()} or \code{do_rf()}.}
+\item{ml_results}{A list of classification models results.}
 
 \item{importance}{Importance threshold for top features. Default is 50.}
 
