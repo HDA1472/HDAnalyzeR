@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 In this vignette, we will demonstrate how to use the `HDAnalyzeR` package to build classification models. We will start by loading HDAnalyzeR and dplyr packages, widen the example dataset and loading the metadata.
 
-```{r setup}
+```{r setup, include = FALSE}
 library(HDAnalyzeR)
 library(dplyr) 
 
@@ -24,10 +24,13 @@ wide_data <- widen_data(example_data)
 metadata <- example_metadata
 ```
 
-First, let's start with a regularized regression LASSO model via `do_rreg()`. Exactly like in the previous vignette with the differential expression functions, we have to state the case and control(s) groups.
+First, let's start with a regularized regression LASSO model via `do_rreg()`. Exactly like in the previous vignette with the differential expression functions, we have to state the case and control(s) groups. We will only present the metrics and the variable importance plots from the function output.
 
 ```{r}
-do_rreg(wide_data, metadata, case = "AML", control = c("CLL", "MYEL", "GLIOM"))
+res <- do_rreg(wide_data, metadata, case = "AML", control = c("CLL", "MYEL", "GLIOM"))
+res$testfit_res$metrics
+res$var_imp_res$var_imp_plot
+res$boxplot_res
 ```
 
 We can change several parameters in the `do_rreg()` function. For example, we can change the number of cross-validation folds, the number of grid points for the hyperparameter optimization, the number of cores to use, the feature correlation threshold, and even the type of regularized regression. For more information, please refer to the documentation.
@@ -85,12 +88,14 @@ res$boxplot_res
 ```
 We can also do multiclassification predictions with all available classes in the data via `do_rreg_multi()` and `do_rf_multi()`. The parameters are similar with the binary classification functions but in this case there are no `case` and `control` arguments.
 
-```{r}
+```{r, include = False}
 res <- do_rreg_multi(wide_data, 
                      metadata, 
                      type = "elnet",
                      palette = "cancers12")
+```
 
+```{r}
 res$auc
 res$auc_barplot
 res$roc_curve
@@ -99,7 +104,7 @@ res$var_imp_plot
 
 Finally, let's use the `plot_features_summary()` to summarize our model results. We can create models of different cases and controls and compare them like we did in the Get Started vignette. However, we can also compare different models. Let's run two different models for two different cases and summarize them.
 
-```{r}
+```{r, include = False}
 ridge_aml <- do_rreg(wide_data, 
                      metadata, 
                      case = "AML", 
@@ -117,12 +122,14 @@ ridge_gliom <- do_rreg(wide_data,
 rf_gliom <- do_rf(wide_data, metadata, case = "GLIOM", control = c("CLL", "MYEL", "AML"))
 ```
 
-```{r}
+```{r, include = False}
 res <- plot_features_summary(list("Ridge_AML" = ridge_aml, 
                                   "RF_AML" = rf_aml, 
                                   "Ridge_GLIOM" = ridge_gliom, 
                                   "RF_GLIOM" = rf_gliom))
+```
 
+```{r}
 res$features_barplot
 res$upset_plot_features
 res$metrics_lineplot

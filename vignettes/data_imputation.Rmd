@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 This vignette will guide you to the different imputation methods HDAnalyzeR offers. First of all, we will load the package, as well as dplyr, ggplot2 and patchwork for data manipulation and visualization. We will also load and widen the Olink example dataset.
 
-```{r setup}
+```{r setup, include = FALSE}
 library(HDAnalyzeR)
 library(dplyr)
 library(ggplot2)
