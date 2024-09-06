@@ -2094,7 +2094,7 @@ do_xgboost <- function(olink_data,
 #' top or all protein features, as well as a summary line plot of the model
 #' performance metrics.
 #'
-#' @param ml_results Results from `do_rreg()` or `do_rf()`.
+#' @param ml_results A list of classification models results.
 #' @param importance Importance threshold for top features. Default is 50.
 #' @param upset_top_features Whether to plot the upset plot for the top features. Default is FALSE.
 #' @param case_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.

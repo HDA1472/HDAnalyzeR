@@ -860,7 +860,7 @@ extract_protein_list <- function(upset_data, proteins) {
 #' It plots a barplot with the number of significant proteins for each disease.
 #' It also creates upset plots both for the significant up and down regulated proteins for each disease.
 #'
-#' @param de_results A list with the differential expression results.
+#' @param de_results A list of differential expression results.
 #' @param disease_palette The color palette for the disease. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
 #' @param diff_exp_palette The color palette for the differential expression. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
 #'
