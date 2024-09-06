@@ -88,7 +88,7 @@ res$boxplot_res
 ```
 We can also do multiclassification predictions with all available classes in the data via `do_rreg_multi()` and `do_rf_multi()`. The parameters are similar with the binary classification functions but in this case there are no `case` and `control` arguments.
 
-```{r, include = False}
+```{r, results='hide', include=FALSE}
 res <- do_rreg_multi(wide_data, 
                      metadata, 
                      type = "elnet",
@@ -99,7 +99,7 @@ res <- do_rreg_multi(wide_data,
 res$auc
 res$auc_barplot
 res$roc_curve
-res$var_imp_plot
+res$var_imp_res$var_imp_plot
 ```
 
 Finally, let's use the `plot_features_summary()` to summarize our model results. We can create models of different cases and controls and compare them like we did in the Get Started vignette. However, we can also compare different models. Let's run two different models for two different cases and summarize them.
@@ -122,7 +122,8 @@ ridge_gliom <- do_rreg(wide_data,
 rf_gliom <- do_rf(wide_data, metadata, case = "GLIOM", control = c("CLL", "MYEL", "AML"))
 ```
 
-```{r, include = False}
+```{r, results='hide', include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 res <- plot_features_summary(list("Ridge_AML" = ridge_aml, 
                                   "RF_AML" = rf_aml, 
                                   "Ridge_GLIOM" = ridge_gliom, 

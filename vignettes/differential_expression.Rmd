@@ -97,7 +97,7 @@ do_limma_continuous(wide_data,
 
 As a last step, we can summarize the results via `plot_de_summary()`. Let's first run a differential expression analysis for 4 different cases (1 vs 3).
 
-```{r, include = FALSE}
+```{r, results='hide', include=FALSE}
 res_aml <- do_limma(wide_data, metadata, case = "AML", control = c("CLL", "MYEL", "GLIOM"))
 
 res_cll <- do_limma(wide_data, metadata, case = "CLL", control = c("AML", "MYEL", "GLIOM"))
