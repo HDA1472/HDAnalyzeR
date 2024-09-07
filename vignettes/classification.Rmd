@@ -104,7 +104,7 @@ res$var_imp_res$var_imp_plot
 
 Finally, let's use the `plot_features_summary()` to summarize our model results. We can create models of different cases and controls and compare them like we did in the Get Started vignette. However, we can also compare different models. Let's run two different models for two different cases and summarize them.
 
-```{r, results='hide', include = False}
+```{r, results='hide', include=FALSE}
 ridge_aml <- do_rreg(wide_data, 
                      metadata, 
                      case = "AML", 
