@@ -104,7 +104,7 @@ res$var_imp_res$var_imp_plot
 
 Finally, let's use the `plot_features_summary()` to summarize our model results. We can create models of different cases and controls and compare them like we did in the Get Started vignette. However, we can also compare different models. Let's run two different models for two different cases and summarize them.
 
-```{r, include = False}
+```{r, results='hide', include = False}
 ridge_aml <- do_rreg(wide_data, 
                      metadata, 
                      case = "AML", 
@@ -123,7 +123,6 @@ rf_gliom <- do_rf(wide_data, metadata, case = "GLIOM", control = c("CLL", "MYEL"
 ```
 
 ```{r, results='hide', include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 res <- plot_features_summary(list("Ridge_AML" = ridge_aml, 
                                   "RF_AML" = rf_aml, 
                                   "Ridge_GLIOM" = ridge_gliom, 
