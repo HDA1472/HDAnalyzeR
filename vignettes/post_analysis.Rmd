@@ -40,7 +40,7 @@ plot_ora(ora_res, proteins)
 
 Let's change the database and the p-value threshold.
 
-```{r, include = False}
+```{r, include = FALSE}
 ora_res <- do_ora(proteins, "Reactome", pval = 0.2)
 plot_res <- plot_ora(ora_res, proteins, pval = 0.2, fontsize = 6)
 ```
@@ -52,7 +52,7 @@ plot_res$cnetplot
 
 We can also run a Gene Set Enrichment Analysis (GSEA) using the `do_gsea()` function. In this case, the function requires differential expression results. 
 
-```{r, include = False}
+```{r, include = FALSE}
 gsea_res <- do_gsea(de_res$de_results, "GO", pval_lim = 0.7)
 plot_res <- plot_gsea(gsea_res, de_res$de_results, pval_lim = 0.7, fontsize = 7)
 ```
