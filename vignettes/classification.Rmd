@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 In this vignette, we will demonstrate how to use the `HDAnalyzeR` package to build classification models. We will start by loading HDAnalyzeR and dplyr packages, widen the example dataset and loading the metadata.
 
-```{r setup, include = FALSE}
+```{r setup, results='hide'}
 library(HDAnalyzeR)
 library(dplyr) 
 
@@ -88,7 +88,7 @@ res$boxplot_res
 ```
 We can also do multiclassification predictions with all available classes in the data via `do_rreg_multi()` and `do_rf_multi()`. The parameters are similar with the binary classification functions but in this case there are no `case` and `control` arguments.
 
-```{r, results='hide', include=FALSE}
+```{r, results='hide'}
 res <- do_rreg_multi(wide_data, 
                      metadata, 
                      type = "elnet",
@@ -104,7 +104,7 @@ res$var_imp_res$var_imp_plot
 
 Finally, let's use the `plot_features_summary()` to summarize our model results. We can create models of different cases and controls and compare them like we did in the Get Started vignette. However, we can also compare different models. Let's run two different models for two different cases and summarize them.
 
-```{r, results='hide', include=FALSE}
+```{r, results='hide'}
 ridge_aml <- do_rreg(wide_data, 
                      metadata, 
                      case = "AML", 
@@ -122,7 +122,7 @@ ridge_gliom <- do_rreg(wide_data,
 rf_gliom <- do_rf(wide_data, metadata, case = "GLIOM", control = c("CLL", "MYEL", "AML"))
 ```
 
-```{r, results='hide', include=FALSE}
+```{r, results='hide'}
 res <- plot_features_summary(list("Ridge_AML" = ridge_aml, 
                                   "RF_AML" = rf_aml, 
                                   "Ridge_GLIOM" = ridge_gliom, 

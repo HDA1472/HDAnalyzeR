@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 This vignette will guide you through the initial steps of data preprocessing. Except from HDAnalyzeR We will import dplyr in order to perform some basic data manipulation.
 
-```{r setup, include = FALSE}
+```{r setup, results='hide'}
 library(HDAnalyzeR)
 library(dplyr)
 ```
