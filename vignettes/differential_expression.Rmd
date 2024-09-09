@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 This vignette will guide you through the differential expression analysis of your data. We will load HDAnalyzeR and ggplot2, widen the data and load the metadata we are going to use. 
 
-```{r setup}
+```{r setup, results = 'hide', message = FALSE, warning = FALSE}
 library(HDAnalyzeR)
 library(ggplot2)
 
@@ -97,7 +97,7 @@ do_limma_continuous(wide_data,
 
 As a last step, we can summarize the results via `plot_de_summary()`. Let's first run a differential expression analysis for 4 different cases (1 vs 3).
 
-```{r}
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 res_aml <- do_limma(wide_data, metadata, case = "AML", control = c("CLL", "MYEL", "GLIOM"))
 
 res_cll <- do_limma(wide_data, metadata, case = "CLL", control = c("AML", "MYEL", "GLIOM"))
@@ -106,6 +106,12 @@ res_myel <- do_limma(wide_data, metadata, case = "MYEL", control = c("AML", "CLL
 
 res_gliom <- do_limma(wide_data, metadata, case = "GLIOM", control = c("AML", "CLL", "MYEL"))
 
-plot_de_summary(list("AML" = res_aml, "CLL" = res_cll, "MYEL" = res_myel, "GLIOM" = res_gliom),
-                disease_palette = "cancers12")
+de_summary_res <- plot_de_summary(list("AML" = res_aml, "CLL" = res_cll, "MYEL" = res_myel, "GLIOM" = res_gliom),
+                                  disease_palette = "cancers12")
+```
+
+```{r}
+de_summary_res$de_barplot
+de_summary_res$upset_plot_up
+de_summary_res$upset_plot_down
 ```
