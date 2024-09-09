@@ -307,8 +307,7 @@ plot_gsea <- function(enrichment,
                                         cex.params = list(category_label = (fontsize + 2)/12,
                                                           gene_label = (fontsize)/12))
 
-  return(list("enrichment" = enrichment,
-              "dotplot" = dotplot,
+  return(list("dotplot" = dotplot,
               "cnetplot" = cnetplot,
               "ridgeplot" = ridgeplot,
               "gseaplot" = gseaplot))
