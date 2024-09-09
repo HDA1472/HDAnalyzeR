@@ -2099,6 +2099,7 @@ do_xgboost <- function(olink_data,
 #' @param upset_top_features Whether to plot the upset plot for the top features. Default is FALSE.
 #' @param case_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
 #' @param feature_type_palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "all-features" = "pink" and "top-features" = "darkblue".
+#' @param verbose If the function should print the different sets of features for each disease. Default is TRUE.
 #'
 #' @return A list with two elements:
 #'   - features_barplot: Barplot of the number of proteins and top proteins for each disease.
@@ -2155,7 +2156,8 @@ plot_features_summary <- function(ml_results,
                                   upset_top_features = FALSE,
                                   case_palette = NULL,
                                   feature_type_palette = c("all-features" = "pink",
-                                                           "top-features" = "darkblue")) {
+                                                           "top-features" = "darkblue"),
+                                  verbose = TRUE) {
 
   barplot_data <- lapply(names(ml_results), function(case) {
 
@@ -2258,12 +2260,15 @@ plot_features_summary <- function(ml_results,
   upset <- UpSetR::fromList(upset_features)
   features <- extract_protein_list(upset, upset_features)
 
-  print(features$proteins_list)
+  if (verbose) {
+    print(features$proteins_list)
+  }
 
   upset_plot_features <- UpSetR::upset(upset,
-                                 order.by = "freq",
-                                 nsets = length(names(ml_results)),
-                                 sets.bar.color = ordered_colors)
+                                       sets = ordered_feature_names,
+                                       order.by = "freq",
+                                       nsets = length(ordered_feature_names),
+                                       sets.bar.color = ordered_colors)
 
   return(list("features_barplot" = features_barplot,
               "upset_plot_features" = upset_plot_features,
