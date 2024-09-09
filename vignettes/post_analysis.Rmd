@@ -18,7 +18,7 @@ This vignette will guide you through the post analysis of the results obtained f
 
 Let's start by loading the packages, widen the example dataset, load the metadata, and run some differential expression analysis to get the results for the post analysis. For the Over Representation Analysis we could also use the features list from the classification models or even run both and get the intersect as it is done in the Get Started guide.
 
-```{r setup}
+```{r setup, results = 'hide', message = FALSE, warning = FALSE}
 library(HDAnalyzeR)
 library(dplyr)
 library(utils)
@@ -40,14 +40,14 @@ plot_ora(ora_res, proteins)
 
 Let's change the database and the p-value threshold.
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 ora_res <- do_ora(proteins, "Reactome", pval = 0.2)
 plot_ora(ora_res, proteins, pval = 0.2, fontsize = 6)
 ```
 
 We can also run a Gene Set Enrichment Analysis (GSEA) using the `do_gsea()` function. In this case, the function requires differential expression results. 
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 gsea_res <- do_gsea(de_res$de_results, "GO", pval_lim = 0.7)
 plot_gsea(gsea_res, de_res$de_results, pval_lim = 0.7, fontsize = 7)
 ```
