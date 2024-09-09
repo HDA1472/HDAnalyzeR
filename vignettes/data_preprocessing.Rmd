@@ -14,9 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette will guide you through the initial steps of data preprocessing. Except from HDAnalyzeR We will import dplyr in order to perform some basic data manipulation.
+This vignette will guide you through the initial steps of data preprocessing. Except from HDAnalyzeR we will import dplyr in order to perform some basic data manipulation.
 
-```{r setup}
+```{r setup, results = 'hide', message = FALSE, warning = FALSE}
 library(HDAnalyzeR)
 library(dplyr)
 ```
@@ -26,8 +26,8 @@ library(dplyr)
 Let's start with loading the example data and metadata that come with the package.
 
 ```{r}
-example_data
-example_metadata
+head(example_data)
+head(example_metadata)
 ```
 
 We will check the structure of the data, as well as the unique values of the columns `Assay_Warning` and `PlateID`.
@@ -58,7 +58,7 @@ long_data <- clean_data(example_data,
                         filter_assay_warning = TRUE,
                         filter_plates = "Run004")
 
-long_data
+head(long_data)
 ```
 We will do the same for the metadata, keeping only the columns `DAid`, `Disease`, `Sex`, and `Age`, and keeping only the `UCAN` cohort.
 
@@ -70,7 +70,8 @@ unique(example_metadata$Cohort)
 
 ```{r}
 metadata <- clean_metadata(example_metadata, c("DAid", "Disease", "Sex", "Age"), cohort = "UCAN")
-metadata
+
+head(metadata)
 ```
 
 > 💡 Don't forget to match your data with the metadata!
