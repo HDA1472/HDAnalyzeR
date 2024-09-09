@@ -121,23 +121,19 @@ do_umap(imputed_data,
         impute = FALSE)
 ```
 
-We will perform another QC check to ensure that everything is as expected after cleaning and imputing the data.
+We will perform another QC check to ensure that everything is as expected after cleaning and imputing the data. We will not showcase the output again for brevity.
 
-```{r}
-qc_data <- qc_summary_data(imputed_data, wide = TRUE, threshold = 0.7)
-```
+```{r, results = 'hide', message = FALSE, warning = FALSE}
+qc_data <- qc_summary_data(imputed_data, wide = TRUE, threshold = 0.7, report = FALSE)
 
-```{r}
-qc_metadata <- qc_summary_metadata(clean_metadata, disease_palette = "cancers12")
-qc_metadata$barplot_Sex
-qc_metadata$distplot_Age
+qc_metadata <- qc_summary_metadata(clean_metadata, disease_palette = "cancers12", report = FALSE)
 ```
 
 ## Biomarker Identification
 
 ### Differential Expression Analysis
 
-We will run a differential expression analysis to identify potential biomarkers. We will use `do_limma()` so that we will be able to correct also for Age. This method will help us pinpoint proteins that are significantly different between conditions. We will present only the results for AML (Acute Myeloid Leukemia), BRC (Breast Cancer), and PRC (Prostate Cancer).
+We will run a differential expression analysis to identify potential biomarkers. We will use `do_limma()` so that we will be able to correct also for Age. This method will help us pinpoint proteins that are significantly different between conditions. We will present only the results for AML (Acute Myeloid Leukemia).
 
 ```{r}
 de_res_aml <- do_limma(imputed_data, 
@@ -154,7 +150,7 @@ de_res_aml$de_results
 de_res_aml$volcano_plot
 ```
 
-```{r}
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 de_res_brc <- do_limma(imputed_data, 
                        clean_metadata,
                        case = "BRC",
@@ -163,13 +159,9 @@ de_res_brc <- do_limma(imputed_data,
                        correct_type = c("factor", "numeric"),
                        only_female = "BRC",
                        only_male = "PRC")
-
-de_res_brc$de_results
-
-de_res_brc$volcano_plot
 ```
 
-```{r}
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 de_res_prc <- do_limma(imputed_data, 
                        clean_metadata,
                        case = "PRC",
@@ -178,31 +170,27 @@ de_res_prc <- do_limma(imputed_data,
                        correct_type = c("factor", "numeric"),
                        only_female = "BRC",
                        only_male = "PRC")
-
-de_res_prc$de_results
-
-de_res_prc$volcano_plot
 ```
 
 We can also summarize the results via `plot_de_summary()`.  In order to use this function we need to store the results in a list.
 
-```{r}
+```{r, results = 'hide'}
 de_res <- list("AML" = de_res_aml, 
                "BRC" = de_res_brc, 
                "PRC" = de_res_prc)
 
 de_summary <- plot_de_summary(de_res, disease_palette = "cancers12")
+```
 
+```{r}
 de_summary$de_barplot
-de_summary$proteins_df_up
 de_summary$upset_plot_up
-de_summary$proteins_df_down
 de_summary$upset_plot_down
 ```
 
 ### Lasso Machine Learning Classification Model
 
-In addition to differential expression analysis, we will use a Lasso machine learning classification model to identify significant features. This model will help us understand which proteins are most predictive of the conditions being studied. Once again, we will present only the results for AML, BRC and, PRC.
+In addition to differential expression analysis, we will use a Lasso machine learning classification model to identify significant features. This model will help us understand which proteins are most predictive of the conditions being studied. Once again, we will present only the results for AML.
 
 ```{r}
 lasso_res_aml <- do_rreg(imputed_data, 
@@ -234,7 +222,7 @@ lasso_res_aml$var_imp_res$var_imp_plot
 lasso_res_aml$boxplot_res
 ```
 
-```{r}
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 lasso_res_brc <- do_rreg(imputed_data, 
                          clean_metadata, 
                          case = "BRC",
@@ -252,19 +240,9 @@ lasso_res_brc <- do_rreg(imputed_data,
                                       "top-features"),
                          nfeatures = 12,
                          points = FALSE)
-
-lasso_res_brc$hypopt_res$hypopt_vis
-
-lasso_res_brc$testfit_res$metrics
-
-lasso_res_brc$var_imp_res$features
-
-lasso_res_brc$var_imp_res$var_imp_plot
-
-lasso_res_brc$boxplot_res
 ```
 
-```{r}
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 lasso_res_prc <- do_rreg(imputed_data, 
                          clean_metadata, 
                          case = "PRC",
@@ -282,30 +260,21 @@ lasso_res_prc <- do_rreg(imputed_data,
                                       "top-features"),
                          nfeatures = 12,
                          points = FALSE)
-
-lasso_res_prc$hypopt_res$hypopt_vis
-
-lasso_res_prc$testfit_res$metrics
-
-lasso_res_prc$var_imp_res$features
-
-lasso_res_prc$var_imp_res$var_imp_plot
-
-lasso_res_prc$boxplot_res
 ```
 
 We can get a visual summary of the results via `plot_features_summary()` too. In order to use this function we need to store the results in a list.
 
-```{r}
+```{r, results = 'hide'}
 lasso_res <- list("AML" = lasso_res_aml, 
                   "BRC" = lasso_res_brc, 
                   "PRC" = lasso_res_prc)
 
 features_summary <- plot_features_summary(lasso_res, case_palette = "cancers12")
+```
 
+```{r}
 features_summary$metrics_lineplot
 features_summary$features_barplot
-features_summary$features_df
 features_summary$upset_plot_features
 ```
 
