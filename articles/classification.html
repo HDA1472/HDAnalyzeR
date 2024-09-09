@@ -104,14 +104,6 @@ dataset and loading the metadata.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hda1472.github.io/HDAnalyzeR">HDAnalyzeR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span> </span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter, lag</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
 <span></span>
 <span><span class="va">wide_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/widen_data.html">widen_data</a></span><span class="op">(</span><span class="va">example_data</span><span class="op">)</span></span>
 <span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="va">example_metadata</span></span></code></pre></div>
@@ -120,251 +112,37 @@ dataset and loading the metadata.</p>
 differential expression functions, we have to state the case and
 control(s) groups.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/do_rreg.html">do_rreg</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, case <span class="op">=</span> <span class="st">"AML"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span>, <span class="st">"GLIOM"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
-<span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
-<span><span class="co">#&gt; Classification model for AML as case is starting...</span></span>
-<span><span class="co">#&gt; $hypopt_res</span></span>
-<span><span class="co">#&gt; $hypopt_res$elnet_tune</span></span>
-<span><span class="co">#&gt; # Tuning results</span></span>
-<span><span class="co">#&gt; # 5-fold cross-validation using stratification </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 5</span></span></span>
-<span><span class="co">#&gt;   splits          id    .metrics          .notes           .predictions      </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [60/16]&gt;</span> Fold1 <span style="color: #949494;">&lt;tibble [10 × 5]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [160 × 6]&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;split [60/16]&gt;</span> Fold2 <span style="color: #949494;">&lt;tibble [10 × 5]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [160 × 6]&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;split [61/15]&gt;</span> Fold3 <span style="color: #949494;">&lt;tibble [10 × 5]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [150 × 6]&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">&lt;split [61/15]&gt;</span> Fold4 <span style="color: #949494;">&lt;tibble [10 × 5]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [150 × 6]&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> <span style="color: #949494;">&lt;split [62/14]&gt;</span> Fold5 <span style="color: #949494;">&lt;tibble [10 × 5]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [140 × 6]&gt;</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $hypopt_res$elnet_wf</span></span>
-<span><span class="co">#&gt; ══ Workflow ════════════════════════════════════════════════════════════════════</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Preprocessor:</span> Recipe</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Model:</span> logistic_reg()</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Preprocessor ────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; 4 Recipe Steps</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • step_normalize()</span></span>
-<span><span class="co">#&gt; • step_nzv()</span></span>
-<span><span class="co">#&gt; • step_corr()</span></span>
-<span><span class="co">#&gt; • step_impute_knn()</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Model ───────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; Logistic Regression Model Specification (classification)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Main Arguments:</span></span>
-<span><span class="co">#&gt;   penalty = tune::tune()</span></span>
-<span><span class="co">#&gt;   mixture = 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Computational engine: glmnet </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $hypopt_res$train_set</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 76 × 102</span></span></span>
-<span><span class="co">#&gt;    DAid    AARSD1   ABL1  ACAA1   ACAN    ACE2  ACOX1    ACP5    ACP6  ACTA2</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> DA00003  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>      0.989 <span style="color: #BB0000;">NA</span>       0.330  1.37   <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> DA00004   3.41  3.38   1.69  <span style="color: #BB0000;">NA</span>      1.52   <span style="color: #BB0000;">NA</span>      0.841   0.582   1.70 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> DA00005   5.01  5.05   0.128  0.401 -<span style="color: #BB0000;">0.933</span>  -<span style="color: #BB0000;">0.584</span>  0.026<span style="text-decoration: underline;">5</span>  1.16    2.73 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> DA00007  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      3.96   0.682  3.14    2.62   1.47    2.25    2.01 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> DA00008   2.78  0.812 -<span style="color: #BB0000;">0.552</span>  0.982 -<span style="color: #BB0000;">0.101</span>  -<span style="color: #BB0000;">0.304</span>  0.376  -<span style="color: #BB0000;">0.826</span>   1.52 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> DA00009   4.39  3.34  -<span style="color: #BB0000;">0.452</span> -<span style="color: #BB0000;">0.868</span>  0.395   1.71   1.49   -<span style="color: #BB0000;">0.028</span><span style="color: #BB0000; text-decoration: underline;">5</span>  0.200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> DA00010   1.83  1.21  -<span style="color: #BB0000;">0.912</span> -<span style="color: #BB0000;">1.04</span>  -<span style="color: #BB0000;">0.091</span><span style="color: #BB0000; text-decoration: underline;">8</span> -<span style="color: #BB0000;">0.304</span>  1.69    0.092<span style="text-decoration: underline;">0</span>  2.04 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> DA00011   3.48  4.96   3.50  -<span style="color: #BB0000;">0.338</span>  4.48    1.26   2.18    1.62    1.79 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> DA00012   4.31  0.710 -<span style="color: #BB0000;">1.44</span>  -<span style="color: #BB0000;">0.218</span> -<span style="color: #BB0000;">0.469</span>  -<span style="color: #BB0000;">0.361</span> -<span style="color: #BB0000;">0.071</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">1.30</span>    2.86 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> DA00013   1.31  2.52   1.11   0.997  4.56   -<span style="color: #BB0000;">1.35</span>   0.833   2.33    3.57 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 66 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 92 more variables: ACTN4 &lt;dbl&gt;, ACY1 &lt;dbl&gt;, ADA &lt;dbl&gt;, ADA2 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ADAM15 &lt;dbl&gt;, ADAM23 &lt;dbl&gt;, ADAM8 &lt;dbl&gt;, ADAMTS13 &lt;dbl&gt;, ADAMTS15 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ADAMTS16 &lt;dbl&gt;, ADAMTS8 &lt;dbl&gt;, ADCYAP1R1 &lt;dbl&gt;, ADGRE2 &lt;dbl&gt;, ADGRE5 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ADGRG1 &lt;dbl&gt;, ADGRG2 &lt;dbl&gt;, ADH4 &lt;dbl&gt;, ADM &lt;dbl&gt;, AGER &lt;dbl&gt;, AGR2 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   AGR3 &lt;dbl&gt;, AGRN &lt;dbl&gt;, AGRP &lt;dbl&gt;, AGXT &lt;dbl&gt;, AHCY &lt;dbl&gt;, AHSP &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   AIF1 &lt;dbl&gt;, AIFM1 &lt;dbl&gt;, AK1 &lt;dbl&gt;, AKR1B1 &lt;dbl&gt;, AKR1C4 &lt;dbl&gt;, …</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $hypopt_res$test_set</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 28 × 102</span></span></span>
-<span><span class="co">#&gt;    DAid    AARSD1       ABL1  ACAA1    ACAN  ACE2   ACOX1   ACP5  ACP6 ACTA2</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> DA00001   3.39  2.76       1.71   0.033<span style="text-decoration: underline;">3</span> 1.76  -<span style="color: #BB0000;">0.919</span>   1.54  2.15  2.81 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> DA00002   1.42  1.25      -<span style="color: #BB0000;">0.816</span> -<span style="color: #BB0000;">0.459</span>  0.826 -<span style="color: #BB0000;">0.902</span>   0.647 1.30  0.798</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> DA00006   6.83  1.18      -<span style="color: #BB0000;">1.74</span>  -<span style="color: #BB0000;">0.156</span>  1.53  -<span style="color: #BB0000;">0.721</span>   0.620 0.527 0.772</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> DA00016   1.79  1.36       0.106 -<span style="color: #BB0000;">0.372</span>  3.40  -<span style="color: #BB0000;">1.19</span>    1.77  1.07  2.00 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> DA00022   7.07  5.67       3.68  -<span style="color: #BB0000;">0.458</span>  3.09   0.690   0.649 2.17  1.83 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> DA00023   2.92 -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">070</span><span style="color: #BB0000;">6</span>  0.602  1.59   0.198  1.61    0.283 2.35  2.11 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> DA00034   3.45  2.91       1.31   0.423  0.647  1.40    0.691 0.720 1.95 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> DA00035   4.39  3.31       0.454  0.290  2.68   0.116  -<span style="color: #BB0000;">1.32</span>  0.945 2.14 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> DA00038   2.23  1.42       0.484  1.72   1.46   0.074<span style="text-decoration: underline;">7</span>  1.82  0.109 4.27 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> DA00039   4.26  0.572     -<span style="color: #BB0000;">1.97</span>  -<span style="color: #BB0000;">0.433</span>  0.208  0.790  -<span style="color: #BB0000;">0.236</span> 1.52  0.652</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 18 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 92 more variables: ACTN4 &lt;dbl&gt;, ACY1 &lt;dbl&gt;, ADA &lt;dbl&gt;, ADA2 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ADAM15 &lt;dbl&gt;, ADAM23 &lt;dbl&gt;, ADAM8 &lt;dbl&gt;, ADAMTS13 &lt;dbl&gt;, ADAMTS15 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ADAMTS16 &lt;dbl&gt;, ADAMTS8 &lt;dbl&gt;, ADCYAP1R1 &lt;dbl&gt;, ADGRE2 &lt;dbl&gt;, ADGRE5 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ADGRG1 &lt;dbl&gt;, ADGRG2 &lt;dbl&gt;, ADH4 &lt;dbl&gt;, ADM &lt;dbl&gt;, AGER &lt;dbl&gt;, AGR2 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   AGR3 &lt;dbl&gt;, AGRN &lt;dbl&gt;, AGRP &lt;dbl&gt;, AGXT &lt;dbl&gt;, AHCY &lt;dbl&gt;, AHSP &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   AIF1 &lt;dbl&gt;, AIFM1 &lt;dbl&gt;, AK1 &lt;dbl&gt;, AKR1B1 &lt;dbl&gt;, AKR1C4 &lt;dbl&gt;, …</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $hypopt_res$hypopt_vis</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_rreg.html">do_rreg</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, case <span class="op">=</span> <span class="st">"AML"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span>, <span class="st">"GLIOM"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">hypopt_res</span><span class="op">$</span><span class="va">hypopt_vis</span></span></code></pre></div>
 <p><img src="classification_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
-<pre><code><span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $finalfit_res</span></span>
-<span><span class="co">#&gt; $finalfit_res$final</span></span>
-<span><span class="co">#&gt; ══ Workflow [trained] ══════════════════════════════════════════════════════════</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Preprocessor:</span> Recipe</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Model:</span> logistic_reg()</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Preprocessor ────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; 4 Recipe Steps</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • step_normalize()</span></span>
-<span><span class="co">#&gt; • step_nzv()</span></span>
-<span><span class="co">#&gt; • step_corr()</span></span>
-<span><span class="co">#&gt; • step_impute_knn()</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Model ───────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Call:  glmnet::glmnet(x = maybe_matrix(x), y = y, family = "binomial",      alpha = ~1) </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     Df  %Dev   Lambda</span></span>
-<span><span class="co">#&gt; 1    0  0.00 0.266800</span></span>
-<span><span class="co">#&gt; 2    1  1.83 0.254700</span></span>
-<span><span class="co">#&gt; 3    1  3.50 0.243100</span></span>
-<span><span class="co">#&gt; 4    1  5.02 0.232000</span></span>
-<span><span class="co">#&gt; 5    1  6.43 0.221500</span></span>
-<span><span class="co">#&gt; 6    1  7.72 0.211400</span></span>
-<span><span class="co">#&gt; 7    3  9.52 0.201800</span></span>
-<span><span class="co">#&gt; 8    3 11.49 0.192600</span></span>
-<span><span class="co">#&gt; 9    3 13.31 0.183900</span></span>
-<span><span class="co">#&gt; 10   3 15.00 0.175500</span></span>
-<span><span class="co">#&gt; 11   4 16.57 0.167500</span></span>
-<span><span class="co">#&gt; 12   5 18.61 0.159900</span></span>
-<span><span class="co">#&gt; 13   6 20.71 0.152700</span></span>
-<span><span class="co">#&gt; 14   7 22.79 0.145700</span></span>
-<span><span class="co">#&gt; 15   7 24.95 0.139100</span></span>
-<span><span class="co">#&gt; 16   7 26.98 0.132800</span></span>
-<span><span class="co">#&gt; 17   8 29.02 0.126700</span></span>
-<span><span class="co">#&gt; 18   8 31.10 0.121000</span></span>
-<span><span class="co">#&gt; 19   8 33.05 0.115500</span></span>
-<span><span class="co">#&gt; 20   9 34.96 0.110200</span></span>
-<span><span class="co">#&gt; 21   9 37.02 0.105200</span></span>
-<span><span class="co">#&gt; 22   9 38.97 0.100400</span></span>
-<span><span class="co">#&gt; 23  11 40.83 0.095880</span></span>
-<span><span class="co">#&gt; 24  11 42.63 0.091520</span></span>
-<span><span class="co">#&gt; 25  12 44.57 0.087360</span></span>
-<span><span class="co">#&gt; 26  12 46.54 0.083390</span></span>
-<span><span class="co">#&gt; 27  13 48.46 0.079600</span></span>
-<span><span class="co">#&gt; 28  13 50.34 0.075980</span></span>
-<span><span class="co">#&gt; 29  15 52.15 0.072530</span></span>
-<span><span class="co">#&gt; 30  15 53.92 0.069230</span></span>
-<span><span class="co">#&gt; 31  16 55.68 0.066080</span></span>
-<span><span class="co">#&gt; 32  16 57.41 0.063080</span></span>
-<span><span class="co">#&gt; 33  17 59.08 0.060210</span></span>
-<span><span class="co">#&gt; 34  17 60.68 0.057480</span></span>
-<span><span class="co">#&gt; 35  17 62.19 0.054860</span></span>
-<span><span class="co">#&gt; 36  18 63.63 0.052370</span></span>
-<span><span class="co">#&gt; 37  18 65.02 0.049990</span></span>
-<span><span class="co">#&gt; 38  18 66.35 0.047720</span></span>
-<span><span class="co">#&gt; 39  19 67.63 0.045550</span></span>
-<span><span class="co">#&gt; 40  19 68.88 0.043480</span></span>
-<span><span class="co">#&gt; 41  19 70.07 0.041500</span></span>
-<span><span class="co">#&gt; 42  19 71.20 0.039620</span></span>
-<span><span class="co">#&gt; 43  19 72.29 0.037820</span></span>
-<span><span class="co">#&gt; 44  19 73.34 0.036100</span></span>
-<span><span class="co">#&gt; 45  19 74.34 0.034460</span></span>
-<span><span class="co">#&gt; 46  20 75.33 0.032890</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ...</span></span>
-<span><span class="co">#&gt; and 54 more lines.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $finalfit_res$best</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 1</span></span></span>
-<span><span class="co">#&gt;   penalty</span></span>
-<span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  0.014<span style="text-decoration: underline;">6</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $finalfit_res$final_wf</span></span>
-<span><span class="co">#&gt; ══ Workflow ════════════════════════════════════════════════════════════════════</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Preprocessor:</span> Recipe</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Model:</span> logistic_reg()</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Preprocessor ────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; 4 Recipe Steps</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • step_normalize()</span></span>
-<span><span class="co">#&gt; • step_nzv()</span></span>
-<span><span class="co">#&gt; • step_corr()</span></span>
-<span><span class="co">#&gt; • step_impute_knn()</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Model ───────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; Logistic Regression Model Specification (classification)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Main Arguments:</span></span>
-<span><span class="co">#&gt;   penalty = 0.0145719990351355</span></span>
-<span><span class="co">#&gt;   mixture = 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Computational engine: glmnet </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $testfit_res</span></span>
-<span><span class="co">#&gt; $testfit_res$metrics</span></span>
-<span><span class="co">#&gt; $testfit_res$metrics$accuracy</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">testfit_res</span><span class="op">$</span><span class="va">metrics</span></span>
+<span><span class="co">#&gt; $accuracy</span></span>
 <span><span class="co">#&gt; [1] 0.68</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $testfit_res$metrics$sensitivity</span></span>
+<span><span class="co">#&gt; $sensitivity</span></span>
 <span><span class="co">#&gt; [1] 0.73</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $testfit_res$metrics$specificity</span></span>
+<span><span class="co">#&gt; $specificity</span></span>
 <span><span class="co">#&gt; [1] 0.62</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $testfit_res$metrics$auc</span></span>
+<span><span class="co">#&gt; $auc</span></span>
 <span><span class="co">#&gt; [1] 0.67</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $testfit_res$metrics$conf_matrix</span></span>
+<span><span class="co">#&gt; $conf_matrix</span></span>
 <span><span class="co">#&gt;           Truth</span></span>
 <span><span class="co">#&gt; Prediction  0  1</span></span>
 <span><span class="co">#&gt;          0 11  5</span></span>
 <span><span class="co">#&gt;          1  4  8</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $testfit_res$metrics$roc_curve</span></span></code></pre>
+<span><span class="co">#&gt; $roc_curve</span></span></code></pre></div>
 <p><img src="classification_files/figure-html/unnamed-chunk-2-2.png" width="700"></p>
-<pre><code><span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $testfit_res$mixture</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $var_imp_res</span></span>
-<span><span class="co">#&gt; $var_imp_res$features</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 33 × 4</span></span></span>
-<span><span class="co">#&gt;    Variable Importance Sign  Scaled_Importance</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ANGPTL2       2.87  POS               100  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> ADA           1.49  POS                52.0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AMIGO2        1.26  NEG                43.9</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> ACP6          1.22  NEG                42.7</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ACAN          1.11  NEG                38.7</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ARSB          1.10  POS                38.3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ADGRG1        0.930 POS                32.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AK1           0.879 NEG                30.7</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ANXA11        0.785 NEG                27.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ACY1          0.781 NEG                27.2</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 23 more rows</span></span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $var_imp_res$var_imp_plot</span></span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">var_imp_plot</span></span></code></pre></div>
 <p><img src="classification_files/figure-html/unnamed-chunk-2-3.png" width="700"></p>
-<pre><code><span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $boxplot_res</span></span>
-<span><span class="co">#&gt; Warning: Removed 72 rows containing non-finite outside the scale range</span></span>
-<span><span class="co">#&gt; (`stat_boxplot()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 20 rows containing non-finite outside the scale range</span></span>
-<span><span class="co">#&gt; (`stat_boxplot()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 52 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_point()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 20 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">boxplot_res</span></span></code></pre></div>
 <p><img src="classification_files/figure-html/unnamed-chunk-2-4.png" width="700"></p>
 <p>We can change several parameters in the <code><a href="../reference/do_rreg.html">do_rreg()</a></code>
 function. For example, we can change the number of cross-validation
@@ -383,9 +161,6 @@ to the documentation.</p>
 <span>               cor_threshold <span class="op">=</span> <span class="fl">0.7</span>, </span>
 <span>               type <span class="op">=</span> <span class="st">"elnet"</span>,</span>
 <span>               palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
-<span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
-<span><span class="co">#&gt; Classification model for AML as case is starting...</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">testfit_res</span><span class="op">$</span><span class="va">metrics</span></span>
 <span><span class="co">#&gt; $accuracy</span></span>
@@ -412,15 +187,7 @@ to the documentation.</p>
 <code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">var_imp_plot</span></span></code></pre></div>
 <p><img src="classification_files/figure-html/unnamed-chunk-3-2.png" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">boxplot_res</span></span>
-<span><span class="co">#&gt; Warning: Removed 71 rows containing non-finite outside the scale range</span></span>
-<span><span class="co">#&gt; (`stat_boxplot()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 21 rows containing non-finite outside the scale range</span></span>
-<span><span class="co">#&gt; (`stat_boxplot()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 50 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_point()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 21 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">boxplot_res</span></span></code></pre></div>
 <p><img src="classification_files/figure-html/unnamed-chunk-3-3.png" width="700"></p>
 <p>We can use a different variable to classify like <code>Sex</code> and
 even a different algorithm like random forest via <code><a href="../reference/do_rf.html">do_rf()</a></code>.
@@ -436,9 +203,6 @@ exclude the <code>Disease</code> column instead of default
 <span>             exclude_cols <span class="op">=</span> <span class="st">"Disease"</span>, </span>
 <span>             palette <span class="op">=</span> <span class="st">"sex_hpa"</span>,</span>
 <span>             points <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
-<span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
-<span><span class="co">#&gt; Classification model for F as case is starting...</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">testfit_res</span><span class="op">$</span><span class="va">metrics</span></span>
 <span><span class="co">#&gt; $accuracy</span></span>
@@ -465,11 +229,7 @@ exclude the <code>Disease</code> column instead of default
 <code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">var_imp_plot</span></span></code></pre></div>
 <p><img src="classification_files/figure-html/unnamed-chunk-4-2.png" width="700"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">boxplot_res</span></span>
-<span><span class="co">#&gt; Warning: Removed 275 rows containing non-finite outside the scale range</span></span>
-<span><span class="co">#&gt; (`stat_boxplot()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 175 rows containing non-finite outside the scale range</span></span>
-<span><span class="co">#&gt; (`stat_boxplot()`).</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">boxplot_res</span></span></code></pre></div>
 <p><img src="classification_files/figure-html/unnamed-chunk-4-3.png" width="700"></p>
 <p>If our data have a single predictor, we can use
 <code><a href="../reference/do_lreg.html">do_lreg()</a></code> instead of <code><a href="../reference/do_rreg.html">do_rreg()</a></code> to perform a
@@ -487,8 +247,6 @@ sets.</p>
 <span>               control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span>, <span class="st">"GLIOM"</span><span class="op">)</span>,</span>
 <span>               ratio <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>               palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
-<span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">metrics</span></span>
 <span><span class="co">#&gt; $accuracy</span></span>
@@ -524,180 +282,6 @@ and <code>control</code> arguments.</p>
 <span>                     <span class="va">metadata</span>, </span>
 <span>                     type <span class="op">=</span> <span class="st">"elnet"</span>,</span>
 <span>                     palette <span class="op">=</span> <span class="st">"cancers12"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
-<span><span class="co">#&gt; Warning: Too little data to stratify.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Resampling will be unstratified.</span></span>
-<span><span class="co">#&gt; Sets are ready. Multiclassification model fitting is starting...</span></span>
-<span><span class="co">#&gt; Warning: Too little data to stratify.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Resampling will be unstratified.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'BRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CVX'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'ENDC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'LUNGC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'LYMPH'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'MYEL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'OVC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'AML'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'MYEL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'OVC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'AML'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CVX'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'ENDC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'GLIOM'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'MYEL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'OVC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'AML'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'ENDC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'GLIOM'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'LYMPH'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'MYEL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'AML'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'BRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'GLIOM'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'LUNGC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'MYEL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'OVC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'AML'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'MYEL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'AML'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CVX'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'ENDC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'LUNGC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'MYEL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'PRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'AML'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'BRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CVX'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'GLIOM'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'OVC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'PRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'BRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CVX'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'ENDC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'GLIOM'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'LUNGC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'MYEL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'OVC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'PRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'AML'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'BRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'ENDC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'LUNGC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'LYMPH'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'OVC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'PRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'AML'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'BRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'LYMPH'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'MYEL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'AML'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CLL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CRC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'CVX'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'GLIOM'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'LUNGC'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'MYEL'.</span></span>
-<span><span class="co">#&gt; Warning: No event observations were detected in `truth` with event level</span></span>
-<span><span class="co">#&gt; 'OVC'.</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">auc</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 2</span></span></span>
@@ -721,8 +305,8 @@ and <code>control</code> arguments.</p>
 <code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">roc_curve</span></span></code></pre></div>
 <p><img src="classification_files/figure-html/unnamed-chunk-6-2.png" width="700"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">var_imp_plot</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">var_imp_res</span><span class="op">$</span><span class="va">var_imp_plot</span></span></code></pre></div>
+<p><img src="classification_files/figure-html/unnamed-chunk-6-3.png" width="700"></p>
 <p>Finally, let’s use the <code><a href="../reference/plot_features_summary.html">plot_features_summary()</a></code> to
 summarize our model results. We can create models of different cases and
 controls and compare them like we did in the Get Started vignette.
@@ -734,135 +318,30 @@ models for two different cases and summarize them.</p>
 <span>                     case <span class="op">=</span> <span class="st">"AML"</span>, </span>
 <span>                     control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span>, <span class="st">"GLIOM"</span><span class="op">)</span>, </span>
 <span>                     type <span class="op">=</span> <span class="st">"ridge"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
-<span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
-<span><span class="co">#&gt; Classification model for AML as case is starting...</span></span>
 <span></span>
 <span><span class="va">rf_aml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_rf.html">do_rf</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, case <span class="op">=</span> <span class="st">"AML"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span>, <span class="st">"GLIOM"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
-<span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
-<span><span class="co">#&gt; Classification model for AML as case is starting...</span></span>
 <span></span>
 <span><span class="va">ridge_gliom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_rreg.html">do_rreg</a></span><span class="op">(</span><span class="va">wide_data</span>, </span>
 <span>                       <span class="va">metadata</span>, </span>
 <span>                       case <span class="op">=</span> <span class="st">"GLIOM"</span>, </span>
 <span>                       control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span>, <span class="st">"AML"</span><span class="op">)</span>, </span>
 <span>                       type <span class="op">=</span> <span class="st">"ridge"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
-<span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
-<span><span class="co">#&gt; Classification model for GLIOM as case is starting...</span></span>
 <span></span>
-<span><span class="va">rf_gliom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_rf.html">do_rf</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, case <span class="op">=</span> <span class="st">"GLIOM"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span>, <span class="st">"AML"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(DAid)`</span></span>
-<span><span class="co">#&gt; Sets and groups are ready. Model fitting is starting...</span></span>
-<span><span class="co">#&gt; Classification model for GLIOM as case is starting...</span></span></code></pre></div>
+<span><span class="va">rf_gliom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/do_rf.html">do_rf</a></span><span class="op">(</span><span class="va">wide_data</span>, <span class="va">metadata</span>, case <span class="op">=</span> <span class="st">"GLIOM"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLL"</span>, <span class="st">"MYEL"</span>, <span class="st">"AML"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_features_summary.html">plot_features_summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Ridge_AML"</span> <span class="op">=</span> <span class="va">ridge_aml</span>, </span>
 <span>                                  <span class="st">"RF_AML"</span> <span class="op">=</span> <span class="va">rf_aml</span>, </span>
 <span>                                  <span class="st">"Ridge_GLIOM"</span> <span class="op">=</span> <span class="va">ridge_gliom</span>, </span>
-<span>                                  <span class="st">"RF_GLIOM"</span> <span class="op">=</span> <span class="va">rf_gliom</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $`Ridge_AML&amp;RF_AML&amp;Ridge_GLIOM&amp;RF_GLIOM`</span></span>
-<span><span class="co">#&gt;  [1] "ADA"       "AGR2"      "ACAN"      "ACP6"      "AZU1"      "ANGPT2"   </span></span>
-<span><span class="co">#&gt;  [7] "ANGPTL2"   "ANGPT1"    "ANXA11"    "ADGRG1"    "AGRP"      "ARSB"     </span></span>
-<span><span class="co">#&gt; [13] "AK1"       "ATP6V1F"   "ANGPTL7"   "AMY2B"     "ART3"      "ANGPTL3"  </span></span>
-<span><span class="co">#&gt; [19] "AHCY"      "APOM"      "ADGRG2"    "ARTN"      "AMIGO2"    "ATXN10"   </span></span>
-<span><span class="co">#&gt; [25] "ADAM8"     "ACY1"      "ALPP"      "ANXA10"    "APP"       "ARID4B"   </span></span>
-<span><span class="co">#&gt; [31] "AHSP"      "AIF1"      "APBB1IP"   "ARHGEF12"  "AMBP"      "ANG"      </span></span>
-<span><span class="co">#&gt; [37] "ATOX1"     "ANGPTL4"   "AARSD1"    "AOC3"      "ARSA"      "APLP1"    </span></span>
-<span><span class="co">#&gt; [43] "AMY2A"     "ADAMTS13"  "ARHGAP25"  "ACOX1"     "ABL1"      "ANXA5"    </span></span>
-<span><span class="co">#&gt; [49] "AMBN"      "ATP6AP2"   "AXL"       "AREG"      "ATP5PO"    "ADAMTS16" </span></span>
-<span><span class="co">#&gt; [55] "ANGPTL1"   "ATG4A"     "ADGRE5"    "AXIN1"     "AIFM1"     "ADAM23"   </span></span>
-<span><span class="co">#&gt; [61] "AKT3"      "ADGRE2"    "ARG1"      "ANKRD54"   "ADAMTS15"  "APOH"     </span></span>
-<span><span class="co">#&gt; [67] "AGR3"      "AKR1C4"    "AMN"       "AOC1"      "ANXA4"     "APEX1"    </span></span>
-<span><span class="co">#&gt; [73] "AMFR"      "AGRN"      "ADCYAP1R1" "ANPEP"     "ALDH3A1"   "ADM"      </span></span>
-<span><span class="co">#&gt; [79] "ALDH1A1"   "AGXT"      "ACAA1"     "ACP5"      "AGER"      "ACTN4"    </span></span>
-<span><span class="co">#&gt; [85] "B4GALT1"   "ALCAM"     "AKT1S1"    "ANXA3"     "ACE2"      "ATP6V1D"  </span></span>
-<span><span class="co">#&gt; [91] "ATP5IF1"   "ATF2"      "ACTA2"     "ARNT"      "ADA2"      "ADAMTS8"  </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $`Ridge_AML&amp;Ridge_GLIOM&amp;RF_GLIOM`</span></span>
-<span><span class="co">#&gt;  [1] "ADA"       "AGR2"      "ACAN"      "ACP6"      "AZU1"      "ANGPT2"   </span></span>
-<span><span class="co">#&gt;  [7] "ANGPTL2"   "ANGPT1"    "ANXA11"    "ADGRG1"    "AGRP"      "ARSB"     </span></span>
-<span><span class="co">#&gt; [13] "AK1"       "ATP6V1F"   "ANGPTL7"   "AMY2B"     "ART3"      "ANGPTL3"  </span></span>
-<span><span class="co">#&gt; [19] "AHCY"      "APOM"      "ADGRG2"    "ARTN"      "AMIGO2"    "ATXN10"   </span></span>
-<span><span class="co">#&gt; [25] "ADAM8"     "ACY1"      "ALPP"      "ANXA10"    "APP"       "ARID4B"   </span></span>
-<span><span class="co">#&gt; [31] "AHSP"      "AIF1"      "APBB1IP"   "ARHGEF12"  "AMBP"      "ANG"      </span></span>
-<span><span class="co">#&gt; [37] "ATOX1"     "ANGPTL4"   "AARSD1"    "AOC3"      "ARSA"      "APLP1"    </span></span>
-<span><span class="co">#&gt; [43] "AMY2A"     "ADAMTS13"  "ARHGAP25"  "ACOX1"     "ABL1"      "ANXA5"    </span></span>
-<span><span class="co">#&gt; [49] "AMBN"      "ATP6AP2"   "AXL"       "AREG"      "ATP5PO"    "ADAMTS16" </span></span>
-<span><span class="co">#&gt; [55] "ANGPTL1"   "ATG4A"     "ADGRE5"    "AXIN1"     "AIFM1"     "ADAM23"   </span></span>
-<span><span class="co">#&gt; [61] "AKT3"      "ADGRE2"    "ARG1"      "ANKRD54"   "ADAMTS15"  "APOH"     </span></span>
-<span><span class="co">#&gt; [67] "AGR3"      "AKR1C4"    "AMN"       "AOC1"      "ANXA4"     "APEX1"    </span></span>
-<span><span class="co">#&gt; [73] "AMFR"      "ARHGAP1"   "AGRN"      "ADCYAP1R1" "ANPEP"     "ALDH3A1"  </span></span>
-<span><span class="co">#&gt; [79] "ADM"       "ALDH1A1"   "AGXT"      "ACAA1"     "ACP5"      "AGER"     </span></span>
-<span><span class="co">#&gt; [85] "ACTN4"     "B4GALT1"   "ALCAM"     "AKT1S1"    "ANXA3"     "ACE2"     </span></span>
-<span><span class="co">#&gt; [91] "ATP6V1D"   "ATP5IF1"   "ATF2"      "ACTA2"     "ARNT"      "ADA2"     </span></span>
-<span><span class="co">#&gt; [97] "ADAMTS8"  </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $`Ridge_AML&amp;RF_AML&amp;Ridge_GLIOM`</span></span>
-<span><span class="co">#&gt;  [1] "ADA"       "AGR2"      "ACAN"      "ACP6"      "AZU1"      "ANGPT2"   </span></span>
-<span><span class="co">#&gt;  [7] "ANGPTL2"   "ANGPT1"    "ANXA11"    "ADGRG1"    "AGRP"      "ARSB"     </span></span>
-<span><span class="co">#&gt; [13] "AK1"       "ATP6V1F"   "ANGPTL7"   "AMY2B"     "ART3"      "ANGPTL3"  </span></span>
-<span><span class="co">#&gt; [19] "AHCY"      "APOM"      "ADGRG2"    "ARTN"      "AMIGO2"    "ATXN10"   </span></span>
-<span><span class="co">#&gt; [25] "ADAM8"     "ACY1"      "ALPP"      "ANXA10"    "APP"       "ARID4B"   </span></span>
-<span><span class="co">#&gt; [31] "AHSP"      "AIF1"      "APBB1IP"   "ARHGEF12"  "AMBP"      "ANG"      </span></span>
-<span><span class="co">#&gt; [37] "ATOX1"     "ANGPTL4"   "AARSD1"    "AOC3"      "ARSA"      "APLP1"    </span></span>
-<span><span class="co">#&gt; [43] "AMY2A"     "ADAMTS13"  "ARHGAP25"  "ACOX1"     "ABL1"      "ANXA5"    </span></span>
-<span><span class="co">#&gt; [49] "AMBN"      "ATP6AP2"   "AXL"       "AREG"      "ATP5PO"    "ADAMTS16" </span></span>
-<span><span class="co">#&gt; [55] "ANGPTL1"   "ATG4A"     "ADGRE5"    "AXIN1"     "AIFM1"     "ADAM23"   </span></span>
-<span><span class="co">#&gt; [61] "AKT3"      "ADGRE2"    "ARG1"      "ANKRD54"   "ADAMTS15"  "APOH"     </span></span>
-<span><span class="co">#&gt; [67] "AGR3"      "AKR1C4"    "AMN"       "AOC1"      "ANXA4"     "APEX1"    </span></span>
-<span><span class="co">#&gt; [73] "AMFR"      "AGRN"      "ADH4"      "ADCYAP1R1" "ANPEP"     "ALDH3A1"  </span></span>
-<span><span class="co">#&gt; [79] "ADM"       "ALDH1A1"   "AGXT"      "ACAA1"     "ACP5"      "AGER"     </span></span>
-<span><span class="co">#&gt; [85] "ACTN4"     "B4GALT1"   "ALCAM"     "AKT1S1"    "ANXA3"     "ACE2"     </span></span>
-<span><span class="co">#&gt; [91] "ATP6V1D"   "ATP5IF1"   "ATF2"      "ACTA2"     "ARNT"      "ADA2"     </span></span>
-<span><span class="co">#&gt; [97] "ADAMTS8"  </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $`Ridge_AML&amp;RF_AML&amp;RF_GLIOM`</span></span>
-<span><span class="co">#&gt;  [1] "ADA"       "AGR2"      "ACAN"      "ACP6"      "AZU1"      "ANGPT2"   </span></span>
-<span><span class="co">#&gt;  [7] "ANGPTL2"   "ANGPT1"    "ANXA11"    "ADGRG1"    "AGRP"      "ARSB"     </span></span>
-<span><span class="co">#&gt; [13] "AK1"       "ATP6V1F"   "ANGPTL7"   "AMY2B"     "ART3"      "ANGPTL3"  </span></span>
-<span><span class="co">#&gt; [19] "AHCY"      "APOM"      "ADGRG2"    "ARTN"      "AMIGO2"    "ATXN10"   </span></span>
-<span><span class="co">#&gt; [25] "ADAM8"     "ACY1"      "ALPP"      "ANXA10"    "APP"       "ARID4B"   </span></span>
-<span><span class="co">#&gt; [31] "AHSP"      "AIF1"      "APBB1IP"   "ARHGEF12"  "AMBP"      "ANG"      </span></span>
-<span><span class="co">#&gt; [37] "ATOX1"     "ANGPTL4"   "AARSD1"    "AOC3"      "ARSA"      "APLP1"    </span></span>
-<span><span class="co">#&gt; [43] "AMY2A"     "ADAMTS13"  "ARHGAP25"  "ACOX1"     "ABL1"      "ANXA5"    </span></span>
-<span><span class="co">#&gt; [49] "AMBN"      "ATP6AP2"   "AXL"       "AREG"      "ATP5PO"    "ADAMTS16" </span></span>
-<span><span class="co">#&gt; [55] "ANGPTL1"   "ATG4A"     "ADGRE5"    "AXIN1"     "AIFM1"     "ADAM23"   </span></span>
-<span><span class="co">#&gt; [61] "AKT3"      "ADGRE2"    "ARG1"      "ANKRD54"   "ADAMTS15"  "APOH"     </span></span>
-<span><span class="co">#&gt; [67] "AGR3"      "AKR1C4"    "AMN"       "AOC1"      "ANXA4"     "APEX1"    </span></span>
-<span><span class="co">#&gt; [73] "AMFR"      "AGRN"      "ADCYAP1R1" "ANPEP"     "ALDH3A1"   "ADM"      </span></span>
-<span><span class="co">#&gt; [79] "ALDH1A1"   "AGXT"      "AKR1B1"    "ACAA1"     "ACP5"      "AGER"     </span></span>
-<span><span class="co">#&gt; [85] "ACTN4"     "B4GALT1"   "ALCAM"     "AKT1S1"    "ANXA3"     "ACE2"     </span></span>
-<span><span class="co">#&gt; [91] "ATP6V1D"   "ATP5IF1"   "ATF2"      "ACTA2"     "ARNT"      "ADA2"     </span></span>
-<span><span class="co">#&gt; [97] "ADAMTS8"  </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $`RF_AML&amp;Ridge_GLIOM&amp;RF_GLIOM`</span></span>
-<span><span class="co">#&gt;  [1] "ADA"       "AZU1"      "AGR2"      "ANGPT1"    "ANXA11"    "ACAN"     </span></span>
-<span><span class="co">#&gt;  [7] "AMY2B"     "AGRP"      "ACP6"      "ANXA10"    "ANGPT2"    "ARTN"     </span></span>
-<span><span class="co">#&gt; [13] "ADGRE2"    "ANGPTL2"   "ADGRG1"    "ARSB"      "ADGRG2"    "ATP6V1F"  </span></span>
-<span><span class="co">#&gt; [19] "AHCY"      "ADAMTS13"  "APBB1IP"   "AIF1"      "ANGPTL3"   "AHSP"     </span></span>
-<span><span class="co">#&gt; [25] "AK1"       "ATG4A"     "ANXA3"     "AMY2A"     "ADAM15"    "APEX1"    </span></span>
-<span><span class="co">#&gt; [31] "APOM"      "ART3"      "ARID4B"    "ADAM23"    "ALPP"      "ATP5IF1"  </span></span>
-<span><span class="co">#&gt; [37] "ACAA1"     "AREG"      "ANKRD54"   "ARHGEF12"  "AOC1"      "APP"      </span></span>
-<span><span class="co">#&gt; [43] "AOC3"      "AXL"       "AKT3"      "ANG"       "ATXN10"    "AGRN"     </span></span>
-<span><span class="co">#&gt; [49] "ATP6AP2"   "ADA2"      "APLP1"     "ADCYAP1R1" "AARSD1"    "ACOX1"    </span></span>
-<span><span class="co">#&gt; [55] "ATOX1"     "AIFM1"     "AGXT"      "ARSA"      "ARHGAP25"  "AGER"     </span></span>
-<span><span class="co">#&gt; [61] "AMIGO2"    "ABL1"      "ANGPTL1"   "ANGPTL4"   "ADM"       "ADGRE5"   </span></span>
-<span><span class="co">#&gt; [67] "ANXA4"     "AMN"       "ADAM8"     "ANXA5"     "ACE2"      "ANGPTL7"  </span></span>
-<span><span class="co">#&gt; [73] "AMFR"      "ALDH1A1"   "ACP5"      "B4GALT1"   "AKR1C4"    "ARNT"     </span></span>
-<span><span class="co">#&gt; [79] "AGR3"      "ATP6V1D"   "ATF2"      "ALCAM"     "ADAMTS16"  "ARG1"     </span></span>
-<span><span class="co">#&gt; [85] "AXIN1"     "ADAMTS15"  "APOH"      "ATP5PO"    "ADAMTS8"   "ALDH3A1"  </span></span>
-<span><span class="co">#&gt; [91] "ACTN4"     "AMBP"      "ACTA2"     "AMBN"      "AKT1S1"    "ANPEP"    </span></span>
-<span><span class="co">#&gt; [97] "ACY1"</span></span>
-<span></span>
-<span><span class="va">res</span><span class="op">$</span><span class="va">features_barplot</span></span></code></pre></div>
-<p><img src="classification_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<span>                                  <span class="st">"RF_GLIOM"</span> <span class="op">=</span> <span class="va">rf_gliom</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">upset_plot_features</span></span></code></pre></div>
-<p><img src="classification_files/figure-html/unnamed-chunk-8-2.png" width="700"></p>
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">features_barplot</span></span></code></pre></div>
+<p><img src="classification_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">upset_plot_features</span></span></code></pre></div>
+<p><img src="classification_files/figure-html/unnamed-chunk-9-2.png" width="700"></p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">metrics_lineplot</span></span></code></pre></div>
-<p><img src="classification_files/figure-html/unnamed-chunk-8-3.png" width="700"></p>
+<p><img src="classification_files/figure-html/unnamed-chunk-9-3.png" width="700"></p>
 <p>From the last plot we can quickly see that the Ridge regression model
 works better for Glioma classification, while the Random Forest model
 works better for AML classification.</p>
