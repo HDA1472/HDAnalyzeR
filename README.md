@@ -52,3 +52,7 @@ If you encounter any bugs or you want to recommend new features and changes to e
 ## Contact
 
 For any questions or further information, please contact us at [konstantinos.antonopoulos@scilifelab.se](mailto:konstantinos.antonopoulos@scilifelab.se).
+
+## Development Notes
+
+`umap` package was imported as dependency to solve problem with `embed::step_umap()` dependencies. Do not remove from DESCRIPTION file regardless `devtools::check()` warning.
