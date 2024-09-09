@@ -9,7 +9,8 @@ plot_features_summary(
   importance = 50,
   upset_top_features = FALSE,
   case_palette = NULL,
-  feature_type_palette = c(`all-features` = "pink", `top-features` = "darkblue")
+  feature_type_palette = c(`all-features` = "pink", `top-features` = "darkblue"),
+  verbose = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ plot_features_summary(
 \item{case_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
 
 \item{feature_type_palette}{The color palette for the plot. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "all-features" = "pink" and "top-features" = "darkblue".}
+
+\item{verbose}{If the function should print the different sets of features for each disease. Default is TRUE.}
 }
 \value{
 A list with two elements:

@@ -863,6 +863,7 @@ extract_protein_list <- function(upset_data, proteins) {
 #' @param de_results A list of differential expression results.
 #' @param disease_palette The color palette for the disease. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is NULL.
 #' @param diff_exp_palette The color palette for the differential expression. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
+#' @param verbose If the function should print the different sets of significant proteins for each disease. Default is TRUE.
 #'
 #' @return A list containing the following plots:
 #'   - de_barplot: A barplot with the number of significant proteins for each disease.
@@ -910,7 +911,8 @@ extract_protein_list <- function(upset_data, proteins) {
 #' plot_de_summary(res)
 plot_de_summary <- function(de_results,
                             disease_palette = NULL,
-                            diff_exp_palette = "diff_exp") {
+                            diff_exp_palette = "diff_exp",
+                            verbose = TRUE) {
   de_res_list <- list()
   for (i in 1:length(de_results)) {
     de_res_list[[i]] <- de_results[[i]]$de_results |>
@@ -970,6 +972,7 @@ plot_de_summary <- function(de_results,
   ordered_colors <- pal[de_names]
   frequencies_up <- sapply(significant_proteins_up, length)
   ordered_names_up <- names(sort(frequencies_up, decreasing = TRUE))
+  print(ordered_names_up)
   ordered_colors_up <- ordered_colors[ordered_names_up]
   frequencies_down <- sapply(significant_proteins_down, length)
   ordered_names_down <- names(sort(frequencies_down, decreasing = TRUE))
@@ -981,18 +984,22 @@ plot_de_summary <- function(de_results,
   proteins_up <- extract_protein_list(upset_up, significant_proteins_up)
   proteins_down <- extract_protein_list(upset_down, significant_proteins_down)
 
-  print(proteins_up$proteins_list)
-  print(proteins_down$proteins_list)
+  if (verbose) {
+    print(proteins_up$proteins_df)
+    print(proteins_down$proteins_df)
+  }
 
   # Create upset plots
   upset_plot_up <- UpSetR::upset(upset_up,
+                                 sets = ordered_names_up,
                                  order.by = "freq",
-                                 nsets = length(names(de_results)),
+                                 nsets = length(ordered_names_up),
                                  sets.bar.color = ordered_colors_up)
 
   upset_plot_down <- UpSetR::upset(upset_down,
+                                   sets = ordered_names_down,
                                    order.by = "freq",
-                                   nsets = length(names(de_results)),
+                                   nsets = length(ordered_names_down),
                                    sets.bar.color = ordered_colors_down)
 
   return(list("de_barplot" = de_barplot,

@@ -7,7 +7,8 @@
 plot_de_summary(
   de_results,
   disease_palette = NULL,
-  diff_exp_palette = "diff_exp"
+  diff_exp_palette = "diff_exp",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ plot_de_summary(
 \item{disease_palette}{The color palette for the disease. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is NULL.}
 
 \item{diff_exp_palette}{The color palette for the differential expression. If it is a character, it should be one of the palettes from \code{get_hpa_palettes()}. Default is "diff_exp".}
+
+\item{verbose}{If the function should print the different sets of significant proteins for each disease. Default is TRUE.}
 }
 \value{
 A list containing the following plots:
