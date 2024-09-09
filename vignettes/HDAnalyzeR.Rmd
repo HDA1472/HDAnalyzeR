@@ -40,10 +40,13 @@ head(example_metadata)
 
 ### Data QC
 
-`qc_summary_data()` provides a comprehensive summary of the input dataset. It will check the column types, calculate the percentage of NAs in each column and row, perform normality tests for all the different Assays, calculate protein-protein correlations, and create a heatmap of these correlations. Users can also specify the threshold for reporting protein-protein correlations.
+`qc_summary_data()` provides a comprehensive summary of the input dataset. It will check the column types, calculate the percentage of NAs in each column and row and plot their distributions, perform normality tests for all the different Assays, calculate protein-protein correlations, and create a heatmap of these correlations. Users can also specify the threshold for reporting protein-protein correlations.
 
 ```{r}
 qc_data <- qc_summary_data(example_data, wide = FALSE, threshold = 0.7)
+
+qc_data$na_col_dist
+qc_data$na_row_dist
 ```
 
 ### Metadata QC
@@ -105,20 +108,26 @@ head(imputed_data)
 After imputation, we will run Principal Component Analysis (PCA) via `do_pca()` and Uniform Manifold Approximation and Projection (UMAP) via `do_umap()` to check for outliers, batch effects, and other potential issues.
 
 ```{r}
-do_pca(imputed_data, 
-       clean_metadata,
-       color = "Sex",
-       palette = "sex_hpa",
-       impute = FALSE,
-       pcs = 6)
+pca_res <- do_pca(imputed_data, 
+                  clean_metadata,
+                  color = "Sex",
+                  palette = "sex_hpa",
+                  impute = FALSE,
+                  pcs = 6)
+
+pca_res$pca_plot
+pca_res$loadings_plot
+pca_res$variance_plot
 ```
 
 ```{r}
-do_umap(imputed_data, 
-        clean_metadata,
-        color = "Disease",
-        palette = "cancers12",
-        impute = FALSE)
+umap_res <- do_umap(imputed_data, 
+                    clean_metadata,
+                    color = "Disease",
+                    palette = "cancers12",
+                    impute = FALSE)
+
+umap_res$umap_plot
 ```
 
 We will perform another QC check to ensure that everything is as expected after cleaning and imputing the data. We will not showcase the output again for brevity.
