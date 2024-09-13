@@ -274,7 +274,6 @@ do_pca <- function(olink_data,
   colnames(pca_res) <- col_names
 
   # Visualize results
-  print(pca_res)
   if (isTRUE(plots)) {
     pca_plot <- plot_dim_reduction(pca_res,
                                    x,
