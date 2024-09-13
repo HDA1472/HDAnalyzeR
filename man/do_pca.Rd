@@ -69,10 +69,6 @@ A list with the PCA results and, if requested, the PCA plots.
 the sample points on the first and second PC plane as well as the PCA loadings
 and the explained variance. It can also save the plots in the results directory.
 }
-\details{
-If you use more than 9 principal components (\code{pcs} > 9), the \code{x} and \code{y}
-arguments should be formatted as 'PC01' instead of 'PC1', and so on.
-}
 \examples{
 do_pca(example_data,
        metadata = example_metadata,
