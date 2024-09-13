@@ -13,6 +13,7 @@ plot_volcano(
   palette = "diff_exp",
   title = NULL,
   report_nproteins = TRUE,
+  user_defined_proteins = NULL,
   subtitle = NULL
 )
 }

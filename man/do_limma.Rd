@@ -22,6 +22,7 @@ do_limma(
   top_down_prot = 10,
   palette = "diff_exp",
   report_nproteins = TRUE,
+  user_defined_proteins = NULL,
   subtitle = NULL,
   save = FALSE
 )
@@ -61,6 +62,8 @@ do_limma(
 
 \item{report_nproteins}{If the number of significant proteins should be reported in the subtitle. Default is TRUE.}
 
+\item{user_defined_proteins}{A list with the user defined proteins to label on the plot. Default is NULL.}
+
 \item{subtitle}{The subtitle of the plot or NULL for no subtitle.}
 
 \item{save}{Save the volcano plots. Default is FALSE.}
@@ -83,7 +86,8 @@ It can generate and save volcano plots.
 For sex-specific diseases, there will be no correction for Sex.
 This is performed automatically by the function. It will also filter out
 rows with NA values in any of the columns that are used for correction,
-either the \code{variable} or in \code{correct}.
+either the \code{variable} or in \code{correct}. The \code{user_defined_proteins} overrides
+the \code{top_up_prot} and \code{top_down_prot} arguments.
 }
 \examples{
 de_results <- do_limma(example_data,

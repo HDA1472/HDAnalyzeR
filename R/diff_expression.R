@@ -328,6 +328,7 @@ plot_volcano <- function(de_result,
                          palette = "diff_exp",
                          title = NULL,
                          report_nproteins = TRUE,
+                         user_defined_proteins = NULL,
                          subtitle = NULL) {
 
   top.sig.down <- de_result |>
@@ -340,7 +341,11 @@ plot_volcano <- function(de_result,
     dplyr::arrange(adj.P.Val) |>
     dplyr::pull(Assay)
 
-  top.sig.prot <- c(top.sig.up[1:top_up_prot], top.sig.down[1:top_down_prot])
+  if (is.null(user_defined_proteins)) {
+    top.sig.prot <- c(top.sig.up[1:top_up_prot], top.sig.down[1:top_down_prot])
+  } else {
+    top.sig.prot <- user_defined_proteins
+  }
 
   tab <- de_result |>
     dplyr::mutate(sig.label = ifelse(Assay %in% top.sig.prot, "top significance", 0))
@@ -421,6 +426,7 @@ plot_volcano <- function(de_result,
 #' @param top_down_prot The number of top down regulated proteins to label on the plot. Default is 10.
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
 #' @param report_nproteins If the number of significant proteins should be reported in the subtitle. Default is TRUE.
+#' @param user_defined_proteins A list with the user defined proteins to label on the plot. Default is NULL.
 #' @param subtitle The subtitle of the plot or NULL for no subtitle.
 #' @param save Save the volcano plots. Default is FALSE.
 #'
@@ -432,7 +438,8 @@ plot_volcano <- function(de_result,
 #' @details For sex-specific diseases, there will be no correction for Sex.
 #' This is performed automatically by the function. It will also filter out
 #' rows with NA values in any of the columns that are used for correction,
-#' either the `variable` or in `correct`.
+#' either the `variable` or in `correct`. The `user_defined_proteins` overrides
+#' the `top_up_prot` and `top_down_prot` arguments.
 #'
 #' @examples
 #' de_results <- do_limma(example_data,
@@ -463,6 +470,7 @@ do_limma <- function(olink_data,
                      top_down_prot = 10,
                      palette = "diff_exp",
                      report_nproteins = TRUE,
+                     user_defined_proteins = NULL,
                      subtitle = NULL,
                      save = FALSE) {
 
@@ -526,6 +534,7 @@ do_limma <- function(olink_data,
                                  palette,
                                  case,
                                  report_nproteins,
+                                 user_defined_proteins,
                                  subtitle)
 
     if (isTRUE(save)) {
@@ -559,6 +568,7 @@ do_limma <- function(olink_data,
 #' @param top_down_prot The number of top down regulated proteins to label on the plot. Default is 10.
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
 #' @param report_nproteins If the number of significant proteins should be reported in the subtitle. Default is TRUE.
+#' @param user_defined_proteins A list with the user defined proteins to label on the plot. Default is NULL.
 #' @param subtitle The subtitle of the plot or NULL for no subtitle.
 #' @param save Save the volcano plots. Default is FALSE.
 #'
@@ -569,7 +579,8 @@ do_limma <- function(olink_data,
 #'
 #' @details
 #' It will filter out rows with NA values in any of the columns that are used for
-#' correction, either the `variable` or in `correct`.
+#' correction, either the `variable` or in `correct`. The `user_defined_proteins` overrides
+#' the `top_up_prot` and `top_down_prot` arguments.
 #'
 #' @examples
 #' do_limma_continuous(example_data, example_metadata, "Age", wide = FALSE)
@@ -586,6 +597,7 @@ do_limma_continuous <- function(olink_data,
                                 top_down_prot = 10,
                                 palette = "diff_exp",
                                 report_nproteins = TRUE,
+                                user_defined_proteins = NULL,
                                 subtitle = NULL,
                                 save = FALSE) {
 
@@ -644,6 +656,7 @@ do_limma_continuous <- function(olink_data,
                                  palette,
                                  variable,
                                  report_nproteins,
+                                 user_defined_proteins,
                                  subtitle)
 
     if (isTRUE(save)) {
@@ -680,6 +693,7 @@ do_limma_continuous <- function(olink_data,
 #' @param top_down_prot The number of top down regulated proteins to label on the plot. Default is 10.
 #' @param palette The color palette for the plot. If it is a character, it should be one of the palettes from `get_hpa_palettes()`. Default is "diff_exp".
 #' @param report_nproteins If the number of significant proteins should be reported in the subtitle. Default is TRUE.
+#' @param user_defined_proteins A list with the user defined proteins to label on the plot. Default is NULL.
 #' @param subtitle The subtitle of the plot or NULL for no subtitle.
 #' @param save Save the volcano plots. Default is FALSE.
 #'
@@ -690,7 +704,8 @@ do_limma_continuous <- function(olink_data,
 #'
 #' @details
 #' It will filter out rows with NA values in any of the columns that are used for
-#' correction, either the `variable` or in `correct`.
+#' correction, either the `variable` or in `correct`. The `user_defined_proteins`
+#' overrides the `top_up_prot` and `top_down_prot` arguments.
 #'
 #' @examples
 #' de_results <- do_ttest(example_data,
@@ -719,6 +734,7 @@ do_ttest <- function(olink_data,
                      top_down_prot = 10,
                      palette = "diff_exp",
                      report_nproteins = TRUE,
+                     user_defined_proteins = NULL,
                      subtitle = NULL,
                      save = FALSE) {
 
@@ -792,6 +808,7 @@ do_ttest <- function(olink_data,
                                  palette,
                                  case,
                                  report_nproteins,
+                                 user_defined_proteins,
                                  subtitle)
 
     if (isTRUE(save)) {
