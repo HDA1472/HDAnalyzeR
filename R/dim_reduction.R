@@ -265,10 +265,16 @@ do_pca <- function(olink_data,
     dplyr::pull(`percent variance`)
 
   pc_names <- paste0("PC", 1:pcs)
-  col_names <- c("DAid", pc_names)
+  if (isFalse(assay)) {
+    col_names <- c("DAid", pc_names)
+  } else {
+    col_names <- c("Assay", pc_names)
+  }
+
   colnames(pca_res) <- col_names
 
   # Visualize results
+  print(pca_res)
   if (isTRUE(plots)) {
     pca_plot <- plot_dim_reduction(pca_res,
                                    x,
