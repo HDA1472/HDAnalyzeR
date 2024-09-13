@@ -265,7 +265,7 @@ do_pca <- function(olink_data,
     dplyr::pull(`percent variance`)
 
   pc_names <- paste0("PC", 1:pcs)
-  if (isFalse(assay)) {
+  if (isFALSE(assay)) {
     col_names <- c("DAid", pc_names)
   } else {
     col_names <- c("Assay", pc_names)
