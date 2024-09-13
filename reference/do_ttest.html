@@ -92,6 +92,7 @@ It can generate and save volcano plots.</p>
 <span>  top_down_prot <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  palette <span class="op">=</span> <span class="st">"diff_exp"</span>,</span>
 <span>  report_nproteins <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  user_defined_proteins <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  subtitle <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  save <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -161,6 +162,10 @@ It can generate and save volcano plots.</p>
 <dd><p>If the number of significant proteins should be reported in the subtitle. Default is TRUE.</p></dd>
 
 
+<dt id="arg-user-defined-proteins">user_defined_proteins<a class="anchor" aria-label="anchor" href="#arg-user-defined-proteins"></a></dt>
+<dd><p>A list with the user defined proteins to label on the plot. Default is NULL.</p></dd>
+
+
 <dt id="arg-subtitle">subtitle<a class="anchor" aria-label="anchor" href="#arg-subtitle"></a></dt>
 <dd><p>The subtitle of the plot or NULL for no subtitle.</p></dd>
 
@@ -177,7 +182,8 @@ It can generate and save volcano plots.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>It will filter out rows with NA values in any of the columns that are used for
-correction, either the <code>variable</code> or in <code>correct</code>.</p>
+correction, either the <code>variable</code> or in <code>correct</code>. The <code>user_defined_proteins</code>
+overrides the <code>top_up_prot</code> and <code>top_down_prot</code> arguments.</p>
     </div>
 
     <div class="section level2">
