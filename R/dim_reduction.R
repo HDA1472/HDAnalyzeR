@@ -187,9 +187,6 @@ plot_dim_reduction <- function(res,
 #'   - variance_plot: A ggplot object with the explained variance and cumulative explained variance.
 #' @export
 #'
-#' @details If you use more than 9 principal components (`pcs` > 9), the `x` and `y`
-#' arguments should be formatted as 'PC01' instead of 'PC1', and so on.
-#'
 #' @examples
 #' do_pca(example_data,
 #'        metadata = example_metadata,
@@ -266,6 +263,10 @@ do_pca <- function(olink_data,
 
   variance_explained <- explained_variance |>
     dplyr::pull(`percent variance`)
+
+  pc_names <- paste0("PC", 1:pcs)
+  col_names <- c("DAid", pc_names)
+  colnames(pca_res) <- col_names
 
   # Visualize results
   if (isTRUE(plots)) {
