@@ -1,7 +1,6 @@
 # Folders
 inst/
 logo/
-shiny_app/
 
 # Files
 .RData
