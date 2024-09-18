@@ -4,7 +4,7 @@ bibentry(
   author   = c(person("Konstantinos", "Antonopoulos"),
                person("Maria", "Bueno Alvez"),
                person("Emil", "Johansson"),
-               person("Fredrik", "Edfors Arfwidsson"))
+               person("Fredrik", "Edfors Arfwidsson")),
   year     = 2024,
   version      = 1.0.0,
   howpublished = "Zenodo",
