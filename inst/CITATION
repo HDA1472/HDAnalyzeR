@@ -1,0 +1,13 @@
+bibentry(
+  bibtype  = "Software",
+  title    = "HDAnalyzeR: HDA Internal Package for Streamed-line Proteomics Analysis",
+  author   = c(person("Konstantinos", "Antonopoulos"),
+               person("Maria", "Bueno Alvez"),
+               person("Emil", "Johansson"),
+               person("Fredrik", "Edfors Arfwidsson"))
+  year     = 2024,
+  version      = 1.0.0,
+  howpublished = "Zenodo",
+  doi      = "10.5281/zenodo.13786124",
+  header = "To use package 'HDAnalyzeR' in publications use the following Zenodo repository. The DOI is for the whole repository and links to the latest release. See the Zenodo page for the DOI of a specific version."
+)

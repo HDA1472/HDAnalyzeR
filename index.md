@@ -1,6 +1,9 @@
 # HDAnalyzeR <a href="https://hda1472.github.io/HDAnalyzeR"><img src="man/figures/logo.png" align="right" height="200" alt="HDAnalyzeR website" /></a>
 
-[![R-CMD-check](https://github.com/HDA1472/HDAnalyzeR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HDA1472/HDAnalyzeR/actions/workflows/R-CMD-check.yaml) [![Version](https://img.shields.io/badge/Version-1.0.0-blue)](https://github.com/HDA1472/HDAnalyzeR) [![License](https://img.shields.io/badge/license-Apache2.0-yellow)](https://github.com/HDA1472/HDAnalyzeR/blob/main/LICENSE.md)
+[![R-CMD-check](https://github.com/HDA1472/HDAnalyzeR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HDA1472/HDAnalyzeR/actions/workflows/R-CMD-check.yaml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13786124.svg)](https://doi.org/10.5281/zenodo.13786124)
+[![Version](https://img.shields.io/badge/Version-1.0.0-purple)](https://github.com/HDA1472/HDAnalyzeR) 
+[![License](https://img.shields.io/badge/license-Apache2.0-yellow)](https://github.com/HDA1472/HDAnalyzeR/blob/main/LICENSE.md)
 
 HDAnalyzeR is an R package developed by the Human Disease Blood Atlas project, designed to facilitate proteomics analysis for biomarker selection from blood plasma samples. It is optimized to work with Olink proteomics data, but it can be adapted to other proteomics platforms. In order to use the package without issues the data should have these three necessary columns: `DAid` with the Sample IDs, `Assay` with the protein names, and `NPX` with the protein expression data. The metadata should contain the `DAid`, `Disease`, and `Sex` columns, where the `Disease` column should contain the different class names (Healthy, Disease, etc.), while in the `Sex` column the data should be encoded as M (males) and F (females).
 

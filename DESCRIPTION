@@ -7,9 +7,9 @@ Authors@R:
              role = c("aut", "cre"), comment = c(ORCID = "0000-0003-2781-3872")),
       person("Maria", "Bueno Alvez", , "maria.bueno@scilifelab.se", role = c("aut"),
              comment = c(ORCID = "0000-0002-2669-7796")),
-      person("Emil", "Johansson", , "emilj6@kth.se", role = c("ctb"),
+      person("Emil", "Johansson", , "emilj6@kth.se", role = c("aut"),
              comment = c(ORCID = "0009-0003-1250-0678")),
-      person("Fredrik", "Edfors Arfwidsson", , "edfors@kth.se", role = c("cph"),
+      person("Fredrik", "Edfors Arfwidsson", , "edfors@kth.se", role = c("aut", "cph"),
              comment = c(ORCID = "0000-0002-0017-7987"))
     )
 Description: A package developed by the Human Disease Blood Atlas group, designed to facilitate proteomics analysis for biomarker selection from blood plasma samples. It offers ready-to-use functions for tasks such as protein differential expression analysis, classification models, imputation methods, dimensionality reduction, and data visualization, aiming to streamline workflows and enhance the accuracy and efficiency of biomarker discovery in disease research.
