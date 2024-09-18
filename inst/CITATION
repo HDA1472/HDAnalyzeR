@@ -1,5 +1,5 @@
 bibentry(
-  bibtype  = "Software",
+  bibtype  = "Misc",
   title    = "HDAnalyzeR: HDA Internal Package for Streamed-line Proteomics Analysis",
   author   = c(person("Konstantinos", "Antonopoulos"),
                person("Maria", "Bueno Alvez"),
